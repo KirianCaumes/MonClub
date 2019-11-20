@@ -22,4 +22,18 @@ class User extends BaseUser
         parent::__construct();
         // your own logic
     }
+
+    /**
+     * Overridden so that username is now optional
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->username = $email;
+        $this->email = $email;
+
+        return $this;
+    }
 }
