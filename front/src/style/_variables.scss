@@ -1,0 +1,25 @@
+@import "../../node_modules/bulma/sass/utilities/_all.sass";
+
+$bg: lightgray;
+$bg-secondary: #253341;
+
+$text: white;
+$text-secondary: lightgray;
+
+$colors: map-merge(
+  $colors,
+  (
+    "bg": (
+      $bg-secondary,
+      $bg
+    ),
+    "text": (
+      $text-secondary,
+      $text
+    )
+  )
+);
+
+@import "../../node_modules/bulma/bulma.sass";
+@import "../../node_modules/bulma-extensions/bulma-quickview/dist/css/bulma-quickview.sass";
+@import "../../node_modules/bulma-extensions/bulma-switch/src/sass/index.sass";

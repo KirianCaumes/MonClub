@@ -1,0 +1,23 @@
+@import "~react-bulma-components/src/index.sass";
+@import "./_variables.scss";
+
+html {
+  min-height: 100vh;
+  max-width: 100vw;
+  color: $text !important;
+  background-color: $bg;
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+  body {
+    max-width: 100vw;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    a:focus {
+      text-decoration: none;
+      user-select: none;
+      outline: none;
+    }
+  }
+}
