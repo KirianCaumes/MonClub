@@ -5,14 +5,14 @@ class Header extends React.Component {
     render() {
         return (
             <Navbar
-                color=""
+                color="white"
                 fixed='top'
                 active={false}
                 transparent={false}
             >
                 <Navbar.Brand>
                     <Navbar.Item renderAs="a" href="#">
-                        <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28" />
+                        <img src={require('../asset/img/logo.png')} alt="THBC" />
                     </Navbar.Item>
                     <Navbar.Burger />
                 </Navbar.Brand>

@@ -11,8 +11,9 @@ const
 
 var getFetch = (url, options = {}) => {
     const baseUrl = "http://localhost:5000/api"
-    
-    options.mode = "cors"
+          
+    options["mode"] = "cors"
+
 
     if (options["headers"] === undefined)
         options["headers"] = {}
