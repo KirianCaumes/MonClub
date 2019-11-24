@@ -1,10 +1,12 @@
 import React from 'react'
 import { Button, Form, Columns } from 'react-bulma-components'
-import request from '../helper/request'
+
+import { authenticate } from "../redux/actions"
+import { connect } from "react-redux"
 
 import '../style/page/login.scss'
 
-class Login extends React.Component {
+class _Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -19,11 +21,12 @@ class Login extends React.Component {
 
     handleSubmit(ev) {
         ev.preventDefault()
-        request.authenticate({username : this.state.email, password: this.state.password})
-            .then(data => {
-                console.log(data)
-            })
-        console.log(this.state)
+        this.props.authenticate({username : this.state.email, password: this.state.password})
+        // request.authenticate({username : this.state.email, password: this.state.password})
+        //     .then(data => {
+        //         console.log(data)
+        //     })
+        // console.log(this.state)
     }
     render() {
         return (
@@ -67,4 +70,17 @@ class Login extends React.Component {
     }
 }
 
+
+const mapDispatchToProps = dispatch => {
+    return {
+        authenticate: isAuthenticated => dispatch(authenticate(isAuthenticated))
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.common.isAuthenticated
+    }
+}
+const Login = connect(mapStateToProps, mapDispatchToProps)(_Login)
 export default Login
