@@ -46,6 +46,6 @@ class MovieController extends FOSRestController
             $em->flush();
             return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
         }
-        return $this->handleView($this->view($form->getErrors()));
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 }

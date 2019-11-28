@@ -100,7 +100,6 @@ export default {
         }
 
         return getFetch(url, options)
-
     },
     getContracts: () => {
         const url = ["movies"]
