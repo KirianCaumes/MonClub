@@ -11,10 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use App\Entity\User;
 use App\Form\UserType;
-use FOS\UserBundle\Mailer\Mailer;
-use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Util\TokenGenerator;
-use Swift_Mailer;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use App\Service\MailService;
 
@@ -73,7 +70,7 @@ class UserController extends FOSRestController
 
     /**
      * Send an email to reset password.
-     * @Rest\Post("/reset-mail")
+     * @Rest\Post("/reset/mail")
      *
      * @return Response
      */

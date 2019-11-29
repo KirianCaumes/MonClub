@@ -30,7 +30,6 @@ security:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/reset-mail, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
     firewalls:
@@ -53,10 +52,6 @@ security:
             anonymous: true
         api_reset:
             pattern:  ^/api/reset
-            stateless: true
-            anonymous: true
-        api_reset_email:
-            pattern:  ^/api/reset-mail
             stateless: true
             anonymous: true
         api:

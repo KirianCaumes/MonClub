@@ -24,10 +24,9 @@ class MailService
     public function sendReset(User $user)
     {
         return $this->mailer->send(
-            (new \Swift_Message('Hello Email'))
+            (new \Swift_Message('Reset account'))
                 ->setFrom($this->from)
-                // ->setTo($user->getEmail())
-                ->setTo('kirian.caumes@gmail.com')
+                ->setTo($user->getEmail())
                 ->setBody($this->twig->render('/mail/resetPassword.html.twig', ['token' => $user->getConfirmationToken()]))
         );
     }

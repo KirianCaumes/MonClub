@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="fos_user")
+ * @ORM\Table(name="mc_user")
  * @UniqueEntity(fields={"username"})
  */
 class User extends BaseUser
@@ -22,16 +22,21 @@ class User extends BaseUser
     protected $id;    
 
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message = "Email invalide.",
+     * )
      * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email.",
+     *     message = "Email invalide.",
      *     checkMX = true
      * )
      */
     protected $username;
     
     /**
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     message = "Mot de passe invalide.",
+     * )
+     * 
      */
     protected $plainPassword;
 
