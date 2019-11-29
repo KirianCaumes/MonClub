@@ -28,6 +28,11 @@ services:
 
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    mailService:
+        class: App\Service\MailService
+        arguments:
+          - "@mailer"
 # FOS user config
 fos_user:
     db_driver:      orm # other valid values are 'mongodb', 'couchdb' and 'propel'

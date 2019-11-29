@@ -14,7 +14,9 @@ use App\Form\UserType;
 use FOS\UserBundle\Mailer\Mailer;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Util\TokenGenerator;
+use Swift_Mailer;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
+use App\Service\MailService;
 
 /**
  * User controller.
@@ -75,7 +77,7 @@ class UserController extends FOSRestController
      *
      * @return Response
      */
-    public function resetMail(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager)
+    public function resetMail(Request $request, UserManagerInterface $userManager, MailService $mailService)
     {
         $data = json_decode($request->getContent(), true);
         $user = $userManager->findUserByUsername($data['username']);
@@ -84,7 +86,7 @@ class UserController extends FOSRestController
             return $this->handleView($this->view(['error' => 'Username doesnt exists'], Response::HTTP_BAD_REQUEST));
         }
 
-        if ($user->isPasswordRequestNonExpired($this->tokenTtl)) {
+        if ($user->isPasswordRequestNonExpired(4)) {
             return $this->handleView($this->view(["error" => 'There is already a valid token request'], Response::HTTP_BAD_REQUEST));
         }
 
@@ -92,7 +94,8 @@ class UserController extends FOSRestController
             $user->setConfirmationToken((new TokenGenerator())->generateToken());
         }
 
-        (new Mailer())->sendResettingEmailMessage($user);        
+        $mailService->sendReset($user);
+
         $user->setPasswordRequestedAt(new \DateTime());
         $userManager->updateUser($user, true);
 
