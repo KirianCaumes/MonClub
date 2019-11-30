@@ -1,0 +1,4 @@
+not_blank: Le champs ne peut pas être vide.
+already_exist: L'adresse mail est déja utilisée.
+invalid_email: Email invalide.
+invalid_password: Les deux mots de passe ne correspondent pas.

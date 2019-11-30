@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="mc_user")
- * @UniqueEntity(fields={"username"})
+ * @UniqueEntity(fields={"username"}, message="already_exist")
  */
 class User extends BaseUser
 {
@@ -23,10 +23,10 @@ class User extends BaseUser
 
     /**
      * @Assert\NotBlank(
-     *     message = "Email invalide.",
+     *     message = "not_blank",
      * )
      * @Assert\Email(
-     *     message = "Email invalide.",
+     *     message = "invalid_email",
      *     checkMX = true
      * )
      */
@@ -34,7 +34,7 @@ class User extends BaseUser
     
     /**
      * @Assert\NotBlank(
-     *     message = "Mot de passe invalide.",
+     *     message = "not_blank",
      * )
      * 
      */

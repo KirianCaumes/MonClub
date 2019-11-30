@@ -18,7 +18,7 @@ class UserType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
-                'invalid_message' => 'Les deux mots de passe ne correspondent pas.',
+                'invalid_message' => 'invalid_password',
             ])
             ->add('save', SubmitType::class);
     }
