@@ -14,6 +14,7 @@ use App\Form\UserType;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use App\Service\MailService;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * User controller.
@@ -27,17 +28,17 @@ class UserController extends FOSRestController
      *
      * @return Response
      */
-    public function login(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager)
+    public function login(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager, TranslatorInterface $translator)
     {
         $data = json_decode($request->getContent(), true);
         $user = $userManager->findUserByUsername($data['username']);
 
         if (!$user) {
-            return $this->handleView($this->view(['error' => 'Username doesnt exists'], Response::HTTP_UNAUTHORIZED));
+            return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_UNAUTHORIZED));
         }
 
         if (!(new BCryptPasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
-            return $this->handleView($this->view(["error" => 'Username and password doesn\'t match'], Response::HTTP_UNAUTHORIZED));
+            return $this->handleView($this->view(["message" => $translator->trans('username_password_not_match')], Response::HTTP_UNAUTHORIZED));
         }
 
         return $this->handleView($this->view(["token" => $JWTManager->create($user)], Response::HTTP_OK));
@@ -74,17 +75,17 @@ class UserController extends FOSRestController
      *
      * @return Response
      */
-    public function resetMail(Request $request, UserManagerInterface $userManager, MailService $mailService)
+    public function resetMail(Request $request, UserManagerInterface $userManager, MailService $mailService, TranslatorInterface $translator)
     {
         $data = json_decode($request->getContent(), true);
         $user = $userManager->findUserByUsername($data['username']);
 
         if (!$user) {
-            return $this->handleView($this->view(['error' => 'Username doesnt exists'], Response::HTTP_BAD_REQUEST));
+            return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_BAD_REQUEST));
         }
 
         if ($user->isPasswordRequestNonExpired(4)) {
-            return $this->handleView($this->view(["error" => 'There is already a valid token request'], Response::HTTP_BAD_REQUEST));
+            return $this->handleView($this->view(["message" => $translator->trans('reset_token_already_exists')], Response::HTTP_BAD_REQUEST));
         }
 
         if (!$user->getConfirmationToken()) {
@@ -105,13 +106,13 @@ class UserController extends FOSRestController
      *
      * @return Response
      */
-    public function reset(Request $request, UserManagerInterface $userManager)
+    public function reset(Request $request, UserManagerInterface $userManager, TranslatorInterface $translator)
     {
         $data = json_decode($request->getContent(), true);
         $user = $userManager->findUserByConfirmationToken($data['resetToken']);
 
         if (!$user) {
-            return $this->handleView($this->view(['error' => 'Invalid token'], Response::HTTP_BAD_REQUEST));
+            return $this->handleView($this->view(['message' => $translator->trans('reset_token_invalid')], Response::HTTP_BAD_REQUEST));
         }
 
         $user->setPlainPassword($data['plainPassword']);

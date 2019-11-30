@@ -1,0 +1,8 @@
+#user
+username_not_found: L'adresse mail n'a pas été trouvé.
+username_password_not_match: Le mot de passe ne correspond pas a l'adresse mail.
+reset_token_already_exists: Un token de réinitialisation valide existe déja.
+reset_token_invalid: Le token de réinitialisation est invalide.
+
+#member
+member_not_found: Le membre n'a pas été trouvé.
