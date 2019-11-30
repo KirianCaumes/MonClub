@@ -60,7 +60,7 @@ class UserController extends FOSRestController
         if ($form->isSubmitted() && $form->isValid()) {
             $user
                 ->setEnabled(true)
-                ->setRoles(['ROLE_SUPER_USER'])
+                ->setRoles(['ROLE_ADMIN'])
                 ->setSuperAdmin(false);
             $userManager->updateUser($user, true);
 

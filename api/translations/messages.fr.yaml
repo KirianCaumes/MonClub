@@ -6,3 +6,4 @@ reset_token_invalid: Le token de réinitialisation est invalide.
 
 #member
 member_not_found: Le membre n'a pas été trouvé.
+invalid_date: Date invalide.

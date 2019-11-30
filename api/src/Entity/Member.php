@@ -19,21 +19,29 @@ class Member
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
      * @ORM\Column(type="string", length=255)
      */
     private $firstname;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
      * @ORM\Column(type="string", length=255)
      */
     private $lastname;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @Assert\Date(message = "invalid_date")
      * @ORM\Column(type="date")
      */
     private $birthdate;
 
     /**
+     * @Assert\Email(
+     *     message = "invalid_email",
+     *     checkMX = true
+     * )
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $email;
@@ -59,6 +67,10 @@ class Member
     private $parent_one_lastname;
 
     /**
+     * @Assert\Email(
+     *     message = "invalid_email",
+     *     checkMX = true
+     * )
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_one_email;
@@ -84,6 +96,10 @@ class Member
     private $parent_two_lastname;
 
     /**
+     * @Assert\Email(
+     *     message = "invalid_email",
+     *     checkMX = true
+     * )
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_two_email;
@@ -101,37 +117,38 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_evacuation_allow;
+    private $is_evacuation_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_transport_allow;
+    private $is_transport_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_image_allow;
+    private $is_image_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_return_home_allow;
+    private $is_return_home_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_newsletter_allow;
+    private $is_newsletter_allow = false;
+
+    /**
+     * @Assert\IsTrue(message="invalid_must_be_true")
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $is_accepted = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_accepted;
-
-    /**
-     * @ORM\Column(type="boolean", options={"default":"0"})
-     */
-    private $is_payed;
+    private $is_payed = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
