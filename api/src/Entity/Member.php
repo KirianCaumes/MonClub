@@ -166,10 +166,25 @@ class Member
     private $price;
 
     /**
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $creation_datetime;
+
+    /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
      */
     private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Team")
+     * @ORM\JoinColumn(name="id_team", referencedColumnName="id")
+     */
+    private $team;
+
+    public function __construct(){
+        $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+    }
 
     public function getId(): ?int
     {
@@ -487,6 +502,18 @@ class Member
 
         return $this;
     }
+
+    public function getCreationDatetime(): ?\DateTimeInterface
+    {
+        return $this->creation_datetime;
+    }
+
+    public function setCreationDatetime(\DateTimeInterface $creation_datetime): self
+    {
+        $this->creation_datetime = $creation_datetime;
+
+        return $this;
+    }
     
     public function getUser(): ?User
     {
@@ -496,6 +523,18 @@ class Member
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(Team $team): self
+    {
+        $this->team = $team;
 
         return $this;
     }

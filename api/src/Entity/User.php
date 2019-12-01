@@ -19,7 +19,7 @@ class User extends BaseUser
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;    
+    protected $id;
 
     /**
      * @Assert\NotBlank(
@@ -31,7 +31,7 @@ class User extends BaseUser
      * )
      */
     protected $username;
-    
+
     /**
      * @Assert\NotBlank(
      *     message = "not_blank",
@@ -40,9 +40,23 @@ class User extends BaseUser
      */
     protected $plainPassword;
 
+    /**
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $creation_datetime;
+
+    /**
+     * Many Users have Many Teams.
+     * @ORM\ManyToMany(targetEntity="Team", inversedBy="users")
+     * @ORM\JoinTable(name="mc_users_teams")
+     */
+    protected $teams;
+
     public function __construct()
     {
         parent::__construct();
+        $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
     }
 
     /**
@@ -55,6 +69,30 @@ class User extends BaseUser
     {
         $this->username = $username;
         $this->email = $username;
+
+        return $this;
+    }
+
+    public function getTeams(): \Doctrine\Common\Collections\ArrayCollection
+    {
+        return $this->teams;
+    }
+
+    public function setTeams(\Doctrine\Common\Collections\ArrayCollection $teams): self
+    {
+        $this->teams = $teams;
+
+        return $this;
+    }
+
+    public function getCreationDatetime(): ?\DateTimeInterface
+    {
+        return $this->creation_datetime;
+    }
+
+    public function setCreationDatetime(\DateTimeInterface $creation_datetime): self
+    {
+        $this->creation_datetime = $creation_datetime;
 
         return $this;
     }
