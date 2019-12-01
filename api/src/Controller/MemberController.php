@@ -70,7 +70,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator)
+    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
     {
         $member = new Member();
         $data = json_decode($request->getContent(), true);
@@ -87,6 +87,7 @@ class MemberController extends FOSRestController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $member->setUser($this->getUser());
+                $member->setPrice($priceService->getPrice($member));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -103,7 +104,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, int $id)
+    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService, int $id)
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
@@ -125,6 +126,7 @@ class MemberController extends FOSRestController
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $member->setPrice($priceService->getPrice($member));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -157,12 +159,26 @@ class MemberController extends FOSRestController
     }
 
     /**
+     * Get price for all User's Member.
+     * @Rest\Get("/me/price")
+     *
+     * @return Response
+     */
+    public function getPriceMe(PriceService $priceService)
+    {
+        //Find member by id
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
+
+        return $this->handleView($this->view(['price' => $priceService->getPrices($members)]));
+    }
+
+    /**
      * Get price for a Member.
      * @Rest\Get("/{id}/price")
      *
      * @return Response
      */
-    public function getPrice(TranslatorInterface $translator, PriceService $priceService ,int $id)
+    public function getPrice(TranslatorInterface $translator, PriceService $priceService, int $id)
     {
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
@@ -170,7 +186,7 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
-        
-        return $this->handleView($this->view($priceService->getPrice($member)));
+
+        return $this->handleView($this->view(['price' => $priceService->getPrice($member)]));
     }
 }

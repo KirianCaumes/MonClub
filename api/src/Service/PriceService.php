@@ -32,7 +32,7 @@ class PriceService
         $price = 0;
 
         //Get price license
-        if (false) { //TODO : price if student/chomeur
+        if ($member->getIsReducedPrice()) {
             if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
                 $paramGlobalRepository->findOneBy(['label' => 'reduced_price_before_deadline'])->getValue();
             } else {
@@ -48,7 +48,7 @@ class PriceService
         }
 
         //Check if transfer needed
-        if (false) { //Todo : check if transfer
+        if ($member->getIsTransferNeeded()) {
             $price += $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval($age)->getPrice();
         }
 
@@ -60,13 +60,15 @@ class PriceService
      */
     public function getPrices(array $members)
     {
-        $price = 50;
-        // foreach ($members as $key => $member) {
-        //     $price += $this->getPrice($member);
-        // }
+        $prices = [];
+        $total = 0;
+        foreach ($members as $member) {
+            array_push($prices, $this->getPrice($member));
+            $total += $this->getPrice($member);
+        }
 
-        $price -= $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => sizeof($members)])->getDiscount();
+        $total -= $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => sizeof($members)])->getDiscount();
 
-        return $price;
+        return ['each' => $prices, 'total' => $total];
     }
 }

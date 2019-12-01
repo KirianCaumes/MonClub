@@ -148,7 +148,22 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
+    private $is_reduced_price = false;
+    
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $is_transfer_needed = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
     private $is_payed = false;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $price;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -425,6 +440,30 @@ class Member
         return $this;
     }
 
+    public function getIsReducedPrice(): ?bool
+    {
+        return $this->is_reduced_price;
+    }
+
+    public function setIsReducedPrice(bool $is_reduced_price): self
+    {
+        $this->is_reduced_price = $is_reduced_price;
+
+        return $this;
+    }    
+
+    public function getIsTransferNeeded(): ?bool
+    {
+        return $this->is_transfer_needed;
+    }
+
+    public function setIsTransferNeeded(bool $is_transfer_needed): self
+    {
+        $this->is_transfer_needed = $is_transfer_needed;
+
+        return $this;
+    }
+
     public function getIsPayed(): ?bool
     {
         return $this->is_payed;
@@ -433,6 +472,18 @@ class Member
     public function setIsPayed(?bool $is_payed): self
     {
         $this->is_payed = $is_payed;
+
+        return $this;
+    }
+    
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
