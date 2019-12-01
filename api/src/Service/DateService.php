@@ -29,4 +29,13 @@ class DateService
             return false;
         }
     }
+    
+
+    /**
+     * Get age  
+     */
+    public function getAge(int $birthYear)
+    {
+        return (new \DateTime())->format('Y') - $birthYear;
+    }
 }

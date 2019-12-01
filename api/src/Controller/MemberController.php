@@ -7,6 +7,7 @@ use App\Entity\Member;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
+use App\Service\PriceService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -153,5 +154,23 @@ class MemberController extends FOSRestController
         $em->remove($member);
         $em->flush();
         return $this->handleView($this->view([]));
+    }
+
+    /**
+     * Get price for a Member.
+     * @Rest\Get("/{id}/price")
+     *
+     * @return Response
+     */
+    public function getPrice(TranslatorInterface $translator, PriceService $priceService ,int $id)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        if (!$member) {
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        
+        return $this->handleView($this->view($priceService->getPrice($member)));
     }
 }
