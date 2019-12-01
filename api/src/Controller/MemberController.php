@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\Member;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
@@ -29,6 +30,7 @@ class MemberController extends FOSRestController
      */
     public function getMembers()
     {
+        //TODO : distinct data for coach and admin
         return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findall()));
     }
 
@@ -53,9 +55,11 @@ class MemberController extends FOSRestController
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        if (!$member || ($member->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN'))) {
+        if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
         return $this->handleView($this->view($member));
     }
 
@@ -102,9 +106,10 @@ class MemberController extends FOSRestController
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        if (!$member || ($member->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN'))) {
+        if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
 
         $data = json_decode($request->getContent(), true);
 
@@ -139,9 +144,11 @@ class MemberController extends FOSRestController
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        if (!$member || ($member->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN'))) {
+        if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($member);
         $em->flush();

@@ -60,8 +60,7 @@ class UserController extends FOSRestController
         if ($form->isSubmitted() && $form->isValid()) {
             $user
                 ->setEnabled(true)
-                ->setRoles(['ROLE_ADMIN'])
-                ->setSuperAdmin(false);
+                ->setRoles(['ROLE_USER']);
             $userManager->updateUser($user, true);
 
             return $this->handleView($this->view(["token" => $JWTManager->create($user)], Response::HTTP_CREATED));
