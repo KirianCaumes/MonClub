@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Param\ParamGlobal;
+use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamGlobal;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
@@ -27,6 +28,7 @@ class ParamController extends FOSRestController
     {
         return $this->handleView($this->view([
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
+            'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
             'price' => [
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),

@@ -172,7 +172,7 @@ class Member
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
      */
     private $user;
 
@@ -520,7 +520,7 @@ class Member
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function setUser($user): self
     {
         $this->user = $user;
 

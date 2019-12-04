@@ -4,13 +4,13 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="mc_document")
  * @Vich\Uploadable
  */
 class Document
@@ -43,9 +43,26 @@ class Document
      */
     private $updatedAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Member")
+     * @ORM\JoinColumn(name="id_member", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $member;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ParamDocumentCategory")
+     * @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $category;
+
     public function __construct()
     {
         $this->document = new EmbeddedFile();
+    }
+    
+    public static function getCategories()
+    {
+        return ['fiction', 'non-fiction'];
     }
 
     public function getId(): ?int
@@ -76,5 +93,29 @@ class Document
     public function getDocument(): ?EmbeddedFile
     {
         return $this->document;
+    }
+
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    public function setMember(Member $member): self
+    {
+        $this->member = $member;
+
+        return $this;
+    }
+
+    public function getCategory(): ?ParamDocumentCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(ParamDocumentCategory $category): self
+    {
+        $this->category = $category;
+
+        return $this;
     }
 }

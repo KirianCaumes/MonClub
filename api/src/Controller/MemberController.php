@@ -155,6 +155,8 @@ class MemberController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->remove($member);
         $em->flush();
+
+        //TODO : Delete document entity manualy, to delete local docs
         return $this->handleView($this->view([]));
     }
 
