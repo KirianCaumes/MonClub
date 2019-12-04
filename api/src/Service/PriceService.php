@@ -7,7 +7,6 @@ use App\Entity\ParamGlobal;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
-use App\Repository\ParamReductionFamilyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class PriceService

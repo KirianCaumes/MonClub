@@ -7,3 +7,6 @@ invalid_must_be_true: Vous devez acceptez ce champs.
 #User
 already_exist: L'adresse mail est déja utilisée.
 invalid_password: Les deux mots de passe ne correspondent pas.
+
+#File:
+mimeTypesMessage: Le type du fichier est invalide ({{ type }}). Les types autorisés sont les images (PNG/JPG/JPEG) ou les documents (PDF).
