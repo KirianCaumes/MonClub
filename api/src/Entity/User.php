@@ -73,12 +73,12 @@ class User extends BaseUser
         return $this;
     }
 
-    public function getTeams(): \Doctrine\Common\Collections\ArrayCollection
+    public function getTeams(): \Doctrine\Common\Collections\Collection
     {
         return $this->teams;
     }
 
-    public function setTeams(\Doctrine\Common\Collections\ArrayCollection $teams): self
+    public function setTeams(\Doctrine\Common\Collections\Collection $teams): self
     {
         $this->teams = $teams;
 

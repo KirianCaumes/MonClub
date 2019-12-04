@@ -24,15 +24,20 @@ class MemberController extends FOSRestController
 {
     /**
      * Lists all member.
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_COACH")
      * @Rest\Get("/")
      *
      * @return Response
      */
     public function getMembers()
     {
-        //TODO : distinct data for coach and admin
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findall()));
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findall()));
+        } else if ($this->isGranted('ROLE_COACH')) {
+            $teams = [];
+            foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team->getId());
+            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $team])));
+        }
     }
 
     /**
@@ -73,6 +78,8 @@ class MemberController extends FOSRestController
     public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
     {
         $member = new Member();
+        $this->denyAccessUnlessGranted(Constants::CREATE, $member);
+
         $data = json_decode($request->getContent(), true);
 
         //Check if birthdate is valid date
@@ -111,7 +118,7 @@ class MemberController extends FOSRestController
         if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        $this->denyAccessUnlessGranted(Constants::UPDATE, $member);
 
         $data = json_decode($request->getContent(), true);
 
@@ -150,7 +157,7 @@ class MemberController extends FOSRestController
         if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        $this->denyAccessUnlessGranted(Constants::DELETE, $member);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($member);

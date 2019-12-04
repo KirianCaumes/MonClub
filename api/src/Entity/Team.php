@@ -26,11 +26,10 @@ class Team
      * Many Teams have Many Users.
      * @ORM\ManyToMany(targetEntity="User", mappedBy="teams")
      */
-    protected $teams;
+    protected $users;
 
     public function __construct()
     {
-        parent::__construct();
         $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

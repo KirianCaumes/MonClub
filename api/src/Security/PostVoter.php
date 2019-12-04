@@ -37,19 +37,44 @@ class PostVoter extends Voter
         if ($this->security->isGranted('ROLE_ADMIN')) return true;
 
         switch ($attribute) {
+            case Constants::CREATE:
+                return $this->canCreate($member, $user);
             case Constants::READ:
-                return $this->canView($member, $user);
+                return $this->canRead($member, $user);
             case Constants::UPDATE:
+                return $this->canUpdate($member, $user);
+            case Constants::DELETE:
+                return $this->canDelete($member, $user);
+            default:
                 return false;
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(Member $member, User $user)
+    private function canCreate(Member $member, User $user)
+    {
+        return true;
+    }
+
+    private function canRead(Member $member, User $user)
     {
         if ($member->getUser() === $user) return true;
 
-        if ($member->getUser() !== $user) return false;
+        return false;
+    }
+
+    private function canUpdate(Member $member, User $user)
+    {
+        if ($member->getUser() === $user) return true;
+
+        return false;
+    }
+
+    private function canDelete(Member $member, User $user)
+    {
+        if ($member->getUser() === $user) return true;
+
+        return false;
     }
 }
