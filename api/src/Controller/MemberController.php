@@ -98,6 +98,7 @@ class MemberController extends FOSRestController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $member->setUser($this->getUser());
+                $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -162,10 +163,14 @@ class MemberController extends FOSRestController
         $this->denyAccessUnlessGranted(Constants::DELETE, $member);
 
         $em = $this->getDoctrine()->getManager();
+
+        //Remove manually each docs
+        foreach ($this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member]) as $document) $em->remove($document);
+
+        //Remove member
         $em->remove($member);
         $em->flush();
 
-        //TODO : Delete document entity manualy, to delete local docs
         return $this->handleView($this->view([]));
     }
 

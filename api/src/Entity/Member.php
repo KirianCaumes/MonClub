@@ -163,22 +163,22 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $isDocumentComplete = false;
+    private $is_document_complete = false;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $amountPayed;
+    private $amount_payed;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $isCheckGestHand = false;
+    private $is_check_gest_hand = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $isInscriptionDone = false;
+    private $is_inscription_done = false;
 
     /**
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
@@ -199,7 +199,7 @@ class Member
 
     public function __construct()
     {
-        $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+        // $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
     }
 
     public function getId(): ?int
@@ -509,48 +509,48 @@ class Member
 
     public function getIsDocumentComplete(): ?bool
     {
-        return $this->isDocumentComplete;
+        return $this->is_document_complete;
     }
 
-    public function setIsDocumentComplete(bool $isDocumentComplete): self
+    public function setIsDocumentComplete(bool $is_document_complete): self
     {
-        $this->isDocumentComplete = $isDocumentComplete;
+        $this->is_document_complete = $is_document_complete;
 
         return $this;
     }
 
     public function getAmountPayed(): ?int
     {
-        return $this->amountPayed;
+        return $this->amount_payed;
     }
 
-    public function setAmountPayed(?int $amountPayed): self
+    public function setAmountPayed(?int $amount_payed): self
     {
-        $this->amountPayed = $amountPayed;
+        $this->amount_payed = $amount_payed;
 
         return $this;
     }
 
     public function getIsCheckGestHand(): ?bool
     {
-        return $this->isCheckGestHand;
+        return $this->is_check_gest_hand;
     }
 
-    public function setIsCheckGestHand(bool $isCheckGestHand): self
+    public function setIsCheckGestHand(bool $is_check_gest_hand): self
     {
-        $this->isCheckGestHand = $isCheckGestHand;
+        $this->is_check_gest_hand = $is_check_gest_hand;
 
         return $this;
     }
 
     public function getIsInscriptionDone(): ?bool
     {
-        return $this->isInscriptionDone;
+        return $this->is_inscription_done;
     }
 
-    public function setIsInscriptionDone(bool $isInscriptionDone): self
+    public function setIsInscriptionDone(bool $is_inscription_done): self
     {
-        $this->isInscriptionDone = $isInscriptionDone;
+        $this->is_inscription_done = $is_inscription_done;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,7 +48,19 @@ class MemberMinorType extends AbstractType
             ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
             ])
-            ->add('price', IntegerType::class, [
+            ->add('is_document_complete', CheckboxType::class, [
+                'disabled' => true,
+            ])        
+            ->add('amount_payed', IntegerType::class, [
+                'disabled' => true,
+            ])        
+            ->add('is_check_gest_hand', CheckboxType::class, [
+                'disabled' => true,
+            ])        
+            ->add('is_inscription_done', CheckboxType::class, [
+                'disabled' => true,
+            ])        
+            ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
             ->add('is_accepted')
