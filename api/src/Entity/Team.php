@@ -22,12 +22,6 @@ class Team
      */
     private $label;
 
-    /**
-     * Many Teams have Many Users.
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="teams")
-     */
-    protected $users;
-
     public function __construct()
     {
         $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
@@ -46,17 +40,6 @@ class Team
     public function setLabal(string $label): self
     {
         $this->label = $label;
-
-        return $this;
-    }
-    public function getUsers(): \Doctrine\Common\Collections\ArrayCollection
-    {
-        return $this->users;
-    }
-
-    public function setUsers(\Doctrine\Common\Collections\ArrayCollection $users): self
-    {
-        $this->users = $users;
 
         return $this;
     }

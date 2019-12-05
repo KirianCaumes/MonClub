@@ -35,7 +35,7 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findall()));
         } else if ($this->isGranted('ROLE_COACH')) {
             $teams = [];
-            foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team->getId());
+            foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
             return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $team])));
         }
     }

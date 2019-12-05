@@ -47,8 +47,12 @@ class User extends BaseUser
 
     /**
      * Many Users have Many Teams.
-     * @ORM\ManyToMany(targetEntity="Team", inversedBy="users")
-     * @ORM\JoinTable(name="mc_users_teams")
+     * @ORM\ManyToMany(targetEntity="Team")
+     * @ORM\JoinTable(
+     *      name="mc_users_teams",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="team_id", referencedColumnName="id")}
+     * )
      */
     protected $teams;
 
