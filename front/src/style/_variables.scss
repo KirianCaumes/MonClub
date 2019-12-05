@@ -1,5 +1,8 @@
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 
+$dark-blue: #0f3375 ;
+$darker-blue: #091d42;
+
 $bg: lightgray;
 $bg-secondary: #253341;
 
@@ -16,6 +19,10 @@ $colors: map-merge(
     "text": (
       $text-secondary,
       $text
+    ),
+    "dark-blue":(
+        $dark-blue,
+        $darker-blue
     )
   )
 );

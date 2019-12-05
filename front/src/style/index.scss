@@ -5,10 +5,13 @@ html {
   min-height: 100vh;
   max-width: 100vw;
   color: $text !important;
-  background-color: $bg;
+  background-color: rgb(243, 242, 241);
   overflow-x: hidden;
-  padding: 0;
+  padding: 0 !important;
   margin: 0;
+  > * {
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", sans-serif!important;
+  }
   body {
     max-width: 100vw;
     padding: 0;
@@ -18,6 +21,9 @@ html {
       text-decoration: none;
       user-select: none;
       outline: none;
+    }
+    div#root {
+      height: 100vh;
     }
   }
 }
