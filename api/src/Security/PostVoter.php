@@ -21,7 +21,7 @@ class PostVoter extends Voter
 
     protected function supports($attribute, $member)
     {
-        if (!in_array($attribute, [Constants::READ, Constants::UPDATE])) return false;
+        if (!in_array($attribute, [Constants::CREATE, Constants::READ, Constants::UPDATE, Constants::DELETE])) return false;
 
         if (!$member instanceof Member) return false;
 
@@ -45,8 +45,6 @@ class PostVoter extends Voter
                 return $this->canUpdate($member, $user);
             case Constants::DELETE:
                 return $this->canDelete($member, $user);
-            default:
-                return false;
         }
 
         throw new \LogicException('This code should not be reached!');

@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Constants;
+use App\Entity\Document;
 use App\Entity\Member;
+use App\Entity\ParamDocumentCategory;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
@@ -48,7 +50,9 @@ class MemberController extends FOSRestController
      */
     public function getMyMembers()
     {
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()])));
+        $users = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
+        if (!$users) return $this->handleView($this->view([(new Member())])); //Return empty member if none exists
+        return $this->handleView($this->view($users));
     }
 
     /**
@@ -62,7 +66,7 @@ class MemberController extends FOSRestController
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
         if (!$member) {
-            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+            return $this->handleView($this->view((new Member()))); //Return empty member if none exists
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
@@ -94,7 +98,6 @@ class MemberController extends FOSRestController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $member->setUser($this->getUser());
-                $member->setPrice($priceService->getPrice($member));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -133,7 +136,6 @@ class MemberController extends FOSRestController
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $member->setPrice($priceService->getPrice($member));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -197,5 +199,110 @@ class MemberController extends FOSRestController
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
         return $this->handleView($this->view(['price' => $priceService->getPrice($member)]));
+    }
+
+    /**
+     * Validate document.
+     * @Rest\Post("/{id}/validate-document")
+     *
+     * @return Response
+     */
+    public function postValidateDocument(TranslatorInterface $translator, int $id)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        if (!$member) {
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        //Find certificat
+        $isDocCertMediOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['label' => 'certificat_medical'])
+        ]);
+
+        //Find justificatif
+        $isDocJusChoEtuOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['label' => 'justificatif_chomeur_etudiant'])
+        ]);
+
+        //If docs are missing
+        if (!$isDocCertMediOk || !($member->getIsReducedPrice() ? $isDocJusChoEtuOk : true)) {
+            $res = [
+                'form' => [
+                    'children' => [
+                        'certificat_medical' => [],
+                        'justificatif_chomeur_etudiant' => []
+                    ]
+                ]
+            ];
+            if (!$isDocCertMediOk) $res['form']['children']['certificat_medical'] = [$translator->trans('not_blank')];
+            if ($member->getIsReducedPrice() && !$isDocJusChoEtuOk) $res['form']['children']['justificatif_chomeur_etudiant'] = [$translator->trans('not_blank')];
+
+            return $this->handleView($this->view($res, Response::HTTP_BAD_REQUEST));
+        }
+
+        //Update user
+        $member->setIsDocumentComplete(true);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($member);
+        $em->flush();
+
+        return $this->handleView($this->view($member), Response::HTTP_OK);
+    }
+
+    /**
+     * Get wf for a Member.
+     * @IsGranted("ROLE_COACH")
+     * @Rest\Get("/{id}/workflow")
+     *
+     * @return Response
+     */
+    public function getWorkflow(TranslatorInterface $translator, int $id)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        if (!$member) {
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        return $this->handleView($this->view([
+            'isCreated' => true,
+            'isDocumentComplete' => $member->getIsDocumentComplete(),
+            'isPayed' => $member->getIsPayed(),
+            'isCheckGestHand' => $member->getIsCheckGestHand(),
+            'isInscriptionDone' => $member->getIsInscriptionDone()
+        ]));
+    }
+
+    /**
+     * Pay for mine Members
+     * @Rest\Post("/me/pay")
+     *
+     * @return Response
+     */
+    public function postPay(TranslatorInterface $translator, PriceService $priceService)
+    {
+        //Find member by id
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
+
+        //Check docs
+        foreach ($members as $member) {
+            if (!$member->getIsDocumentComplete()) {
+                return $this->handleView($this->view(["message" => $translator->trans('member_missing_document')], Response::HTTP_NOT_FOUND));
+            }
+        }
+
+        //TODO : connect return api payment 
+        $em = $this->getDoctrine()->getManager();
+        foreach ($members as $member) {
+            $member->setIsPayed(true);
+            $member->setAmountPayed($priceService->getPrice($member));
+            $em->persist($member);
+        }
+        $em->flush();
+
+        return $this->handleView($this->view($members), Response::HTTP_OK);
     }
 }

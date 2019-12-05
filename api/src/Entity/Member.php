@@ -149,7 +149,7 @@ class Member
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
     private $is_reduced_price = false;
-    
+
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
@@ -161,9 +161,24 @@ class Member
     private $is_payed = false;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $isDocumentComplete = false;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $price;
+    private $amountPayed;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $isCheckGestHand = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $isInscriptionDone = false;
 
     /**
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
@@ -182,7 +197,8 @@ class Member
      */
     private $team;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
     }
 
@@ -465,7 +481,7 @@ class Member
         $this->is_reduced_price = $is_reduced_price;
 
         return $this;
-    }    
+    }
 
     public function getIsTransferNeeded(): ?bool
     {
@@ -490,15 +506,51 @@ class Member
 
         return $this;
     }
-    
-    public function getPrice(): ?int
+
+    public function getIsDocumentComplete(): ?bool
     {
-        return $this->price;
+        return $this->isDocumentComplete;
     }
 
-    public function setPrice(int $price): self
+    public function setIsDocumentComplete(bool $isDocumentComplete): self
     {
-        $this->price = $price;
+        $this->isDocumentComplete = $isDocumentComplete;
+
+        return $this;
+    }
+
+    public function getAmountPayed(): ?int
+    {
+        return $this->amountPayed;
+    }
+
+    public function setAmountPayed(?int $amountPayed): self
+    {
+        $this->amountPayed = $amountPayed;
+
+        return $this;
+    }
+
+    public function getIsCheckGestHand(): ?bool
+    {
+        return $this->isCheckGestHand;
+    }
+
+    public function setIsCheckGestHand(bool $isCheckGestHand): self
+    {
+        $this->isCheckGestHand = $isCheckGestHand;
+
+        return $this;
+    }
+
+    public function getIsInscriptionDone(): ?bool
+    {
+        return $this->isInscriptionDone;
+    }
+
+    public function setIsInscriptionDone(bool $isInscriptionDone): self
+    {
+        $this->isInscriptionDone = $isInscriptionDone;
 
         return $this;
     }
@@ -514,7 +566,7 @@ class Member
 
         return $this;
     }
-    
+
     public function getUser(): ?User
     {
         return $this->user;
