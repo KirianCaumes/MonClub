@@ -8,12 +8,27 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  height: 100%;
 }
 
 *.flex-row {
-    @include flex-row()
+  @include flex-row();
+  > *.flex-one {
+    flex: 1;
+  }
 }
 
 *.flex-col {
-    @include flex-col()
+  @include flex-col();
+  > *.flex-one {
+    flex: 1;
+  }
+}
+
+*.no-margin-right {
+    margin-right: 0!important;
+}
+
+*.no-margin-left {
+    margin-left: 0!important;
 }

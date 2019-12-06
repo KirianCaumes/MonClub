@@ -1,14 +1,14 @@
 import React from 'react'
 import request from '../helper/request'
-import { Nav, CommandBar, IconBase, Icon } from 'office-ui-fabric-react'
+import { Nav, CommandBar, IconBase, Icon, Breadcrumb } from 'office-ui-fabric-react'
 import Header from '../component/header';
 import { authenticate, setUrl } from '../redux/actions'
 import { connect } from "react-redux"
 import { history } from '../helper/history'
 import { Depths } from '@uifabric/fluent-theme'
-import '../style/page/index.scss'
+import '../style/_layout.scss'
 
-const grey = 'hsl(0, 0%, 86%)';
+const grey = '#F3F2F1';
 
 class _Layout extends React.Component {
     componentDidMount() {
@@ -19,13 +19,12 @@ class _Layout extends React.Component {
         return (
             <>
                 <Header />
-                <div class="layout" >
-                    <aside className="is-hidden-touch has-background-grey-lighter">
-                        <br /><br />
+                <div className="layout" >
+                    <aside className="is-hidden-touch">
                         <Nav
                             styles={{
                                 root: {
-                                    width: 220,
+                                    width: 240,
                                     overflowY: 'auto'
                                 },
                                 chevronButton: {
@@ -98,7 +97,7 @@ class _Layout extends React.Component {
                             ]}
                         />
                     </aside>
-                    <div class="main">
+                    <div className="main">
                         <CommandBar
                             styles={{
                                 root: {
@@ -111,22 +110,7 @@ class _Layout extends React.Component {
                                     text: 'New',
                                     iconProps: { iconName: 'Add' },
                                     buttonStyles: { root: { background: grey } },
-                                    subMenuProps: {
-                                        items: [
-                                            {
-                                                key: 'emailMessage',
-                                                text: 'Email message',
-                                                iconProps: { iconName: 'Mail' },
-                                                onClick: () => console.log('Mail')
-                                            },
-                                            {
-                                                key: 'calendarEvent',
-                                                text: 'Calendar event',
-                                                iconProps: { iconName: 'Calendar' },
-                                                onClick: () => console.log('Calendar')
-                                            }
-                                        ]
-                                    }
+                                    onClick: () => console.log('Calendar')
                                 },
                                 {
                                     key: 'upload',
@@ -151,7 +135,15 @@ class _Layout extends React.Component {
                                 }
                             ]}
                         />
-                        <div className="content" style={{ boxShadow: `inset ${Depths.depth8}` }}>
+                        <div className="content" style={{ boxShadow: `inset ${Depths.depth4}` }}>
+                            <Breadcrumb
+                                items={[
+                                    { text: 'Files', key: 'Files', onClick: () => null },
+                                    { text: 'Folder 1', key: 'f1', onClick: () => null },
+                                    { text: 'Folder 5', key: 'f5', onClick: () => null, isCurrentItem: true }
+                                ]}
+                                maxDisplayedItems={5}
+                            />
                             {this.props.children}
                         </div>
                     </div>

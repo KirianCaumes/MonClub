@@ -4,23 +4,17 @@ $blue: #2B6CA3;
 $dark-blue: #0f3375 ;
 $darker-blue: #091d42;
 
-$bg: lightgray;
-$bg-secondary: #253341;
+$white: white;
 
-$text: white;
-$text-secondary: lightgray;
+$grey: #F3F2F1; //Secondary bg
+$light-grey: #fbfaf9; //Bg
+$dark-grey: #605E5C;
+
+$black: #323130;
 
 $colors: map-merge(
   $colors,
   (
-    "bg": (
-      $bg-secondary,
-      $bg
-    ),
-    "text": (
-      $text-secondary,
-      $text
-    ),
     "dark-blue":(
         $blue,
         $dark-blue

@@ -21,8 +21,12 @@ class Header extends React.Component {
                 style={{ background: 'linear-gradient(to left, #0f3375, #2B6CA3)', boxShadow: Depths.depth16 }}
             >
                 <Navbar.Brand>
-                    <Navbar.Item renderAs="a" href="#">
+                    <Navbar.Item 
+                        renderAs="a" 
+                        onClick={() => history.push('/')}
+                    >
                         <img src={require('../asset/img/logo.png')} alt="THBC" />
+                        <span> Mon Club</span>                   
                     </Navbar.Item>
                     <Navbar.Burger onClick={() => this.setState({ active: !this.state.active })} />
                 </Navbar.Brand>
