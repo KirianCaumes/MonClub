@@ -5,33 +5,36 @@ import Login from './pages/login'
 import { initializeIcons } from '@uifabric/icons'
 import { connect } from "react-redux"
 import Layout from './pages/_layout'
-import { loadTheme } from 'office-ui-fabric-react';
+import { loadTheme, MessageBar, MessageBarType } from 'office-ui-fabric-react'
+import { Switch, Route, Router } from 'react-router-dom'
+import { PrivateRoute } from './component/privateRoute'
+import { history } from './helper/history'
 loadTheme({
     palette: {
-      themePrimary: '#2b6ca3',
-      themeLighterAlt: '#f4f8fb',
-      themeLighter: '#d4e3f0',
-      themeLight: '#b1cce3',
-      themeTertiary: '#6f9ec8',
-      themeSecondary: '#3d79ae',
-      themeDarkAlt: '#266093',
-      themeDark: '#20517c',
-      themeDarker: '#183c5b',
-      neutralLighterAlt: '#f8f8f8',
-      neutralLighter: '#f4f4f4',
-      neutralLight: '#eaeaea',
-      neutralQuaternaryAlt: '#dadada',
-      neutralQuaternary: '#d0d0d0',
-      neutralTertiaryAlt: '#c8c8c8',
-      neutralTertiary: '#bab8b7',
-      neutralSecondary: '#a3a2a0',
-      neutralPrimaryAlt: '#8d8b8a',
-      neutralPrimary: '#323130',
-      neutralDark: '#605e5d',
-      black: '#494847',
-      white: '#ffffff',
+        themePrimary: '#2b6ca3',
+        themeLighterAlt: '#f4f8fb',
+        themeLighter: '#d4e3f0',
+        themeLight: '#b1cce3',
+        themeTertiary: '#6f9ec8',
+        themeSecondary: '#3d79ae',
+        themeDarkAlt: '#266093',
+        themeDark: '#20517c',
+        themeDarker: '#183c5b',
+        neutralLighterAlt: '#f8f8f8',
+        neutralLighter: '#f4f4f4',
+        neutralLight: '#eaeaea',
+        neutralQuaternaryAlt: '#dadada',
+        neutralQuaternary: '#d0d0d0',
+        neutralTertiaryAlt: '#c8c8c8',
+        neutralTertiary: '#bab8b7',
+        neutralSecondary: '#a3a2a0',
+        neutralPrimaryAlt: '#8d8b8a',
+        neutralPrimary: '#323130',
+        neutralDark: '#605e5d',
+        black: '#494847',
+        white: '#ffffff',
     }
-  });
+});
 initializeIcons()
 
 class _App extends React.Component {
@@ -41,10 +44,22 @@ class _App extends React.Component {
     render() {
         return (
             <>
-                <Layout>
-                    <Index />
-                    {/* <Login /> */}
-                </Layout>
+                <Router history={history} >
+                    <Switch>
+                        <Route exact path="/login" component={Login} />
+                    </Switch>
+                    {
+                        this.props.isAuthenticated &&
+                        <Layout>
+                            <Switch>
+                                <PrivateRoute exact path="/" component={Index} />
+                                <PrivateRoute exact path="/membre/nouveau" component={Index} />
+                                <PrivateRoute exact path="/membres" component={Index} />
+                                <PrivateRoute exact path="/membres/moi" component={Index} />
+                            </Switch>
+                        </Layout>
+                    }
+                </Router>
             </>
         )
     }

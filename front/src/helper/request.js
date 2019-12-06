@@ -1,6 +1,7 @@
 import { history } from './history';
 import store from '../redux/store/index.js'
-import { signout, setError } from '../redux/actions/index.js'
+import { signout, setError, setMessageBar } from '../redux/actions/index.js'
+import { MessageBarType } from 'office-ui-fabric-react';
 
 
 const
@@ -11,7 +12,7 @@ const
 
 var getFetch = (url, options = {}) => {
     const baseUrl = "http://localhost:5000/api"
-          
+
     options["mode"] = "cors"
 
 
@@ -35,13 +36,10 @@ var getFetch = (url, options = {}) => {
                 switch (response.status) {
                     case 403:
                         is403 = true
-                        store.dispatch(setError("Vous n'êtes pas autorisé à effectuer cette action"))
+                        store.dispatch(setMessageBar(true, MessageBarType.error, "Vous n'êtes pas autorisé à effectuer cette action"))
                         break
                     case 401:
-                        store.dispatch(signout(() => {
-                            localStorage.removeItem("CCMIAppToken")
-                            history.push("/login")
-                        }))
+                        store.dispatch(signout())
                         break
                     default:
                         break

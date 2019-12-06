@@ -1,23 +1,20 @@
 import {
-    TEST,
     SIGNOUT,
     SET_ERROR,
     SET_URL,
-    AUTHENTICATE
+    AUTHENTICATE, 
+    MESSAGEBAR
 } from "../_action-types"
 import request from '../../helper/request'
+import { history } from "../../helper/history"
 
-export function something(payload) {
-    return { type: TEST, payload }
+export function signout() {
+    localStorage.removeItem('MONCLUB_token')
+    return { type: AUTHENTICATE, payload: false }
 }
 
-export function signout(cb) {
-    setTimeout(cb, 100);
-    return { type: SIGNOUT, payload: false }
-}
-
-export function setError(payload) {
-    return { type: SET_ERROR, payload }
+export function setMessageBar(isDisplayed, type = null, message = null) {
+    return { type: MESSAGEBAR, payload: { isDisplayed, type, message } }
 }
 
 export function setUrl(payload) {
@@ -30,6 +27,7 @@ export function authenticate(payload) {
             .then(response => {
                 localStorage.setItem('MONCLUB_token', response.token)
                 dispatch({ type: AUTHENTICATE, payload: true })
+                history.push('/')
             })
             .catch(err => {
                 console.error(err)

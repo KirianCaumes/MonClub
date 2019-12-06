@@ -1,27 +1,29 @@
 import React from 'react'
 import { Button, Form, Columns } from 'react-bulma-components'
 
-import { authenticate } from "../redux/actions"
+import { authenticate, signout } from "../redux/actions"
 import { connect } from "react-redux"
 
 import '../style/page/login.scss'
+import { Label, TextField, PrimaryButton } from 'office-ui-fabric-react'
 
 class _Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             email: '',
-            password: ''
+            plainPassword: ''
         }
     }
 
     componentDidMount() {
         // request.getContracts().then(x => console.log(x))
+        this.props.signout()
     }
 
     handleSubmit(ev) {
         ev.preventDefault()
-        this.props.authenticate({username : this.state.email, password: this.state.password})
+        this.props.authenticate({ username: this.state.email, plainPassword: this.state.plainPassword })
         // request.authenticate({username : this.state.email, password: this.state.password})
         //     .then(data => {
         //         console.log(data)
@@ -36,30 +38,28 @@ class _Login extends React.Component {
                     <Columns.Column>
 
                         <form onSubmit={this.handleSubmit.bind(this)} >
-                            <Form.Field>
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control>
-                                    <Form.Input
-                                        placeholder="Votre email"
-                                        type="email"
-                                        value={this.state.email}
-                                        onChange={ev => this.setState({ email: ev.target.value })}
-                                    />
-                                </Form.Control>
-                            </Form.Field>
-
-                            <Form.Field>
-                                <Form.Label>Mot de passe</Form.Label>
-                                <Form.Control>
-                                    <Form.Input
-                                        placeholder="Votre mot de passe"
-                                        type="password"
-                                        value={this.state.password}
-                                        onChange={ev => this.setState({ password: ev.target.value })}
-                                    />
-                                </Form.Control>
-                            </Form.Field>
-                            <Button type="primary">Submit</Button>
+                            <Label>Email</Label>
+                            <TextField
+                                placeholder="Votre email"
+                                type="email"
+                                value={this.state.email}
+                                onChange={ev => this.setState({ email: ev.target.value })}
+                                iconProps={{ iconName: 'Mail' }}
+                            />
+                            <br/>
+                            <Label>Mot de passe</Label>
+                            <TextField
+                                placeholder="Votre mot de passe"
+                                type="password"
+                                value={this.state.plainPassword}
+                                onChange={ev => this.setState({ plainPassword: ev.target.value })}
+                                iconProps={{ iconName: 'PasswordField' }}
+                            />
+                            <br/>
+                            <PrimaryButton 
+                                text="Se connecter" 
+                                type="submit"
+                            />
                         </form>
 
                     </Columns.Column>
@@ -73,7 +73,8 @@ class _Login extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        authenticate: isAuthenticated => dispatch(authenticate(isAuthenticated))
+        authenticate: isAuthenticated => dispatch(authenticate(isAuthenticated)),
+        signout: () => dispatch(signout())
     }
 }
 

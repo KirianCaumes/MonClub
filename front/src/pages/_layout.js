@@ -1,8 +1,8 @@
 import React from 'react'
 import request from '../helper/request'
-import { Nav, CommandBar, IconBase, Icon, Breadcrumb } from 'office-ui-fabric-react'
+import { Nav, CommandBar, IconBase, Icon, Breadcrumb, MessageBar, MessageBarType } from 'office-ui-fabric-react'
 import Header from '../component/header';
-import { authenticate, setUrl } from '../redux/actions'
+import { authenticate, setUrl, setMessageBar } from '../redux/actions'
 import { connect } from "react-redux"
 import { history } from '../helper/history'
 import { Depths } from '@uifabric/fluent-theme'
@@ -144,6 +144,16 @@ class _Layout extends React.Component {
                                 ]}
                                 maxDisplayedItems={5}
                             />
+                            {
+                                this.props.messageBar && this.props.messageBar.isDisplayed &&
+                                <>
+                                    <MessageBar messageBarType={this.props.messageBar.type} isMultiline={false} onDismiss={() => this.props.setMessageBar(false)}>
+                                        {this.props.messageBar.message}
+                                    </MessageBar>
+                                    <br />
+                                </>
+                            }
+
                             {this.props.children}
                         </div>
                     </div>
@@ -155,14 +165,16 @@ class _Layout extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setUrl: selectedKeyURL => dispatch(setUrl(selectedKeyURL))
+        setUrl: selectedKeyURL => dispatch(setUrl(selectedKeyURL)),
+        setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
     }
 }
 
 const mapStateToProps = state => {
     return {
         selectedKeyURL: state.common.selectedKeyURL,
-        me: state.common.me
+        me: state.common.me,
+        messageBar: state.common.messageBar
     }
 }
 
