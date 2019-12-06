@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@uifabric/fluent-theme": "^7.1.4",
     "bulma": "^0.8.0",
     "bulma-extensions": "^6.2.7",
     "history": "^4.10.1",

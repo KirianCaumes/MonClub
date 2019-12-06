@@ -1,5 +1,8 @@
 import React from 'react'
 import { Navbar } from 'react-bulma-components'
+import { Depths } from '@uifabric/fluent-theme'
+import { Icon } from 'office-ui-fabric-react'
+import { history } from '../helper/history'
 
 class Header extends React.Component {
     constructor(props) {
@@ -15,6 +18,7 @@ class Header extends React.Component {
                 active={this.state.active}
                 transparent={false}
                 className="has-background-dark-blue"
+                style={{ background: 'linear-gradient(to left, #0f3375, #2B6CA3)', boxShadow: Depths.depth16 }}
             >
                 <Navbar.Brand>
                     <Navbar.Item renderAs="a" href="#">
@@ -41,9 +45,18 @@ class Header extends React.Component {
                             Second
                         </Navbar.Item>
                     </Navbar.Container>
-                    <Navbar.Container position="end">
-                        <Navbar.Item href="#">
-                            At the end
+                    <Navbar.Container position="end" className="is-hidden-touch">
+                        <Navbar.Item
+                            className="is-tab"
+                            onClick={() => history.push('/utilisateur')}
+                        >
+                            <Icon iconName='Contact' />
+                        </Navbar.Item>
+                        <Navbar.Item
+                            className="is-tab"
+                            onClick={() => history.push('/login')}
+                        >
+                            <Icon iconName='ReleaseGate' />
                         </Navbar.Item>
                     </Navbar.Container>
                 </Navbar.Menu>

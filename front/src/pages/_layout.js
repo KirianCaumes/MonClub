@@ -1,131 +1,129 @@
 import React from 'react'
 import request from '../helper/request'
-import { Nav, CommandBar } from 'office-ui-fabric-react'
+import { Nav, CommandBar, IconBase, Icon } from 'office-ui-fabric-react'
 import Header from '../component/header';
-import { authenticate } from '../redux/actions'
+import { authenticate, setUrl } from '../redux/actions'
 import { connect } from "react-redux"
+import { history } from '../helper/history'
+import { Depths } from '@uifabric/fluent-theme'
+import '../style/page/index.scss'
+
+const grey = 'hsl(0, 0%, 86%)';
 
 class _Layout extends React.Component {
     componentDidMount() {
-        request.getContracts().then(x => console.log(x))
+        this.props.setUrl(history.location.pathname)
     }
+
     render() {
         return (
             <>
                 <Header />
-                <div style={{ display: 'flex', height: '100%' }}>
-                    <aside style={{ background: 'hsl(0, 0%, 86%)' }}>
+                <div class="layout" >
+                    <aside className="is-hidden-touch has-background-grey-lighter">
+                        <br /><br />
                         <Nav
-
                             styles={{
                                 root: {
-                                    width: 250,
+                                    width: 220,
                                     overflowY: 'auto'
                                 },
                                 chevronButton: {
                                     borderColor: "transparent"
                                 }
                             }}
-                            ariaLabel="Nav example similiar to one found in this demo page"
+                            selectedKey={this.props.selectedKeyURL}
+                            onLinkClick={(ev, item) => history.push(item.key)}
                             groups={[
                                 {
-                                    name: 'Basic components',
-                                    expandAriaLabel: 'Expand Basic components section',
-                                    collapseAriaLabel: 'Collapse Basic components section',
+                                    name: '',
                                     links: [
                                         {
-                                            key: 'ActivityItem',
-                                            name: 'ActivityItem',
-                                            url: '#/examples/activityitem'
+                                            key: '/',
+                                            name: <><Icon iconName='Home' /> Accueil</>,
+                                            title: 'Accueil'
+                                        },
+                                    ]
+                                },
+                                {
+                                    name: 'Membres',
+                                    links: [
+                                        {
+                                            key: '/membre/nouveau',
+                                            name: <><Icon iconName='Add' /> Nouveau membre</>,
+                                            title: 'Nouveau membre'
                                         },
                                         {
-                                            key: 'Breadcrumb',
-                                            name: 'Breadcrumb',
-                                            url: '#/examples/breadcrumb'
+                                            key: '/membres',
+                                            name: <><Icon iconName='RecruitmentManagement' /> Tous les membres</>,
+                                            title: 'Tous les membres'
                                         },
                                         {
-                                            key: 'Button',
-                                            name: 'Button',
-                                            url: '#/examples/button'
+                                            key: '/membres/moi',
+                                            name: <><Icon iconName='AccountManagement' /> Mes membres</>,
+                                            title: 'Mes membres'
                                         }
                                     ]
                                 },
                                 {
-                                    name: 'Extended components',
-                                    expandAriaLabel: 'Expand Extended components section',
-                                    collapseAriaLabel: 'Collapse Extended components section',
+                                    name: 'Paramètres',
                                     links: [
                                         {
-                                            key: 'ColorPicker',
-                                            name: 'ColorPicker',
-                                            url: '#/examples/colorpicker'
+                                            key: '/utilisateurs',
+                                            name: <><Icon iconName='ContactList' /> Tous les comptes</>,
+                                            title: 'Tous les comptes'
                                         },
                                         {
-                                            key: 'ExtendedPeoplePicker',
-                                            name: 'ExtendedPeoplePicker',
-                                            url: '#/examples/extendedpeoplepicker'
-                                        },
-                                        {
-                                            key: 'GroupedList',
-                                            name: 'GroupedList',
-                                            url: '#/examples/groupedlist'
+                                            key: '/utilisateur',
+                                            name: <><Icon iconName='Contact' /> Mon compte</>,
+                                            title: 'Mon compte'
                                         }
                                     ]
                                 },
                                 {
-                                    name: 'Utilities',
-                                    expandAriaLabel: 'Expand Utilities section',
-                                    collapseAriaLabel: 'Collapse Utilities section',
+                                    name: 'Autre',
                                     links: [
                                         {
-                                            key: 'FocusTrapZone',
-                                            name: 'FocusTrapZone',
-                                            url: '#/examples/focustrapzone'
+                                            key: '/stockage',
+                                            name: <><Icon iconName='Cloud' /> Platforme de stockage</>,
+                                            title: 'Platforme de stockage'
                                         },
                                         {
-                                            key: 'FocusZone',
-                                            name: 'FocusZone',
-                                            url: '#/examples/focuszone'
+                                            key: '/constants',
+                                            name: <><Icon iconName='OfflineStorage' /> Les constants</>,
+                                            title: 'Les constants'
                                         },
-                                        {
-                                            key: 'MarqueeSelection',
-                                            name: 'MarqueeSelection',
-                                            url: '#/examples/marqueeselection'
-                                        }
                                     ]
-                                }
+                                },
                             ]}
                         />
                     </aside>
-                    <div style={{ width: '100%' }}>
+                    <div class="main">
                         <CommandBar
                             styles={{
                                 root: {
-                                    background: 'hsl(0, 0%, 86%)',
-                                    boxSizing: 'border-box',
-                                    borderLeft: '1px solid #eee',
+                                    background: grey,
                                 },
-
                             }}
                             items={[
                                 {
                                     key: 'newItem',
                                     text: 'New',
-                                    cacheKey: 'myCacheKey', // changing this key will invalidate this item's cache
                                     iconProps: { iconName: 'Add' },
-                                    buttonStyles: { root: { background: 'hsl(0, 0%, 86%)' } },
+                                    buttonStyles: { root: { background: grey } },
                                     subMenuProps: {
                                         items: [
                                             {
                                                 key: 'emailMessage',
                                                 text: 'Email message',
                                                 iconProps: { iconName: 'Mail' },
-                                                ['data-automation-id']: 'newEmailButton' // optional
+                                                onClick: () => console.log('Mail')
                                             },
                                             {
                                                 key: 'calendarEvent',
                                                 text: 'Calendar event',
-                                                iconProps: { iconName: 'Calendar' }
+                                                iconProps: { iconName: 'Calendar' },
+                                                onClick: () => console.log('Calendar')
                                             }
                                         ]
                                     }
@@ -134,26 +132,26 @@ class _Layout extends React.Component {
                                     key: 'upload',
                                     text: 'Upload',
                                     iconProps: { iconName: 'Upload' },
-                                    buttonStyles: { root: { background: 'hsl(0, 0%, 86%)' } },
-                                    href: 'https://dev.office.com/fabric'
+                                    buttonStyles: { root: { background: grey } },
+                                    onClick: () => console.log('Upload')
                                 },
                                 {
                                     key: 'share',
                                     text: 'Share',
                                     iconProps: { iconName: 'Share' },
-                                    buttonStyles: { root: { background: 'hsl(0, 0%, 86%)' } },
+                                    buttonStyles: { root: { background: grey } },
                                     onClick: () => console.log('Share')
                                 },
                                 {
                                     key: 'download',
                                     text: 'Download',
                                     iconProps: { iconName: 'Download' },
-                                    buttonStyles: { root: { background: 'hsl(0, 0%, 86%)' } },
+                                    buttonStyles: { root: { background: grey } },
                                     onClick: () => console.log('Download')
                                 }
                             ]}
                         />
-                        <div style={{ padding: '15px' }}>
+                        <div className="content" style={{ boxShadow: `inset ${Depths.depth8}` }}>
                             {this.props.children}
                         </div>
                     </div>
@@ -165,14 +163,16 @@ class _Layout extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        authenticate: isAuthenticated => dispatch(authenticate(isAuthenticated))
+        setUrl: selectedKeyURL => dispatch(setUrl(selectedKeyURL))
     }
 }
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.common.isAuthenticated
+        selectedKeyURL: state.common.selectedKeyURL,
+        me: state.common.me
     }
 }
+
 const Layout = connect(mapStateToProps, mapDispatchToProps)(_Layout)
 export default Layout
