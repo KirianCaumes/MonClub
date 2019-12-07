@@ -2,8 +2,13 @@
 @import "./_variables.scss";
 
 div#root {
+  .pageloader {
+    background: linear-gradient(to right bottom, $blue 0%, $blue 75%, $dark-blue)!important;
+  }
   height: 100vh;
   nav.navbar {
+    @include ms-depth-16;
+    background: linear-gradient(to left, $dark-blue, $blue);
     .navbar-brand {
       span {
         color: $white;
@@ -43,7 +48,7 @@ div#root {
               display: flex;
               i {
                 margin-right: 10px;
-                font-size: 18px!important;
+                font-size: 18px !important;
               }
             }
           }
@@ -53,19 +58,23 @@ div#root {
     div.main {
       width: 100%;
       min-height: 100%;
-      .ms-OverflowSet-item {
-        @include flex-col();
-        > button.ms-Button {
-          height: 75%;
-          border-radius: 1px;
-          color: $blue;
-          &:hover {
-            background: $blue;
-            span {
-              color: white !important;
-            }
-            i {
-              color: white;
+      div.ms-CommandBar {
+        background: $grey;
+        .ms-OverflowSet-item {
+          @include flex-col();
+          > button.ms-Button {
+            height: 75%;
+            border-radius: 1px;
+            color: $blue;
+            background: $grey;
+            &:hover {
+              background: $blue;
+              span {
+                color: white !important;
+              }
+              i {
+                color: white;
+              }
             }
           }
         }
@@ -74,6 +83,7 @@ div#root {
         padding: 10px 35px;
         min-height: 100%;
         background-color: $light-grey;
+        box-shadow: inset $ms-depth-shadow-8;
         .ms-Breadcrumb {
           margin: 0 0 13px;
           ol {

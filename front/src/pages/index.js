@@ -3,10 +3,44 @@ import { Depths } from '@uifabric/fluent-theme'
 import { Hero, Container, Heading, Columns } from 'react-bulma-components'
 import { Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
+import { setBreadcrumb, setCommand } from '../redux/actions/common'
+import { history } from '../helper/history'
 
 class _Index extends React.Component {
     componentDidMount() {
-        // request.getContracts().then(x => console.log(x))
+        this.props.setBreadcrumb([
+            { text: 'Accueil', key: 'accueil', onClick: () => history.push('/') },
+        ])
+        this.props.setCommand([
+            {
+                key: 'newItem',
+                text: 'New',
+                iconProps: { iconName: 'Add' },
+                buttonStyles: { root: { background: null } },
+                onClick: () => console.log('Calendar')
+            },
+            {
+                key: 'upload',
+                text: 'Upload',
+                iconProps: { iconName: 'Upload' },
+                buttonStyles: { root: { background: null } },
+                onClick: () => console.log('Upload')
+            },
+            {
+                key: 'share',
+                text: 'Share',
+                iconProps: { iconName: 'Share' },
+                buttonStyles: { root: { background: null } },
+                onClick: () => console.log('Share')
+            },
+            {
+                key: 'download',
+                text: 'Download',
+                iconProps: { iconName: 'Download' },
+                buttonStyles: { root: { background: null } },
+                onClick: () => console.log('Download')
+            }
+        ])
     }
     render() {
         return (
@@ -101,6 +135,8 @@ class _Index extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
+        setBreadcrumb: data => dispatch(setBreadcrumb(data)),
+        setCommand: data => dispatch(setCommand(data))
     }
 }
 

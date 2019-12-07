@@ -3,7 +3,11 @@ import {
     MESSAGEBAR,
     ERROR_FIELD,
     IS_LOADING,
+    SET_BREADCRUMB,
+    SET_COMMAND,
 } from "../_action-types"
+
+import { history } from "../../helper/history"
 
 const initialState = {
     selectedKeyURL: '/',
@@ -14,6 +18,8 @@ const initialState = {
     },
     errorField: [],
     isLoading: false,
+    breadcrumb: [],
+    command: []
 }
 
 export default function commonReducer(state = initialState, action) {
@@ -26,6 +32,10 @@ export default function commonReducer(state = initialState, action) {
             return { ...state, errorField: action.payload }
         case IS_LOADING:
             return { ...state, isLoading: action.payload }
+        case SET_BREADCRUMB:
+            return { ...state, breadcrumb: action.payload }
+        case SET_COMMAND:
+            return { ...state, command: action.payload }
         default:
             break
     }

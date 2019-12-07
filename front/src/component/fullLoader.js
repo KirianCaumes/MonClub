@@ -4,7 +4,7 @@ import '../../node_modules/bulma-extensions/dist/css/bulma-extensions.min.css'
 export default class FullLoader extends React.Component {
     render() {
         return (
-            <div className={`pageloader ${this.props.isLoading ? 'is-active' : ''}`} style={{ background: 'linear-gradient(to right bottom, #2B6CA3 0%, #2B6CA3 75%, #0f3375)', transition: this.props.isLoading ? 'none' : '' }}>
+            <div className={`pageloader ${this.props.isLoading ? 'is-active' : ''}`} style={{ transition: this.props.isLoading ? 'none' : '' }}>
                 <span className="title">Chargement</span>
             </div>
         )

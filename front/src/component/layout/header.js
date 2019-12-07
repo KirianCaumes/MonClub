@@ -1,6 +1,5 @@
 import React from 'react'
 import { Navbar } from 'react-bulma-components'
-import { Depths } from '@uifabric/fluent-theme'
 import { Icon } from 'office-ui-fabric-react'
 import { history } from '../../helper/history'
 
@@ -18,7 +17,6 @@ class Header extends React.Component {
                 active={this.state.active}
                 transparent={false}
                 className="has-background-dark-blue"
-                style={{ background: 'linear-gradient(to left, #0f3375, #2B6CA3)', boxShadow: Depths.depth16 }}
             >
                 <Navbar.Brand>
                     <Navbar.Item 
