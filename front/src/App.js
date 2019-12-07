@@ -9,6 +9,9 @@ import { loadTheme, MessageBar, MessageBarType } from 'office-ui-fabric-react'
 import { Switch, Route, Router } from 'react-router-dom'
 import { PrivateRoute } from './component/privateRoute'
 import { history } from './helper/history'
+import Register from './pages/register'
+import withLoading from './helper/withLoading'
+import { getMe } from './redux/actions/user'
 loadTheme({
     palette: {
         themePrimary: '#2b6ca3',
@@ -39,26 +42,32 @@ initializeIcons()
 
 class _App extends React.Component {
     componentDidMount() {
-        
+        if (this.props.isAuthenticated) {
+            this.props.getMe()
+        }
     }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.isAuthenticated && this.props.isAuthenticated !== prevProps.isAuthenticated) {
+            this.props.getMe()
+        }
+    }
+
     render() {
+        const { isAuthenticated, isLoading } = this.props
         return (
             <>
                 <Router history={history} >
                     <Switch>
                         <Route exact path="/login" component={Login} />
+                        <Route exact path="/register" component={Register} />
                     </Switch>
-                    {
-                        this.props.isAuthenticated &&
-                        <Layout>
-                            <Switch>
-                                <PrivateRoute exact path="/" component={Index} />
-                                <PrivateRoute exact path="/membre/nouveau" component={Index} />
-                                <PrivateRoute exact path="/membres" component={Index} />
-                                <PrivateRoute exact path="/membres/moi" component={Index} />
-                            </Switch>
-                        </Layout>
-                    }
+                    <Switch>
+                        <PrivateRoute exact path="/" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                        <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
+                        <PrivateRoute exact path="/membres" component={Index} isAuthenticated={isAuthenticated} />
+                        <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} />
+                    </Switch>
                 </Router>
             </>
         )
@@ -68,12 +77,14 @@ class _App extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
+        getMe: () => dispatch(getMe())
     }
 }
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.common.isAuthenticated
+        isAuthenticated: state.user.isAuthenticated,
+        isLoading: state.common.isLoading
     }
 }
 const App = connect(mapStateToProps, mapDispatchToProps)(_App)

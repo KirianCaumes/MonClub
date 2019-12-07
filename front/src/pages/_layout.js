@@ -2,7 +2,7 @@ import React from 'react'
 import request from '../helper/request'
 import { Nav, CommandBar, IconBase, Icon, Breadcrumb, MessageBar, MessageBarType } from 'office-ui-fabric-react'
 import Header from '../component/header';
-import { authenticate, setUrl, setMessageBar } from '../redux/actions'
+import { authenticate, setUrl, setMessageBar } from '../redux/actions/common'
 import { connect } from "react-redux"
 import { history } from '../helper/history'
 import { Depths } from '@uifabric/fluent-theme'

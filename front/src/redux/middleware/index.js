@@ -1,5 +1,5 @@
 import { } from "../_action-types"
-import { } from '../actions/index'
+import { } from '../actions/common'
 
 export function forbiddenWordsMiddleware({ dispatch }) {
     return function (next) {

@@ -1,3 +1,6 @@
+@import '~office-ui-fabric-react/dist/sass/Fabric.scss';
+@import "~react-bulma-components/src/index.sass";
+
 @mixin flex-row {
   display: flex;
   justify-content: center;
@@ -26,9 +29,26 @@
 }
 
 *.no-margin-right {
-    margin-right: 0!important;
+  margin-right: 0 !important;
 }
 
 *.no-margin-left {
-    margin-left: 0!important;
+  margin-left: 0 !important;
 }
+
+*.card {
+  background: white;
+  text-align: center;
+  @include ms-depth-4;
+  padding: 25px;
+  border-radius: 2px;
+}
+
+*.is-bold {
+    font-weight: bold!important;
+}
+
+*.is-underline {
+    text-decoration: underline!important;
+}
+

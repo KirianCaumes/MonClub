@@ -5,7 +5,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={props =>
-            true ?
+            rest.isAuthenticated ?
                 <Component {...props} />
                 :
                 <Redirect

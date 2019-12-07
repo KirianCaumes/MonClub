@@ -1,8 +1,8 @@
 import { combineReducers } from "redux"
 import commonReducer from './common'
-import contractReducer from './contract'
+import userReducer from './user'
 
 export default combineReducers({
     common: commonReducer,
-    contract: contractReducer,
+    user: userReducer
 })

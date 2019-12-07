@@ -2,27 +2,32 @@ import {
     AUTHENTICATE,
     SET_URL,
     SIGNOUT,
-    MESSAGEBAR
+    MESSAGEBAR,
+    ERROR_FIELD,
+    IS_LOADING
 } from "../_action-types"
 
 const initialState = {
-    isAuthenticated: localStorage.getItem('MONCLUB_token') && localStorage.getItem('MONCLUB_token') !== "null",
     selectedKeyURL: '/',
     messageBar: {
         isDisplayed: false,
         type: null,
         message: null
-    }
+    },
+    errorField: [],
+    isLoading: false,
 }
 
 export default function commonReducer(state = initialState, action) {
     switch (action.type) {
-        case AUTHENTICATE:
-            return { ...state, isAuthenticated: action.payload }
         case SET_URL:
             return { ...state, selectedKeyURL: action.payload }
         case MESSAGEBAR:
             return { ...state, messageBar: action.payload }
+        case ERROR_FIELD:
+            return { ...state, errorField: action.payload }
+        case IS_LOADING:
+            return { ...state, isLoading: action.payload }
         default:
             break
     }

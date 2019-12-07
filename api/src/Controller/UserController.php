@@ -23,6 +23,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends FOSRestController
 {
     /**
+     * Get User.
+     * @Rest\Get("/me")
+     *
+     * @return Response
+     */
+    public function getMe()
+    {
+        $user = $this->getUser();
+        $user->setPassword('');
+        $user->setConfirmationToken('');
+        return $this->handleView($this->view($user, Response::HTTP_OK));
+    }
+
+    /**
      * Login User.
      * @Rest\Post("/login")
      *

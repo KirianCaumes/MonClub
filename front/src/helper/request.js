@@ -1,6 +1,7 @@
 import { history } from './history';
 import store from '../redux/store/index.js'
-import { signout, setError, setMessageBar } from '../redux/actions/index.js'
+import { setMessageBar } from '../redux/actions/common.js'
+import { signout } from '../redux/actions/user.js'
 import { MessageBarType } from 'office-ui-fabric-react';
 
 
@@ -26,7 +27,7 @@ var getFetch = (url, options = {}) => {
         options["headers"]["Content-Type"] = 'application/json'
     }
 
-    if (localStorage.getItem('CCMIAppToken')) options["headers"]["Authorization"] = "Bearer " + localStorage.getItem('CCMIAppToken')
+    if (localStorage.getItem('MONCLUB_token')) options["headers"]["Authorization"] = "Bearer " + localStorage.getItem('MONCLUB_token')
 
     return fetch(baseUrl + "/" + url.join("/"), options)
         .then(async (response) => {
@@ -95,6 +96,23 @@ export default {
         var options = {
             method: POST,
             body: JSON.stringify(data)
+        }
+
+        return getFetch(url, options)
+    },
+    register: (data) => {
+        const url = ["register"]
+        var options = {
+            method: POST,
+            body: JSON.stringify(data)
+        }
+
+        return getFetch(url, options)
+    },
+    getMe: () => {
+        const url = ["me"]
+        var options = {
+            method: GET
         }
 
         return getFetch(url, options)

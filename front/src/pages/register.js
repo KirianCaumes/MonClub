@@ -1,13 +1,13 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { authenticate, signout } from "../redux/actions/user"
+import { authenticate, signout, register } from "../redux/actions/user"
 import { connect } from "react-redux"
 import '../style/page/login.scss'
 import { Label, TextField, PrimaryButton, Text, IconButton, DefaultButton, Button, MessageBar, Spinner, SpinnerSize } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import { setMessageBar } from '../redux/actions/common'
 
-class _Login extends React.Component {
+class _Register extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -22,9 +22,10 @@ class _Login extends React.Component {
 
     handleSubmit(ev) {
         ev.preventDefault()
-        this.props.authenticate({ username: this.state.username, plainPassword: this.state.plainPassword })
+        this.props.register({ username: this.state.username, plainPassword: this.state.plainPassword })
     }
     render() {
+        console.log(this.props.errorField)
         return (
             <section id="login">
                 <Columns>
@@ -58,21 +59,33 @@ class _Login extends React.Component {
                                         value={this.state.username}
                                         onChange={ev => this.setState({ username: ev.target.value })}
                                         iconProps={{ iconName: 'Mail' }}
+                                        errorMessage={this.props.errorField.username?.errors?.[0]}
                                     />
                                     <br />
                                     <Label>Mot de passe</Label>
                                     <TextField
                                         placeholder="Votre mot de passe"
                                         type="password"
-                                        value={this.state.plainPassword}
-                                        onChange={ev => this.setState({ plainPassword: ev.target.value })}
+                                        value={this.state.plainPassword.first}
+                                        onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, first: ev.target.value } })}
                                         iconProps={{ iconName: 'PasswordField' }}
+                                        errorMessage={this.props.errorField.plainPassword?.children?.first?.errors?.[0]}
+                                    />
+                                    <br/>
+                                    <Label>Confirmez le mot de passe</Label>
+                                    <TextField
+                                        placeholder="Votre mot de passe"
+                                        type="password"
+                                        value={this.state.plainPassword.second}
+                                        onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, second: ev.target.value } })}
+                                        iconProps={{ iconName: 'PasswordField' }}
+                                        errorMessage={this.props.errorField.plainPassword?.children?.first?.errors?.[0]}
                                     />
                                     <br />
                                     <div className="flex-row" >
                                         <PrimaryButton
                                             iconProps={{ iconName: 'FollowUser' }}
-                                            text="Se connecter"
+                                            text="Créer le compte"
                                             type="submit"
                                             disabled={this.props.isLoading}
                                         />
@@ -97,7 +110,7 @@ class _Login extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        authenticate: data => dispatch(authenticate(data)),
+        register: data => dispatch(register(data)),
         signout: () => dispatch(signout()),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
     }
@@ -106,8 +119,9 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.user.isLoading,
-        messageBar: state.common.messageBar
+        messageBar: state.common.messageBar,
+        errorField: state.common.errorField
     }
 }
-const Login = connect(mapStateToProps, mapDispatchToProps)(_Login)
-export default Login
+const Register = connect(mapStateToProps, mapDispatchToProps)(_Register)
+export default Register
