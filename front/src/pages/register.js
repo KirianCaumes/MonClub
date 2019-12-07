@@ -91,9 +91,9 @@ class _Register extends React.Component {
                                         />
                                         {/* {this.props.isLoading && <Spinner size={SpinnerSize.medium} />} */}
                                     </div>
-                                    <br />
+                                    <br/>
                                     <Text>
-                                        Pas encors inscris ? Créer votre compte <Link to="/register" className="is-underline">ici</Link>
+                                        Retour à la <Link to="/login" className="is-underline">page de connexion</Link>
                                     </Text>
                                 </form>
 

@@ -124,6 +124,24 @@ export default {
 
         return getFetch(url, options)
     },
+    resetMail: (data) => {
+        const url = ["reset", "mail"]
+        var options = {
+            method: POST,
+            body: JSON.stringify(data)
+        }
+
+        return getFetch(url, options)
+    },
+    reset: (data) => {
+        const url = ["reset"]
+        var options = {
+            method: POST,
+            body: JSON.stringify(data)
+        }
+
+        return getFetch(url, options)
+    },
     getContracts: () => {
         const url = ["movies"]
 

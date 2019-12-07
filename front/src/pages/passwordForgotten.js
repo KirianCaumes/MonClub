@@ -1,28 +1,23 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { authenticate, signout } from "../redux/actions/user"
 import { connect } from "react-redux"
 import '../style/page/login.scss'
 import { Label, TextField, PrimaryButton, Text, MessageBar } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import { setMessageBar } from '../redux/actions/common'
+import { resetMail } from '../redux/actions/user'
 
-class _Login extends React.Component {
+class _PasswordForgotten extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
-            plainPassword: ''
+            username: ''
         }
-    }
-
-    componentDidMount() {
-        this.props.signout()
     }
 
     handleSubmit(ev) {
         ev.preventDefault()
-        this.props.authenticate({ username: this.state.username, plainPassword: this.state.plainPassword })
+        this.props.resetMail({ username: this.state.username })
     }
     render() {
         return (
@@ -60,19 +55,10 @@ class _Login extends React.Component {
                                         iconProps={{ iconName: 'Mail' }}
                                     />
                                     <br />
-                                    <Label>Mot de passe</Label>
-                                    <TextField
-                                        placeholder="Votre mot de passe"
-                                        type="password"
-                                        value={this.state.plainPassword}
-                                        onChange={ev => this.setState({ plainPassword: ev.target.value })}
-                                        iconProps={{ iconName: 'PasswordField' }}
-                                    />
-                                    <br />
                                     <div className="flex-row" >
                                         <PrimaryButton
-                                            iconProps={{ iconName: 'FollowUser' }}
-                                            text="Se connecter"
+                                            iconProps={{ iconName: 'MailForward' }}
+                                            text="Réinitialiser le mot de passe"
                                             type="submit"
                                             disabled={this.props.isLoading}
                                         />
@@ -80,11 +66,7 @@ class _Login extends React.Component {
                                     </div>
                                     <br />
                                     <Text>
-                                        Pas encore inscrit ? Créer votre compte <Link to="/register" className="is-underline">ici</Link>
-                                    </Text>
-                                    <br/>
-                                    <Text>
-                                        <Link to="/motdepasse-oublie" className="is-underline">Mot de passe oublié ?</Link>
+                                        Retour à la <Link to="/login" className="is-underline">page de connexion</Link>
                                     </Text>
                                 </form>
 
@@ -101,8 +83,7 @@ class _Login extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        authenticate: data => dispatch(authenticate(data)),
-        signout: () => dispatch(signout()),
+        resetMail: data => dispatch(resetMail(data)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
     }
 }
@@ -110,8 +91,9 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isLoading: state.user.isLoading,
-        messageBar: state.common.messageBar
+        messageBar: state.common.messageBar,
+        errorField: state.common.errorField
     }
 }
-const Login = connect(mapStateToProps, mapDispatchToProps)(_Login)
-export default Login
+const PasswordForgotten = connect(mapStateToProps, mapDispatchToProps)(_PasswordForgotten)
+export default PasswordForgotten

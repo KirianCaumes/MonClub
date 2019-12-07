@@ -12,6 +12,8 @@ import Register from './pages/register'
 import withLoading from './helper/withLoading'
 import { init } from './redux/actions/user'
 import FullLoader from './component/fullLoader'
+import PasswordForgotten from './pages/passwordForgotten'
+import PasswordNew from './pages/passwordNew'
 
 initializeIcons()
 loadTheme({
@@ -71,6 +73,8 @@ class _App extends React.Component {
                     <Switch>
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
+                        <Route exact path="/motdepasse-oublie" component={PasswordForgotten} />
+                        <Route exact path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
                     </Switch>
                 </Router>
             </>
