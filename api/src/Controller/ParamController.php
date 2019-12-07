@@ -20,7 +20,7 @@ class ParamController extends FOSRestController
 {
     /**
      * Lists all Param Global.
-     * @Rest\Get("/")
+     * @Rest\Get("")
      *
      * @return Response
      */

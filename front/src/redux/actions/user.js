@@ -1,18 +1,15 @@
 import {
-    SIGNOUT,
-    SET_ERROR,
-    SET_URL,
     AUTHENTICATE,
     MESSAGEBAR,
     USER_LOADING,
-    REGISTER,
     ERROR_FIELD,
-    IS_LOADING,
-    SET_USER
+    SET_USER,
+    SET_PARAM,
+    IS_INITIALISING
 } from "../_action-types"
 import request from '../../helper/request'
 import { history } from "../../helper/history"
-import { MessageBarType, formProperties } from "office-ui-fabric-react"
+import { MessageBarType } from "office-ui-fabric-react"
 
 export function signout() {
     localStorage.removeItem('MONCLUB_token')
@@ -58,18 +55,19 @@ export function register(payload) {
     }
 }
 
-export function getMe() {
+export function init() {
     return function (dispatch) {
-        dispatch({ type: IS_LOADING, payload: true })
-        request.getMe()
-            .then(res => {
-                dispatch({ type: SET_USER, payload: res })
+        dispatch({ type: IS_INITIALISING, payload: true })
+        Promise.all([request.getMe(), request.getParam()])
+            .then(([me, param]) => {
+                dispatch({ type: SET_USER, payload: me })
+                dispatch({ type: SET_PARAM, payload: param })
             })
             .catch(err => {
                 dispatch({ type: MESSAGEBAR, payload: { isDisplayed: true, type: MessageBarType.error, message: err.message?.toString() || 'Une erreur est survenue.' } })
             })
             .finally(() => {
-                dispatch({ type: IS_LOADING, payload: false })
+                dispatch({ type: IS_INITIALISING, payload: false })
             })
     }
 }

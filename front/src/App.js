@@ -1,17 +1,19 @@
 import React from 'react'
 import Index from './pages'
-import Header from './component/header'
 import Login from './pages/login'
 import { initializeIcons } from '@uifabric/icons'
 import { connect } from "react-redux"
 import Layout from './pages/_layout'
-import { loadTheme, MessageBar, MessageBarType } from 'office-ui-fabric-react'
+import { loadTheme } from 'office-ui-fabric-react'
 import { Switch, Route, Router } from 'react-router-dom'
 import { PrivateRoute } from './component/privateRoute'
 import { history } from './helper/history'
 import Register from './pages/register'
 import withLoading from './helper/withLoading'
-import { getMe } from './redux/actions/user'
+import { init } from './redux/actions/user'
+import FullLoader from './component/fullLoader'
+
+initializeIcons()
 loadTheme({
     palette: {
         themePrimary: '#2b6ca3',
@@ -37,36 +39,38 @@ loadTheme({
         black: '#494847',
         white: '#ffffff',
     }
-});
-initializeIcons()
+})
 
 class _App extends React.Component {
     componentDidMount() {
         if (this.props.isAuthenticated) {
-            this.props.getMe()
+            this.props.init()
         }
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.isAuthenticated && this.props.isAuthenticated !== prevProps.isAuthenticated) {
-            this.props.getMe()
+            this.props.init()
         }
     }
 
     render() {
-        const { isAuthenticated, isLoading } = this.props
+        const { isAuthenticated, isInitialising, isLoading } = this.props
         return (
             <>
+                <FullLoader isLoading={isInitialising} />
                 <Router history={history} >
+                    <Layout isDisplay={isAuthenticated}>
+                        <Switch>
+                            <PrivateRoute exact path="/" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membre/nouveau" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membres" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membres/moi" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                        </Switch>
+                    </Layout>
                     <Switch>
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
-                    </Switch>
-                    <Switch>
-                        <PrivateRoute exact path="/" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
-                        <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
-                        <PrivateRoute exact path="/membres" component={Index} isAuthenticated={isAuthenticated} />
-                        <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} />
                     </Switch>
                 </Router>
             </>
@@ -77,13 +81,14 @@ class _App extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getMe: () => dispatch(getMe())
+        init: () => dispatch(init())
     }
 }
 
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.user.isAuthenticated,
+        isInitialising: state.user.isInitialising,
         isLoading: state.common.isLoading
     }
 }

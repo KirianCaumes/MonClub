@@ -2,7 +2,7 @@ import React from 'react'
 import { Navbar } from 'react-bulma-components'
 import { Depths } from '@uifabric/fluent-theme'
 import { Icon } from 'office-ui-fabric-react'
-import { history } from '../helper/history'
+import { history } from '../../helper/history'
 
 class Header extends React.Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class Header extends React.Component {
                         renderAs="a" 
                         onClick={() => history.push('/')}
                     >
-                        <img src={require('../asset/img/logo.png')} alt="THBC" />
+                        <img src={require('../../asset/img/logo.png')} alt="THBC" />
                         <span> Mon Club</span>                   
                     </Navbar.Item>
                     <Navbar.Burger onClick={() => this.setState({ active: !this.state.active })} />

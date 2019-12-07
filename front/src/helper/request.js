@@ -1,4 +1,3 @@
-import { history } from './history';
 import store from '../redux/store/index.js'
 import { setMessageBar } from '../redux/actions/common.js'
 import { signout } from '../redux/actions/user.js'
@@ -12,7 +11,7 @@ const
     DELETE = "DELETE"
 
 var getFetch = (url, options = {}) => {
-    const baseUrl = "http://localhost:5000/api"
+    const baseUrl = "/api"
 
     options["mode"] = "cors"
 
@@ -91,6 +90,22 @@ var checkBodyOfResponse = (response) => {
 }
 
 export default {
+    getMe: () => {
+        const url = ["me"]
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getParam: () => {
+        const url = ["param"]
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     authenticate: (data) => {
         const url = ["login"]
         var options = {
@@ -105,14 +120,6 @@ export default {
         var options = {
             method: POST,
             body: JSON.stringify(data)
-        }
-
-        return getFetch(url, options)
-    },
-    getMe: () => {
-        const url = ["me"]
-        var options = {
-            method: GET
         }
 
         return getFetch(url, options)

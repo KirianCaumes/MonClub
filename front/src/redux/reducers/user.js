@@ -1,16 +1,17 @@
 import {
     AUTHENTICATE,
-    SET_URL,
-    SIGNOUT,
-    MESSAGEBAR,
     USER_LOADING,
-    SET_USER
+    SET_USER,
+    IS_INITIALISING,
+    SET_PARAM
 } from "../_action-types"
 
 const initialState = {
     isAuthenticated: localStorage.getItem('MONCLUB_token') && localStorage.getItem('MONCLUB_token') !== "null",
     isLoading: false,
-    me: {}
+    me: {},
+    param: {},
+    isInitialising: false,
 }
 
 export default function userReducer(state = initialState, action) {
@@ -19,8 +20,12 @@ export default function userReducer(state = initialState, action) {
             return { ...state, isLoading: action.payload }
         case AUTHENTICATE:
             return { ...state, isAuthenticated: action.payload }
+        case IS_INITIALISING:
+            return { ...state, isInitialising: action.payload }
         case SET_USER:
             return { ...state, me: action.payload }
+        case SET_PARAM:
+            return { ...state, param: action.payload }
         default:
             break
     }

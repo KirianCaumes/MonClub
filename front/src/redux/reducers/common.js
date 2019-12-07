@@ -1,10 +1,8 @@
 import {
-    AUTHENTICATE,
     SET_URL,
-    SIGNOUT,
     MESSAGEBAR,
     ERROR_FIELD,
-    IS_LOADING
+    IS_LOADING,
 } from "../_action-types"
 
 const initialState = {

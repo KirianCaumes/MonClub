@@ -3,7 +3,7 @@ import { Columns } from 'react-bulma-components'
 import { authenticate, signout } from "../redux/actions/user"
 import { connect } from "react-redux"
 import '../style/page/login.scss'
-import { Label, TextField, PrimaryButton, Text, IconButton, DefaultButton, Button, MessageBar, Spinner, SpinnerSize } from 'office-ui-fabric-react'
+import { Label, TextField, PrimaryButton, Text, MessageBar } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import { setMessageBar } from '../redux/actions/common'
 
