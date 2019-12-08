@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
+use App\Entity\ParamGlobal;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -14,6 +16,7 @@ use App\Form\UserType;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use App\Service\MailService;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -34,6 +37,28 @@ class UserController extends FOSRestController
         $user->setPassword('');
         $user->setConfirmationToken('');
         return $this->handleView($this->view($user, Response::HTTP_OK));
+    }
+
+    /**
+     * Get info for dashboard.
+     * @Rest\Get("/infos")
+     *
+     * @return Response
+     */
+    public function getInfos(Security $security)
+    {
+        return $this->handleView($this->view([
+            'text' => $security->isGranted('ROLE_ADMIN') ? $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => 'text_infos_admin'])->getValue() : $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => 'text_infos_user'])->getValue(),
+            'infos' => [
+                'users' => $security->isGranted('ROLE_ADMIN') ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
+                'members' => $security->isGranted('ROLE_ADMIN') ?
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findAll()) : sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()])),
+                'membersOk' => $security->isGranted('ROLE_ADMIN') ?
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => true])) : sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => true])),
+                'membersPending' => $security->isGranted('ROLE_ADMIN') ?
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => false])) : sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => false])),
+            ]
+        ], Response::HTTP_OK));
     }
 
     /**

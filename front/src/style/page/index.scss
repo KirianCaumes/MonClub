@@ -1,3 +1,30 @@
+@import "../helpers.scss";
+
 #index {
-    
+  .hero {
+    background: linear-gradient(to right, #2b6ca3 0%, #2b6ca3 75%, #0f3375);
+    border-radius: 3px;
+    @include ms-depth-16;
+    .hero-body {
+      padding: 2rem 1.5rem;
+    }
+  }
+  .card {
+    height: 150px;
+  }
+  > .columns {
+    > .column:first-child {
+      .card {
+        @include from($tablet) {
+            min-height: 324px;
+
+        }
+        height: auto;
+        > div {
+          text-align: justify;
+          overflow: hidden;
+        }
+      }
+    }
+  }
 }

@@ -28,7 +28,7 @@ class ParamGlobal
 
     /**
      * @Assert\NotBlank(message = "not_blank")
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $value;
 

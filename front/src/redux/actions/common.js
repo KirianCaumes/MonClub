@@ -2,7 +2,8 @@ import {
     SET_URL,
     MESSAGEBAR,
     SET_BREADCRUMB,
-    SET_COMMAND
+    SET_COMMAND,
+    IS_LOADING
 } from "../_action-types"
 
 export function setMessageBar(isDisplayed, type = null, message = null) {
@@ -19,4 +20,8 @@ export function setBreadcrumb(payload) {
 
 export function setCommand(payload) {
     return { type: SET_COMMAND, payload }
+}
+
+export function setLoading(payload) {
+    return { type: IS_LOADING, payload }
 }

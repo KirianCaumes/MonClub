@@ -142,6 +142,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getInfos: () => {
+        const url = ["infos"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     getContracts: () => {
         const url = ["movies"]
 

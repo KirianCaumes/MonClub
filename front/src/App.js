@@ -46,7 +46,7 @@ loadTheme({
 class _App extends React.Component {
     componentDidMount() {
         if (this.props.isAuthenticated) {
-            this.props.init()
+            // this.props.init()
         }
     }
 
@@ -64,10 +64,10 @@ class _App extends React.Component {
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
-                            <PrivateRoute exact path="/" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membre/nouveau" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membres" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membres/moi" component={withLoading(isLoading, Index)} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membres" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} />
                         </Switch>
                     </Layout>
                     <Switch>
