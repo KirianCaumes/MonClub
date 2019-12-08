@@ -1,12 +1,10 @@
 import React from 'react'
 import { Hero, Container, Heading, Columns } from 'react-bulma-components'
-import { Text, Icon, MessageBarType } from 'office-ui-fabric-react'
+import { Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setLoading, setMessageBar } from '../redux/actions/common'
+import { setBreadcrumb, setCommand } from '../redux/actions/common'
 import { history } from '../helper/history'
 import '../style/page/index.scss'
-import request from '../helper/request'
-import Loader from '../component/loader'
 
 class _Index extends React.Component {
     constructor(props) {
@@ -44,15 +42,8 @@ class _Index extends React.Component {
                 onClick: () => console.log('Download')
             }
         ])
-
-        this.props.setLoading(true)
-        request.getInfos()
-            .then(infos => this.setState({ ...infos }))
-            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.toString()))
-            .finally(() => this.props.setLoading(false))
     }
     render() {
-        if (this.props.isLoading) return <Loader />
         return (
             <section id="index">
                 <Hero color="info">
@@ -70,19 +61,19 @@ class _Index extends React.Component {
                         <div className="card">
                             <div className="flex-col">
                                 <Text variant="large" block>
-                                    <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{__html: this.state.text}}></span>
+                                    <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{__html: this.props.data?.text}}></span>
                                 </Text>
                             </div>
                         </div>
                     </Columns.Column>
                     <Columns.Column>
                         <Columns>
-                            {this.state.infos?.users &&
+                            {this.props.data?.infos?.users &&
                                 <Columns.Column>
                                     <div className="card">
                                         <div className="flex-col">
                                             <Text variant="xxLarge" nowrap block>
-                                                <Icon iconName='ContactList' />&nbsp;{this.state.infos?.users}
+                                                <Icon iconName='ContactList' />&nbsp;{this.props.data?.infos?.users}
                                             </Text>
                                             <Text variant="large" nowrap block>
                                                 Utilisateurs
@@ -95,7 +86,7 @@ class _Index extends React.Component {
                                 <div className="card">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='RecruitmentManagement' />&nbsp;{this.state.infos?.members}
+                                            <Icon iconName='RecruitmentManagement' />&nbsp;{this.props.data?.infos?.members}
                                         </Text>
                                         <Text variant="large" nowrap block>
                                             Membres
@@ -109,7 +100,7 @@ class _Index extends React.Component {
                                 <div className="card">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='UserFollowed' />&nbsp;{this.state.infos?.membersOk}
+                                            <Icon iconName='UserFollowed' />&nbsp;{this.props.data?.infos?.membersOk}
                                         </Text>
                                         <Text variant="large" block>
                                             Membres validés
@@ -122,7 +113,7 @@ class _Index extends React.Component {
                                 <div className="card">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='UserOptional' />&nbsp;{this.state.infos?.membersPending}
+                                            <Icon iconName='UserOptional' />&nbsp;{this.props.data?.infos?.membersPending}
                                         </Text>
                                         <Text variant="large" block>
                                             Membre en attente
@@ -141,16 +132,13 @@ class _Index extends React.Component {
 const mapDispatchToProps = dispatch => {
     return {
         setBreadcrumb: data => dispatch(setBreadcrumb(data)),
-        setCommand: data => dispatch(setCommand(data)),
-        setLoading: data => dispatch(setLoading(data)),
-        setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
+        setCommand: data => dispatch(setCommand(data))
     }
 }
 
 const mapStateToProps = state => {
     return {
-        me: state.user.me,
-        isLoading: state.common.isLoading
+        me: state.user.me
     }
 }
 const Index = connect(mapStateToProps, mapDispatchToProps)(_Index)

@@ -7,8 +7,6 @@ import {
     SET_COMMAND,
 } from "../_action-types"
 
-import { history } from "../../helper/history"
-
 const initialState = {
     selectedKeyURL: '/',
     messageBar: {

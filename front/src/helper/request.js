@@ -26,7 +26,7 @@ var getFetch = (url, options = {}) => {
         options["headers"]["Content-Type"] = 'application/json'
     }
 
-    if (localStorage.getItem('MONCLUB_token')) options["headers"]["Authorization"] = "Bearer " + localStorage.getItem('MONCLUB_token')
+    if (localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY)) options["headers"]["Authorization"] = "Bearer " + localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY)
 
     return fetch(baseUrl + "/" + url.join("/"), options)
         .then(async (response) => {

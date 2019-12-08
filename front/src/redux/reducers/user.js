@@ -1,14 +1,12 @@
 import {
     AUTHENTICATE,
-    USER_LOADING,
     SET_USER,
     IS_INITIALISING,
     SET_PARAM
 } from "../_action-types"
 
 const initialState = {
-    isAuthenticated: localStorage.getItem('MONCLUB_token') && localStorage.getItem('MONCLUB_token') !== "null",
-    isLoading: false,
+    isAuthenticated: localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY) && localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY) !== "null",
     me: {},
     param: {},
     isInitialising: false,
@@ -16,8 +14,6 @@ const initialState = {
 
 export default function userReducer(state = initialState, action) {
     switch (action.type) {
-        case USER_LOADING:
-            return { ...state, isLoading: action.payload }
         case AUTHENTICATE:
             return { ...state, isAuthenticated: action.payload }
         case IS_INITIALISING:

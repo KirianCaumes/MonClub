@@ -1,6 +1,6 @@
 import React from 'react'
 import Index from './pages'
-import Login from './pages/login'
+import Login from './pages/public/login'
 import { initializeIcons } from '@uifabric/icons'
 import { connect } from "react-redux"
 import Layout from './pages/_layout'
@@ -8,12 +8,13 @@ import { loadTheme } from 'office-ui-fabric-react'
 import { Switch, Route, Router } from 'react-router-dom'
 import { PrivateRoute } from './component/privateRoute'
 import { history } from './helper/history'
-import Register from './pages/register'
-import withLoading from './helper/withLoading'
+import Register from './pages/public/register'
 import { init } from './redux/actions/user'
 import FullLoader from './component/fullLoader'
-import PasswordForgotten from './pages/passwordForgotten'
-import PasswordNew from './pages/passwordNew'
+import PasswordForgotten from './pages/public/passwordForgotten'
+import PasswordNew from './pages/public/passwordNew'
+import withData from './helper/hoc/withData'
+import request from './helper/request'
 
 initializeIcons()
 loadTheme({
@@ -57,17 +58,18 @@ class _App extends React.Component {
     }
 
     render() {
-        const { isAuthenticated, isInitialising, isLoading } = this.props
+        const { isAuthenticated, isInitialising } = this.props
         return (
             <>
                 <FullLoader isLoading={isInitialising} />
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
-                            <PrivateRoute exact path="/" component={Index} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} />
                             <PrivateRoute exact path="/membres" component={Index} isAuthenticated={isAuthenticated} />
                             <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/membre/:id" component={Index} isAuthenticated={isAuthenticated} />
                         </Switch>
                     </Layout>
                     <Switch>
