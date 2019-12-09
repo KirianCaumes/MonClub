@@ -4,7 +4,7 @@ import Login from './pages/public/login'
 import { initializeIcons } from '@uifabric/icons'
 import { connect } from "react-redux"
 import Layout from './pages/_layout'
-import { loadTheme } from 'office-ui-fabric-react'
+import { loadTheme, MessageBarType } from 'office-ui-fabric-react'
 import { Switch, Route, Router } from 'react-router-dom'
 import { PrivateRoute } from './component/privateRoute'
 import { history } from './helper/history'
@@ -15,6 +15,8 @@ import PasswordForgotten from './pages/public/passwordForgotten'
 import PasswordNew from './pages/public/passwordNew'
 import withData from './helper/hoc/withData'
 import request from './helper/request'
+import { setMessageBar } from './redux/actions/common'
+import MembersAll from './pages/member/all'
 
 initializeIcons()
 loadTheme({
@@ -45,31 +47,54 @@ loadTheme({
 })
 
 class _App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isInit: false
+        }
+    }
+
     componentDidMount() {
         if (this.props.isAuthenticated) {
-            // this.props.init()
+            this.init()
         }
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.isAuthenticated && this.props.isAuthenticated !== prevProps.isAuthenticated) {
-            this.props.init()
+            this.init()
         }
     }
 
+    init() {
+        this.setState({ isInit: false }, () => {
+            Promise.all([request.getMe(), request.getParam()])
+                .then(([me, param]) => {
+                    this.props.init(me, param)
+                })
+                .catch(err => {
+                    this.props.setMessageBar(true, MessageBarType.error, err.message?.toString() || 'Une erreur est survenue.')
+                })
+                .finally(() => {
+                    this.setState({ isInit: true })
+                })
+        })
+    }
+
     render() {
-        const { isAuthenticated, isInitialising } = this.props
+        const { isAuthenticated } = this.props
+        const { isInit } = this.state
         return (
             <>
-                <FullLoader isLoading={isInitialising} />
+                {/* <FullLoader isLoading={!isInit} /> */}
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
-                            <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membres" component={Index} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} />
-                            <PrivateRoute exact path="/membre/:id" component={Index} isAuthenticated={isAuthenticated} />
+                            <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/membre/:id" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>
                     </Layout>
                     <Switch>
@@ -87,15 +112,14 @@ class _App extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        init: () => dispatch(init())
+        init: () => dispatch(init()),
+        setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
     }
 }
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.user.isAuthenticated,
-        isInitialising: state.user.isInitialising,
-        isLoading: state.common.isLoading
+        isAuthenticated: state.user.isAuthenticated
     }
 }
 const App = connect(mapStateToProps, mapDispatchToProps)(_App)

@@ -27,7 +27,7 @@ class MemberController extends FOSRestController
     /**
      * Lists all member.
      * @IsGranted("ROLE_COACH")
-     * @Rest\Get("/")
+     * @Rest\Get("")
      *
      * @return Response
      */

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { connect } from "react-redux"
-import '../../style/page/login.scss'
+import '../../style/page/public/login.scss'
 import { Text, MessageBar } from 'office-ui-fabric-react'
 import { setMessageBar } from '../../redux/actions/common'
 

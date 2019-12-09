@@ -1,9 +1,6 @@
 //User
-export const USER_LOADING = "USER_LOADING"
 export const AUTHENTICATE = "AUTHENTICATE"
-export const SET_USER = "SET_USER"
-export const IS_INITIALISING = "IS_INITIALISING"
-export const SET_PARAM = "SET_PARAM"
+export const INIT = "INIT"
 
 //Common
 export const MESSAGEBAR = "MESSAGEBAR"

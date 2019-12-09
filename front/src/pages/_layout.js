@@ -15,7 +15,7 @@ class _Layout extends React.Component {
 
     render() {
         const { selectedKeyURL, breadcrumb, command, messageBar } = this.props
-        if (!this.props.isDisplay) return null
+        if (!this.props.isDisplay) return this.props.children
         return (
             <>
                 <Header />

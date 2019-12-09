@@ -35,9 +35,8 @@ var getFetch = (url, options = {}) => {
                 // Handle status code error
                 switch (response.status) {
                     case 403:
-                        is403 = true
                         store.dispatch(setMessageBar(true, MessageBarType.error, "Vous n'êtes pas autorisé à effectuer cette action"))
-                        break
+                        return "Vous n'êtes pas autoriser à effectuer cette action"
                     case 401:
                         store.dispatch(signout())
                         break
@@ -46,9 +45,7 @@ var getFetch = (url, options = {}) => {
                 }
                 // Throw error for other behaviours after there default action
                 throw await response.text().then(x => {
-                    if (is403) return "Vous n'êtes pas autoriser à effectuer cette action"
-                    if (!!x.length)
-                        return JSON.parse(x)
+                    if (!!x.length) return JSON.parse(x)
                     return x
                 })
             } else {
@@ -151,8 +148,8 @@ export default {
 
         return getFetch(url, options)
     },
-    getContracts: () => {
-        const url = ["movies"]
+    getAllMembers: () => {
+        const url = ["member"]
 
         var options = {
             method: GET

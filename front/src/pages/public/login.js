@@ -1,7 +1,6 @@
 import React from 'react'
 import { signout, signin } from "../../redux/actions/user"
 import { connect } from "react-redux"
-import '../../style/page/login.scss'
 import { Label, TextField, PrimaryButton, Text, MessageBarType } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import PublicLayout from './_publicLayout'

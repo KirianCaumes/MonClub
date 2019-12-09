@@ -1,27 +1,19 @@
 import {
-    AUTHENTICATE,
-    SET_USER,
-    IS_INITIALISING,
-    SET_PARAM
+    AUTHENTICATE, INIT,
 } from "../_action-types"
 
 const initialState = {
-    isAuthenticated: localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY) && localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY) !== "null",
+    isAuthenticated: !!localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY),
     me: {},
-    param: {},
-    isInitialising: false,
+    param: {}
 }
 
 export default function userReducer(state = initialState, action) {
     switch (action.type) {
         case AUTHENTICATE:
             return { ...state, isAuthenticated: action.payload }
-        case IS_INITIALISING:
-            return { ...state, isInitialising: action.payload }
-        case SET_USER:
-            return { ...state, me: action.payload }
-        case SET_PARAM:
-            return { ...state, param: action.payload }
+        case INIT:
+            return { ...state, me: action.payload?.me, param: action.payload?.param }
         default:
             break
     }
