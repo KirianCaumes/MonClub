@@ -33,7 +33,7 @@ class _Layout extends React.Component {
                             {
                                 messageBar?.isDisplayed &&
                                 <>
-                                    <MessageBar messageBarType={this.props.messageBar.type} isMultiline={false} onDismiss={() => this.props.setMessageBar(false)}>
+                                    <MessageBar messageBarType={this.props.messageBar.type} isMultiline={true} onDismiss={() => this.props.setMessageBar(false)}>
                                         {messageBar.message}
                                     </MessageBar>
                                     <br />

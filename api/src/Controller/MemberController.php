@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -26,16 +28,28 @@ class MemberController extends FOSRestController
 {
     /**
      * Lists all member.
+     * @QueryParam(name="name", nullable=true)
+     * @QueryParam(name="stepsId", nullable=true)
+     * @QueryParam(name="teamsId", nullable=true)
      * @IsGranted("ROLE_COACH")
      * @Rest\Get("")
      *
      * @return Response
      */
-    public function getMembers()
+    public function getMembers(ParamFetcher $paramFetcher)
     {
+
+        // return $this->handleView($this->view($paramFetcher->all()['teamsId']));
         if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findall()));
+            return $this->handleView($this->view(
+                $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
+                    $paramFetcher->all()['name'],
+                    $paramFetcher->all()['stepsId'],
+                    $paramFetcher->all()['teamsId']
+                )
+            ));
         } else if ($this->isGranted('ROLE_COACH')) {
+            //TODO To be fixed
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
             return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $team])));

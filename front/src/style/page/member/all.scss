@@ -1,0 +1,23 @@
+@import "~bulma/bulma.sass";
+
+#members-all {
+  .search-inputs {
+      text-align: left;
+    > div.column {
+      @include until($tablet) {
+        padding: 0 0.75rem;
+      }
+    }
+    > *:last-child {
+      > div {
+        width: 100%;
+        > span {
+          width: 100%;
+          > button:first-child {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}

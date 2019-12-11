@@ -73,7 +73,7 @@ class _App extends React.Component {
                     this.props.init(me, param)
                 })
                 .catch(err => {
-                    this.props.setMessageBar(true, MessageBarType.error, err.message?.toString() || 'Une erreur est survenue.')
+                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error.message)
                 })
                 .finally(() => {
                     this.setState({ isInit: true })
@@ -112,7 +112,7 @@ class _App extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        init: () => dispatch(init()),
+        init: (me, param) => dispatch(init(me, param)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
     }
 }

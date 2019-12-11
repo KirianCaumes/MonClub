@@ -10,7 +10,7 @@ const
     PUT = "PUT",
     DELETE = "DELETE"
 
-var getFetch = (url, options = {}) => {
+var getFetch = (path, options = {}) => {
     const baseUrl = "/api"
 
     options["mode"] = "cors"
@@ -28,10 +28,12 @@ var getFetch = (url, options = {}) => {
 
     if (localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY)) options["headers"]["Authorization"] = "Bearer " + localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY)
 
-    return fetch(baseUrl + "/" + url.join("/"), options)
+    const url = new URL(origin + baseUrl + "/" + path.join("/"))
+    if (options.params) Object.keys(options.params).forEach(key => url.searchParams.append(key, options.params[key]))
+
+    return fetch(url, options)
         .then(async (response) => {
             if (!response.ok) {
-                var is403 = false
                 // Handle status code error
                 switch (response.status) {
                     case 403:
@@ -148,11 +150,12 @@ export default {
 
         return getFetch(url, options)
     },
-    getAllMembers: () => {
+    getAllMembers: (params) => {
         const url = ["member"]
 
         var options = {
-            method: GET
+            method: GET,
+            params
         }
 
         return getFetch(url, options)

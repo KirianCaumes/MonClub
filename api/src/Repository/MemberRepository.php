@@ -22,27 +22,33 @@ class MemberRepository extends ServiceEntityRepository
     /**
      * @return Member[] Returns an array of Member objects
      */
-    // public function findByTeamsId($ids)
-    // {
-    //     return $this->createQueryBuilder('m')
-    //         ->andWhere('m.id_team = :val')
-    //         ->setParameter('val', $ids)
-    //         ->orderBy('m.id', 'ASC')
-    //         ->setMaxResults(10)
-    //         ->getQuery()
-    //         ->getResult()
-    //     ;
-    // }
-
-    /*
-    public function findOneBySomeField($value): ?Member
+    public function findMembersByFields($name, $stepId, $teamsId)
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
+            ->where('m.firstname LIKE :name')
+            ->orWhere('m.lastname LIKE :name')
+            ->andWhere('m.team IN(:teamsId)')
+            ->orWhere(':teamsId = \'\'') //To prevent if teamsId is an empty string
+            ->setParameter('name', '%' . $name . '%')
+            ->setParameter('teamsId', $teamsId)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
+    // public function findMembersByFields($name, $stepId, $teamsId)
+    // {
+    //     $query = $this->getEntityManager()->getConnection()->prepare('
+    //         SELECT * 
+    //         FROM mc_member
+    //         WHERE 
+    //             (firstname LIKE :name OR lastname LIKE :name) AND 
+    //             id_team IN (:teamsId)
+    //     ');
+    //      $query->execute(['name'=> '%' . $name . '%', 'teamsId'=> $teamsId]);
+
+    //      return $query->fetchAll();
+    // }
 }

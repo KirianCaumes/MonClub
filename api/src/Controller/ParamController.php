@@ -7,6 +7,7 @@ use App\Entity\ParamGlobal;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
+use App\Entity\Team;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -27,6 +28,8 @@ class ParamController extends FOSRestController
     public function getParam()
     {
         return $this->handleView($this->view([
+            'teams' => $this->getDoctrine()->getRepository(Team::class)->findall(),
+            'step' => [['id' => 1, 'label' => 'Créé'], ['id' => 2, 'label' => 'Docments complets'], ['id' => 3, 'label' => 'Payé'], ['id' => 4, 'label' => 'Gest\'hand'], ['id' => 5, 'label' => 'Inscris']],
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
             'price' => [

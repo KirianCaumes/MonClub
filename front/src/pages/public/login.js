@@ -33,7 +33,7 @@ class _Login extends React.Component {
                 })
                 .catch(err => {
                     this.setState({ isLoading: false })
-                    this.props.setMessageBar(true, MessageBarType.error, err.message?.toString() || 'Une erreur est survenue.')
+                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error.message)
                 })
         })
     }
