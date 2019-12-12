@@ -6,6 +6,8 @@ import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/co
 import { history } from '../../helper/history'
 import '../../style/page/member/all.scss'
 import request from '../../helper/request'
+import getWf from '../../helper/getStepWf'
+import { ROLE_ADMIN } from '../../helper/constants'
 
 class _MembersAll extends React.Component {
     constructor(props) {
@@ -25,32 +27,7 @@ class _MembersAll extends React.Component {
         this.props.setBreadcrumb([
             { text: 'Tous les membres', key: 'all-members', onClick: () => history.push('/membres') },
         ])
-        this.props.setCommand([
-            {
-                key: 'newItem',
-                text: 'New',
-                iconProps: { iconName: 'Add' },
-                onClick: () => console.log('Calendar')
-            },
-            {
-                key: 'upload',
-                text: 'Upload',
-                iconProps: { iconName: 'Upload' },
-                onClick: () => console.log('Upload')
-            },
-            {
-                key: 'share',
-                text: 'Share',
-                iconProps: { iconName: 'Share' },
-                onClick: () => console.log('Share')
-            },
-            {
-                key: 'download',
-                text: 'Download',
-                iconProps: { iconName: 'Download' },
-                onClick: () => console.log('Download')
-            }
-        ])
+        this.props.setCommand([])
 
         this.searchMembers()
     }
@@ -71,86 +48,95 @@ class _MembersAll extends React.Component {
         return (
             <section id="members-all">
                 <div className="card" >
-                    <Columns className="search-inputs">
-                        <Columns.Column size="one-quarter">
-                            <TextField
-                                label="Nom/Prénom"
-                                disabled={isLoading}
-                                value={this.state.searchParms.name}
-                                onChange={ev => this.setState({ searchParms: { ...this.state.searchParms, name: ev.target.value } })}
-                            />
-                        </Columns.Column>
-                        <Columns.Column size="one-quarter">
-                            <Dropdown
-                                label="Étape"
-                                disabled={isLoading}
-                                multiSelect
-                                options={[...this.props.param?.step]?.map(x => { return { key: x.id, text: x.label } })}
-                                selectedKeys={this.state.searchParms.stepsId}
-                                onChange={(ev, item) => {
-                                    const newSelectedItems = [...this.state.searchParms.stepsId]
-                                    if (item.selected) {
-                                        newSelectedItems.push(item.key)
-                                    } else {
-                                        const currIndex = newSelectedItems.indexOf(item.key)
-                                        if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                    }
-                                    this.setState({ searchParms: { ...this.state.searchParms, stepsId: newSelectedItems } })
-                                }}
-                            />
-                        </Columns.Column>
-                        <Columns.Column size="one-quarter">
-                            <Dropdown
-                                label="Équipe"
-                                disabled={isLoading}
-                                multiSelect
-                                options={[...this.props.param?.teams]?.map(x => { return { key: x.id, text: x.label } })}
-                                selectedKeys={this.state.searchParms.teamsId}
-                                onChange={(ev, item) => {
-                                    const newSelectedItems = [...this.state.searchParms.teamsId]
-                                    if (item.selected) {
-                                        newSelectedItems.push(item.key)
-                                    } else {
-                                        const currIndex = newSelectedItems.indexOf(item.key)
-                                        if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                    }
-                                    this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
-                                }}
-                            />
-                        </Columns.Column>
-                        <Columns.Column size="one-quarter">
-                            <Label>&#8203;</Label>
-                            <DefaultButton
-                                text="Rechercher"
-                                primary={true}
-                                split={true}
-                                disabled={isLoading}
-                                onClick={() => this.searchMembers()}
-                                menuProps={
-                                    {
-                                        items: [
-                                            {
-                                                key: 'Clear',
-                                                text: 'Effacer les filtres',
-                                                iconProps: { iconName: 'ClearFilter' },
-                                                onClick: () => this.setState({
-                                                    searchParms: {
-                                                        name: '',
-                                                        stepsId: [],
-                                                        teamsId: []
-                                                    }
-                                                })
-                                            }
-                                        ]
-                                    }
+                    {
+                        this.props.me?.roles?.includes(ROLE_ADMIN) &&
+                        <>
+                            <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
+                                <Columns className="search-inputs">
+                                    <Columns.Column size="one-quarter">
+                                        <TextField
+                                            label="Nom/Prénom"
+                                            disabled={isLoading}
+                                            value={this.state.searchParms.name}
+                                            onChange={ev => this.setState({ searchParms: { ...this.state.searchParms, name: ev.target.value } })}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column size="one-quarter">
+                                        <Dropdown
+                                            label="Étape"
+                                            disabled={isLoading}
+                                            multiSelect
+                                            options={[...this.props.param?.workflowStep]?.map(x => { return { key: x.id, text: x.label } })}
+                                            selectedKeys={this.state.searchParms.stepsId}
+                                            onChange={(ev, item) => {
+                                                const newSelectedItems = [...this.state.searchParms.stepsId]
+                                                if (item.selected) {
+                                                    newSelectedItems.push(item.key)
+                                                } else {
+                                                    const currIndex = newSelectedItems.indexOf(item.key)
+                                                    if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                }
+                                                this.setState({ searchParms: { ...this.state.searchParms, stepsId: newSelectedItems } })
+                                            }}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column size="one-quarter">
+                                        <Dropdown
+                                            label="Équipe"
+                                            disabled={isLoading}
+                                            multiSelect
+                                            options={[...this.props.param?.teams]?.map(x => { return { key: x.id, text: x.label } })}
+                                            selectedKeys={this.state.searchParms.teamsId}
+                                            onChange={(ev, item) => {
+                                                const newSelectedItems = [...this.state.searchParms.teamsId]
+                                                if (item.selected) {
+                                                    newSelectedItems.push(item.key)
+                                                } else {
+                                                    const currIndex = newSelectedItems.indexOf(item.key)
+                                                    if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                }
+                                                this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
+                                            }}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column size="one-quarter">
+                                        <Label>&#8203;</Label>
+                                        <DefaultButton
+                                            text="Rechercher"
+                                            primary={true}
+                                            split={true}
+                                            disabled={isLoading}
+                                            onClick={() => this.searchMembers()}
+                                            menuProps={
+                                                {
+                                                    items: [
+                                                        {
+                                                            key: 'Clear',
+                                                            text: 'Effacer les filtres',
+                                                            iconProps: { iconName: 'ClearFilter' },
+                                                            onClick: () => this.setState({
+                                                                searchParms: {
+                                                                    name: '',
+                                                                    stepsId: [],
+                                                                    teamsId: []
+                                                                }
+                                                            }, () => this.searchMembers())
+                                                        }
+                                                    ]
+                                                }
 
-                                }
-                            />
-                        </Columns.Column>
-                    </Columns>
-                    <Separator >
-                        <Icon iconName="ChevronDown" />
-                    </Separator>
+                                            }
+                                        />
+                                    </Columns.Column>
+                                </Columns>
+                            </form>
+                            <Separator >
+                                <Icon iconName="ChevronDown" />
+                            </Separator>
+                            <br />
+                        </>
+                    }
+
                     <ShimmeredDetailsList
                         items={this.state.items}
                         onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
@@ -188,28 +174,28 @@ class _MembersAll extends React.Component {
                             //     isResizable: true,
                             // },
                             {
+                                key: 'step',
+                                name: 'Étape',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                                onRender: member => <>{getWf(member)}</>
+                            },
+                            {
                                 key: 'team',
                                 name: 'Équipe',
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
                                 onRender: member => <>{member.team?.label}</>
-                            },
-                            {
-                                key: 'step',
-                                name: 'Étape',
-                                fieldName: 'step',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
                             }
                         ]}
                         selectionMode={SelectionMode.none}
                         enableShimmer={this.state.isLoading}
                         listProps={{ renderedWindowsAhead: 0, renderedWindowsBehind: 0 }}
                     />
-                </div>
-            </section>
+                </div >
+            </section >
         )
     }
 }

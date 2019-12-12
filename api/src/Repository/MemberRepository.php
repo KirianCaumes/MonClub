@@ -22,17 +22,27 @@ class MemberRepository extends ServiceEntityRepository
     /**
      * @return Member[] Returns an array of Member objects
      */
-    public function findMembersByFields($name, $stepId, $teamsId)
+    public function findMembersByFields($name, $stepsId, $teamsId)
     {
-        return $this->createQueryBuilder('m')
-            ->where('m.firstname LIKE :name')
-            ->orWhere('m.lastname LIKE :name')
-            ->andWhere('m.team IN(:teamsId)')
-            ->orWhere(':teamsId = \'\'') //To prevent if teamsId is an empty string
+        $query = $this->createQueryBuilder('m')
+            ->where('m.firstname LIKE :name OR m.lastname LIKE :name')
+            ->andWhere('m.team IN(:teamsId) OR :teamsId = \'\''); //To prevent if teamsId is an empty string
+
+        if ($stepsId) {
+            $search = '';
+            if (strpos($stepsId, '5') !== false) $search .= ' OR (m.is_inscription_done = TRUE AND m.is_check_gest_hand = TRUE AND m.is_payed = TRUE AND m.is_document_complete = TRUE)';
+            if (strpos($stepsId, '4') !== false) $search .= ' OR (m.is_inscription_done = FALSE AND m.is_check_gest_hand = TRUE AND m.is_payed = TRUE AND m.is_document_complete = TRUE)';
+            if (strpos($stepsId, '3') !== false) $search .= ' OR (m.is_inscription_done = FALSE AND m.is_check_gest_hand = FALSE AND m.is_payed = TRUE AND m.is_document_complete = TRUE)';
+            if (strpos($stepsId, '2') !== false) $search .= ' OR (m.is_inscription_done = FALSE AND m.is_check_gest_hand = FALSE AND m.is_payed = FALSE AND m.is_document_complete = TRUE)';
+            if (strpos($stepsId, '1') !== false) $search .= ' OR (m.is_inscription_done = FALSE AND m.is_check_gest_hand = FALSE AND m.is_payed = FALSE AND m.is_document_complete = FALSE)';
+            $query->andWhere(substr($search, 4));
+        }
+
+        $query
             ->setParameter('name', '%' . $name . '%')
-            ->setParameter('teamsId', $teamsId)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('teamsId', $teamsId);
+
+        return $query->getQuery()->getResult();
     }
 
     /**

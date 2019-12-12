@@ -35,6 +35,7 @@ class UserController extends FOSRestController
     {
         $user = $this->getUser();
         $user->setPassword('');
+        $user->setSalt('');
         $user->setConfirmationToken('');
         return $this->handleView($this->view($user, Response::HTTP_OK));
     }

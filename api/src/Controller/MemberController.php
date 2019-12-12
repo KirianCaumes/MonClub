@@ -41,18 +41,21 @@ class MemberController extends FOSRestController
 
         // return $this->handleView($this->view($paramFetcher->all()['teamsId']));
         if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->handleView($this->view(
-                $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
-                    $paramFetcher->all()['name'],
-                    $paramFetcher->all()['stepsId'],
-                    $paramFetcher->all()['teamsId']
-                )
-            ));
+            $members = $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
+                $paramFetcher->get('name'),
+                $paramFetcher->get('stepsId'),
+                $paramFetcher->get('teamsId')
+            );
+            foreach ($members as $member) { //Hide some informations
+                $member->getUser()->setPassword('');
+                $member->getUser()->setSalt('');
+                $member->getUser()->setConfirmationToken('');
+            }
+            return $this->handleView($this->view($members));
         } else if ($this->isGranted('ROLE_COACH')) {
-            //TODO To be fixed
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
-            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $team])));
+            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $teams])));
         }
     }
 
@@ -237,12 +240,12 @@ class MemberController extends FOSRestController
 
         //Find certificat
         $isDocCertMediOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
-            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['label' => 'certificat_medical'])
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 1])
         ]);
 
         //Find justificatif
         $isDocJusChoEtuOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
-            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['label' => 'justificatif_chomeur_etudiant'])
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 2])
         ]);
 
         //If docs are missing
@@ -250,13 +253,13 @@ class MemberController extends FOSRestController
             $res = [
                 'form' => [
                     'children' => [
-                        'certificat_medical' => [],
-                        'justificatif_chomeur_etudiant' => []
+                        '1' => [],
+                        '2' => []
                     ]
                 ]
             ];
-            if (!$isDocCertMediOk) $res['form']['children']['certificat_medical'] = [$translator->trans('not_blank')];
-            if ($member->getIsReducedPrice() && !$isDocJusChoEtuOk) $res['form']['children']['justificatif_chomeur_etudiant'] = [$translator->trans('not_blank')];
+            if (!$isDocCertMediOk) $res['form']['children']['1'] = [$translator->trans('not_blank')];
+            if ($member->getIsReducedPrice() && !$isDocJusChoEtuOk) $res['form']['children']['2'] = [$translator->trans('not_blank')];
 
             return $this->handleView($this->view($res, Response::HTTP_BAD_REQUEST));
         }

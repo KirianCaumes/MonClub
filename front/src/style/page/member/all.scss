@@ -2,7 +2,7 @@
 
 #members-all {
   .search-inputs {
-      text-align: left;
+    text-align: left;
     > div.column {
       @include until($tablet) {
         padding: 0 0.75rem;
@@ -19,5 +19,8 @@
         }
       }
     }
+  }
+  .ms-DetailsHeader {
+    padding-top: 0 !important;
   }
 }

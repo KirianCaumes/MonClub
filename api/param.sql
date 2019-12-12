@@ -28,5 +28,13 @@ VALUES
 
 INSERT INTO `mc_param_document_category` (`id`, `label`) 
 VALUES 
-    (1, 'certificat_medical'), 
-    (2, 'justificatif_chomeur_etudiant');
+    (1, 'Certificat médical'), 
+    (2, 'Justificatif étudiant/chomeur');
+
+INSERT INTO `mc_param_workflow` (`id`, `label`) 
+VALUES 
+    (1, 'Créé'), 
+    (2, 'Docments complets'), 
+    (3, 'Payé'), 
+    (4, 'Gest''hand'), 
+    (5, 'Inscris');
