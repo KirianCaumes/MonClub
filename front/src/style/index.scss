@@ -1,6 +1,25 @@
-@import "~react-bulma-components/src/index.sass";
+//Dependencies
+@import '~office-ui-fabric-react/dist/sass/Fabric.scss';
+@import "~bulma/bulma.sass";
+@import "~bulma-extensions/dist/css/bulma-extensions.min.css";
+
+//Theme
 @import "./_helpers.scss";
 @import "./_variables.scss";
+
+//Layout
+@import "./layout.scss";
+
+//Pages
+//.
+@import "./page/index.scss";
+
+//public
+@import "./page/public/login.scss";
+
+//member
+@import "./page/member/all.scss";
+@import "./page/member/one.scss";
 
 html {
   min-height: 100%;

@@ -17,6 +17,9 @@ import withData from './helper/hoc/withData'
 import request from './helper/request'
 import { setMessageBar } from './redux/actions/common'
 import MembersAll from './pages/member/all'
+import MembersOne from './pages/member/one'
+import Error from './pages/error'
+import Constants from './pages/admin/constants'
 
 initializeIcons()
 loadTheme({
@@ -86,22 +89,32 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                {/* <FullLoader isLoading={!isInit} /> */}
+                <FullLoader isLoading={!isInit && isAuthenticated} />
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
                             <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute exact path="/membres/moi" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute exact path="/membre/nouveau" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute exact path="/membre/:id" component={Index} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membres/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membre/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membre/:id" component={withData(MembersOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            
+                            <PrivateRoute exact path="/utilisateurs" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/utilisateurs/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/utilisateur/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+
+                            <PrivateRoute exact path="/equipes" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/equipe/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/equipe/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            
+                            <PrivateRoute path="/constantes" component={Constants} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>
                     </Layout>
                     <Switch>
-                        <Route exact path="/login" component={Login} />
-                        <Route exact path="/register" component={Register} />
-                        <Route exact path="/motdepasse-oublie" component={PasswordForgotten} />
-                        <Route exact path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
+                        <Route path="/login" component={Login} />
+                        <Route path="/register" component={Register} />
+                        <Route path="/motdepasse-oublie" component={PasswordForgotten} />
+                        <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
                     </Switch>
                 </Router>
             </>

@@ -23,7 +23,7 @@ class Aside extends React.Component {
                         }
                     }}
                     selectedKey={this.props.selectedKeyURL}
-                    onLinkClick={(ev, item) => history.push(item.key)}
+                    // onLinkClick={(ev, item) => history.push(item.key)}
                     groups={[
                         {
                             name: '',
@@ -31,7 +31,8 @@ class Aside extends React.Component {
                                 {
                                     key: '/',
                                     name: <><Icon iconName='Home' /> Accueil</>,
-                                    title: 'Accueil'
+                                    title: 'Accueil',
+                                    onClick: () => history.push('/')
                                 },
                             ]
                         },
@@ -39,35 +40,46 @@ class Aside extends React.Component {
                             name: 'Membres',
                             links: [
                                 {
+                                    key: '/membres/moi',
+                                    name: <><Icon iconName='AccountManagement' /> Mes membres</>,
+                                    title: 'Mes membres',
+                                    onClick: () => history.push('/membres/moi')
+                                },
+                                {
                                     key: '/membre/nouveau',
-                                    name: <><Icon iconName='Add' /> Nouveau membre</>,
-                                    title: 'Nouveau membre'
+                                    name: <><Icon iconName='Add' /> Créer un membre</>,
+                                    title: 'Créer un membre',
+                                    onClick: () => history.push('/membre/nouveau')
                                 },
                                 {
                                     key: '/membres',
-                                    name: <><Icon iconName='RecruitmentManagement' /> Tous les membres</>,
-                                    title: 'Tous les membres'
+                                    name: <><Icon iconName='RecruitmentManagement' /> Les membres</>,
+                                    title: 'Les membres',
+                                    onClick: () => history.push('/membres')
                                 },
                                 {
-                                    key: '/membres/moi',
-                                    name: <><Icon iconName='AccountManagement' /> Mes membres</>,
-                                    title: 'Mes membres'
-                                }
+                                    key: '/equipes',
+                                    name: <><Icon iconName='Teamwork' /> Les équipes</>,
+                                    title: 'Les équipes',
+                                    onClick: () => history.push('/equipes')
+                                },
                             ]
                         },
                         {
-                            name: 'Paramètres',
+                            name: 'Administration',
                             links: [
                                 {
                                     key: '/utilisateurs',
-                                    name: <><Icon iconName='ContactList' /> Tous les comptes</>,
-                                    title: 'Tous les comptes'
+                                    name: <><Icon iconName='ContactList' /> Les comptes</>,
+                                    title: 'Tous les comptes',
+                                    onClick: () => history.push('/utilisateurs')
                                 },
                                 {
-                                    key: '/utilisateur',
-                                    name: <><Icon iconName='Contact' /> Mon compte</>,
-                                    title: 'Mon compte'
-                                }
+                                    key: '/constantes',
+                                    name: <><Icon iconName='OfflineStorage' /> Les constantes</>,
+                                    title: 'Les constants',
+                                    onClick: () => history.push('/constantes')
+                                },
                             ]
                         },
                         {
@@ -76,12 +88,8 @@ class Aside extends React.Component {
                                 {
                                     key: '/stockage',
                                     name: <><Icon iconName='Cloud' /> Platforme de stockage</>,
-                                    title: 'Platforme de stockage'
-                                },
-                                {
-                                    key: '/constants',
-                                    name: <><Icon iconName='OfflineStorage' /> Les constants</>,
-                                    title: 'Les constants'
+                                    title: 'Platforme de stockage',
+                                    onClick: () => history.push('/stockage')
                                 },
                             ]
                         },

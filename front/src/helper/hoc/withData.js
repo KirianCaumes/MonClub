@@ -15,8 +15,9 @@ export default function withData(WrappedComponent, dataFunc) {
         }
 
         componentDidMount() {
+            console.log(this.props.match?.params)
             this.setState({ isLoading: true }, () => {
-                dataFunc()
+                dataFunc(this.props.match?.params)
                     .then(data => this.setState({ data }))
                     .catch(err => {
                         this.setState({ isError: true })

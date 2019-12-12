@@ -1,9 +1,6 @@
-@import "./_helpers.scss";
-@import "./_variables.scss";
-
 div#root {
   .pageloader {
-    background: linear-gradient(to right bottom, $blue 0%, $blue 75%, $dark-blue)!important;
+    background: linear-gradient(to right bottom, $blue 0%, $blue 75%, $dark-blue) !important;
   }
   height: 100vh;
   nav.navbar {
@@ -41,6 +38,7 @@ div#root {
           border-radius: 1px;
           > button {
             font-weight: normal !important;
+            color:unset!important;
             &:hover {
               background: $light-grey;
             }
@@ -88,6 +86,11 @@ div#root {
           margin: 0 0 13px;
           ol {
             margin: 0;
+          }
+          li {
+            & + li {
+              margin-top: 0 !important;
+            }
           }
         }
       }

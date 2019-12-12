@@ -4,7 +4,6 @@ import { Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from '../redux/actions/common'
 import { history } from '../helper/history'
-import '../style/page/index.scss'
 
 class _Index extends React.Component {
     constructor(props) {
@@ -58,7 +57,7 @@ class _Index extends React.Component {
                 <br />
                 <Columns className="is-vcentered">
                     <Columns.Column>
-                        <div className="card">
+                        <div className="card has-text-centered">
                             <div className="flex-col">
                                 <Text variant="large" block>
                                     <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{__html: this.props.data?.text}}></span>
@@ -70,7 +69,7 @@ class _Index extends React.Component {
                         <Columns>
                             {this.props.data?.infos?.users &&
                                 <Columns.Column>
-                                    <div className="card">
+                                    <div className="card has-text-centered">
                                         <div className="flex-col">
                                             <Text variant="xxLarge" nowrap block>
                                                 <Icon iconName='ContactList' />&nbsp;{this.props.data?.infos?.users}
@@ -83,7 +82,7 @@ class _Index extends React.Component {
                                 </Columns.Column>
                             }
                             <Columns.Column>
-                                <div className="card">
+                                <div className="card has-text-centered">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
                                             <Icon iconName='RecruitmentManagement' />&nbsp;{this.props.data?.infos?.members}
@@ -97,7 +96,7 @@ class _Index extends React.Component {
                         </Columns>
                         <Columns>
                             <Columns.Column>
-                                <div className="card">
+                                <div className="card has-text-centered">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
                                             <Icon iconName='UserFollowed' />&nbsp;{this.props.data?.infos?.membersOk}
@@ -110,7 +109,7 @@ class _Index extends React.Component {
                             </Columns.Column>
                             <Columns.Column>
 
-                                <div className="card">
+                                <div className="card has-text-centered">
                                     <div className="flex-col">
                                         <Text variant="xxLarge" nowrap block>
                                             <Icon iconName='UserOptional' />&nbsp;{this.props.data?.infos?.membersPending}

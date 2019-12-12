@@ -160,4 +160,13 @@ export default {
 
         return getFetch(url, options)
     },
+    getOneMember: (id) => {
+        const url = ["member", id]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
 }

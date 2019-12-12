@@ -1,10 +1,9 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Icon, ShimmeredDetailsList, MessageBarType, SelectionMode, Separator, TextField, DefaultButton, Label, Dropdown } from 'office-ui-fabric-react'
+import { Icon, ShimmeredDetailsList, MessageBarType, SelectionMode, Separator, TextField, DefaultButton, Label, Dropdown, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
-import '../../style/page/member/all.scss'
 import request from '../../helper/request'
 import getWf from '../../helper/getStepWf'
 import { ROLE_ADMIN } from '../../helper/constants'
@@ -25,7 +24,8 @@ class _MembersAll extends React.Component {
 
     componentDidMount() {
         this.props.setBreadcrumb([
-            { text: 'Tous les membres', key: 'all-members', onClick: () => history.push('/membres') },
+            { text: 'Membres', key: 'members' },
+            { text: 'Tous les membres', key: 'all-members', isCurrentItem: true },
         ])
         this.props.setCommand([])
 
@@ -136,64 +136,67 @@ class _MembersAll extends React.Component {
                             <br />
                         </>
                     }
-
-                    <ShimmeredDetailsList
-                        items={this.state.items}
-                        onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
-                        columns={[
-                            {
-                                key: 'lastname',
-                                name: 'Nom',
-                                fieldName: 'lastname',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                            },
-                            {
-                                key: 'firstname',
-                                name: 'Prénom',
-                                fieldName: 'firstname',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                            },
-                            // {
-                            //     key: 'email',
-                            //     name: 'Email',
-                            //     fieldName: 'email',
-                            //     minWidth: 70,
-                            //     maxWidth: 200,
-                            //     isResizable: true,
-                            // },
-                            // {
-                            //     key: 'phone_number',
-                            //     name: 'Téléphone',
-                            //     fieldName: 'phone_number',
-                            //     minWidth: 70,
-                            //     maxWidth: 200,
-                            //     isResizable: true,
-                            // },
-                            {
-                                key: 'step',
-                                name: 'Étape',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                                onRender: member => <>{getWf(member)}</>
-                            },
-                            {
-                                key: 'team',
-                                name: 'Équipe',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                                onRender: member => <>{member.team?.label}</>
-                            }
-                        ]}
-                        selectionMode={SelectionMode.none}
-                        enableShimmer={this.state.isLoading}
-                        listProps={{ renderedWindowsAhead: 0, renderedWindowsBehind: 0 }}
-                    />
+                    {
+                        this.state.items.length === 0 && !this.state.isLoading ?
+                            <Text variant="large" className="has-text-centered" block>Aucun résultat</Text> :
+                            <ShimmeredDetailsList
+                                items={this.state.items}
+                                onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
+                                columns={[
+                                    {
+                                        key: 'lastname',
+                                        name: 'Nom',
+                                        fieldName: 'lastname',
+                                        minWidth: 70,
+                                        maxWidth: 200,
+                                        isResizable: true,
+                                    },
+                                    {
+                                        key: 'firstname',
+                                        name: 'Prénom',
+                                        fieldName: 'firstname',
+                                        minWidth: 70,
+                                        maxWidth: 200,
+                                        isResizable: true,
+                                    },
+                                    // {
+                                    //     key: 'email',
+                                    //     name: 'Email',
+                                    //     fieldName: 'email',
+                                    //     minWidth: 70,
+                                    //     maxWidth: 200,
+                                    //     isResizable: true,
+                                    // },
+                                    // {
+                                    //     key: 'phone_number',
+                                    //     name: 'Téléphone',
+                                    //     fieldName: 'phone_number',
+                                    //     minWidth: 70,
+                                    //     maxWidth: 200,
+                                    //     isResizable: true,
+                                    // },
+                                    {
+                                        key: 'step',
+                                        name: 'Étape',
+                                        minWidth: 70,
+                                        maxWidth: 200,
+                                        isResizable: true,
+                                        onRender: member => <>{getWf(member)}</>
+                                    },
+                                    {
+                                        key: 'team',
+                                        name: 'Équipe',
+                                        minWidth: 70,
+                                        maxWidth: 200,
+                                        isResizable: true,
+                                        onRender: member => <>{member.team?.label}</>
+                                    }
+                                ]}
+                                selectionMode={SelectionMode.none}
+                                enableShimmer={this.state.isLoading}
+                                listProps={{ renderedWindowsAhead: 0, renderedWindowsBehind: 0 }}
+                            />
+                    }
                 </div >
             </section >
         )

@@ -2,9 +2,7 @@ import store from "../redux/store";
 
 //Function to get step label by user infos
 export default function getWf (user) {
-    let wfSteps = store.getState().user.param?.workflowStep
-
-    console.log(store.getState().user.param?.workflowStep)
+    const wfSteps = store.getState().user.param?.workflowStep
 
     if (user.is_inscription_done) {
         return wfSteps.find(x => x.id === 5)?.label

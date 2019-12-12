@@ -4,7 +4,6 @@ import Header from '../component/layout/header';
 import { setUrl, setMessageBar } from '../redux/actions/common'
 import { connect } from "react-redux"
 import { history } from '../helper/history'
-import '../style/_layout.scss'
 import Aside from '../component/layout/nav'
 
 class _Layout extends React.Component {
