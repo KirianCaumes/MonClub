@@ -27,7 +27,15 @@ class _MembersAll extends React.Component {
             { text: 'Membres', key: 'members' },
             { text: 'Tous les membres', key: 'all-members', isCurrentItem: true },
         ])
-        this.props.setCommand([])
+        
+        this.props.setCommand([
+            {
+                key: 'newItem',
+                text: 'Nouveau',
+                iconProps: { iconName: 'Add' },
+                onClick: () => history.push('/membre/nouveau')
+            },
+        ])
 
         this.searchMembers()
     }
@@ -46,7 +54,7 @@ class _MembersAll extends React.Component {
     render() {
         const { isLoading } = this.state
         return (
-            <section id="members-all">
+            <section id="member-all">
                 <div className="card" >
                     {
                         this.props.me?.roles?.includes(ROLE_ADMIN) &&
@@ -194,7 +202,6 @@ class _MembersAll extends React.Component {
                                 ]}
                                 selectionMode={SelectionMode.none}
                                 enableShimmer={this.state.isLoading}
-                                listProps={{ renderedWindowsAhead: 0, renderedWindowsBehind: 0 }}
                             />
                     }
                 </div >

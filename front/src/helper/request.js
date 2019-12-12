@@ -169,4 +169,22 @@ export default {
 
         return getFetch(url, options)
     },
+    getAllTeams: () => {
+        const url = ["team"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getOneTeam: (id) => {
+        const url = ["team", id]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
 }

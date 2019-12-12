@@ -3,7 +3,6 @@ import { Hero, Container, Heading, Columns } from 'react-bulma-components'
 import { Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from '../redux/actions/common'
-import { history } from '../helper/history'
 
 class _Index extends React.Component {
     constructor(props) {
@@ -13,7 +12,7 @@ class _Index extends React.Component {
 
     componentDidMount() {
         this.props.setBreadcrumb([
-            { text: 'Accueil', key: 'accueil', onClick: () => history.push('/') },
+            { text: 'Accueil', key: 'accueil', isCurrentItem: true},
         ])
         this.props.setCommand([
             {

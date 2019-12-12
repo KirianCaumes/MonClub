@@ -17,9 +17,11 @@ import withData from './helper/hoc/withData'
 import request from './helper/request'
 import { setMessageBar } from './redux/actions/common'
 import MembersAll from './pages/member/all'
-import MembersOne from './pages/member/one'
+import MemberOne from './pages/member/one'
 import Error from './pages/error'
 import Constants from './pages/admin/constants'
+import TeamsAll from './pages/team/all'
+import TeamOne from './pages/team/one'
 
 initializeIcons()
 loadTheme({
@@ -97,15 +99,15 @@ class _App extends React.Component {
                             <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membres/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/membre/:id" component={withData(MembersOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
                             
                             <PrivateRoute exact path="/utilisateurs" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateurs/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateur/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
 
-                            <PrivateRoute exact path="/equipes" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/equipes" component={TeamsAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/equipe/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/equipe/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/equipe/:id" component={withData(TeamOne, (props) => request.getOneTeam(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
                             
                             <PrivateRoute path="/constantes" component={Constants} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>

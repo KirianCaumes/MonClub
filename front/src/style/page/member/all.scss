@@ -1,4 +1,4 @@
-#members-all {
+#member-all {
   .search-inputs {
     text-align: left;
     > div.column {
@@ -20,5 +20,8 @@
   }
   .ms-DetailsHeader {
     padding-top: 0 !important;
+  }
+  .ms-DetailsRow-fields {
+    cursor: pointer;
   }
 }

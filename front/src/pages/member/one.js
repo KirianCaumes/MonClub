@@ -3,10 +3,10 @@ import { } from 'react-bulma-components'
 import { } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
-import { history } from '../../helper/history'
 import { PrintJson } from '../../component/printJson'
+import { history } from '../../helper/history'
 
-class _MembersOne extends React.Component {
+class _MemberOne extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -15,7 +15,8 @@ class _MembersOne extends React.Component {
     componentDidMount() {      
         this.props.setBreadcrumb([
             { text: 'Membres', key: 'members' },
-            { text: `${this.props.data?.firstname ?? ''} ${this.props.data?.lastname ?? ''}`, key: 'all-members', isCurrentItem: true },
+            { text: 'Tous les membres', key: 'all-members',  onClick: () => history.push('/membres') },
+            { text: `${this.props.data?.firstname ?? ''} ${this.props.data?.lastname ?? ''}`, key: 'member', isCurrentItem: true },
         ])
         this.props.setCommand([])
     }
@@ -23,7 +24,7 @@ class _MembersOne extends React.Component {
     render() {
         const { data } = this.props
         return (
-            <section id="members-one">
+            <section id="member-one">
                 <div className="card" >
                     <PrintJson data={data} />
                 </div>
@@ -46,5 +47,5 @@ const mapStateToProps = state => {
         param: state.user.param
     }
 }
-const MembersOne = connect(mapStateToProps, mapDispatchToProps)(_MembersOne)
-export default MembersOne
+const MemberOne = connect(mapStateToProps, mapDispatchToProps)(_MemberOne)
+export default MemberOne

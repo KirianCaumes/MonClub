@@ -46,12 +46,6 @@ class Aside extends React.Component {
                                     onClick: () => history.push('/membres/moi')
                                 },
                                 {
-                                    key: '/membre/nouveau',
-                                    name: <><Icon iconName='Add' /> Créer un membre</>,
-                                    title: 'Créer un membre',
-                                    onClick: () => history.push('/membre/nouveau')
-                                },
-                                {
                                     key: '/membres',
                                     name: <><Icon iconName='RecruitmentManagement' /> Les membres</>,
                                     title: 'Les membres',
