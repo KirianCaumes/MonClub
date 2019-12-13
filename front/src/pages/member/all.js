@@ -197,7 +197,7 @@ class _MembersAll extends React.Component {
                                         minWidth: 70,
                                         maxWidth: 200,
                                         isResizable: true,
-                                        onRender: member => <>{member.team?.label}</>
+                                        onRender: member => <>{member.teams?.map(team => team.label).join(' / ')}</>
                                     }
                                 ]}
                                 selectionMode={SelectionMode.none}

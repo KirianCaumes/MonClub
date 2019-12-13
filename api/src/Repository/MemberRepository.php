@@ -25,8 +25,9 @@ class MemberRepository extends ServiceEntityRepository
     public function findMembersByFields($name, $stepsId, $teamsId)
     {
         $query = $this->createQueryBuilder('m')
+            ->join('m.teams', 'c')
             ->where('m.firstname LIKE :name OR m.lastname LIKE :name')
-            ->andWhere('m.team IN(:teamsId) OR :teamsId = \'\''); //To prevent if teamsId is an empty string
+            ->andWhere('c.id IN(:teamsId) OR :teamsId = \'\''); //To prevent if teamsId is an empty string
 
         if ($stepsId) {
             $search = '';
