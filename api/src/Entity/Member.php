@@ -192,14 +192,15 @@ class Member
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Team")
-     * @ORM\JoinColumn(name="id_team", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Team", inversedBy="members")
+     * @ORM\JoinTable(name="mc_member_team")
      */
-    private $team;
+    private $teams;
 
     public function __construct()
     {
         // $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -579,14 +580,14 @@ class Member
         return $this;
     }
 
-    public function getTeam(): ?Team
+    public function getTeams(): \Doctrine\Common\Collections\Collection
     {
-        return $this->team;
+        return $this->teams;
     }
 
-    public function setTeam(Team $team): self
+    public function setTeams(\Doctrine\Common\Collections\Collection $teams): self
     {
-        $this->team = $team;
+        $this->teams = $teams;
 
         return $this;
     }
