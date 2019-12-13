@@ -38,7 +38,7 @@ div#root {
           border-radius: 1px;
           > button {
             font-weight: normal !important;
-            color:unset!important;
+            color: unset !important;
             &:hover {
               background: $light-grey;
             }
@@ -58,14 +58,19 @@ div#root {
       min-height: 100%;
       div.ms-CommandBar {
         background: $grey;
+        .ms-OverflowSet-overflowButton {
+          > button {
+            background: $grey;
+          }
+        }
         .ms-OverflowSet-item {
           @include flex-col();
           > button.ms-Button {
             height: 75%;
             border-radius: 1px;
             background: $grey;
-            &:not(.is-disabled){
-                color: $blue;
+            &:not(.is-disabled) {
+              color: $blue;
             }
             &:hover {
               background: $blue;

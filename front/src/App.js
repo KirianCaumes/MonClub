@@ -98,7 +98,7 @@ class _App extends React.Component {
                             <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membres/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/membre/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membre/nouveau" component={withData(MemberOne, () => request.getNewMember())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/utilisateurs" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />

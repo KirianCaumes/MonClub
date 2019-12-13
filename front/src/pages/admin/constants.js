@@ -1,9 +1,8 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { } from 'office-ui-fabric-react'
+import { Separator, Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
-import { PrintJson } from '../../component/printJson'
 
 class _Constants extends React.Component {
     constructor(props) {
@@ -20,10 +19,283 @@ class _Constants extends React.Component {
     }
 
     render() {
+        const { param } = this.props
         return (
             <section>
                 <div className="card" >
-                    <PrintJson data={this.props.param} />
+                    <Label>Équipe :</Label>
+                    <DetailsList
+                        items={param?.teams ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Étape workflow :</Label>
+                    <DetailsList
+                        items={param?.workflowStep ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Équipe :</Label>
+                    <DetailsList
+                        items={param?.teams ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Glboal :</Label>
+                    <DetailsList
+                        items={param?.global ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'value',
+                                name: 'Valeur',
+                                fieldName: 'value',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Catégories documents :</Label>
+                    <DetailsList
+                        items={param?.documentCategory ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Prix licences :</Label>
+                    <DetailsList
+                        items={param?.price?.license ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'price_before_deadline',
+                                name: 'Prix avant deadline',
+                                fieldName: 'price_before_deadline',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'price_after_deadline',
+                                name: 'Prix après deadline',
+                                fieldName: 'price_after_deadline',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'min_year',
+                                name: 'Année min.',
+                                fieldName: 'min_year',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'max_year',
+                                name: 'Année max.',
+                                fieldName: 'max_year',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    
+                    <Label>Prix transfert :</Label>
+                    <DetailsList
+                        items={param?.price?.transfer ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'price',
+                                name: 'Prix',
+                                fieldName: 'price',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'min_age',
+                                name: 'Age min.',
+                                fieldName: 'min_age',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'max_age',
+                                name: 'Age max.',
+                                fieldName: 'max_age',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+                    
+                    <Label>Prix réduction :</Label>
+                    <DetailsList
+                        items={param?.price?.discount ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'number',
+                                name: 'Nombre',
+                                fieldName: 'number',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'discount',
+                                name: 'Réduction',
+                                fieldName: 'discount',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <Separator />
+
                 </div>
             </section >
         )

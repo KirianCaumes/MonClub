@@ -169,6 +169,50 @@ export default {
 
         return getFetch(url, options)
     },
+    getNewMember: () => {
+        const url = ["member", "new"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    createMember: (body) => {
+        const url = ["member"]
+        body = {
+            label: body.label
+        }
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    editMember: (id, body) => {
+        const url = ["member", id]
+        body = {
+            label: body.label
+        }
+
+        var options = {
+            method: PUT,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    deleteMember: (id) => {
+        const url = ["member", id]
+
+        var options = {
+            method: DELETE
+        }
+
+        return getFetch(url, options)
+    },
     getAllTeams: () => {
         const url = ["team"]
 
@@ -198,6 +242,9 @@ export default {
     },
     createTeam: (body) => {
         const url = ["team"]
+        body = {
+            label: body.label
+        }
 
         var options = {
             method: POST,
@@ -208,6 +255,9 @@ export default {
     },
     editTeam: (id, body) => {
         const url = ["team", id]
+        body = {
+            label: body.label
+        }
 
         var options = {
             method: PUT,

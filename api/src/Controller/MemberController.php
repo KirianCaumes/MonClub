@@ -73,6 +73,16 @@ class MemberController extends FOSRestController
     }
 
     /**
+     * Get new member.
+     * @Rest\Get("/new")
+     *
+     * @return Response
+     */
+    public function getNewMember()
+    {
+        return $this->handleView($this->view((new Member())));
+    }
+    /**
      * One member.
      * @Rest\Get("/{id}")
      *
@@ -83,9 +93,13 @@ class MemberController extends FOSRestController
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
         if (!$member) {
-            return $this->handleView($this->view((new Member()))); //Return empty member if none exists
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')])); //Return empty member if none exists
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        $member->getUser()->setPassword('');
+        $member->getUser()->setSalt('');
+        $member->getUser()->setConfirmationToken('');
 
         return $this->handleView($this->view($member));
     }

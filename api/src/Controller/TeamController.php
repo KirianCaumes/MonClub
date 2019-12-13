@@ -49,9 +49,13 @@ class TeamController extends FOSRestController
      *
      * @return Response
      */
-    public function getOneTeam(int $id)
+    public function getOneTeam(int $id, TranslatorInterface $translator)
     {
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(Team::class)->findOneBy(['id' => $id])));
+        $team = $this->getDoctrine()->getRepository(Team::class)->findOneBy(['id' => $id]);
+        if (!$team) {
+            return $this->handleView($this->view(["message" => $translator->trans('team_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        return $this->handleView($this->view($team, Response::HTTP_OK));
     }
 
     /**
