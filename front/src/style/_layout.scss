@@ -63,8 +63,10 @@ div#root {
           > button.ms-Button {
             height: 75%;
             border-radius: 1px;
-            color: $blue;
             background: $grey;
+            &:not(.is-disabled){
+                color: $blue;
+            }
             &:hover {
               background: $blue;
               span {

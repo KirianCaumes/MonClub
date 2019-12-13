@@ -35,7 +35,7 @@ class _Register extends React.Component {
                 })
                 .catch(err => {
                     this.setState({ isLoading: false, errorField: err?.form?.children ? err.form.children : [] })
-                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error.message)
+                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                 })
         })
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,6 +19,7 @@ class Team
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
      * @ORM\Column(type="string", length=255)
      */
     private $label;
@@ -42,7 +44,7 @@ class Team
         return $this->label;
     }
 
-    public function setLabal(string $label): self
+    public function setLabel(string $label): self
     {
         $this->label = $label;
 

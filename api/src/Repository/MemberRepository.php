@@ -24,10 +24,10 @@ class MemberRepository extends ServiceEntityRepository
      */
     public function findMembersByFields($name, $stepsId, $teamsId)
     {
-        $query = $this->createQueryBuilder('m')
-            ->join('m.teams', 'c')
-            ->where('m.firstname LIKE :name OR m.lastname LIKE :name')
-            ->andWhere('c.id IN(:teamsId) OR :teamsId = \'\''); //To prevent if teamsId is an empty string
+        $query = $this->createQueryBuilder('m');
+        if ($teamsId) $query->join('m.teams', 'c');
+        $query->where('m.firstname LIKE :name OR m.lastname LIKE :name');
+        if ($teamsId) $query->andWhere('c.id IN(:teamsId)');
 
         if ($stepsId) {
             $search = '';
@@ -39,9 +39,8 @@ class MemberRepository extends ServiceEntityRepository
             $query->andWhere(substr($search, 4));
         }
 
-        $query
-            ->setParameter('name', '%' . $name . '%')
-            ->setParameter('teamsId', $teamsId);
+        $query->setParameter('name', '%' . $name . '%');
+        if ($teamsId) $query->setParameter('teamsId', $teamsId);
 
         return $query->getQuery()->getResult();
     }

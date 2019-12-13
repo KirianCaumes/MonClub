@@ -187,4 +187,42 @@ export default {
 
         return getFetch(url, options)
     },
+    getNewTeam: () => {
+        const url = ["team", "new"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    createTeam: (body) => {
+        const url = ["team"]
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    editTeam: (id, body) => {
+        const url = ["team", id]
+
+        var options = {
+            method: PUT,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    deleteTeam: (id) => {
+        const url = ["team", id]
+
+        var options = {
+            method: DELETE
+        }
+
+        return getFetch(url, options)
+    },
 }

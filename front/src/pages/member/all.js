@@ -45,7 +45,7 @@ class _MembersAll extends React.Component {
             request.getAllMembers(this.state.searchParms)
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
-                    this.props.setMessageBar(true, MessageBarType.error, err.toString())
+                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                 })
                 .finally(() => this.setState({ isLoading: false }))
         })

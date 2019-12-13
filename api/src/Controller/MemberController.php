@@ -157,7 +157,7 @@ class MemberController extends FOSRestController
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
-                return $this->handleView($this->view($member, Response::HTTP_CREATED));
+                return $this->handleView($this->view($member, Response::HTTP_OK));
             }
             return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
         }

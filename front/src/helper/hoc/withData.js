@@ -20,7 +20,7 @@ export default function withData(WrappedComponent, dataFunc) {
                     .then(data => this.setState({ data }))
                     .catch(err => {
                         this.setState({ isError: true })
-                        this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error.message)
+                        this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                     })
                     .finally(() => this.setState({ isLoading: false }))
             })

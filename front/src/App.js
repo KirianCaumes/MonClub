@@ -77,8 +77,8 @@ class _App extends React.Component {
                 .then(([me, param]) => {
                     this.props.init(me, param)
                 })
-                .catch(err => {
-                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error.message)
+                .catch(err => {                    
+                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                 })
                 .finally(() => {
                     this.setState({ isInit: true })
@@ -91,7 +91,7 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                <FullLoader isLoading={!isInit && isAuthenticated} />
+                {/* <FullLoader isLoading={!isInit && isAuthenticated} /> */}
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
@@ -100,15 +100,15 @@ class _App extends React.Component {
                             <PrivateRoute path="/membres/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            
+
                             <PrivateRoute exact path="/utilisateurs" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateurs/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateur/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/equipes" component={TeamsAll} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/equipe/nouveau" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/equipe/nouveau" component={withData(TeamOne, () => request.getNewTeam())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/equipe/:id" component={withData(TeamOne, (props) => request.getOneTeam(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            
+
                             <PrivateRoute path="/constantes" component={Constants} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>
                     </Layout>
