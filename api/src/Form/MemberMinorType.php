@@ -21,7 +21,7 @@ class MemberMinorType extends AbstractType
         $builder
             ->add('firstname')
             ->add('lastname')
-            ->add('birthdate', DateType::class, [
+            ->add('birthdate', DateTimeType::class, [
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
             ])

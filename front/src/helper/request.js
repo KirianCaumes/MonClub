@@ -194,7 +194,8 @@ export default {
     editMember: (id, body) => {
         const url = ["member", id]
         body = {
-            label: body.label
+            ...body,
+            birthdate: body?.birthdate ? (new Date(body.birthdate)).toISOString().slice(0, 10) : null
         }
 
         var options = {

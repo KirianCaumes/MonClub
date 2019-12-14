@@ -1,44 +1,46 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { Icon } from 'office-ui-fabric-react'
 
-export default class Workflow extends React.Component {
+class _Workflow extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             data: [
                 {
                     isCompleted: true,
-                    isActive: false,
-                    icon: '',
-                    label: 'Créé',
+                    isActive: !this.props.member.is_document_complete,
+                    icon: <Icon iconName="CheckMark" />,
+                    label: this.props.param?.workflowStep?.find(x => x.id === 1)?.label,
                     description: 'L\'utilisateur est créé.'
                 },
                 {
-                    isCompleted: false,
-                    isActive: true,
+                    isCompleted: this.props.member.is_document_complete,
+                    isActive: true && !this.props.member.is_payed,
                     icon: '',
-                    label: 'Docments complets',
+                    label: this.props.param?.workflowStep?.find(x => x.id === 2)?.label,
                     description: 'L\'utilisateur à fournis les documents nécessaires.'
                 },
                 {
-                    isCompleted: false,
-                    isActive: false,
+                    isCompleted: this.props.member.is_payed,
+                    isActive: this.props.member.is_document_complete && !this.props.member.is_check_gest_hand,
                     icon: '',
-                    label: 'Payé',
+                    label: this.props.param?.workflowStep?.find(x => x.id === 3)?.label,
                     description: 'L\'utilisateur à payé.'
                 },
                 {
-                    isCompleted: false,
-                    isActive: false,
+                    isCompleted: this.props.member.is_check_gest_hand,
+                    isActive: this.props.member.is_payed && !this.props.member.is_inscription_done,
                     icon: '',
-                    label: 'Gest\'hand',
+                    label: this.props.param?.workflowStep?.find(x => x.id === 4)?.label,
                     description: 'L\'utilisateur est bien inscris sur Gest\'hand.'
                 },
                 {
-                    isCompleted: false,
-                    isActive: false,
+                    isCompleted: this.props.member.is_inscription_done,
+                    isActive: this.props.member.is_check_gest_hand && !this.props.member.is_inscription_done,
                     icon: '',
-                    label: 'Inscris',
-                    description: '\'inscription est finalisée.'
+                    label: this.props.param?.workflowStep?.find(x => x.id === 5)?.label,
+                    description: 'L\'inscription est finalisée.'
                 }
             ]
         }
@@ -49,9 +51,17 @@ export default class Workflow extends React.Component {
                 {
                     this.state.data.map((row, i) => {
                         return (
-                            <div className={`step-item ${row.isCompleted ? 'is-completed' : ''} ${row.isActive ? 'is-active' : ''} `}>
+                            <div key={i} className={`step-item ${row.isCompleted ? 'is-completed' : ''} ${row.isActive ? 'is-active' : ''} `}>
                                 <div className="step-marker">
-                                    {row.icon}
+                                    {(() => {
+                                        if (row.isCompleted) {
+                                            return <Icon iconName="CheckMark" />
+                                        } else if (row.isActive) {
+                                            return <Icon iconName="Play" />
+                                        } else {
+                                            return <Icon iconName="More" />
+                                        }
+                                    })()}
                                 </div>
                                 <div className="step-details">
                                     <p className="step-title">{row.label}</p>
@@ -65,3 +75,15 @@ export default class Workflow extends React.Component {
         )
     }
 }
+
+const mapDispatchToProps = dispatch => {
+    return {}
+}
+
+const mapStateToProps = state => {
+    return {
+        param: state.user.param
+    }
+}
+const Workflow = connect(mapStateToProps, mapDispatchToProps)(_Workflow)
+export default Workflow
