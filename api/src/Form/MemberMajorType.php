@@ -37,6 +37,9 @@ class MemberMajorType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
+            ])            
+            ->add('profession', TextType::class, [
+                'required' => false,
             ])
             ->add('parent_one_firstname', TextType::class, [
                 'disabled' => true,
@@ -68,6 +71,13 @@ class MemberMajorType extends AbstractType
             ->add('parent_two_profession', TextType::class, [
                 'disabled' => true,
             ])  
+            ->add('is_evacuation_allow', CheckboxType::class)
+            ->add('is_transport_allow', CheckboxType::class)
+            ->add('is_image_allow', CheckboxType::class)
+            ->add('is_return_home_allow', CheckboxType::class)
+            ->add('is_accepted', CheckboxType::class)
+            ->add('is_reduced_price', CheckboxType::class)
+            ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
             ])          
@@ -86,7 +96,6 @@ class MemberMajorType extends AbstractType
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('is_accepted')
             ->add('save', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver)

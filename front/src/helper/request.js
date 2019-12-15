@@ -2,6 +2,7 @@ import store from '../redux/store/index.js'
 import { setMessageBar } from '../redux/actions/common.js'
 import { signout } from '../redux/actions/user.js'
 import { MessageBarType } from 'office-ui-fabric-react';
+import { dateToString } from './date.js';
 
 
 const
@@ -181,7 +182,22 @@ export default {
     createMember: (body) => {
         const url = ["member"]
         body = {
-            label: body.label
+            ...body,
+            birthdate: dateToString(body?.birthdate)
+        }
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    createMemberAdmin: (body) => {
+        const url = ["member", "admin"]
+        body = {
+            ...body,
+            birthdate: dateToString(body?.birthdate)
         }
 
         var options = {
@@ -195,7 +211,21 @@ export default {
         const url = ["member", id]
         body = {
             ...body,
-            birthdate: body?.birthdate ? (new Date(body.birthdate)).toISOString().slice(0, 10) : null
+            birthdate: dateToString(body?.birthdate)
+        }
+
+        var options = {
+            method: PUT,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
+    editMemberAdmin: (id, body) => {
+        const url = ["member", id, "admin"]
+        body = {
+            ...body,
+            birthdate: dateToString(body?.birthdate)
         }
 
         var options = {

@@ -6,10 +6,14 @@ use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamWorkflow;
+use App\Form\MemberMajorAdminType;
 use App\Form\MemberMajorType;
+use App\Form\MemberMinorAdminType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
 use App\Service\PriceService;
+use App\Service\WorkflowService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -80,7 +84,7 @@ class MemberController extends FOSRestController
      */
     public function getNewMember()
     {
-        return $this->handleView($this->view((new Member())));
+        return $this->handleView($this->view(['member' => (new Member())]));
     }
     /**
      * One member.
@@ -88,7 +92,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getOneMember(TranslatorInterface $translator, int $id)
+    public function getOneMember(TranslatorInterface $translator, WorkflowService $workflowService, int $id)
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
@@ -101,12 +105,52 @@ class MemberController extends FOSRestController
         $member->getUser()->setSalt('');
         $member->getUser()->setConfirmationToken('');
 
-        return $this->handleView($this->view($member));
+        return $this->handleView($this->view([
+            'member' => $member,
+            'workflow' => $workflowService->getWorkflow($member)
+        ]));
+    }
+
+    /**
+     * Create Member Admin.
+     * @Rest\Post("/admin")
+     *
+     * @return Response
+     */
+    public function postMemberAdmin(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
+    {
+        $member = new Member();
+        $this->denyAccessUnlessGranted(Constants::CREATE, $member);
+
+        $data = json_decode($request->getContent(), true);
+
+        //Check if birthdate is valid date
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
+            //Create form by age of member
+            if ($dateService->isMajor($data['birthdate'])) {
+                $form = $this->createForm(MemberMajorAdminType::class, $member);
+            } else {
+                $form = $this->createForm(MemberMinorAdminType::class, $member);
+            }
+            $data['is_accepted'] = true;
+            $form->submit($data);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $member->setUser($this->getUser());
+                $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($member);
+                $em->flush();
+                return $this->handleView($this->view($member, Response::HTTP_CREATED));
+            }
+            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        }
+        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
     }
 
     /**
      * Create Member.
-     * @Rest\Post("/")
+     * @Rest\Post("")
      *
      * @return Response
      */
@@ -118,7 +162,7 @@ class MemberController extends FOSRestController
         $data = json_decode($request->getContent(), true);
 
         //Check if birthdate is valid date
-        if ($dateService->isDate($data['birthdate'])) {
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
             //Create form by age of member
             if ($dateService->isMajor($data['birthdate'])) {
                 $form = $this->createForm(MemberMajorType::class, $member);
@@ -158,7 +202,7 @@ class MemberController extends FOSRestController
         $data = json_decode($request->getContent(), true);
 
         //Check if birthdate is valid date
-        if ($dateService->isDate($data['birthdate'])) {
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
             //Create form by age of member
             if ($dateService->isMajor($data['birthdate'])) {
                 $form = $this->createForm(MemberMajorType::class, $member);
@@ -172,6 +216,48 @@ class MemberController extends FOSRestController
                 $em->persist($member);
                 $em->flush();
                 return $this->handleView($this->view($member, Response::HTTP_OK));
+            }
+            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        }
+        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
+     * Edit Member for admin.
+     * @Rest\Put("/{id}/admin")
+     *
+     * @return Response
+     */
+    public function putMemberAdmin(Request $request, DateService $dateService, TranslatorInterface $translator, WorkflowService $workflowService, int $id)
+    {
+        //Find user by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        if (!$member) {
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        $this->denyAccessUnlessGranted(Constants::UPDATE, $member);
+
+        $data = json_decode($request->getContent(), true);
+
+        //Check if birthdate is valid date
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
+            //Create form by age of member
+            if ($dateService->isMajor($data['birthdate'])) {
+                $form = $this->createForm(MemberMajorAdminType::class, $member);
+            } else {
+                $form = $this->createForm(MemberMinorAdminType::class, $member);
+            }
+            $form->submit($data, true);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($member);
+                $em->flush();
+
+                return $this->handleView($this->view([
+                    'member' => $member,
+                    'workflow' => $workflowService->getWorkflow($member)
+                ]));
             }
             return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
         }
@@ -296,20 +382,20 @@ class MemberController extends FOSRestController
      */
     public function getWorkflow(TranslatorInterface $translator, int $id)
     {
-        //Find member by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        if (!$member) {
-            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        }
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        // //Find member by id
+        // $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        // if (!$member) {
+        //     return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        // }
+        // $this->denyAccessUnlessGranted(Constants::READ, $member);
 
-        return $this->handleView($this->view([
-            'isCreated' => true,
-            'isDocumentComplete' => $member->getIsDocumentComplete(),
-            'isPayed' => $member->getIsPayed(),
-            'isCheckGestHand' => $member->getIsCheckGestHand(),
-            'isInscriptionDone' => $member->getIsInscriptionDone()
-        ]));
+        // return $this->handleView($this->view([
+        //     'isCreated' => true,
+        //     'isDocumentComplete' => $member->getIsDocumentComplete(),
+        //     'isPayed' => $member->getIsPayed(),
+        //     'isCheckGestHand' => $member->getIsCheckGestHand(),
+        //     'isInscriptionDone' => $member->getIsInscriptionDone()
+        // ]));
     }
 
     /**

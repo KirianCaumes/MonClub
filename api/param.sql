@@ -31,10 +31,10 @@ VALUES
     (1, 'Certificat médical'), 
     (2, 'Justificatif étudiant/chomeur');
 
-INSERT INTO `mc_param_workflow` (`id`, `label`) 
+INSERT INTO `mc_param_workflow` (`id`, `label`, `description`) 
 VALUES 
-    (1, 'Créé'), 
-    (2, 'Docments complets'), 
-    (3, 'Payé'), 
-    (4, 'Gest''hand'), 
-    (5, 'Inscris');
+    (1, 'Créé', 'L''utilisateur est créé.'), 
+    (2, 'Documents', 'L''utilisateur à fournis les documents nécessaires.'), 
+    (3, 'Payé','L''utilisateur à payé.'), 
+    (4, 'Gest''hand', 'L''utilisateur est bien inscris sur Gest''hand.'), 
+    (5, 'Inscris', 'L''inscription est finalisée.');
