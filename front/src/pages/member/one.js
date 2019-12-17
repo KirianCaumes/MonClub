@@ -8,6 +8,8 @@ import request from '../../helper/request'
 import Workflow from '../../component/workflow'
 import { stringToCleanString, stringToDate, isMajor } from '../../helper/date'
 import Loader from '../../component/loader'
+import FileInput from '../../component/fileInput'
+import {dlBlob} from '../../helper/dlBlob'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -78,7 +80,7 @@ class _MemberOne extends React.Component {
                             request.createMemberAdmin({ ...this.state.data })
                                 .then(data => {
                                     this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été créée.')
-                                    history.push(`/member/${data.id}`)
+                                    history.push(`/membre/${data.id}`)
                                 })
                                 .catch(err => {
                                     this.props.setCommand(commandEdit)
@@ -128,8 +130,9 @@ class _MemberOne extends React.Component {
         const { readOnly, data, isLoading, workflow } = this.state
 
         if (isLoading) return <Loader />
+        console.log(data?.documents?.find(doc => doc?.category?.id === 1))
 
-        return (isLoading,
+        return (
             <section id="member-one">
                 <div className="card" >
                     {
@@ -595,18 +598,31 @@ class _MemberOne extends React.Component {
                     <Columns>
                         <Columns.Column>
                             <Label required>Certificat médical</Label>
-                            {
-                                readOnly ?
-                                    <DefaultButton
-                                        text="Télécharger"
-                                        iconProps={{ iconName: 'Download' }}
-                                    />
-                                    :
-                                    <PrimaryButton
-                                        text="Téléverser"
-                                        iconProps={{ iconName: 'Upload' }}
-                                    />
-                            }
+                            <FileInput
+                                read={readOnly}
+                                errorMessage={this.state.errorField?.documentFile?.errors?.[0]}
+                                disabled={!data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
+                                onDownload={() => {
+                                    request.getDocument(this.props.match?.params?.id, 1)
+                                        .then(file => {
+                                            dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name)
+                                        })
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                }}
+                                onUpload={file => {
+                                    return request.uploadDocument(file, this.props.match?.params?.id, 1)
+                                        .then(doc => console.log(doc))
+                                        .catch(err => {
+                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                            this.setState({ errorField: err?.form?.children })
+                                        })
+                                }}
+                                onDelete={() => {
+                                    return request.deleteDocument(this.props.match?.params?.id, 1)
+                                        .then(() => console.log("delete"))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                }}
+                            />
                         </Columns.Column>
 
                         <Columns.Column>

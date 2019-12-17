@@ -44,7 +44,7 @@ class Document
     private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Member")
+     * @ORM\ManyToOne(targetEntity="Member", inversedBy="documents")
      * @ORM\JoinColumn(name="id_member", referencedColumnName="id", onDelete="CASCADE")
      */
     private $member;

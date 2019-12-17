@@ -306,4 +306,35 @@ export default {
 
         return getFetch(url, options)
     },
+    uploadDocument: (file, memberId, fileTypeId) => {
+        const url = ["document", memberId, fileTypeId]
+        let formData = new FormData()
+        formData.append("documentFile", file)
+
+        var options = {
+            method: POST,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            body: formData
+        }
+
+        return getFetch(url, options)
+    },
+    getDocument: (memberId, fileTypeId) => {
+        const url = ["document", memberId, fileTypeId]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    deleteDocument: (memberId, fileTypeId) => {
+        const url = ["document", memberId, fileTypeId]
+
+        var options = {
+            method: DELETE
+        }
+
+        return getFetch(url, options)
+    },
 }

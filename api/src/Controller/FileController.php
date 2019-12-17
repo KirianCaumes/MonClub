@@ -50,9 +50,16 @@ class FileController extends FOSRestController
         $form->submit($request->files->all());
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            //Check if doc with current category for current user exists
+            $docs = $this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member, 'category' => $documentCategory]);
+            if ($docs) {
+                foreach ($docs as $doc) $em->remove($doc);
+                $em->flush();
+            }
+
             $document->setMember($member);
             $document->setCategory($documentCategory);
-            $em = $this->getDoctrine()->getManager();
             $em->persist($document);
             $em->flush();
             return $this->handleView($this->view($document, Response::HTTP_CREATED));

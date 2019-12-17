@@ -197,10 +197,16 @@ class Member
      */
     private $teams;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Document", mappedBy="member")
+     */
+    private $documents;
+
     public function __construct()
     {
         // $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->documents = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -417,7 +423,7 @@ class Member
         return $this->is_transport_allow;
     }
 
-    public function setAllowTransportAllow(bool $is_transport_allow): self
+    public function setIsTransportAllow(bool $is_transport_allow): self
     {
         $this->is_transport_allow = $is_transport_allow;
 
@@ -588,6 +594,18 @@ class Member
     public function setTeams(\Doctrine\Common\Collections\Collection $teams): self
     {
         $this->teams = $teams;
+
+        return $this;
+    }
+
+    public function getDocuments(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->documents;
+    }
+
+    public function setDocuments(\Doctrine\Common\Collections\Collection $documents): self
+    {
+        $this->documents = $documents;
 
         return $this;
     }
