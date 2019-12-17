@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_document")
+ * @ORM\Table(name="document")
  * @Vich\Uploadable
  */
 class Document

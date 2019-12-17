@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_param_global")
+ * @ORM\Table(name="param_global")
  * @UniqueEntity(fields={"label"}, message="already_exist")
  */
 class ParamGlobal

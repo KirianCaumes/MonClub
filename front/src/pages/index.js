@@ -14,32 +14,7 @@ class _Index extends React.Component {
         this.props.setBreadcrumb([
             { text: 'Accueil', key: 'accueil', isCurrentItem: true},
         ])
-        this.props.setCommand([
-            {
-                key: 'newItem',
-                text: 'New',
-                iconProps: { iconName: 'Add' },
-                onClick: () => console.log('Calendar')
-            },
-            {
-                key: 'upload',
-                text: 'Upload',
-                iconProps: { iconName: 'Upload' },
-                onClick: () => console.log('Upload')
-            },
-            {
-                key: 'share',
-                text: 'Share',
-                iconProps: { iconName: 'Share' },
-                onClick: () => console.log('Share')
-            },
-            {
-                key: 'download',
-                text: 'Download',
-                iconProps: { iconName: 'Download' },
-                onClick: () => console.log('Download')
-            }
-        ])
+        this.props.setCommand([])
     }
     render() {
         return (

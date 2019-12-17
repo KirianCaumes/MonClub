@@ -6,7 +6,6 @@ import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/co
 import { history } from '../../helper/history'
 import request from '../../helper/request'
 import Workflow from '../../component/workflow'
-import withSimpleLoading from '../../helper/hoc/withSimpleLoading'
 import { stringToCleanString, stringToDate, isMajor } from '../../helper/date'
 import Loader from '../../component/loader'
 

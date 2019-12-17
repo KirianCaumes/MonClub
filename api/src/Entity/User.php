@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_user")
+ * @ORM\Table(name="user")
  * @UniqueEntity(fields={"username"}, message="already_exist")
  */
 class User extends BaseUser
@@ -49,7 +49,7 @@ class User extends BaseUser
      * Many Users have Many Teams.
      * @ORM\ManyToMany(targetEntity="Team")
      * @ORM\JoinTable(
-     *      name="mc_users_teams",
+     *      name="users_teams",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="team_id", referencedColumnName="id")}
      * )

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
- * @ORM\Table(name="mc_member")
+ * @ORM\Table(name="member")
  */
 class Member
 {
@@ -193,7 +193,7 @@ class Member
 
     /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="members")
-     * @ORM\JoinTable(name="mc_member_team")
+     * @ORM\JoinTable(name="member_team")
      */
     private $teams;
 

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_param_workflow")
+ * @ORM\Table(name="param_workflow")
  * @UniqueEntity(fields={"label"}, message="already_exist")
  */
 class ParamWorkflow

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ParamPriceLicenseRepository")
- * @ORM\Table(name="mc_param_price_license")
+ * @ORM\Table(name="param_price_license")
  */
 class ParamPriceLicense
 {

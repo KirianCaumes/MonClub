@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_param_document_category")
+ * @ORM\Table(name="param_document_category")
  */
 class ParamDocumentCategory
 {

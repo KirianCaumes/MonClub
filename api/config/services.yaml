@@ -33,6 +33,11 @@ services:
         class: App\Service\MailService
         arguments:
           - "@mailer"
+    
+    tblprefix_subscriber:
+        class: App\Subscriber\TablePrefixSubscriber
+        tags:
+            - { name: doctrine.event_subscriber }
 # FOS user config
 fos_user:
     db_driver:      orm # other valid values are 'mongodb', 'couchdb' and 'propel'

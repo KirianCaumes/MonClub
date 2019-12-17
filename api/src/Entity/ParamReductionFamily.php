@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="mc_param_reduction_family")
+ * @ORM\Table(name="param_reduction_family")
  */
 class ParamReductionFamily
 {
