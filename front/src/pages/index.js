@@ -12,7 +12,7 @@ class _Index extends React.Component {
 
     componentDidMount() {
         this.props.setBreadcrumb([
-            { text: 'Accueil', key: 'accueil', isCurrentItem: true},
+            { text: 'Accueil', key: 'accueil', isCurrentItem: true },
         ])
         this.props.setCommand([])
     }
@@ -21,8 +21,9 @@ class _Index extends React.Component {
             <section id="index">
                 <Hero color="info">
                     <Hero.Body>
-                        <Container>
-                            <Heading className="is-capitalized">
+                        <Container className="flex-row">
+                            <img src={require('../asset/img/logo.png')} alt="THBC" className="is-hidden-touch" />
+                            <Heading className="is-capitalized flex-col">
                                 Bienvenue : {this.props.me?.username?.split('@')?.[0]}
                             </Heading>
                         </Container>
@@ -34,7 +35,7 @@ class _Index extends React.Component {
                         <div className="card has-text-centered">
                             <div className="flex-col">
                                 <Text variant="large" block>
-                                    <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{__html: this.props.data?.text}}></span>
+                                    <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{ __html: this.props.data?.text }}></span>
                                 </Text>
                             </div>
                         </div>
@@ -97,6 +98,9 @@ class _Index extends React.Component {
                         </Columns>
                     </Columns.Column>
                 </Columns>
+                <div className="card has-text-centered">
+                    <p>En cas de soucis, veuillez contacter le club : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></p>
+                </div>
             </section>
         )
     }

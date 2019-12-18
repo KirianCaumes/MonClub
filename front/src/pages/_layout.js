@@ -38,8 +38,8 @@ class _Layout extends React.Component {
                                     <br />
                                 </>
                             }
-
                             {this.props.children}
+                            <br />
                         </div>
                     </div>
                 </div>

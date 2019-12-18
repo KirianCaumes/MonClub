@@ -1,7 +1,7 @@
 import React from 'react'
 import { BaseComponent } from "@uifabric/utilities"
 import { connect } from "react-redux"
-import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton } from 'office-ui-fabric-react'
+import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text } from 'office-ui-fabric-react'
 
 
 class _FileInput extends BaseComponent {
@@ -9,21 +9,26 @@ class _FileInput extends BaseComponent {
         super(props)
 
         this.state = {
-            isUploading: false
+            isUploading: false,
+            isDeleteing: false,
+            showDialog: false
         }
     }
 
     render() {
-        const { isUploading } = this.state
-        const { errorMessage, disabled, read } = this.props
+        const { isUploading, isDeleteing, showDialog } = this.state
+        const { errorMessage, isFile, read, fileName } = this.props
         if (read) {
             return (
-                <DefaultButton
-                    text="Télécharger"
-                    iconProps={{ iconName: 'Download' }}
-                    disabled={disabled}
-                    onClick={() => this.props.onDownload()}
-                />
+                <>
+                    <DefaultButton
+                        text="Télécharger"
+                        iconProps={{ iconName: 'Download' }}
+                        disabled={!isFile}
+                        onClick={() => this.props.onDownload()}
+                    />
+                    <Text variant="small" block>{fileName}</Text>
+                </>
             )
         } else {
             return (
@@ -36,20 +41,16 @@ class _FileInput extends BaseComponent {
                                 this.uploadFile.value = null
                                 this.uploadFile.click()
                             }}
-                            disabled={isUploading}
+                            disabled={isUploading || isFile}
                         />
                         <IconButton
                             iconProps={{ iconName: 'Delete' }}
-                            disabled={isUploading || disabled}
+                            disabled={isUploading || !isFile}
                             onClick={() => {
-                                this.setState({ isUploading: true })
-                                this.props.onDelete().finally(() => this.setState({ isUploading: false }))
+                                this.setState({ showDialog: true })
                             }}
                         />
-                        {
-                            isUploading &&
-                            <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} labelPosition="right" /></>
-                        }
+                        {isUploading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} labelPosition="right" /></>}
                         <input
                             type="file"
                             ref={input => this.uploadFile = input}
@@ -62,6 +63,7 @@ class _FileInput extends BaseComponent {
                             style={{ display: 'none' }}
                         />
                     </div>
+                    <Text variant="small" block>{fileName}</Text>
                     {
                         errorMessage &&
                         <TextField
@@ -69,6 +71,37 @@ class _FileInput extends BaseComponent {
                             styles={{ wrapper: { display: 'none' } }}
                         />
                     }
+                    <Dialog
+                        hidden={!showDialog}
+                        onDismiss={() => this.setState({ showDialog: false })}
+                        dialogContentProps={{
+                            type: DialogType.normal,
+                            title: 'Supprimer le document',
+                            subText: 'Êtes-vous certains de vouloir supprimer le document ? Cette action est définitive.'
+                        }}
+                        modalProps={{
+                            isBlocking: true,
+                            styles: { main: { maxWidth: 450 } },
+                            dragOptions: false
+                        }}
+                    >
+                        <DialogFooter>
+                            <DefaultButton
+                                onClick={() => this.setState({ showDialog: false })}
+                                text="Annuler"
+                                disabled={isDeleteing}
+                            />
+                            <PrimaryButton
+                                onClick={() => {
+                                    this.setState({ isDeleteing: true })
+                                    this.props.onDelete().finally(() => this.setState({ isDeleteing: false, showDialog: false }))
+                                }}
+                                disabled={isDeleteing}
+                            >
+                                Oui {isDeleteing && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} labelPosition="right" /></>}
+                            </PrimaryButton>
+                        </DialogFooter>
+                    </Dialog>
                 </>
             )
         }

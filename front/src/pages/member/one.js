@@ -9,7 +9,7 @@ import Workflow from '../../component/workflow'
 import { stringToCleanString, stringToDate, isMajor } from '../../helper/date'
 import Loader from '../../component/loader'
 import FileInput from '../../component/fileInput'
-import {dlBlob} from '../../helper/dlBlob'
+import { dlBlob } from '../../helper/dlBlob'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -130,7 +130,7 @@ class _MemberOne extends React.Component {
         const { readOnly, data, isLoading, workflow } = this.state
 
         if (isLoading) return <Loader />
-        console.log(data?.documents?.find(doc => doc?.category?.id === 1))
+        console.log(data?.documents)
 
         return (
             <section id="member-one">
@@ -600,26 +600,34 @@ class _MemberOne extends React.Component {
                             <Label required>Certificat médical</Label>
                             <FileInput
                                 read={readOnly}
-                                errorMessage={this.state.errorField?.documentFile?.errors?.[0]}
-                                disabled={!data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
+                                errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
+                                isFile={data?.documents?.find(doc => doc?.category?.id === 1)?.document}
+                                fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                                 onDownload={() => {
                                     request.getDocument(this.props.match?.params?.id, 1)
-                                        .then(file => {
-                                            dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name)
-                                        })
+                                        .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                                 }}
                                 onUpload={file => {
                                     return request.uploadDocument(file, this.props.match?.params?.id, 1)
-                                        .then(doc => console.log(doc))
+                                        .then(doc => {
+                                            let documents = [...data.documents]
+                                            documents.push(doc)
+                                            this.setState({ data: { ...this.state.data, documents: documents } })
+                                        })
                                         .catch(err => {
                                             this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                            this.setState({ errorField: err?.form?.children })
+                                            this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } }, () => setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50))
                                         })
                                 }}
                                 onDelete={() => {
                                     return request.deleteDocument(this.props.match?.params?.id, 1)
-                                        .then(() => console.log("delete"))
+                                        .then(() => {
+                                            let documents = [...data.documents]
+                                            const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
+                                            if (currIndex > -1) documents.splice(currIndex, 1)
+                                            this.setState({ data: { ...this.state.data, documents: documents } })
+                                        })
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                                 }}
                             />
@@ -629,25 +637,45 @@ class _MemberOne extends React.Component {
                             {
                                 data?.is_reduced_price &&
                                 <>
-                                    <Label>Jusitificatif étudiant/chomage</Label>
-                                    {
-                                        readOnly ?
-                                            <DefaultButton
-                                                text="Télécharger"
-                                                iconProps={{ iconName: 'Download' }}
-                                            />
-                                            :
-                                            <PrimaryButton
-                                                text="Téléverser"
-                                                iconProps={{ iconName: 'Upload' }}
-                                            />
-                                    }
+                                    <Label required>Jusitificatif étudiant/chomage</Label>
+                                    <FileInput
+                                        read={readOnly}
+                                        errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
+                                        isFile={data?.documents?.find(doc => doc?.category?.id === 2)?.document}
+                                        fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
+                                        onDownload={() => {
+                                            request.getDocument(this.props.match?.params?.id, 2)
+                                                .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                        }}
+                                        onUpload={file => {
+                                            return request.uploadDocument(file, this.props.match?.params?.id, 2)
+                                                .then(doc => {
+                                                    let documents = [...data.documents]
+                                                    documents.push(doc)
+                                                    this.setState({ data: { ...this.state.data, documents: documents } })
+                                                })
+                                                .catch(err => {
+                                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                    this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } }, () => setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50))
+                                                })
+                                        }}
+                                        onDelete={() => {
+                                            return request.deleteDocument(this.props.match?.params?.id, 2)
+                                                .then(() => {
+                                                    let documents = [...data.documents]
+                                                    const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
+                                                    if (currIndex > -1) documents.splice(currIndex, 1)
+                                                    this.setState({ data: { ...this.state.data, documents: documents } })
+                                                })
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                        }}
+                                    />
                                 </>
                             }
                         </Columns.Column>
                         <Columns.Column />
                     </Columns>
-                    <br />
                 </div>
             </section >
         )
