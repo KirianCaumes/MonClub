@@ -5,7 +5,8 @@ reset_token_invalid: Le token de réinitialisation est invalide.
 not_found: L'élément n'a pas été trouvé.
 document_not_found: Le document n'a pas été trouvé.
 member_not_found: Le membre n'a pas été trouvé.
-team_not_found: Le membre n'a pas été trouvé.
+team_not_found: L'équipe n'a pas été trouvée.
+user_not_found: L'utilisateur n'a pas été trouvé.
 invalid_date: Date invalide.
 not_blank: Le champs ne peut pas être vide.
 member_missing_document: Un ou des documents sont manquants pour les membres. Veuillez les ajouter avant de payer.

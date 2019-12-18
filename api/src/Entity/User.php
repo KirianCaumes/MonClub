@@ -33,14 +33,6 @@ class User extends BaseUser
     protected $username;
 
     /**
-     * @Assert\NotBlank(
-     *     message = "not_blank",
-     * )
-     * 
-     */
-    protected $plainPassword;
-
-    /**
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      */
     private $creation_datetime;

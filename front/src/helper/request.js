@@ -91,7 +91,7 @@ var checkBodyOfResponse = (response) => {
 
 export default {
     getMe: () => {
-        const url = ["me"]
+        const url = ["user", "me"]
         var options = {
             method: GET
         }
@@ -143,7 +143,7 @@ export default {
         return getFetch(url, options)
     },
     getInfos: () => {
-        const url = ["infos"]
+        const url = ["user", "infos"]
 
         var options = {
             method: GET
@@ -328,6 +328,34 @@ export default {
 
         var options = {
             method: DELETE
+        }
+
+        return getFetch(url, options)
+    },    
+    getAllUsers: () => {
+        const url = ["user"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getOneUser: (id) => {
+        const url = ["user", id]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    editUser: (id, body) => {
+        const url = ["user", id]
+        
+        var options = {
+            method: PUT,
+            body: JSON.stringify(body)
         }
 
         return getFetch(url, options)

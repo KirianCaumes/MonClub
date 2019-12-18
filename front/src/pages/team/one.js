@@ -119,25 +119,30 @@ class _TeamOne extends React.Component {
                 <div className="card" >
                     <Columns>
                         <Columns.Column>
-                            <Label>Label</Label>
-                            <TextField
-                                value={data?.label ?? ''}
-                                onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.label?.errors?.[0]}
-                            />
-                            <br/>
-                            <Label>Label Google Contact</Label>
-                            <TextField
-                                value={data?.label_google_contact ?? ''}
-                                onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
-                            />
-                        </Columns.Column>
+                            <Columns>
+                                <Columns.Column>
+                                    <Label>Label</Label>
+                                    <TextField
+                                        value={data?.label ?? ''}
+                                        onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
+                                        borderless={readOnly}
+                                        readOnly={readOnly}
+                                        errorMessage={this.state.errorField?.label?.errors?.[0]}
+                                    />
+                                </Columns.Column>
+                                <Columns.Column>
+                                    <Label>Label Google Contact</Label>
+                                    <TextField
+                                        value={data?.label_google_contact ?? ''}
+                                        onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
+                                        borderless={readOnly}
+                                        readOnly={readOnly}
+                                        errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
+                                    />
+                                </Columns.Column>
+                            </Columns>
 
+                        </Columns.Column>
                         <Separator vertical className="is-hidden-mobile" />
                         <Columns.Column>
                             <Label>Membre(s) associé(s)</Label>

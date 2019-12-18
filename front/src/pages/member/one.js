@@ -300,7 +300,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={data?.teams.map(team => team.label)?.join(' / ')}
+                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}

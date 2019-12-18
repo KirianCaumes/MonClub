@@ -33,6 +33,7 @@ class ParamController extends FOSRestController
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
+            'roles' => ['ROLE_COACH', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
             'price' => [
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),

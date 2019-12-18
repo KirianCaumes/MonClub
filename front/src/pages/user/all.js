@@ -6,7 +6,7 @@ import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/co
 import { history } from '../../helper/history'
 import request from '../../helper/request'
 
-class _TeamsAll extends React.Component {
+class _UsersAll extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -17,21 +17,14 @@ class _TeamsAll extends React.Component {
 
     componentDidMount() {
         this.props.setBreadcrumb([
-            { text: 'Équipe', key: 'teams' },
-            { text: 'Toutes les équipes', key: 'all-teams', isCurrentItem: true },
+            { text: 'Administration', key: 'administration' },
+            { text: 'Les comptes', key: 'users', isCurrentItem: true },
         ])
 
-        this.props.setCommand([
-            {
-                key: 'newItem',
-                text: 'Nouveau',
-                iconProps: { iconName: 'Add' },
-                onClick: () => history.push('/equipe/nouveau')
-            },
-        ])
+        this.props.setCommand([])
 
         this.setState({ isLoading: true }, () => {
-            request.getAllTeams()
+            request.getAllUsers()
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
                     this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
@@ -42,30 +35,38 @@ class _TeamsAll extends React.Component {
 
     render() {
         return (
-            <section id="team-all">
+            <section id="user-all">
                 <div className="card" >
                     {
                         this.state.items.length === 0 && !this.state.isLoading ?
                             <Text variant="large" className="has-text-centered" block>Aucun résultat</Text> :
                             <ShimmeredDetailsList
                                 items={this.state.items}
-                                onActiveItemChanged={item => history.push(`/equipe/${item.id}`)}
+                                onActiveItemChanged={item => history.push(`/utilisateur/${item.id}`)}
                                 columns={[
                                     {
-                                        key: 'label',
-                                        name: 'Label',
-                                        fieldName: 'label',
+                                        key: 'username',
+                                        name: 'Nom',
+                                        fieldName: 'username',
                                         minWidth: 70,
                                         maxWidth: 200,
                                         isResizable: true,
                                     },
                                     {
-                                        key: 'label_google_contact',
-                                        name: 'Label Google Contact',
-                                        fieldName: 'label_google_contact',
+                                        key: 'enabled',
+                                        name: 'Activé',
                                         minWidth: 70,
                                         maxWidth: 200,
                                         isResizable: true,
+                                        onRender: user => <>{user.enabled ? 'Oui' : 'Non'}</>
+                                    },
+                                    {
+                                        key: 'roles',
+                                        name: 'Roles',
+                                        minWidth: 70,
+                                        maxWidth: 200,
+                                        isResizable: true,
+                                        onRender: user => <>{user.roles?.join(', ')}</>
                                     }
                                 ]}
                                 selectionMode={SelectionMode.none}
@@ -92,5 +93,5 @@ const mapStateToProps = state => {
         param: state.user.param
     }
 }
-const TeamsAll = connect(mapStateToProps, mapDispatchToProps)(_TeamsAll)
-export default TeamsAll
+const UsersAll = connect(mapStateToProps, mapDispatchToProps)(_UsersAll)
+export default UsersAll

@@ -22,6 +22,8 @@ import Error from './pages/error'
 import Constants from './pages/admin/constants'
 import TeamsAll from './pages/team/all'
 import TeamOne from './pages/team/one'
+import UsersAll from './pages/user/all'
+import UserOne from './pages/user/one'
 
 initializeIcons()
 loadTheme({
@@ -101,9 +103,9 @@ class _App extends React.Component {
                             <PrivateRoute path="/membre/nouveau" component={withData(MemberOne, () => request.getNewMember())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
-                            <PrivateRoute exact path="/utilisateurs" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/utilisateurs" component={UsersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateurs/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/utilisateur/:id" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/utilisateur/:id" component={withData(UserOne, (props) => request.getOneUser(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/equipes" component={TeamsAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/equipe/nouveau" component={withData(TeamOne, () => request.getNewTeam())} isAuthenticated={isAuthenticated} isInit={isInit} />
