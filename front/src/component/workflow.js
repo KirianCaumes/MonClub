@@ -34,7 +34,7 @@ export default class Workflow extends React.Component {
                                 </div>
                                 <div className="step-details">
                                     <p className="step-title">{row.label}</p>
-                                    <p>{row.description}</p>
+                                    <p className="is-hidden-touch">{row.description}</p>
                                 </div>
                             </div>
                         )

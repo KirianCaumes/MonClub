@@ -46,7 +46,8 @@ class Member
      */
     private $email;
 
-    /**
+    /** 
+     * @Assert\Length(min = 0, max = 10, minMessage = "invalid_phone", maxMessage = "invalid_phone")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $phone_number;
@@ -76,6 +77,7 @@ class Member
     private $parent_one_email;
 
     /**
+     * @Assert\Length(min = 0, max = 10, minMessage = "invalid_phone", maxMessage = "invalid_phone")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_one_phone_number;
@@ -105,6 +107,7 @@ class Member
     private $parent_two_email;
 
     /**
+     * @Assert\Length(min = 0, max = 10, minMessage = "invalid_phone", maxMessage = "invalid_phone")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_two_phone_number;

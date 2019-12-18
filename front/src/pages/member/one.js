@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, DefaultButton, PrimaryButton } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
@@ -67,7 +67,7 @@ class _MemberOne extends React.Component {
                                     this.props.setBreadcrumb([
                                         { text: 'Membres', key: 'members' },
                                         { text: 'Tous les membres', key: 'all-members', onClick: () => history.push('/membres') },
-                                        { text: `${this.props.match?.params?.id ? (this.state.data?.firstname ?? '' + this.state.data?.lastname ?? '') : 'Nouveau'}`, key: 'member', isCurrentItem: true },
+                                        { text: `${this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}`, key: 'member', isCurrentItem: true },
                                     ])
                                 }))
                                 .catch(err => {
@@ -118,7 +118,8 @@ class _MemberOne extends React.Component {
                 key: 'validateItem',
                 text: 'Valider le workflow',
                 iconProps: { iconName: 'CheckMark' },
-                onClick: () => this.setState({ isLoading: true, data: { ...this.state.data, is_document_complete: true, is_payed: true, is_check_gest_hand: true, is_inscription_done: true } }, () => commandEdit.find(x => x.key === "saveItem").onClick()),
+                onClick: () => this.setState({ isLoading: true, data: { ...this.state.data, is_document_complete: true, is_payed: true, is_check_gest_hand: true, is_inscription_done: true } },
+                    () => { commandEdit.find(x => x.key === "saveItem").onClick() }),
                 disabled: this.state.data.is_document_complete && this.state.data.is_payed && this.state.data.is_check_gest_hand && this.state.data.is_inscription_done
             }
         ]
@@ -130,7 +131,6 @@ class _MemberOne extends React.Component {
         const { readOnly, data, isLoading, workflow } = this.state
 
         if (isLoading) return <Loader />
-        console.log(data?.documents)
 
         return (
             <section id="member-one">
@@ -218,32 +218,6 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
                             />
                         </Columns.Column>
-                    </Columns>
-
-                    <Columns>
-                        <Columns.Column>
-                            <Label>Email</Label>
-                            <TextField
-                                defaultValue={data?.email ?? ''}
-                                onBlur={ev => this.setState({ data: { ...this.state.data, email: ev.target.value } })}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.email?.errors?.[0]}
-                            />
-                        </Columns.Column>
-
-                        <Columns.Column>
-                            <Label>Numéro de téléphone</Label>
-                            <MaskedTextField
-                                value={data?.phone_number ?? ''}
-                                onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: ev.target.value } })}
-                                mask={"9999999999"}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.phone_number?.errors?.[0]}
-                            />
-                        </Columns.Column>
-
                         <Columns.Column>
                             <Label>Profession</Label>
                             <TextField
@@ -258,7 +232,29 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column>
-                            <Label required>Réduction étudiant/chomeur</Label>
+                            <Label required={isMajor(data?.birthdate)}>Email</Label>
+                            <TextField
+                                defaultValue={data?.email ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, email: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.email?.errors?.[0]}
+                            />
+                        </Columns.Column>
+
+                        <Columns.Column>
+                            <Label required={isMajor(data?.birthdate)}>Numéro de téléphone</Label>
+                            <MaskedTextField
+                                value={data?.phone_number ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: ev.target.value } })}
+                                mask={"9999999999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.phone_number?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label required>Demande réduction</Label>
                             {
                                 readOnly ?
                                     <TextField
@@ -278,7 +274,7 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required>Demande de transfert</Label>
+                            <Label required>Demande transfert</Label>
                             {
                                 readOnly ?
                                     <TextField
@@ -296,20 +292,40 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
-
-                        <Columns.Column>
-                            <Label>Montant payé</Label>
-                            <TextField
-                                defaultValue={data?.amount_payed ?? ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
-                        </Columns.Column>
                     </Columns>
 
                     <Columns>
                         <Columns.Column>
-                            <Label>Utilisateur associé</Label>
+                            <Label>Équipe(s)</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.teams.map(team => team.label)?.join(' / ')}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        multiSelect
+                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
+                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        onChange={(ev, item) => {
+                                            const newSelectedItems = [...data.teams]
+                                            if (item.selected) {
+                                                newSelectedItems.push(item)
+                                            } else {
+                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                            }
+                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                        }}
+                                    />
+                            }
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label disabled={!readOnly}>Utilisateur associé</Label>
                             <TextField
                                 defaultValue={data?.user?.username ?? ''}
                                 borderless={true}
@@ -318,15 +334,20 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label>Date d'inscription</Label>
+                            <Label disabled={!readOnly}>Date d'inscription</Label>
                             <TextField
                                 defaultValue={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
                                 borderless={true}
                                 readOnly={true}
                             />
                         </Columns.Column>
-
                         <Columns.Column>
+                            <Label disabled={!readOnly}>Montant payé</Label>
+                            <TextField
+                                defaultValue={data?.amount_payed ?? ''}
+                                borderless={true}
+                                readOnly={true}
+                            />
                         </Columns.Column>
                     </Columns>
                     {
@@ -528,9 +549,7 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
-                    </Columns>
 
-                    <Columns>
                         <Columns.Column>
                             <Label required>Autorisation retour maison</Label>
                             {
@@ -550,7 +569,9 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
+                    </Columns>
 
+                    <Columns>
                         <Columns.Column>
                             <Label required>Autorisation newsletter</Label>
                             {
@@ -590,6 +611,8 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
+                        <Columns.Column />
+                        <Columns.Column />
                     </Columns>
                     <br />
                     <Text variant="large" block>Document(s)</Text>

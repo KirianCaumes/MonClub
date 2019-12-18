@@ -29,6 +29,12 @@ class Team
      */
     private $members;
 
+    /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $label_google_contact;
+
     public function __construct()
     {
         $this->members = new \Doctrine\Common\Collections\ArrayCollection();
@@ -59,6 +65,18 @@ class Team
     public function setMembers(\Doctrine\Common\Collections\Collection $members): self
     {
         $this->members = $members;
+
+        return $this;
+    }
+
+    public function getLabelGoogleContact(): ?string
+    {
+        return $this->label_google_contact;
+    }
+
+    public function setLabelGoogleContact(string $label_google_contact): self
+    {
+        $this->label_google_contact = $label_google_contact;
 
         return $this;
     }

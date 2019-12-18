@@ -225,7 +225,8 @@ export default {
         const url = ["member", id, "admin"]
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate)
+            birthdate: dateToString(body?.birthdate),
+            teams: body?.teams.map(x => x.id)
         }
 
         var options = {
@@ -273,9 +274,6 @@ export default {
     },
     createTeam: (body) => {
         const url = ["team"]
-        body = {
-            label: body.label
-        }
 
         var options = {
             method: POST,
@@ -286,10 +284,7 @@ export default {
     },
     editTeam: (id, body) => {
         const url = ["team", id]
-        body = {
-            label: body.label
-        }
-
+        
         var options = {
             method: PUT,
             body: JSON.stringify(body)

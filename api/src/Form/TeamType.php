@@ -21,6 +21,11 @@ class TeamType extends AbstractType
                     new NotBlank(['message' => 'not_blank']),
                 ]
             ])
+            ->add('label_google_contact', TextType::class, [                
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
             ->add('save', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver)
@@ -28,7 +33,7 @@ class TeamType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Team::class,
             'csrf_protection' => false,
-            'allow_extra_fields' => false
+            'allow_extra_fields' => true
         ]);
     }
 }

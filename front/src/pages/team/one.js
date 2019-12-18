@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from '../../redux/actions/common'
 import { history } from '../../helper/history'
 import request from '../../helper/request'
-import withSimpleLoading from '../../helper/hoc/withSimpleLoading'
+import Loader from '../../component/loader'
 
 class _TeamOne extends React.Component {
     constructor(props) {
@@ -48,10 +48,11 @@ class _TeamOne extends React.Component {
                 iconProps: { iconName: 'Save' },
                 onClick: () => {
                     this.setState({ isLoading: true, readOnly: true }, () => {
-                        this.props.setCommand(commandRead)
+                        this.props.setCommand([])
                         if (!!this.props.match?.params?.id) {
                             request.editTeam(this.props.match?.params?.id, { ...this.state.data })
-                                .then(data => this.setState({ data }, () => {
+                                .then(res => this.setState({ data: res }, () => {
+                                    this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été modifiée.')
                                     this.props.setBreadcrumb([
                                         { text: 'Équipe', key: 'teams' },
@@ -60,6 +61,7 @@ class _TeamOne extends React.Component {
                                     ])
                                 }))
                                 .catch(err => {
+                                    this.props.setCommand(commandEdit)
                                     this.setState({ readOnly: false, errorField: err?.form?.children })
                                     this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                                 })
@@ -71,6 +73,7 @@ class _TeamOne extends React.Component {
                                     history.push(`/equipe/${data.id}`)
                                 })
                                 .catch(err => {
+                                    this.props.setCommand(commandEdit)
                                     this.setState({ readOnly: false, errorField: err?.form?.children })
                                     this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
                                 })
@@ -84,13 +87,18 @@ class _TeamOne extends React.Component {
                 text: 'Supprimer',
                 iconProps: { iconName: 'Delete' },
                 onClick: () => {
+                    this.props.setCommand([])
                     this.setState({ isLoading: true, readOnly: true }, () => {
                         request.deleteTeam(this.props.match?.params?.id)
                             .then(() => {
+                                this.props.setCommand(commandRead)
                                 this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été supprimée.')
                                 history.push('/equipes')
                             })
-                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                            .catch(err => {
+                                this.props.setCommand(commandEdit)
+                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                            })
                             .finally(() => this.setState({ isLoading: false }))
                     })
                 },
@@ -104,7 +112,9 @@ class _TeamOne extends React.Component {
     render() {
         const { readOnly, data, isLoading } = this.state
 
-        return withSimpleLoading(isLoading,
+        if (isLoading) return <Loader />
+
+        return (
             <section id="team-one">
                 <div className="card" >
                     <Columns>
@@ -116,6 +126,15 @@ class _TeamOne extends React.Component {
                                 borderless={readOnly}
                                 readOnly={readOnly}
                                 errorMessage={this.state.errorField?.label?.errors?.[0]}
+                            />
+                            <br/>
+                            <Label>Label Google Contact</Label>
+                            <TextField
+                                value={data?.label_google_contact ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
                             />
                         </Columns.Column>
 
