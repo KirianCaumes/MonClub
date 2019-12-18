@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
@@ -295,7 +295,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <Columns>
-                        <Columns.Column>
+                        <Columns.Column size="one-quarter">
                             <Label>Équipe(s)</Label>
                             {
                                 readOnly ?
@@ -326,11 +326,9 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
                         <Columns.Column>
                             <Label disabled={!readOnly}>Utilisateur associé</Label>
-                            <TextField
-                                defaultValue={data?.user?.username ?? ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
+                            <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
+                                {data?.user?.username ?? ''}
+                            </Link>
                         </Columns.Column>
 
                         <Columns.Column>

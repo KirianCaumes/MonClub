@@ -19,17 +19,20 @@ class Header extends React.Component {
                 className="has-background-dark-blue"
             >
                 <Navbar.Brand>
-                    <Navbar.Item 
-                        renderAs="a" 
+                    <Navbar.Item
+                        renderAs="a"
                         onClick={() => history.push('/')}
                     >
                         <img src={require('../../asset/img/logo.png')} alt="THBC" />
-                        <span> Mon Club</span>                   
+                        <span> Mon Club</span>
                     </Navbar.Item>
                     <Navbar.Burger onClick={() => this.setState({ active: !this.state.active })} />
                 </Navbar.Brand>
                 <Navbar.Menu >
                     <Navbar.Container className="is-hidden-desktop">
+                        <Navbar.Item href="#">
+                            <><Icon iconName='Home' /> Accueil</>
+                        </Navbar.Item>
                         <Navbar.Item dropdown hoverable href="#">
                             <Navbar.Link arrowless={false}>
                                 First

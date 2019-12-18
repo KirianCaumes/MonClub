@@ -1,6 +1,6 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { Separator, Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
+import { Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 
@@ -46,9 +46,9 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
-                    <Label>Étape workflow :</Label>
+                    <Label>Étapes workflow :</Label>
                     <DetailsList
                         items={param?.workflowStep ?? []}
                         columns={[
@@ -71,34 +71,9 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
-                    <Label>Équipe :</Label>
-                    <DetailsList
-                        items={param?.teams ?? []}
-                        columns={[
-                            {
-                                key: 'id',
-                                name: 'Id',
-                                fieldName: 'id',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                            },
-                            {
-                                key: 'label',
-                                name: 'Label',
-                                fieldName: 'label',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                            }
-                        ]}
-                        selectionMode={SelectionMode.none}
-                    />
-                    <Separator />
-                    
-                    <Label>Glboal :</Label>
+                    <Label>Global :</Label>
                     <DetailsList
                         items={param?.global ?? []}
                         columns={[
@@ -129,7 +104,7 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
                     <Label>Catégories documents :</Label>
                     <DetailsList
@@ -154,7 +129,7 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
                     <Label>Prix licences :</Label>
                     <DetailsList
@@ -211,7 +186,7 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
                     
                     <Label>Prix transfert :</Label>
@@ -261,7 +236,7 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
                     
                     <Label>Prix réduction :</Label>
                     <DetailsList
@@ -294,7 +269,7 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <Separator />
+                    <br />
 
                 </div>
             </section >

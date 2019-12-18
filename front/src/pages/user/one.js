@@ -90,7 +90,7 @@ class _UserOne extends React.Component {
                                 readOnly={true}
                             />
                         </Columns.Column>
-                        <Columns.Column>
+                        <Columns.Column size="one-third">
                             <Label>Roles</Label>
                             {
                                 readOnly ?

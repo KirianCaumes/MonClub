@@ -42,10 +42,14 @@
 }
 
 *.is-bold {
-    font-weight: bold!important;
+  font-weight: bold !important;
 }
 
 *.is-underline {
-    text-decoration: underline!important;
+  text-decoration: underline !important;
 }
 
+.ms-Link.link-as-input {
+  font-size: 14px;
+  margin-left: 8px;
+}

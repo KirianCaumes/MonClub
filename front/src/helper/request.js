@@ -37,9 +37,6 @@ var getFetch = (path, options = {}) => {
             if (!response.ok) {
                 // Handle status code error
                 switch (response.status) {
-                    case 403:
-                        store.dispatch(setMessageBar(true, MessageBarType.error, "Vous n'êtes pas autorisé à effectuer cette action"))
-                        return "Vous n'êtes pas autoriser à effectuer cette action"
                     case 401:
                         store.dispatch(signout())
                         break
