@@ -9,11 +9,37 @@ div#root {
     .navbar-brand {
       span {
         color: $white;
-        margin-left: 13px;
+      }
+      .navbar-item {
+        span {
+          color: $white;
+          margin-left: 13px;
+        }
       }
     }
-    i {
-      color: $white !important;
+    .navbar-end {
+      i {
+        color: $white !important;
+      }
+    }
+    .navbar-menu {
+      .navbar-start {
+        // background-color: $grey;
+        i {
+          color: $blue !important;
+        }
+        .navbar-link {
+          &:hover {
+            background: unset !important;
+            color: unset !important;
+            cursor: auto;
+          }
+        }
+        a:hover {
+          background: $light-grey;
+          color: $blue !important;
+        }
+      }
     }
     a:hover {
       i {
@@ -46,7 +72,7 @@ div#root {
               display: flex;
               i {
                 margin-right: 10px;
-                color: rgb(38, 96, 147)!important;
+                color: rgb(38, 96, 147) !important;
                 font-size: 16px !important;
               }
             }

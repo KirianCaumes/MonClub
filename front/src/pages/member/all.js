@@ -138,6 +138,7 @@ class _MembersAll extends React.Component {
                                     </Columns.Column>
                                 </Columns>
                             </form>
+                            <br/>
                             <Separator >
                                 <Icon iconName="ChevronDown" />
                             </Separator>

@@ -30,7 +30,7 @@ class _Index extends React.Component {
                     </Hero.Body>
                 </Hero>
                 <br />
-                <Columns className="is-vcentered">
+                <Columns className="is-vcentered is-desktop">
                     <Columns.Column>
                         <div className="card has-text-centered">
                             <div className="flex-col">

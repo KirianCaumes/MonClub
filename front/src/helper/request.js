@@ -1,7 +1,5 @@
 import store from '../redux/store/index.js'
-import { setMessageBar } from '../redux/actions/common.js'
 import { signout } from '../redux/actions/user.js'
-import { MessageBarType } from 'office-ui-fabric-react';
 import { dateToString } from './date.js';
 
 
@@ -16,9 +14,7 @@ var getFetch = (path, options = {}) => {
 
     options["mode"] = "cors"
 
-
-    if (options["headers"] === undefined)
-        options["headers"] = {}
+    if (options["headers"] === undefined) options["headers"] = {}
 
     options["headers"]["Accept"] = 'application/json'
     if (options["headers"]["Content-Type"] === "multipart/form-data") {
