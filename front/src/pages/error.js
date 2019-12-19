@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from '../redux/actions/common'
-import { history } from '../helper/history'
 
 class _Error extends React.Component {
     constructor(props) {
@@ -10,9 +9,7 @@ class _Error extends React.Component {
     }
 
     componentDidMount() {
-        this.props.setBreadcrumb([
-            { text: 'Accueil', key: 'accueil', onClick: () => history.push('/') },
-        ])
+        this.props.setBreadcrumb([])
         this.props.setCommand([])
     }
     render() {

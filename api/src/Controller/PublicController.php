@@ -122,4 +122,31 @@ class PublicController extends FOSRestController
 
         return $this->handleView($this->view([], Response::HTTP_OK));
     }
+    
+    /**
+     * Login User for Drive.
+     * @Rest\Post("/login/drive")
+     *
+     * @return Response
+     */
+    public function loginDrive(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager, TranslatorInterface $translator)
+    {
+        $data = json_decode($request->getContent(), true);
+        $user = $userManager->findUserByUsername($data['username']);
+
+        if (!$user) {
+            return $this->handleView($this->view(["abc" => $data], Response::HTTP_UNAUTHORIZED));
+        }
+
+        if (!(new BCryptPasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
+            return $this->handleView($this->view(["def" => null], Response::HTTP_UNAUTHORIZED));
+        }
+
+        //Check if admin or super admin
+        // if (!in_array("ROLE_ADMIN", $user->getRoles()) && !in_array("ROLE_SUPER_ADMIN", $user->getRoles())) {
+        //     return $this->handleView($this->view([], Response::HTTP_UNAUTHORIZED));
+        // }
+
+        return $this->handleView($this->view([], Response::HTTP_OK));
+    }
 }
