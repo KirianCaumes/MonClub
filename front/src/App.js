@@ -93,7 +93,7 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                {/* <FullLoader isLoading={!isInit && isAuthenticated} /> */}
+                <FullLoader isLoading={!isInit && isAuthenticated} />
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
@@ -104,7 +104,6 @@ class _App extends React.Component {
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/utilisateurs" component={UsersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/utilisateurs/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateur/:id" component={withData(UserOne, (props) => request.getOneUser(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/equipes" component={TeamsAll} isAuthenticated={isAuthenticated} isInit={isInit} />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux"
-import { Label, TextField, PrimaryButton, Text, MessageBarType } from 'office-ui-fabric-react'
+import { Label, TextField, PrimaryButton, Text, MessageBarType, Spinner, SpinnerSize } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import { signout } from '../../redux/actions/user'
 import PublicLayout from './_publicLayout'
@@ -47,6 +47,7 @@ class _PasswordNew extends React.Component {
                         value={this.state.plainPassword}
                         onChange={ev => this.setState({ plainPassword: ev.target.value })}
                         iconProps={{ iconName: 'PasswordField' }}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <div className="flex-row" >
@@ -55,8 +56,9 @@ class _PasswordNew extends React.Component {
                             text="Enregistrer le mot de passe"
                             type="submit"
                             disabled={this.state.isLoading}
-                        />
-                        {/* {this.props.isLoading && <Spinner size={SpinnerSize.medium} />} */}
+                        >
+                            {this.state.isLoading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}
+                        </PrimaryButton>
                     </div>
                     <br />
                     <Text>

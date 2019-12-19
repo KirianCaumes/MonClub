@@ -1,7 +1,7 @@
 import React from 'react'
 import { signout, signin } from "../../redux/actions/user"
 import { connect } from "react-redux"
-import { Label, TextField, PrimaryButton, Text, MessageBarType } from 'office-ui-fabric-react'
+import { Label, TextField, PrimaryButton, Text, MessageBarType, SpinnerSize, Spinner } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import PublicLayout from './_publicLayout'
 import request from '../../helper/request'
@@ -48,6 +48,7 @@ class _Login extends React.Component {
                         value={this.state.username}
                         onChange={ev => this.setState({ username: ev.target.value })}
                         iconProps={{ iconName: 'Mail' }}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <Label>Mot de passe</Label>
@@ -57,6 +58,7 @@ class _Login extends React.Component {
                         value={this.state.plainPassword}
                         onChange={ev => this.setState({ plainPassword: ev.target.value })}
                         iconProps={{ iconName: 'PasswordField' }}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <div className="flex-row" >
@@ -65,8 +67,9 @@ class _Login extends React.Component {
                             text="Se connecter"
                             type="submit"
                             disabled={this.state.isLoading}
-                        />
-                        {/* {this.props.isLoading && <Spinner size={SpinnerSize.medium} />} */}
+                        >
+                            {this.state.isLoading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}
+                        </PrimaryButton>
                     </div>
                     <br />
                     <Text>

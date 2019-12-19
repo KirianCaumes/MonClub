@@ -13,7 +13,7 @@ class Header extends React.Component {
     }
 
     render() {
-        const { menu } = this.props
+        const { menu, me } = this.props
 
         return (
             <>
@@ -82,28 +82,28 @@ class Header extends React.Component {
                     <br />
                     <Label>Nom</Label>
                     <TextField
-                        value={this.props?.me?.username ?? ''}
+                        value={me?.username ?? ''}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
                     <Label>Roles</Label>
                     <TextField
-                        defaultValue={this.props?.me?.roles?.length ? this.props?.me?.roles?.join(', ') : 'Utilisateur'}
+                        defaultValue={me?.roles?.length ? me?.roles?.join(', ') : 'Utilisateur'}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
                     <Label>Date de création</Label>
                     <TextField
-                        value={this.props?.me?.creation_datetime ? (new Date(this.props?.me?.creation_datetime)).toLocaleString('fr-FR') : ''}
+                        value={me?.creation_datetime ? (new Date(me?.creation_datetime)).toLocaleString('fr-FR') : ''}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
                     <Label>Dernière connexion</Label>
                     <TextField
-                        value={this.props?.me?.last_login ? (new Date(this.props?.me?.last_login)).toLocaleString('fr-FR') : ''}
+                        value={me?.last_login ? (new Date(me?.last_login)).toLocaleString('fr-FR') : ''}
                         borderless={true}
                         readOnly={true}
                     />

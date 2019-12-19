@@ -1,10 +1,9 @@
 import React from 'react'
-import { Breadcrumb, MessageBar, CommandBar, Icon } from 'office-ui-fabric-react'
+import { Breadcrumb, MessageBar, CommandBar, Icon, Nav } from 'office-ui-fabric-react'
 import Header from '../component/layout/header';
 import { setUrl, setMessageBar } from '../redux/actions/common'
 import { connect } from "react-redux"
 import { history } from '../helper/history'
-import Aside from '../component/layout/nav'
 import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from '../helper/constants';
 
 class _Layout extends React.Component {
@@ -115,16 +114,22 @@ class _Layout extends React.Component {
     }
 
     render() {
-        const { selectedKeyURL, breadcrumb, command, messageBar } = this.props
+        const { selectedKeyURL, breadcrumb, command, messageBar, me } = this.props
         const { menu } = this.state
 
         if (!this.props.isDisplay) return this.props.children
 
         return (
             <>
-                <Header menu={this.filterMenu(menu)} />
+                <Header menu={this.filterMenu(menu)} me={me}/>
                 <div className="layout" >
-                    <Aside selectedKeyURL={selectedKeyURL} menu={this.filterMenu(menu)} />
+                    <aside className="is-hidden-touch">
+                        <Nav
+                            styles={{ root: { width: 240, overflowY: 'auto' }, chevronButton: { borderColor: "transparent" } }}
+                            selectedKey={selectedKeyURL}
+                            groups={this.filterMenu(menu)}
+                        />
+                    </aside>
                     <div className="main">
                         <CommandBar
                             items={command}

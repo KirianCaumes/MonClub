@@ -9,7 +9,16 @@
         min-height: 100vh;
         @include flex-col();
         img {
-            max-width: 50%;
+          max-width: 50%;
+        }
+      }
+      button {
+        position: relative;
+        .ms-Spinner {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: -20px;
         }
       }
     }

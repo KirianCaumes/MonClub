@@ -1,7 +1,7 @@
 import React from 'react'
 import { signout, signin } from "../../redux/actions/user"
 import { connect } from "react-redux"
-import { Label, TextField, PrimaryButton, Text, MessageBarType } from 'office-ui-fabric-react'
+import { Label, TextField, PrimaryButton, Text, MessageBarType, Spinner, SpinnerSize } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import PublicLayout from './_publicLayout'
 import request from '../../helper/request'
@@ -52,6 +52,7 @@ class _Register extends React.Component {
                         onChange={ev => this.setState({ username: ev.target.value })}
                         iconProps={{ iconName: 'Mail' }}
                         errorMessage={this.state.errorField.username?.errors?.[0]}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <Label>Mot de passe</Label>
@@ -62,6 +63,7 @@ class _Register extends React.Component {
                         onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, first: ev.target.value } })}
                         iconProps={{ iconName: 'PasswordField' }}
                         errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <Label>Confirmez le mot de passe</Label>
@@ -72,6 +74,7 @@ class _Register extends React.Component {
                         onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, second: ev.target.value } })}
                         iconProps={{ iconName: 'PasswordField' }}
                         errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
+                        readOnly={this.state.isLoading}
                     />
                     <br />
                     <div className="flex-row" >
@@ -80,8 +83,9 @@ class _Register extends React.Component {
                             text="Créer le compte"
                             type="submit"
                             disabled={this.state.isLoading}
-                        />
-                        {/* {this.props.isLoading && <Spinner size={SpinnerSize.medium} />} */}
+                        >
+                            {this.state.isLoading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}
+                        </PrimaryButton>
                     </div>
                     <br />
                     <Text>
