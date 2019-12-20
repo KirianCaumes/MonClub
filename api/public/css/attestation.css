@@ -1,0 +1,27 @@
+section {
+    padding: 100px;
+}
+
+h1 {
+    font-weight: bold!important;
+    font-size: 22px!important;
+    font-style: italic;
+}
+
+p {
+    text-align: justify;
+}
+
+img.logo {
+    width: 75px;
+    margin-left: 40px;
+}
+
+img.signature{
+    float: right;
+}
+
+p.signature{
+    clear: both;
+    font-size: 12px;
+}

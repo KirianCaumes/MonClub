@@ -187,7 +187,6 @@ class MemberController extends FOSRestController
 
     /**
      * Edit Member.
-     * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}")
      *
      * @return Response
@@ -226,6 +225,7 @@ class MemberController extends FOSRestController
 
     /**
      * Edit Member for admin.
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}/admin")
      *
      * @return Response

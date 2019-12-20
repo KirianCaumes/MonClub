@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <link href="../../public/css/attestation.css" rel="stylesheet" />
+    <link href="../../public/css/bulma.min.css" rel="stylesheet" /> -->
+    <link href="css/bulma.min.css" rel="stylesheet" />
+    <link href="css/attestation.css" rel="stylesheet" />
+</head>
+
+<body>
+    <section>
+        <!-- <img src="../../public/img/logo.png" class="logo"> -->
+        <img src="./img/logo.png" class="logo">
+        <p>
+            Thouaré Handball Club<br />
+            Route de la Barre<br />
+            44470 Thouaré sur Loire<br />
+            <a href="https://thouarehbc.fr">https://thouarehbc.fr</a><br />
+            <br /><br />
+            SIRET : 529 434 102 00032
+        </p>
+        <br /><br />
+        <p class="has-text-right">Thouaré sur Loire, le {{"now"|date("d/m/Y")}}</p>
+        <br /><br />
+
+        <h1>ATTESTATION DE PAIEMENT DE COTISATION</h1>
+        <br /><br />
+        <p>
+            Je soussigné, Monsieur <span class="is-capitalized">{{president.firstname}}</span> <span class="is-uppercase">{{president.lastname}}</span>, président du Thouaré Handball Club, certifie que <span class="is-capitalized">{{member.firstname}}</span> <span class="is-uppercase">{{member.lastname}}</span> est licencié {% if member.teams|length %}en section «{{member.teams|first.label}}»{% endif %} dans notre club et a réglé sa cotisation annuelle d’un montant de {{member.amountPayed|default("0")}} euros pour la saison 2020-2021.
+            <br />
+            Attestation établie à la demande de l’intéressé(e) pour faire valoir ce que de droit.
+        </p>
+        <br />
+        <!-- <img src="../../public/img/singature_club.jpg" class="signature"> -->
+        <img src="./img/singature_club.jpg" class="signature">
+        <p class="has-text-right signature">
+            Le président du THBC<br />
+            <span class="is-capitalized">{{president.firstname}}</span> <span
+                class="is-uppercase">{{president.lastname}}</span>
+        </p>
+    </section>
+
+</body>
+
+</html>

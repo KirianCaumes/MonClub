@@ -11,29 +11,37 @@ class _FileInput extends BaseComponent {
         this.state = {
             isUploading: false,
             isDeleteing: false,
+            isDownloading: false,
             showDialog: false
         }
     }
 
     render() {
-        const { isUploading, isDeleteing, showDialog } = this.state
+        const { isDownloading, isUploading, isDeleteing, showDialog } = this.state
         const { errorMessage, isFile, read, fileName } = this.props
         if (read) {
             return (
-                <>
-                    <DefaultButton
-                        text="Télécharger"
-                        iconProps={{ iconName: 'Download' }}
-                        disabled={!isFile}
-                        onClick={() => this.props.onDownload()}
-                    />
+                <div style={{ ...this.props.style }}>
+                    <div className="flex-row flex-start">
+                        <DefaultButton
+                            text="Télécharger"
+                            iconProps={{ iconName: 'Download' }}
+                            disabled={!isFile || isDownloading}
+                            onClick={() => {
+                                this.setState({ isDownloading: true })
+                                this.props.onDownload().finally(() => this.setState({ isDownloading: false }))
+                            }}
+                        />
+                        {isDownloading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}
+
+                    </div>
                     <Text variant="small" block>{fileName}</Text>
-                </>
+                </div>
             )
         } else {
             return (
                 <>
-                    <div style={{ ...this.props.style, display: 'flex' }}>
+                    <div style={{ ...this.props.style }} className="flex-row flex-start">
                         <PrimaryButton
                             iconProps={{ iconName: 'Upload' }}
                             text={"Téléverser"}

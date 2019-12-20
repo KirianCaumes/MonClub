@@ -143,9 +143,9 @@ class PublicController extends FOSRestController
         }
 
         //Check if admin or super admin
-        // if (!in_array("ROLE_ADMIN", $user->getRoles()) && !in_array("ROLE_SUPER_ADMIN", $user->getRoles())) {
-        //     return $this->handleView($this->view([], Response::HTTP_UNAUTHORIZED));
-        // }
+        if (!in_array("ROLE_ADMIN", $user->getRoles()) && !in_array("ROLE_SUPER_ADMIN", $user->getRoles())) {
+            return $this->handleView($this->view([], Response::HTTP_UNAUTHORIZED));
+        }
 
         return $this->handleView($this->view([], Response::HTTP_OK));
     }

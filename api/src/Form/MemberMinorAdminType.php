@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Member;
 use App\Entity\Team;
+use Doctrine\DBAL\Types\FloatType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -11,12 +12,16 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class MemberMinorAdminType extends AbstractType
@@ -86,8 +91,19 @@ class MemberMinorAdminType extends AbstractType
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class)
             ->add('is_document_complete', CheckboxType::class)
-            ->add('amount_payed', IntegerType::class, [
-                'disabled' => true,
+            ->add('amount_payed', NumberType::class, [
+                'scale' => 2,
+                'constraints' => [
+                    new Type([
+                        'type' => 'float',
+                    ]),
+                    new GreaterThanOrEqual([
+                        'value' => 0,
+                    ]),
+                    new LessThan([
+                        'value' => 1000
+                    ])
+                ],
             ])
             ->add('is_check_gest_hand', CheckboxType::class)
             ->add('is_inscription_done', CheckboxType::class, [

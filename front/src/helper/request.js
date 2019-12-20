@@ -316,6 +316,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getAttestation: (memberId) => {
+        const url = ["document", memberId, "attestation"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     deleteDocument: (memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
 

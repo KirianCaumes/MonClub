@@ -169,7 +169,7 @@ class Member
     private $is_document_complete = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="decimal", precision=5, scale=2, nullable=true)
      */
     private $amount_payed;
 
@@ -529,12 +529,12 @@ class Member
         return $this;
     }
 
-    public function getAmountPayed(): ?int
+    public function getAmountPayed(): ?float
     {
         return $this->amount_payed;
     }
 
-    public function setAmountPayed(?int $amount_payed): self
+    public function setAmountPayed(?float $amount_payed): self
     {
         $this->amount_payed = $amount_payed;
 

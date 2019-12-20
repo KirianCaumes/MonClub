@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamGlobal;
 use App\Form\DocumentType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
@@ -95,10 +98,43 @@ class FileController extends FOSRestController
     }
 
     /**
+     * Generate and get document "attestation payement".
+     * @Route("/{memberId}/attestation")
+     */
+    public function getAttestation(TranslatorInterface $translator, int $memberId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        $paramGlobalRepository = $this->getDoctrine()->getRepository(ParamGlobal::class);
+
+        $pdfOptions = new Options();
+        $pdfOptions->set(['enable_remote' => true]);
+
+        $dompdf = new Dompdf($pdfOptions);
+        $dompdf->setBasePath(realpath(__DIR__ . '/../../public/'));
+
+        $dompdf->loadHtml(
+            $this->renderView('pdf/attestation.html.twig', [
+                'member' => $member,
+                'president' => [
+                    'firstname' => $paramGlobalRepository->findOneBy(['label' => 'president_firstname'])->getValue(),
+                    'lastname' => $paramGlobalRepository->findOneBy(['label' => 'president_lastname'])->getValue()
+                ]
+            ])
+        );
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream("Attestation_".$member->getFirstname() ." ". $member->getLastname()."_2020-2021.pdf", ["Attachment" => true]);
+    }
+
+    /**
      * Get document.
      * @Route("/{memberId}/{documentCategoryId}")
      */
-    public function downloadImageAction(DownloadHandler $downloadHandler, TranslatorInterface $translator, int $memberId, int $documentCategoryId): Response
+    public function downloadDocument(DownloadHandler $downloadHandler, TranslatorInterface $translator, int $memberId, int $documentCategoryId): Response
     {
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);

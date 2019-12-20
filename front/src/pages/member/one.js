@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, DefaultButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
@@ -325,6 +325,22 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column>
+                            <Label>Montant payé</Label>
+                            <TextField
+                                defaultValue={data?.amount_payed ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
+                                suffix="€"
+                                onKeyPress={ev => {
+                                    ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
+                                        ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
+                                        ev.preventDefault()
+                                }}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
                             <Label disabled={!readOnly}>Utilisateur associé</Label>
                             <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
                                 {data?.user?.username ?? ''}
@@ -335,14 +351,6 @@ class _MemberOne extends React.Component {
                             <Label disabled={!readOnly}>Date d'inscription</Label>
                             <TextField
                                 defaultValue={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
-                        </Columns.Column>
-                        <Columns.Column>
-                            <Label disabled={!readOnly}>Montant payé</Label>
-                            <TextField
-                                defaultValue={data?.amount_payed ?? ''}
                                 borderless={true}
                                 readOnly={true}
                             />
@@ -625,7 +633,7 @@ class _MemberOne extends React.Component {
                                 isFile={data?.documents?.find(doc => doc?.category?.id === 1)?.document}
                                 fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                                 onDownload={() => {
-                                    request.getDocument(this.props.match?.params?.id, 1)
+                                    return request.getDocument(this.props.match?.params?.id, 1)
                                         .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                                 }}
@@ -655,6 +663,19 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
+                            <Label>Attestation</Label>
+                            <FileInput
+                                read={true}
+                                isFile={readOnly}
+                                onDownload={() => {
+                                    return request.getAttestation(this.props.match?.params?.id)
+                                        .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_2020-2021.pdf`))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                }}
+                            />
+                        </Columns.Column>
+
+                        <Columns.Column>
                             {
                                 data?.is_reduced_price &&
                                 <>
@@ -665,7 +686,7 @@ class _MemberOne extends React.Component {
                                         isFile={data?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                         fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                         onDownload={() => {
-                                            request.getDocument(this.props.match?.params?.id, 2)
+                                            return request.getDocument(this.props.match?.params?.id, 2)
                                                 .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                                 .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                                         }}

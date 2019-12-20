@@ -13,12 +13,16 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class MemberMajorAdminType extends AbstractType
@@ -86,8 +90,19 @@ class MemberMajorAdminType extends AbstractType
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_document_complete', CheckboxType::class)
             ->add('is_payed', CheckboxType::class)
-            ->add('amount_payed', IntegerType::class, [
-                'disabled' => true,
+            ->add('amount_payed', NumberType::class, [
+                'scale' => 2,
+                'constraints' => [
+                    new Type([
+                        'type' => 'float',
+                    ]),
+                    new GreaterThanOrEqual([
+                        'value' => 0,
+                    ]),
+                    new LessThan([
+                        'value' => 1000
+                    ])
+                ],
             ])
             ->add('is_check_gest_hand', CheckboxType::class)
             ->add('is_inscription_done', CheckboxType::class, [

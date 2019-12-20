@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -84,7 +85,7 @@ class MemberMajorType extends AbstractType
             ->add('is_document_complete', CheckboxType::class, [
                 'disabled' => true,
             ])        
-            ->add('amount_payed', IntegerType::class, [
+            ->add('amount_payed', NumberType::class, [
                 'disabled' => true,
             ])        
             ->add('is_check_gest_hand', CheckboxType::class, [
