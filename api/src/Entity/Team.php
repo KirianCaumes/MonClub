@@ -50,7 +50,7 @@ class Team
         return $this->label;
     }
 
-    public function setLabel(string $label): self
+    public function setLabel(?string $label): self
     {
         $this->label = $label;
 
@@ -74,7 +74,7 @@ class Team
         return $this->label_google_contact;
     }
 
-    public function setLabelGoogleContact(string $label_google_contact): self
+    public function setLabelGoogleContact(?string $label_google_contact): self
     {
         $this->label_google_contact = $label_google_contact;
 

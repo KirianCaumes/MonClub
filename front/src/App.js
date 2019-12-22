@@ -18,6 +18,7 @@ import request from './helper/request'
 import { setMessageBar } from './redux/actions/common'
 import MembersAll from './pages/member/all'
 import MemberOne from './pages/member/one'
+import MembersMe from './pages/member/me'
 import Error from './pages/error'
 import Constants from './pages/admin/constants'
 import TeamsAll from './pages/team/all'
@@ -98,8 +99,9 @@ class _App extends React.Component {
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>
                             <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            
                             <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/membres/moi" component={Error} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/membres/moi" component={withData(MembersMe, () => request.getMeMember())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/nouveau" component={withData(MemberOne, () => request.getNewMember())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
@@ -118,6 +120,7 @@ class _App extends React.Component {
                         <Route path="/register" component={Register} />
                         <Route path="/motdepasse-oublie" component={PasswordForgotten} />
                         <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
+                        {/* <Route component={Error} /> */}
                     </Switch>
                 </Router>
             </>

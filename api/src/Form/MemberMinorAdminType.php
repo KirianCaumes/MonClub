@@ -41,6 +41,21 @@ class MemberMinorAdminType extends AbstractType
             ->add('phone_number', TextType::class, [
                 'required' => false,
             ])
+            ->add('postal_code', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
+            ->add('street', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
+            ->add('city', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
             ->add('profession', TextType::class, [
                 'required' => false,
             ])
@@ -117,7 +132,8 @@ class MemberMinorAdminType extends AbstractType
             ])
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
-            ])
+            ])            
+            ->add('notes', TextType::class)
             ->add('save', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver)

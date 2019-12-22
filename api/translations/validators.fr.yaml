@@ -5,6 +5,7 @@ invalid_date: Date invalide.
 invalid_must_be_true: Vous devez acceptez ce champs.
 invalid_phone: Le numéro de téléphone doit être composé de 10 chiffres.
 invalid_is_inscription_done: Vous devez accepter les autres étapes pour valider l'inscription.
+invalid_postal: Le code postal est invalide.
 
 #User
 already_exist: L'adresse mail est déja utilisée.

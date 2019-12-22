@@ -1,0 +1,10 @@
+#members-me {
+  .ms-ChoiceField-field {
+    &::before {
+      top: calc(50% - 10px);
+    }
+    &::after {
+      top: calc(50% - 5px);
+    }
+  }
+}

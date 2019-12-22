@@ -1,7 +1,6 @@
 import {
     SET_URL,
     MESSAGEBAR,
-    ERROR_FIELD,
     IS_LOADING,
     SET_BREADCRUMB,
     SET_COMMAND,
@@ -26,8 +25,6 @@ export default function commonReducer(state = initialState, action) {
             return { ...state, selectedKeyURL: action.payload }
         case MESSAGEBAR:
             return { ...state, messageBar: action.payload }
-        case ERROR_FIELD:
-            return { ...state, errorField: action.payload }
         case IS_LOADING:
             return { ...state, isLoading: action.payload }
         case SET_BREADCRUMB:

@@ -172,6 +172,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getMeMember: () => {
+        const url = ["member", "me"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     createMember: (body) => {
         const url = ["member"]
         body = {
@@ -212,6 +221,32 @@ export default {
             body: JSON.stringify(body)
         }
 
+        return getFetch(url, options)
+    },
+    editOrCreateMember: (id, body) => {
+        body = {
+            ...body,
+            birthdate: dateToString(body?.birthdate)
+        }
+        console.log(body.birthdate)
+
+        if (id) {
+            var url = ["member", id]
+
+            var options = {
+                method: PUT,
+                body: JSON.stringify(body)
+            }
+
+        } else {
+            var url = ["member"]
+
+            var options = {
+                method: POST,
+                body: JSON.stringify(body)
+            }
+        }
+        
         return getFetch(url, options)
     },
     editMemberAdmin: (id, body) => {
@@ -277,7 +312,7 @@ export default {
     },
     editTeam: (id, body) => {
         const url = ["team", id]
-        
+
         var options = {
             method: PUT,
             body: JSON.stringify(body)
@@ -333,7 +368,7 @@ export default {
         }
 
         return getFetch(url, options)
-    },    
+    },
     getAllUsers: () => {
         const url = ["user"]
 
@@ -354,7 +389,7 @@ export default {
     },
     editUser: (id, body) => {
         const url = ["user", id]
-        
+
         var options = {
             method: PUT,
             body: JSON.stringify(body)

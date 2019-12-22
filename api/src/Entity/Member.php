@@ -53,6 +53,25 @@ class Member
     private $phone_number;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @Assert\Regex(pattern="/^(?:[0-8]\d|9[0-8])\d{3}$/", match=true, message="invalid_postal")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $postal_code;
+
+    /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $street;
+
+    /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $city;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $profession;
@@ -187,6 +206,11 @@ class Member
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      */
     private $creation_datetime;
+    
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $notes;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -222,7 +246,7 @@ class Member
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): self
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
@@ -234,7 +258,7 @@ class Member
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): self
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
@@ -246,7 +270,7 @@ class Member
         return $this->birthdate;
     }
 
-    public function setBirthdate(\DateTimeInterface $birthdate): self
+    public function setBirthdate(?\DateTimeInterface $birthdate): self
     {
         $this->birthdate = $birthdate;
 
@@ -277,6 +301,42 @@ class Member
         return $this;
     }
 
+    public function getPostalCode(): ?string
+    {
+        return $this->postal_code;
+    }
+
+    public function setPostalCode(?string $postal_code): self
+    {
+        $this->postal_code = $postal_code;
+
+        return $this;
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(?string $street): self
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
     public function getProfession(): ?string
     {
         return $this->profession;
@@ -294,7 +354,7 @@ class Member
         return $this->parent_one_firstname;
     }
 
-    public function setParentOneFirstname(string $parent_one_firstname): self
+    public function setParentOneFirstname(?string $parent_one_firstname): self
     {
         $this->parent_one_firstname = $parent_one_firstname;
 
@@ -306,7 +366,7 @@ class Member
         return $this->parent_one_lastname;
     }
 
-    public function setParentOneLastname(string $parent_one_lastname): self
+    public function setParentOneLastname(?string $parent_one_lastname): self
     {
         $this->parent_one_lastname = $parent_one_lastname;
 
@@ -318,7 +378,7 @@ class Member
         return $this->parent_one_phone_number;
     }
 
-    public function setParentOnePhoneNumber(string $parent_one_phone_number): self
+    public function setParentOnePhoneNumber(?string $parent_one_phone_number): self
     {
         $this->parent_one_phone_number = $parent_one_phone_number;
 
@@ -330,7 +390,7 @@ class Member
         return $this->parent_one_email;
     }
 
-    public function setParentOneEmail(string $parent_one_email): self
+    public function setParentOneEmail(?string $parent_one_email): self
     {
         $this->parent_one_email = $parent_one_email;
 
@@ -342,7 +402,7 @@ class Member
         return $this->parent_one_profession;
     }
 
-    public function setParentOneProfession(string $parent_one_profession): self
+    public function setParentOneProfession(?string $parent_one_profession): self
     {
         $this->parent_one_profession = $parent_one_profession;
 
@@ -366,7 +426,7 @@ class Member
         return $this->parent_two_lastname;
     }
 
-    public function setParentTwoLastname(string $parent_two_lastname): self
+    public function setParentTwoLastname(?string $parent_two_lastname): self
     {
         $this->parent_two_lastname = $parent_two_lastname;
 
@@ -573,6 +633,18 @@ class Member
     public function setCreationDatetime(\DateTimeInterface $creation_datetime): self
     {
         $this->creation_datetime = $creation_datetime;
+
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): self
+    {
+        $this->notes = $notes;
 
         return $this;
     }

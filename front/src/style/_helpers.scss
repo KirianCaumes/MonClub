@@ -29,6 +29,10 @@
   justify-content: start !important;
 }
 
+*.flex-space-between {
+  justify-content: space-between !important;
+}
+
 *.no-margin-right {
   margin-right: 0 !important;
 }
@@ -51,6 +55,10 @@
 
 *.is-underline {
   text-decoration: underline !important;
+}
+
+*.is-light {
+  font-weight: initial!important;
 }
 
 .ms-Link.link-as-input {

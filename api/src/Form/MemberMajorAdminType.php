@@ -20,8 +20,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -44,6 +46,21 @@ class MemberMajorAdminType extends AbstractType
                 ]
             ])
             ->add('phone_number', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
+            ->add('postal_code', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
+            ->add('street', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
+            ])
+            ->add('city', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
@@ -117,6 +134,7 @@ class MemberMajorAdminType extends AbstractType
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
+            ->add('notes', TextType::class)
             ->add('save', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver)

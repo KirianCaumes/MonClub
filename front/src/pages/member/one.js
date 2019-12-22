@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, DefaultButton } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
@@ -61,7 +61,7 @@ class _MemberOne extends React.Component {
                         this.props.setCommand([])
                         if (!!this.props.match?.params?.id) {
                             request.editMemberAdmin(this.props.match?.params?.id, { ...this.state.data })
-                                .then(res => this.setState({ data: res.member, workflow: res.workflow, errorField: [] }, () => {
+                                .then(res => this.setState({ data: res.member, workflow: res.workflow, errorField: {} }, () => {
                                     this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été modifiée.')
                                     this.props.setBreadcrumb([
@@ -184,7 +184,6 @@ class _MemberOne extends React.Component {
 
                     <Text variant="large" block>Informations générales</Text>
                     <Separator />
-                    <br />
                     <Columns>
                         <Columns.Column>
                             <Label required>Prénom</Label>
@@ -253,6 +252,75 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.phone_number?.errors?.[0]}
                             />
                         </Columns.Column>
+                        <Columns.Column />
+                        <Columns.Column />
+                    </Columns>
+                    <Columns>
+                        <Columns.Column>
+                            <Label required>Code postal</Label>
+                            <MaskedTextField
+                                value={data?.postal_code ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, postal_code: ev.target.value } })}
+                                mask={"99999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.postal_code?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label required>Rue</Label>
+                            <TextField
+                                defaultValue={data?.street ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, street: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.street?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label required>Ville</Label>
+                            <TextField
+                                defaultValue={data?.city ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, city: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.city?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column />
+                    </Columns>
+
+                    <Columns>
+                        <Columns.Column size="one-quarter">
+                            <Label>Équipe(s)</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        multiSelect
+                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
+                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        onChange={(ev, item) => {
+                                            const newSelectedItems = [...data.teams]
+                                            if (item.selected) {
+                                                newSelectedItems.push(item)
+                                            } else {
+                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                            }
+                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                        }}
+                                    />
+                            }
+                        </Columns.Column>
+
                         <Columns.Column>
                             <Label required>Demande réduction</Label>
                             {
@@ -292,38 +360,6 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
-                    </Columns>
-
-                    <Columns>
-                        <Columns.Column size="one-quarter">
-                            <Label>Équipe(s)</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        multiSelect
-                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
-                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
-                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                        onChange={(ev, item) => {
-                                            const newSelectedItems = [...data.teams]
-                                            if (item.selected) {
-                                                newSelectedItems.push(item)
-                                            } else {
-                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
-                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                            }
-                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
-                                        }}
-                                    />
-                            }
-                        </Columns.Column>
                         <Columns.Column>
                             <Label>Montant payé</Label>
                             <TextField
@@ -340,6 +376,8 @@ class _MemberOne extends React.Component {
                                 }}
                             />
                         </Columns.Column>
+                    </Columns>
+                    <Columns>
                         <Columns.Column>
                             <Label disabled={!readOnly}>Utilisateur associé</Label>
                             <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
@@ -355,6 +393,8 @@ class _MemberOne extends React.Component {
                                 readOnly={true}
                             />
                         </Columns.Column>
+                        <Columns.Column />
+                        <Columns.Column />
                     </Columns>
                     {
                         !isMajor(data?.birthdate) &&
@@ -364,7 +404,6 @@ class _MemberOne extends React.Component {
                                 <Columns.Column>
                                     <Text variant="large" block>Parent 1</Text>
                                     <Separator />
-                                    <br />
                                     <Columns>
                                         <Columns.Column>
                                             <Label required>Prénom</Label>
@@ -428,7 +467,6 @@ class _MemberOne extends React.Component {
                                 <Columns.Column>
                                     <Text variant="large" block>Parent 2</Text>
                                     <Separator />
-                                    <br />
                                     <Columns>
                                         <Columns.Column>
                                             <Label>Prénom</Label>
@@ -495,7 +533,6 @@ class _MemberOne extends React.Component {
                     <br />
                     <Text variant="large" block>Choix et autorisation</Text>
                     <Separator />
-                    <br />
                     <Columns>
                         <Columns.Column>
                             <Label required>Autorisation évacuation</Label>
@@ -623,7 +660,6 @@ class _MemberOne extends React.Component {
                     <br />
                     <Text variant="large" block>Document(s)</Text>
                     <Separator />
-                    <br />
                     <Columns>
                         <Columns.Column>
                             <Label required>Certificat médical</Label>
@@ -717,6 +753,24 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column />
+                    </Columns>
+
+                    <br />
+                    <Text variant="large" block>Autre</Text>
+                    <Separator />
+                    <Columns>
+                        <Columns.Column>
+                            <Label>Notes</Label>
+                            <TextField
+                                readOnly={readOnly}
+                                borderless={readOnly}
+                                multiline 
+                                autoAdjustHeight                                
+                                defaultValue={data?.notes ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, notes: ev.target.value } })}
+                                errorMessage={this.state.errorField?.notes?.errors?.[0]}
+                            />
+                        </Columns.Column>
                     </Columns>
                 </div>
             </section >
