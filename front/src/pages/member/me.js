@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Text, MessageBar, Pivot, PivotItem, PrimaryButton, DefaultButton } from 'office-ui-fabric-react'
+import { MessageBarType, Text, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import request from '../../helper/request'
@@ -19,7 +19,7 @@ class _MembersMe extends React.Component {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 4,
+            page: 1,
             currentPivot: 0
         }
 
@@ -43,7 +43,7 @@ class _MembersMe extends React.Component {
                             let members = [...this.props.members]
                             members.push(res?.member)
                             this.props.setMembers(members)
-                            this.setState({ currentPivot: members.length - 1, errorField: [], page: 2 })
+                            this.setState({ currentPivot: members.length - 1, errorField: [], page: 1 })
                             //Check if need to disable new member
                             if (members?.length >= 4) {
                                 this.props.setCommand([])
@@ -76,45 +76,40 @@ class _MembersMe extends React.Component {
                             {
                                 label: "Informations",
                                 description: "",
-                                isCompleted: page >= 2,
+                                isCompleted: page >= 2 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
                                 isActive: page === 1,
                                 isError: false
                             },
                             {
                                 label: "Document(s)",
                                 description: "",
-                                isCompleted: page >= 3,
+                                isCompleted: page >= 3 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
                                 isActive: page === 2,
                                 isError: false
                             },
                             {
                                 label: "Récapitulatif",
                                 description: "",
-                                isCompleted: page >= 4,
+                                isCompleted: page >= 4 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
                                 isActive: page === 3,
                                 isError: false
                             },
                             {
                                 label: "Paiement",
                                 description: "",
-                                isCompleted: page >= 5,
+                                isCompleted: page >= 5 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
                                 isActive: page === 4,
                                 isError: false
                             },
                             {
                                 label: "Finalisation",
                                 description: "",
-                                isCompleted: page >= 6,
-                                isActive: page === 5,
+                                isCompleted: page >= 6  || this.props.members?.map(x => x.is_inscription_done)?.filter(x => x)?.length,
+                                isActive: page === 5 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
                                 isError: false
                             }
                         ]}
                     />
-
-                    <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
-                        Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
-                    </MessageBar>
-                    <br />
                     {isLoading ? <Loader /> :
                         <>
                             {
@@ -147,17 +142,17 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeInformations
-                                                                        readOnly={readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
                                                                     <br />
                                                                     <MembersMeAutorizations
-                                                                        readOnly={readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <br />
+                                                                    <Separator /><br />
                                                                     <div className="flex-row flex-space-between">
                                                                         <div />
                                                                         <PrimaryButton
@@ -165,20 +160,24 @@ class _MembersMe extends React.Component {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                this.setState({ isLoading: true }, () => {
-                                                                                    request.editOrCreateMember(member?.id, { ...member })
-                                                                                        .then(res => {
-                                                                                            this.props.editMember(res, i)
-                                                                                            this.setState({ errorField: {}, page: this.state.page + 1 })
-                                                                                        })
-                                                                                        .catch(err => {
-                                                                                            this.setState({ errorField: err?.form?.children })
-                                                                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                                                                        })
-                                                                                        .finally(() => {
-                                                                                            this.setState({ isLoading: false })
-                                                                                        })
-                                                                                })
+                                                                                if (!member.is_payed && !readOnly) {
+                                                                                    this.setState({ isLoading: true }, () => {
+                                                                                        request.editOrCreateMember(member?.id, { ...member })
+                                                                                            .then(res => {
+                                                                                                this.props.editMember(res, i)
+                                                                                                this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                            })
+                                                                                            .catch(err => {
+                                                                                                this.setState({ errorField: err?.form?.children })
+                                                                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                            })
+                                                                                            .finally(() => {
+                                                                                                this.setState({ isLoading: false })
+                                                                                            })
+                                                                                    })
+                                                                                } else {
+                                                                                    this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                }
                                                                             }}
                                                                         />
                                                                     </div>
@@ -188,11 +187,11 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeDocuments
-                                                                        readOnly={readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         memberIndex={i}
                                                                         errorField={errorField}
                                                                     />
-                                                                    <br />
+                                                                    <Separator /><br />
                                                                     <div className="flex-row flex-space-between">
                                                                         <DefaultButton
                                                                             text="Informations"
@@ -204,20 +203,24 @@ class _MembersMe extends React.Component {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                this.setState({ isLoading: true }, () => {
-                                                                                    request.validateMemberDocument(member?.id)
-                                                                                        .then(res => {
-                                                                                            this.props.editMember(res, i)
-                                                                                            this.setState({ errorField: {}, page: this.state.page + 1 })
-                                                                                        })
-                                                                                        .catch(err => {
-                                                                                            this.setState({ errorField: err?.form?.children })
-                                                                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                                                                        })
-                                                                                        .finally(() => {
-                                                                                            this.setState({ isLoading: false })
-                                                                                        })
-                                                                                })
+                                                                                if (!member.is_payed && !readOnly) {
+                                                                                    this.setState({ isLoading: true }, () => {
+                                                                                        request.validateMemberDocument(member?.id)
+                                                                                            .then(res => {
+                                                                                                this.props.editMember(res, i)
+                                                                                                this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                            })
+                                                                                            .catch(err => {
+                                                                                                this.setState({ errorField: err?.form?.children })
+                                                                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                            })
+                                                                                            .finally(() => {
+                                                                                                this.setState({ isLoading: false })
+                                                                                            })
+                                                                                    })
+                                                                                } else {
+                                                                                    this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                }
                                                                             }}
                                                                         />
                                                                     </div>
@@ -227,10 +230,10 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeSummary
-                                                                        readOnly={readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <br />
+                                                                    <Separator /><br />
                                                                     <div className="flex-row flex-space-between">
                                                                         <DefaultButton
                                                                             text="Documents"

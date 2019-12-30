@@ -40,3 +40,9 @@ VALUES
     (3, 'Payé','L''utilisateur à payé.'), 
     (4, 'Gest''hand', 'L''utilisateur est bien inscris sur Gest''hand.'), 
     (5, 'Inscris', 'L''inscription est finalisée.');
+
+INSERT INTO `mc_dev_param_payement_solution` (`id`, `label`, `icon`) 
+VALUES 
+    (1, 'Paypal', 'PaymentCard'), 
+    (2, 'Chèque', 'Document'), 
+    (3, 'Chèque & coupon(s)', 'DocumentSet');

@@ -6,6 +6,7 @@ use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamPayementSolution;
 use App\Entity\ParamWorkflow;
 use App\Form\MemberMajorAdminType;
 use App\Form\MemberMajorType;
@@ -299,10 +300,14 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getPriceMe(PriceService $priceService)
+    public function getPriceMe(TranslatorInterface $translator, PriceService $priceService)
     {
         //Find member by id
-        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false]);
+
+        if (!$members) {
+            return $this->handleView($this->view(["message" => $translator->trans('members_to_pay_not_found')], Response::HTTP_NOT_FOUND));
+        }
 
         return $this->handleView($this->view(['price' => $priceService->getPrices($members)]));
     }
@@ -365,6 +370,12 @@ class MemberController extends FOSRestController
             if (!$isDocCertMediOk) $res['form']['children']['1'] = [$translator->trans('not_blank')];
             if ($member->getIsReducedPrice() && !$isDocJusChoEtuOk) $res['form']['children']['2'] = [$translator->trans('not_blank')];
 
+            //Update user
+            $member->setIsDocumentComplete(false);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($member);
+            $em->flush();
+
             return $this->handleView($this->view($res, Response::HTTP_BAD_REQUEST));
         }
 
@@ -408,16 +419,24 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postPay(TranslatorInterface $translator, PriceService $priceService)
+    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService)
     {
+        $data = json_decode($request->getContent(), true);
+
         //Find member by id
-        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false]);
 
         //Check docs
         foreach ($members as $member) {
             if (!$member->getIsDocumentComplete()) {
-                return $this->handleView($this->view(["message" => $translator->trans('member_missing_document')], Response::HTTP_NOT_FOUND));
+                return $this->handleView($this->view(["message" => $translator->trans('member_missing_document')], Response::HTTP_BAD_REQUEST));
             }
+        }
+
+        //Find payment solution
+        $payment_solution = $this->getDoctrine()->getRepository(ParamPayementSolution::class)->findOneBy(['id' => $data['payment_solution']]);
+        if (!$payment_solution) {
+            return $this->handleView($this->view(["message" => $translator->trans('payment_solution_not_found')], Response::HTTP_NOT_FOUND));
         }
 
         //TODO : connect return api payment 
@@ -425,6 +444,7 @@ class MemberController extends FOSRestController
         foreach ($members as $member) {
             $member->setIsPayed(true);
             $member->setAmountPayed($priceService->getPrice($member));
+            $member->setPaymentSolution($payment_solution);
             $em->persist($member);
         }
         $em->flush();

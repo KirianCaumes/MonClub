@@ -154,7 +154,7 @@ class Member
     private $is_image_allow;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":"0"})
+     * @ORM\Column(type="boolean", options={"default":"0"}, nullable=true)
      */
     private $is_return_home_allow;
 
@@ -213,6 +213,12 @@ class Member
      * @ORM\Column(type="text", nullable=true)
      */
     private $notes;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="ParamPayementSolution")
+     * @ORM\JoinColumn(name="id_payment_solution", referencedColumnName="id")
+     */
+    private $payment_solution;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -647,6 +653,18 @@ class Member
     public function setNotes(?string $notes): self
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getPaymentSolution(): ?ParamPayementSolution
+    {
+        return $this->payment_solution;
+    }
+
+    public function setPaymentSolution(ParamPayementSolution $payment_solution): self
+    {
+        $this->payment_solution = $payment_solution;
 
         return $this;
     }

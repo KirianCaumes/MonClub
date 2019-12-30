@@ -294,6 +294,16 @@ export default {
 
         return getFetch(url, options)
     },
+    pay: (body) => {
+        const url = ["member", "me", "pay"]
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
     getAllTeams: () => {
         const url = ["team"]
 

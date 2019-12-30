@@ -3,7 +3,6 @@ import { Separator, Label, Text, ChoiceGroup, Link, TextField } from 'office-ui-
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
 import { isMajor } from '../../../helper/date'
-import Loader from '../../../component/loader'
 import { editMember } from '../../../redux/actions/member'
 
 class _MembersMeAutorizations extends React.Component {

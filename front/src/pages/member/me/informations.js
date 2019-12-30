@@ -1,10 +1,9 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Separator, TextField, Label, Text, MaskedTextField, Checkbox } from 'office-ui-fabric-react'
+import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from '../../../helper/date'
-import Loader from '../../../component/loader'
 import { editMember } from '../../../redux/actions/member'
 
 class _MembersMeInformations extends React.Component {
@@ -21,6 +20,10 @@ class _MembersMeInformations extends React.Component {
             <section id="members-me-informations">
                 <Text variant="large" block>Informations concernant le licencié</Text>
                 <Separator />
+                <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
+                    Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
+                </MessageBar>
+                <br />
                 <Columns>
                     <Columns.Column>
                         <Label required>Prénom</Label>

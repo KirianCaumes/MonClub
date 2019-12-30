@@ -73,6 +73,7 @@ class PriceService
      */
     public function getPrices(array $members)
     {
+        if (!$members) return ['each' => [], 'total' => null];
         $prices = [];
         $total = 0;
         foreach ($members as $member) {

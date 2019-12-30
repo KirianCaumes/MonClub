@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamGlobal;
+use App\Entity\ParamPayementSolution;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
@@ -38,6 +39,7 @@ class ParamController extends FOSRestController
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),
                 'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findall(),
+                'payement_solution' => $this->getDoctrine()->getRepository(ParamPayementSolution::class)->findall(),
             ]
         ]));
     }
