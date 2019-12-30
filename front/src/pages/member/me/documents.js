@@ -7,16 +7,12 @@ import { Columns } from 'react-bulma-components'
 import FileInput from '../../../component/fileInput'
 import request from '../../../helper/request'
 import { dlBlob } from '../../../helper/dlBlob'
+import { editMember } from '../../../redux/actions/member'
 
 class _MembersMeDocuments extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            isLoading: false,
-            readOnly: false,
-            member: { ...props?.member ?? {} },
-            errorField: {}
-        }
+        this.state = {}
 
         this.choice = [
             { key: 'true', text: 'Oui' },
@@ -25,23 +21,20 @@ class _MembersMeDocuments extends React.Component {
     }
 
     render() {
-        const { isLoading, readOnly } = this.state  
-        const { memberIndex } = this.props
+        const { memberIndex, errorField, readOnly } = this.props
         const member = this.props.members[memberIndex]
-        console.log(member)
-
-        if (isLoading) return <Loader />
 
         return (
-            <section id="members-me-autorizations">
+            <section id="members-me-documents">
                 <Text variant="large" block>Les documents</Text>
                 <Separator />
                 <Columns>
                     <Columns.Column>
                         <Label required>Certificat médical</Label>
                         <FileInput
-                            read={readOnly}
-                            errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
+                            read={false}
+                            // read={readOnly}
+                            errorMessage={errorField?.['1']?.[0]}
                             isFile={member?.documents?.find(doc => doc?.category?.id === 1)?.document}
                             fileName={member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                             onDownload={() => {
@@ -54,7 +47,7 @@ class _MembersMeDocuments extends React.Component {
                                     .then(doc => {
                                         let documents = [...member.documents]
                                         documents.push(doc)
-                                        // this.setState({ member: { ...this.state.member, documents: documents } }) //TODO
+                                        this.props.editMember({ documents }, memberIndex)
                                     })
                                     .catch(err => {
                                         this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
@@ -67,7 +60,7 @@ class _MembersMeDocuments extends React.Component {
                                         let documents = [...member.documents]
                                         const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
                                         if (currIndex > -1) documents.splice(currIndex, 1)
-                                        // this.setState({ member: { ...this.state.member, documents: documents } })
+                                        this.props.editMember({ documents }, memberIndex)
                                     })
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                             }}
@@ -80,8 +73,9 @@ class _MembersMeDocuments extends React.Component {
                             <>
                                 <Label required>Jusitificatif étudiant/chomage</Label>
                                 <FileInput
-                                    read={readOnly}
-                                    errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
+                                    read={false}
+                                    // read={readOnly}
+                                    errorMessage={errorField?.['2']?.[0]}
                                     isFile={member?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                     fileName={member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                     onDownload={() => {
@@ -94,7 +88,7 @@ class _MembersMeDocuments extends React.Component {
                                             .then(doc => {
                                                 let documents = [...member.documents]
                                                 documents.push(doc)
-                                                // this.setState({ member: { ...this.state.member, documents: documents } })
+                                                this.props.editMember({ documents }, memberIndex)
                                             })
                                             .catch(err => {
                                                 this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
@@ -107,7 +101,7 @@ class _MembersMeDocuments extends React.Component {
                                                 let documents = [...member.documents]
                                                 const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
                                                 if (currIndex > -1) documents.splice(currIndex, 1)
-                                                // this.setState({ member: { ...this.state.member, documents: documents } })
+                                                this.props.editMember({ documents }, memberIndex)
                                             })
                                             .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
                                     }}
@@ -117,20 +111,6 @@ class _MembersMeDocuments extends React.Component {
                     </Columns.Column>
                     <Columns.Column />
                 </Columns>
-                <br />
-                <div className="flex-row flex-space-between">
-                    <DefaultButton
-                        text="Retour"
-                        iconProps={{ iconName: 'Previous' }}
-                        onClick={() => this.props.goBack()}
-                    />
-                    <PrimaryButton
-                        text="Paiement"
-                        iconProps={{ iconName: 'Next' }}
-                        styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                        onClick={() => this.props.goNext()}
-                    />
-                </div>
             </section >
         )
     }
@@ -141,6 +121,7 @@ const mapDispatchToProps = dispatch => {
         setBreadcrumb: member => dispatch(setBreadcrumb(member)),
         setCommand: member => dispatch(setCommand(member)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
+        editMember: (member, index) => dispatch(editMember(member, index))
     }
 }
 

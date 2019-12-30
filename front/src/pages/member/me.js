@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Text, MessageBar, Pivot, PivotItem, PrimaryButton } from 'office-ui-fabric-react'
+import { MessageBarType, Text, MessageBar, Pivot, PivotItem, PrimaryButton, DefaultButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import request from '../../helper/request'
@@ -10,6 +10,7 @@ import MembersMeAutorizations from './me/autorizations'
 import MembersMeDocuments from './me/documents'
 import MembersMePayment from './me/payment'
 import { setMembers, editMember } from '../../redux/actions/member'
+import MembersMeSummary from './me/summary'
 
 class _MembersMe extends React.Component {
     constructor(props) {
@@ -18,7 +19,7 @@ class _MembersMe extends React.Component {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 1,
+            page: 4,
             currentPivot: 0
         }
 
@@ -42,7 +43,7 @@ class _MembersMe extends React.Component {
                             let members = [...this.props.members]
                             members.push(res?.member)
                             this.props.setMembers(members)
-                            this.setState({ currentPivot: members.length - 1, errorField: [] })
+                            this.setState({ currentPivot: members.length - 1, errorField: [], page: 2 })
                             //Check if need to disable new member
                             if (members?.length >= 4) {
                                 this.props.setCommand([])
@@ -62,7 +63,7 @@ class _MembersMe extends React.Component {
         const { isLoading, readOnly, page, currentPivot, errorField } = this.state
         const { members } = this.props
 
-        if (isLoading) return <Loader />
+        // if (isLoading) return <Loader />
 
         return (
             <section id="members-me">
@@ -87,17 +88,24 @@ class _MembersMe extends React.Component {
                                 isError: false
                             },
                             {
-                                label: "Paiement",
+                                label: "Récapitulatif",
                                 description: "",
                                 isCompleted: page >= 4,
                                 isActive: page === 3,
                                 isError: false
                             },
                             {
-                                label: "Finalisation",
+                                label: "Paiement",
                                 description: "",
                                 isCompleted: page >= 5,
                                 isActive: page === 4,
+                                isError: false
+                            },
+                            {
+                                label: "Finalisation",
+                                description: "",
+                                isCompleted: page >= 6,
+                                isActive: page === 5,
                                 isError: false
                             }
                         ]}
@@ -107,99 +115,172 @@ class _MembersMe extends React.Component {
                         Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
                     </MessageBar>
                     <br />
-                    <Pivot
-                        onLinkClick={(item) => {
-                            this.setState({ page: 1, currentPivot: item.props.itemKey, errorField: {} })
-                        }}
-                        selectedKey={currentPivot?.toString()}
-                    >
-                        {members.map((member, i) => (
-                            <PivotItem
-                                key={i}
-                                itemKey={i.toString()}
-                                headerText={(() => {
-                                    if (window.innerWidth > 768) {
-                                        return `${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`
-                                    } else {
-                                        return undefined
-                                    }
-                                })()}
-                                itemIcon="Contact"
-                                data-content={null}
-                            >
-                                <br />
-                                {
-                                    (() => {
-                                        switch (page) {
-                                            case 1:
-                                                return (
-                                                    <>
-                                                        <MembersMeInformations
-                                                            errorField={errorField}
-                                                            memberIndex={i}
-                                                        />
-                                                        <br />
-                                                        <MembersMeAutorizations
-                                                            errorField={errorField}
-                                                            memberIndex={i}
-                                                        />
-                                                        <br />
-                                                        <div className="flex-row flex-space-between">
-                                                            <div />
-                                                            <PrimaryButton
-                                                                text="Documents"
-                                                                iconProps={{ iconName: 'Next' }}
-                                                                styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                                                                onClick={() => {
-                                                                    this.setState({ isLoading: true, readOnly: true }, () => {
-                                                                        request.editOrCreateMember(member?.id, { ...member })
-                                                                            .then(res => {
-                                                                                this.props.editMember(res, i)
-                                                                                this.setState({ errorField: {}, page: this.state.page + 1 })
-                                                                            })
-                                                                            .catch(err => {
-                                                                                this.setState({ errorField: err?.form?.children })
-                                                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                                                            })
-                                                                            .finally(() => {
-                                                                                this.setState({ isLoading: false })
-                                                                            })
-                                                                    })
-                                                                }}
+                    {isLoading ? <Loader /> :
+                        <>
+                            {
+                                page <= 3
+                                    ?
+                                    <Pivot
+                                        onLinkClick={(item) => {
+                                            this.setState({ page: 1, currentPivot: item.props.itemKey, errorField: {} })
+                                        }}
+                                        selectedKey={currentPivot?.toString()}
+                                    >
+                                        {members.map((member, i) => (
+                                            <PivotItem
+                                                key={i}
+                                                itemKey={i.toString()}
+                                                headerText={(() => {
+                                                    if (window.innerWidth > 768) {
+                                                        return `${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`
+                                                    } else {
+                                                        return undefined
+                                                    }
+                                                })()}
+                                                itemIcon="Contact"
+                                                data-content={null}
+                                            >
+                                                <br />
+                                                {(() => {
+                                                    switch (page) {
+                                                        case 1:
+                                                            return (
+                                                                <>
+                                                                    <MembersMeInformations
+                                                                        readOnly={readOnly}
+                                                                        errorField={errorField}
+                                                                        memberIndex={i}
+                                                                    />
+                                                                    <br />
+                                                                    <MembersMeAutorizations
+                                                                        readOnly={readOnly}
+                                                                        errorField={errorField}
+                                                                        memberIndex={i}
+                                                                    />
+                                                                    <br />
+                                                                    <div className="flex-row flex-space-between">
+                                                                        <div />
+                                                                        <PrimaryButton
+                                                                            text="Documents"
+                                                                            iconProps={{ iconName: 'Next' }}
+                                                                            styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                                            onClick={() => {
+                                                                                this.setState({ isLoading: true }, () => {
+                                                                                    request.editOrCreateMember(member?.id, { ...member })
+                                                                                        .then(res => {
+                                                                                            this.props.editMember(res, i)
+                                                                                            this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                        })
+                                                                                        .catch(err => {
+                                                                                            this.setState({ errorField: err?.form?.children })
+                                                                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                        })
+                                                                                        .finally(() => {
+                                                                                            this.setState({ isLoading: false })
+                                                                                        })
+                                                                                })
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            )
+                                                        case 2:
+                                                            return (
+                                                                <>
+                                                                    <MembersMeDocuments
+                                                                        readOnly={readOnly}
+                                                                        memberIndex={i}
+                                                                        errorField={errorField}
+                                                                    />
+                                                                    <br />
+                                                                    <div className="flex-row flex-space-between">
+                                                                        <DefaultButton
+                                                                            text="Informations"
+                                                                            iconProps={{ iconName: 'Previous' }}
+                                                                            onClick={() => this.setState({ page: this.state.page - 1 })}
+                                                                        />
+                                                                        <PrimaryButton
+                                                                            text="Récapitulatif"
+                                                                            iconProps={{ iconName: 'Next' }}
+                                                                            styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                                            onClick={() => {
+                                                                                this.setState({ isLoading: true }, () => {
+                                                                                    request.validateMemberDocument(member?.id)
+                                                                                        .then(res => {
+                                                                                            this.props.editMember(res, i)
+                                                                                            this.setState({ errorField: {}, page: this.state.page + 1 })
+                                                                                        })
+                                                                                        .catch(err => {
+                                                                                            this.setState({ errorField: err?.form?.children })
+                                                                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                        })
+                                                                                        .finally(() => {
+                                                                                            this.setState({ isLoading: false })
+                                                                                        })
+                                                                                })
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            )
+                                                        case 3:
+                                                            return (
+                                                                <>
+                                                                    <MembersMeSummary
+                                                                        readOnly={readOnly}
+                                                                        memberIndex={i}
+                                                                    />
+                                                                    <br />
+                                                                    <div className="flex-row flex-space-between">
+                                                                        <DefaultButton
+                                                                            text="Documents"
+                                                                            iconProps={{ iconName: 'Previous' }}
+                                                                            onClick={() => this.setState({ page: this.state.page - 1 })}
+                                                                        />
+                                                                        <PrimaryButton
+                                                                            text="Paiement"
+                                                                            iconProps={{ iconName: 'Next' }}
+                                                                            styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                                            onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
+                                                                        />
+                                                                    </div>
+                                                                </>
+                                                            )
+                                                        default:
+                                                            return (null)
+                                                    }
+                                                })()}
+                                            </PivotItem>
+                                        ))}
+                                    </Pivot>
+                                    :
+                                    <>
+                                        {(() => {
+                                            switch (page) {
+                                                case 4:
+                                                    return (
+                                                        <>
+                                                            <MembersMePayment
+                                                                readOnly={readOnly}
+                                                                goNext={() => this.setState({ page: this.state.page + 1 })}
+                                                                goBack={() => this.setState({ page: 1 })}
                                                             />
-                                                        </div>
-                                                    </>
-                                                )
-                                            case 2:
-                                                return (
-                                                    <>
-                                                        <MembersMeDocuments
-                                                            memberIndex={i}
-                                                            goBack={() => this.setState({ page: this.state.page - 1 })}
-                                                            goNext={() => this.setState({ page: this.state.page + 1 })}
-                                                        />
-                                                    </>
-                                                )
-                                            case 3:
-                                                return (
-                                                    <>
-                                                        <MembersMePayment
-                                                            member={member}
-                                                            goBack={() => this.setState({ page: this.state.page - 1 })}
-                                                            goNext={() => this.setState({ page: this.state.page + 1 })}
-                                                        />
-                                                    </>
-                                                )
-                                            default:
-                                                return (null)
-                                        }
-                                    })()
-                                }
-                            </PivotItem>
-                        ))}
-
-
-                    </Pivot>
+                                                        </>
+                                                    )
+                                                case 5:
+                                                    return (
+                                                        <>
+                                                            ok
+                                                        </>
+                                                    )
+                                                default:
+                                                    return (null)
+                                            }
+                                        })()}
+                                    </>
+                            }
+                        </>
+                    }
                 </div>
             </section >
         )

@@ -1,10 +1,15 @@
 #members-me {
-  .ms-ChoiceField-field {
-    &::before {
-      top: calc(50% - 10px);
+  #members-me-autorizations {
+    .ms-ChoiceField-field {
+      &::before {
+        top: calc(50% - 10px);
+      }
+      &::after {
+        top: calc(50% - 5px);
+      }
     }
-    &::after {
-      top: calc(50% - 5px);
-    }
+  }
+  td {
+    vertical-align: middle;
   }
 }

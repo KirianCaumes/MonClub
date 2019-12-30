@@ -33,6 +33,8 @@ class Member
     /**
      * @Assert\NotBlank(message = "not_blank")
      * @Assert\Date(message = "invalid_date")
+     * @Assert\GreaterThanOrEqual("01-01-1900")
+     * @Assert\LessThan("-4 years")
      * @ORM\Column(type="date")
      */
     private $birthdate;

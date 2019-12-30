@@ -342,12 +342,14 @@ class MemberController extends FOSRestController
 
         //Find certificat
         $isDocCertMediOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
-            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 1])
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 1]),
+            'member' => $member
         ]);
 
         //Find justificatif
         $isDocJusChoEtuOk = $this->getDoctrine()->getRepository(Document::class)->findOneBy([
-            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 2])
+            'category' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => 2]),
+            'member' => $member
         ]);
 
         //If docs are missing

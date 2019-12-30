@@ -267,6 +267,33 @@ export default {
 
         return getFetch(url, options)
     },
+    validateMemberDocument: (memberId) => {
+        const url = ["member", memberId, "validate-document"]
+
+        var options = {
+            method: POST
+        }
+
+        return getFetch(url, options)
+    },
+    getMemberPrice: (memberId) => {
+        const url = ["member", memberId, "price"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getMeMemberPrices: (memberId) => {
+        const url = ["member", "me", "price"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     getAllTeams: () => {
         const url = ["team"]
 

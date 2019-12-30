@@ -33,22 +33,36 @@ class PriceService
         //Get price license
         if ($member->getIsReducedPrice()) {
             if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                $paramGlobalRepository->findOneBy(['label' => 'reduced_price_before_deadline'])->getValue();
+                $price += $paramGlobalRepository->findOneBy(['label' => 'reduced_price_before_deadline'])->getValue();
             } else {
-                $paramGlobalRepository->findOneBy(['label' => 'reduced_price_after_deadline'])->getValue();
+                $price += $paramGlobalRepository->findOneBy(['label' => 'reduced_price_after_deadline'])->getValue();
             }
         } else { //Else : normal case
             $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval($birthYear);
             if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                $price += $paramPriceLicense->getPriceBeforeDeadline();
+                if ($paramPriceLicense) $price += $paramPriceLicense->getPriceBeforeDeadline();
             } else {
-                $price += $paramPriceLicense->getPriceAfterDeadline();
+                if ($paramPriceLicense) $price += $paramPriceLicense->getPriceAfterDeadline();
             }
         }
 
         //Check if transfer needed
         if ($member->getIsTransferNeeded()) {
             $price += $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval($age)->getPrice();
+        }
+
+        //Check families reduction
+        $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser()]);
+        $position = 1;
+        foreach ($members as $key => $mbr) {
+            if ($mbr === $member) {
+                $position = $key + 1;
+                break;
+            }
+        }
+        $reducFamily = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => $position]);
+        if ($reducFamily) {
+            $price -= $reducFamily->getDiscount();
         }
 
         return $price;
@@ -62,7 +76,7 @@ class PriceService
         $prices = [];
         $total = 0;
         foreach ($members as $member) {
-            array_push($prices, $this->getPrice($member));
+            array_push($prices, ['name' => ucwords($member->getLastName()) . ' ' . ucwords($member->getFirstName()), 'price' => $this->getPrice($member)]);
             $total += $this->getPrice($member);
         }
 

@@ -9,10 +9,7 @@ import { editMember } from '../../../redux/actions/member'
 class _MembersMeAutorizations extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            isLoading: false,
-            readOnly: false,
-        }
+        this.state = {}
 
         this.choice = [
             { key: 'true', text: 'Oui' },
@@ -20,12 +17,9 @@ class _MembersMeAutorizations extends React.Component {
         ]
     }
 
-    render() {
-        const { isLoading, readOnly } = this.state        
-        const { memberIndex, errorField } = this.props
+    render() {     
+        const { memberIndex, errorField, readOnly } = this.props
         const member = this.props.members[memberIndex]
-
-        if (isLoading) return <Loader />
 
         return (
             <section id="members-me-autorizations">
@@ -40,11 +34,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise l'équipe d'encadrement du THOUARE HANDBALL CLUB à me faire prodiguer les premiers soins et, le cas échéant, à me faire transporter au centre hospitalier de leur choix"
+                                        text: "J'autorise l'équipe d'encadrement du THOUARE HANDBALL CLUB à me faire prodiguer les premiers soins et, le cas échéant, à me faire transporter au centre hospitalier de leur choix",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Je n'autorise pas l'équipe d'encadrement du THOUARE HANDBALL CLUB à me faire prodiguer les premiers soins et, le cas échéant, à me faire transporter au centre hospitalier de leur choix"
+                                        text: "Je n'autorise pas l'équipe d'encadrement du THOUARE HANDBALL CLUB à me faire prodiguer les premiers soins et, le cas échéant, à me faire transporter au centre hospitalier de leur choix",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_evacuation_allow)}
@@ -57,11 +53,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "Je m'engage à ne pas intervenir juridiquement contre le THOUARE HANDBALL CLUB en cas d'accident de la route lors des déplacements effectués dans un véhicule qui n'est pas le mien."
+                                        text: "Je m'engage à ne pas intervenir juridiquement contre le THOUARE HANDBALL CLUB en cas d'accident de la route lors des déplacements effectués dans un véhicule qui n'est pas le mien.",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Dans le cas contraire, je m'engage à utiliser mon propre véhicule à chaque déplacement"
+                                        text: "Dans le cas contraire, je m'engage à utiliser mon propre véhicule à chaque déplacement",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_transport_allow)}
@@ -70,16 +68,18 @@ class _MembersMeAutorizations extends React.Component {
                             <TextField errorMessage={errorField?.is_transport_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Droit à l'image</Label>
-                            <Text>Le THOUARE HANDBALL CLUB peut être amené, dans le cadre strict de son développement, à utiliser des photographies et/ou des vidéos, prises à l'occasion des manifestations qu'il organise ou auxquelles il participe. Photographie et vidéo présentant plus de trois personnes identifiables.</Text>
+                            <Text className="has-text-justified" block>Le THOUARE HANDBALL CLUB peut être amené, dans le cadre strict de son développement, à utiliser des photographies et/ou des vidéos, prises à l'occasion des manifestations qu'il organise ou auxquelles il participe. Photographie et vidéo présentant plus de trois personnes identifiables.</Text>
                             <ChoiceGroup
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus"
+                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus"
+                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_image_allow)}
@@ -92,11 +92,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>
+                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>
+                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_newsletter_allow)}
@@ -109,7 +111,8 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"
+                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_accepted)}
@@ -124,11 +127,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise l'équipe d'encadrement du THOUARE HANDBALL CLUB à faire prodiguer les premiers soins à mon enfant et, le cas échéant, à le faire transporter au centre hospitalier de leur choix."
+                                        text: "J'autorise l'équipe d'encadrement du THOUARE HANDBALL CLUB à faire prodiguer les premiers soins à mon enfant et, le cas échéant, à le faire transporter au centre hospitalier de leur choix.",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas l'équipe d'encadrement du THOUARE HANDBALL CLUB à faire prodiguer les premiers soins à mon enfant et, le cas échéant, à le faire transporter au centre hospitalier de leur choix. <b>Je serai donc présent lors de chaque match et de chaque entraînement auquel mon enfant participera.</b></>
+                                        text: <>Je n'autorise pas l'équipe d'encadrement du THOUARE HANDBALL CLUB à faire prodiguer les premiers soins à mon enfant et, le cas échéant, à le faire transporter au centre hospitalier de leur choix. <b>Je serai donc présent lors de chaque match et de chaque entraînement auquel mon enfant participera.</b></>,
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_evacuation_allow)}
@@ -141,11 +146,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise mon enfant à emprunter les moyens de transport mis à sa disposition par le club. Je m'engage à ne pas intervenir juridiquement contre le THOUARE HANDBALL CLUB en cas d'accident."
+                                        text: "J'autorise mon enfant à emprunter les moyens de transport mis à sa disposition par le club. Je m'engage à ne pas intervenir juridiquement contre le THOUARE HANDBALL CLUB en cas d'accident.",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas mon enfant à emprunter les moyens de transport mis à sa disposition par le club. <b>Je m'engage doncà l'accompagner moi-même à chaque déplacement.</b></>
+                                        text: <>Je n'autorise pas mon enfant à emprunter les moyens de transport mis à sa disposition par le club. <b>Je m'engage doncà l'accompagner moi-même à chaque déplacement.</b></>,
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_transport_allow)}
@@ -158,11 +165,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise mon enfant à rentrer par ses propres moyens après un entrainement ou un match."
+                                        text: "J'autorise mon enfant à rentrer par ses propres moyens après un entrainement ou un match.",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas mon enfant à rentrer par ses propres moyens après un entrainement ou un match. <b>Je m'engage donc à venir le chercher dans le gymnase aux horaires de fin d'entraînement ou de match.</b></>
+                                        text: <>Je n'autorise pas mon enfant à rentrer par ses propres moyens après un entrainement ou un match. <b>Je m'engage donc à venir le chercher dans le gymnase aux horaires de fin d'entraînement ou de match.</b></>,
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_return_home_allow)}
@@ -172,16 +181,18 @@ class _MembersMeAutorizations extends React.Component {
                             <Text className="is-bold">En dehors des horaires d'entrainement ou de match, l'enfant est sous la responsabilité des parents</Text>
                             <br /><br />
                             <Label required>Droit à l'image</Label>
-                            <Text>Le THOUARE HANDBALL CLUB peut être amené, dans le cadre strict de son développement, à utiliser des photographies et/ou des vidéos, prises à l'occasion des manifestations qu'il organise ou auxquelles il participe. Photographie et vidéo présentant plus de trois personnes identifiables.</Text>
+                            <Text className="has-text-justified" block>Le THOUARE HANDBALL CLUB peut être amené, dans le cadre strict de son développement, à utiliser des photographies et/ou des vidéos, prises à l'occasion des manifestations qu'il organise ou auxquelles il participe. Photographie et vidéo présentant plus de trois personnes identifiables.</Text>
                             <ChoiceGroup
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus"
+                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus"
+                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_image_allow)}
@@ -194,11 +205,13 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>
+                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
+                                        disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>
+                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_newsletter_allow)}
@@ -211,7 +224,8 @@ class _MembersMeAutorizations extends React.Component {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"
+                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions",
+                                        disabled: readOnly
                                     }
                                 ]}
                                 selectedKey={JSON.stringify(member?.is_accepted)}

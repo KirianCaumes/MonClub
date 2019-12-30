@@ -10,18 +10,12 @@ import { editMember } from '../../../redux/actions/member'
 class _MembersMeInformations extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            isLoading: false,
-            readOnly: false,
-        }
+        this.state = {}
     }
 
     render() {
-        const { isLoading, readOnly } = this.state
-        const { memberIndex, errorField } = this.props
+        const { memberIndex, errorField, readOnly } = this.props
         const member = this.props.members[memberIndex]
-
-        if (isLoading) return <Loader />
 
         return (
             <section id="members-me-informations">
@@ -136,14 +130,28 @@ class _MembersMeInformations extends React.Component {
                     label="Demande réduction chomeur ou étudiant (cocher si oui)"
                     defaultChecked={member?.is_reduced_price}
                     onChange={(ev, isChecked) => this.props.editMember({ is_reduced_price: isChecked }, memberIndex)}
+                    disabled={readOnly}
                 />
                 <br />
                 <Checkbox
                     label="Demande transfert de club (cocher si oui)"
                     defaultChecked={member?.is_transfer_needed}
-                    onChange={(ev, isChecked) => this.props.editMember({ is_transfer_needed:isChecked }, memberIndex)}
+                    onChange={(ev, isChecked) => this.props.editMember({ is_transfer_needed: isChecked }, memberIndex)}
+                    disabled={readOnly}
                 />
                 <br />
+                {
+                    isMajor(member?.birthdate) &&
+                    <>
+                        <Checkbox
+                            label="Je souhaite jouer en loisirs et ainsi bénéficier d'une réduction (cocher si oui)"
+                            defaultChecked={member?.is_reduced_price}
+                            onChange={(ev, isChecked) => this.props.editMember({ is_reduced_price: isChecked }, memberIndex)}
+                            disabled={readOnly}
+                        />
+                        <br />
+                    </>
+                }
                 {
                     !isMajor(member?.birthdate) &&
                     <>

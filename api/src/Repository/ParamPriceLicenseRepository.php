@@ -22,7 +22,7 @@ class ParamPriceLicenseRepository extends ServiceEntityRepository
     public function findOneByYearInterval($year): ?ParamPriceLicense
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.min_year <= :val')
+            ->where('m.min_year <= :val')
             ->andWhere('m.max_year >= :val')
             ->setParameter('val', $year)
             ->getQuery()
