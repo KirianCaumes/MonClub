@@ -1,8 +1,7 @@
 import React from 'react'
-import { Separator, DefaultButton, Label, Text, PrimaryButton, ChoiceGroup, Link, MessageBarType, Checkbox } from 'office-ui-fabric-react'
+import { Separator, DefaultButton, Label, Text, PrimaryButton, MessageBarType } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { isMajor } from '../../../helper/date'
 import Loader from '../../../component/loader'
 import { Columns } from 'react-bulma-components'
 import FileInput from '../../../component/fileInput'
@@ -121,13 +120,14 @@ class _MembersMeDocuments extends React.Component {
                 <br />
                 <div className="flex-row flex-space-between">
                     <DefaultButton
-                        text="Retourner aux autorisations"
+                        text="Retour"
                         iconProps={{ iconName: 'Previous' }}
                         onClick={() => this.props.goBack()}
                     />
                     <PrimaryButton
-                        text="Aller au paiement"
+                        text="Paiement"
                         iconProps={{ iconName: 'Next' }}
+                        styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                         onClick={() => this.props.goNext()}
                     />
                 </div>

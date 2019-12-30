@@ -228,25 +228,19 @@ export default {
             ...body,
             birthdate: dateToString(body?.birthdate)
         }
-        console.log(body.birthdate)
+        let url = ["member"]
+
+        let options = {
+            body: JSON.stringify(body)
+        }
 
         if (id) {
-            var url = ["member", id]
-
-            var options = {
-                method: PUT,
-                body: JSON.stringify(body)
-            }
-
+            url.push(id)
+            options.method = PUT
         } else {
-            var url = ["member"]
-
-            var options = {
-                method: POST,
-                body: JSON.stringify(body)
-            }
+            options.method = POST
         }
-        
+
         return getFetch(url, options)
     },
     editMemberAdmin: (id, body) => {

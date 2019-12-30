@@ -10,7 +10,7 @@ export default class Workflow extends React.Component {
     render() {
         if (!this.props?.data || !this.props?.data?.length) return <p>Impossible d'afficher le workflow...</p>
         return (
-            <div className="steps">
+            <div className={`steps ${this.props?.className ?? ''}`}>
                 {
                     this.props?.data?.map((row, i) => {
                         let cn = ""

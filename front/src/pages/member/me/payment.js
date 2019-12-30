@@ -1,13 +1,8 @@
 import React from 'react'
-import { Separator, DefaultButton, Label, Text, PrimaryButton, ChoiceGroup, Link, MessageBarType, Checkbox } from 'office-ui-fabric-react'
+import { Separator, DefaultButton, Text, PrimaryButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { isMajor } from '../../../helper/date'
 import Loader from '../../../component/loader'
-import { Columns } from 'react-bulma-components'
-import FileInput from '../../../component/fileInput'
-import request from '../../../helper/request'
-import { dlBlob } from '../../../helper/dlBlob'
 
 class _MembersMePayment extends React.Component {
     constructor(props) {
@@ -37,13 +32,14 @@ class _MembersMePayment extends React.Component {
                 <br />
                 <div className="flex-row flex-space-between">
                     <DefaultButton
-                        text="Retourner aux documents"
+                        text="Retour"
                         iconProps={{ iconName: 'Previous' }}
                         onClick={() => this.props.goBack()}
                     />
                     <PrimaryButton
                         text="Valider le paiement"
                         iconProps={{ iconName: 'Next' }}
+                        styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                         onClick={() => this.props.goNext()}
                     />
                 </div>

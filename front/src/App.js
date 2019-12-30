@@ -19,7 +19,6 @@ import { setMessageBar } from './redux/actions/common'
 import MembersAll from './pages/member/all'
 import MemberOne from './pages/member/one'
 import MembersMe from './pages/member/me'
-import Error from './pages/error'
 import Constants from './pages/admin/constants'
 import TeamsAll from './pages/team/all'
 import TeamOne from './pages/team/one'
@@ -120,7 +119,6 @@ class _App extends React.Component {
                         <Route path="/register" component={Register} />
                         <Route path="/motdepasse-oublie" component={PasswordForgotten} />
                         <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
-                        {/* <Route component={Error} /> */}
                     </Switch>
                 </Router>
             </>

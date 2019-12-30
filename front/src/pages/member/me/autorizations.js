@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, DefaultButton, Label, Text, PrimaryButton, ChoiceGroup, Link } from 'office-ui-fabric-react'
+import { Separator, Label, Text, ChoiceGroup, Link, TextField } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
 import { isMajor } from '../../../helper/date'
@@ -12,7 +12,6 @@ class _MembersMeAutorizations extends React.Component {
         this.state = {
             isLoading: false,
             readOnly: false,
-            errorField: {}
         }
 
         this.choice = [
@@ -23,7 +22,7 @@ class _MembersMeAutorizations extends React.Component {
 
     render() {
         const { isLoading, readOnly } = this.state        
-        const { memberIndex } = this.props
+        const { memberIndex, errorField } = this.props
         const member = this.props.members[memberIndex]
 
         if (isLoading) return <Loader />
@@ -51,6 +50,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_evacuation_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_evacuation_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_evacuation_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Autorisation de transport</Label>
                             <ChoiceGroup
@@ -67,6 +67,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_transport_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_transport_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_transport_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Droit à l'image</Label>
                             <Text>Le THOUARE HANDBALL CLUB peut être amené, dans le cadre strict de son développement, à utiliser des photographies et/ou des vidéos, prises à l'occasion des manifestations qu'il organise ou auxquelles il participe. Photographie et vidéo présentant plus de trois personnes identifiables.</Text>
@@ -84,6 +85,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_image_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_image_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_image_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Newsletter</Label>
                             <ChoiceGroup
@@ -100,6 +102,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_newsletter_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_newsletter_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_newsletter_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
                             <ChoiceGroup
@@ -112,6 +115,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_accepted)}
                                 onChange={(ev, option) => this.props.editMember({ is_accepted: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_accepted?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                         </>
                         :
                         <>
@@ -130,6 +134,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_evacuation_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_evacuation_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_evacuation_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Autorisation de transport <span className="is-light">(réhausseur obligatoire jusqu'au -10ans inclus)</span></Label>
                             <ChoiceGroup
@@ -146,6 +151,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_transport_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_transport_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_transport_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Autorisation de retour au dommicile</Label>
                             <ChoiceGroup
@@ -162,6 +168,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_return_home_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_return_home_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_return_home_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <Text className="is-bold">En dehors des horaires d'entrainement ou de match, l'enfant est sous la responsabilité des parents</Text>
                             <br /><br />
                             <Label required>Droit à l'image</Label>
@@ -180,6 +187,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_image_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_image_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_image_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Newsletter</Label>
                             <ChoiceGroup
@@ -196,6 +204,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_newsletter_allow)}
                                 onChange={(ev, option) => this.props.editMember({ is_newsletter_allow: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_newsletter_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
                             <ChoiceGroup
@@ -208,6 +217,7 @@ class _MembersMeAutorizations extends React.Component {
                                 selectedKey={JSON.stringify(member?.is_accepted)}
                                 onChange={(ev, option) => this.props.editMember({ is_accepted: JSON.parse(option.key) }, memberIndex)}
                             />
+                            <TextField errorMessage={errorField?.is_accepted?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                         </>
                 }
             </section >

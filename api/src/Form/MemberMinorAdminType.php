@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -96,12 +97,25 @@ class MemberMinorAdminType extends AbstractType
             ])
             ->add('parent_two_profession', TextType::class, [
                 'required' => false
+            ])   
+            ->add('is_evacuation_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
             ])
-            ->add('is_evacuation_allow', CheckboxType::class)
-            ->add('is_transport_allow', CheckboxType::class)
-            ->add('is_image_allow', CheckboxType::class)
-            ->add('is_return_home_allow', CheckboxType::class)
-            ->add('is_accepted', CheckboxType::class)
+            ->add('is_transport_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_image_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_return_home_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_newsletter_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_accepted', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
             ->add('is_reduced_price', CheckboxType::class)
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class)

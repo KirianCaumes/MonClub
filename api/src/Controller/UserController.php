@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\User;
 use App\Form\UserAdminType;
+use App\Service\ParamGlobalService;
 use Symfony\Component\Security\Core\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,10 +43,10 @@ class UserController extends FOSRestController
      *
      * @return Response
      */
-    public function getInfos(Security $security)
+    public function getInfos(Security $security, ParamGlobalService $paramGlobalService)
     {
         return $this->handleView($this->view([
-            'text' => $security->isGranted('ROLE_ADMIN') ? $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => 'text_infos_admin'])->getValue() : $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => 'text_infos_user'])->getValue(),
+            'text' => $security->isGranted('ROLE_ADMIN') ? $paramGlobalService->getParam('text_infos_admin') : $paramGlobalService->getParam('text_infos_user'),
             'infos' => [
                 'users' => $security->isGranted('ROLE_ADMIN') ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
                 'members' => $security->isGranted('ROLE_ADMIN') ?

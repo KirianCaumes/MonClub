@@ -139,43 +139,43 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_evacuation_allow = false;
+    private $is_evacuation_allow;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_transport_allow = false;
+    private $is_transport_allow;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_image_allow = false;
+    private $is_image_allow;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_return_home_allow = false;
+    private $is_return_home_allow;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_newsletter_allow = false;
+    private $is_newsletter_allow;
 
     /**
      * @Assert\IsTrue(message="invalid_must_be_true")
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_accepted = false;
+    private $is_accepted;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_reduced_price = false;
+    private $is_reduced_price;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_transfer_needed = false;
+    private $is_transfer_needed;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
@@ -661,7 +661,7 @@ class Member
         return $this;
     }
 
-    public function getTeams(): \Doctrine\Common\Collections\Collection
+    public function getTeams(): ?\Doctrine\Common\Collections\Collection
     {
         return $this->teams;
     }

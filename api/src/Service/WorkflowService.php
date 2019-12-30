@@ -24,6 +24,7 @@ class WorkflowService
     public function getWorkflow(Member $member)
     {
         $workflow = $this->em->getRepository(ParamWorkflow::class)->findAll();
+        if (!$workflow) return [];
 
         return [
             [

@@ -39,20 +39,19 @@ class _MembersMe extends React.Component {
                 onClick: () => {
                     request.getNewMember()
                         .then(res => {
-                            let data = [...this.state.data]
-                            data.push(res?.member)
-                            this.setState({ data }, () => {
-                                this.setState({ currentPivot: data.length - 1 })
-                                //Check if need to disable new member
-                                if (data?.length >= 4) {
-                                    this.props.setCommand([])
-                                    commandRead[0].disabled = true
-                                    this.props.setCommand(commandRead)
-                                }
-                            })
+                            let members = [...this.props.members]
+                            members.push(res?.member)
+                            this.props.setMembers(members)
+                            this.setState({ currentPivot: members.length - 1, errorField: [] })
+                            //Check if need to disable new member
+                            if (members?.length >= 4) {
+                                this.props.setCommand([])
+                                commandRead[0].disabled = true
+                                this.props.setCommand(commandRead)
+                            }
                         })
                 },
-                disabled: this.state.data?.length >= 4
+                disabled: this.props.members?.length >= 4
             }
         ]
 
@@ -70,36 +69,39 @@ class _MembersMe extends React.Component {
                 <div className="card" >
                     <Text variant="xLarge" block className="has-text-centered is-uppercase">Inscription saison 2020–2021</Text>
                     <br />
-                    <Workflow data={[
-                        {
-                            label: "Informations",
-                            description: "",
-                            isCompleted: page >= 2,
-                            isActive: page === 1,
-                            isError: false
-                        },
-                        {
-                            label: "Document(s)",
-                            description: "",
-                            isCompleted: page >= 3,
-                            isActive: page === 2,
-                            isError: false
-                        },
-                        {
-                            label: "Paiement",
-                            description: "",
-                            isCompleted: page >= 4,
-                            isActive: page === 3,
-                            isError: false
-                        },
-                        {
-                            label: "Finalisation",
-                            description: "",
-                            isCompleted: page >= 5,
-                            isActive: page === 4,
-                            isError: false
-                        }
-                    ]} />
+                    <Workflow
+                        className="is-hidden-mobile"
+                        data={[
+                            {
+                                label: "Informations",
+                                description: "",
+                                isCompleted: page >= 2,
+                                isActive: page === 1,
+                                isError: false
+                            },
+                            {
+                                label: "Document(s)",
+                                description: "",
+                                isCompleted: page >= 3,
+                                isActive: page === 2,
+                                isError: false
+                            },
+                            {
+                                label: "Paiement",
+                                description: "",
+                                isCompleted: page >= 4,
+                                isActive: page === 3,
+                                isError: false
+                            },
+                            {
+                                label: "Finalisation",
+                                description: "",
+                                isCompleted: page >= 5,
+                                isActive: page === 4,
+                                isError: false
+                            }
+                        ]}
+                    />
 
                     <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
                         Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
@@ -115,8 +117,15 @@ class _MembersMe extends React.Component {
                             <PivotItem
                                 key={i}
                                 itemKey={i.toString()}
-                                headerText={`${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`}
+                                headerText={(() => {
+                                    if (window.innerWidth > 768) {
+                                        return `${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`
+                                    } else {
+                                        return undefined
+                                    }
+                                })()}
                                 itemIcon="Contact"
+                                data-content={null}
                             >
                                 <br />
                                 {
@@ -129,7 +138,7 @@ class _MembersMe extends React.Component {
                                                             errorField={errorField}
                                                             memberIndex={i}
                                                         />
-                                                        <br /><br />
+                                                        <br />
                                                         <MembersMeAutorizations
                                                             errorField={errorField}
                                                             memberIndex={i}
@@ -138,8 +147,9 @@ class _MembersMe extends React.Component {
                                                         <div className="flex-row flex-space-between">
                                                             <div />
                                                             <PrimaryButton
-                                                                text="Enregistrer et aller aux documents"
+                                                                text="Documents"
                                                                 iconProps={{ iconName: 'Next' }}
+                                                                styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                 onClick={() => {
                                                                     this.setState({ isLoading: true, readOnly: true }, () => {
                                                                         request.editOrCreateMember(member?.id, { ...member })

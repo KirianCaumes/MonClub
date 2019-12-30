@@ -363,7 +363,7 @@ class _MemberOne extends React.Component {
                         <Columns.Column>
                             <Label>Montant payé</Label>
                             <TextField
-                                defaultValue={data?.amount_payed ?? ''}
+                                defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
                                 borderless={readOnly}
                                 readOnly={readOnly}
@@ -594,21 +594,21 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required>Autorisation retour maison</Label>
+                            <Label required>Règlement intérieur accepté</Label>
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
+                                        defaultValue={this.choice.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
-                                        errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
+                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
                                     />
                                     :
                                     <Dropdown
-                                        defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
+                                        defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
                                         options={this.choice}
-                                        errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
+                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
                                     />
                             }
                         </Columns.Column>
@@ -634,26 +634,31 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
-
                         <Columns.Column>
-                            <Label required>Règlement intérieur accepté</Label>
                             {
-                                readOnly ?
-                                    <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
-                                        options={this.choice}
-                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
-                                    />
+                                !isMajor(data?.birthdate) &&
+                                <>
+                                    <Label required>Autorisation retour maison</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                defaultValue={this.choice.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
+                                                borderless={true}
+                                                readOnly={true}
+                                                errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
+                                            />
+                                            :
+                                            <Dropdown
+                                                defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
+                                                options={this.choice}
+                                                errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
+                                            />
+                                    }
+                                </>
                             }
                         </Columns.Column>
+
                         <Columns.Column />
                         <Columns.Column />
                     </Columns>
@@ -764,8 +769,8 @@ class _MemberOne extends React.Component {
                             <TextField
                                 readOnly={readOnly}
                                 borderless={readOnly}
-                                multiline 
-                                autoAdjustHeight                                
+                                multiline
+                                autoAdjustHeight
                                 defaultValue={data?.notes ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, notes: ev.target.value } })}
                                 errorMessage={this.state.errorField?.notes?.errors?.[0]}

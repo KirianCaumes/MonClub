@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class MemberMajorType extends AbstractType
 {
@@ -38,7 +39,7 @@ class MemberMajorType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
-            ])  
+            ])
             ->add('postal_code', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
@@ -50,10 +51,8 @@ class MemberMajorType extends AbstractType
                 ]
             ])
             ->add('city', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])          
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
+            ])
             ->add('profession', TextType::class, [
                 'required' => false,
             ])
@@ -86,32 +85,45 @@ class MemberMajorType extends AbstractType
             ])
             ->add('parent_two_profession', TextType::class, [
                 'disabled' => true,
-            ])  
-            ->add('is_evacuation_allow', CheckboxType::class)
-            ->add('is_transport_allow', CheckboxType::class)
-            ->add('is_image_allow', CheckboxType::class)
-            ->add('is_return_home_allow', CheckboxType::class)
-            ->add('is_accepted', CheckboxType::class)
+            ])
+            ->add('is_evacuation_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_transport_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_image_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_return_home_allow', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_newsletter_allow', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_accepted', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
             ->add('is_reduced_price', CheckboxType::class)
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
-            ])          
+            ])
             ->add('is_document_complete', CheckboxType::class, [
                 'disabled' => true,
-            ])        
+            ])
             ->add('amount_payed', NumberType::class, [
                 'disabled' => true,
-            ])        
+            ])
             ->add('is_check_gest_hand', CheckboxType::class, [
                 'disabled' => true,
-            ])        
+            ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])        
+            ])
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
-            ])            
+            ])
             ->add('notes', TextType::class, [
                 'disabled' => true,
             ])
