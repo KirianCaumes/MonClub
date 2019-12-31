@@ -34,7 +34,7 @@ class _TeamsAll extends React.Component {
             request.getAllTeams()
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
-                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                    this.props.setMessageBar(true, MessageBarType.error, err)
                 })
                 .finally(() => this.setState({ isLoading: false }))
         })

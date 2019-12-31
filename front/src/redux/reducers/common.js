@@ -1,9 +1,10 @@
 import {
     SET_URL,
-    MESSAGEBAR,
+    SET_MESSAGEBAR,
     IS_LOADING,
     SET_BREADCRUMB,
     SET_COMMAND,
+    SET_MODAL
 } from "../_action-types"
 
 const initialState = {
@@ -16,14 +17,20 @@ const initialState = {
     errorField: [],
     isLoading: false,
     breadcrumb: [],
-    command: []
+    command: [],
+    modal: {
+        show: false,
+        title: '',
+        subTitle: '',
+        callback: () => null
+    }
 }
 
 export default function commonReducer(state = initialState, action) {
     switch (action.type) {
         case SET_URL:
             return { ...state, selectedKeyURL: action.payload }
-        case MESSAGEBAR:
+        case SET_MESSAGEBAR:
             return { ...state, messageBar: action.payload }
         case IS_LOADING:
             return { ...state, isLoading: action.payload }
@@ -31,6 +38,8 @@ export default function commonReducer(state = initialState, action) {
             return { ...state, breadcrumb: action.payload }
         case SET_COMMAND:
             return { ...state, command: action.payload }
+        case SET_MODAL:
+            return { ...state, modal: action.payload }
         default:
             break
     }

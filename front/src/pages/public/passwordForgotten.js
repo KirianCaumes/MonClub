@@ -32,7 +32,7 @@ class _PasswordForgotten extends React.Component {
                 })
                 .catch(err => {
                     this.setState({ isLoading: false })
-                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                    this.props.setMessageBar(true, MessageBarType.error, err)
                 })
         })
     }

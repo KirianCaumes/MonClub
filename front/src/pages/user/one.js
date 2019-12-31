@@ -62,7 +62,7 @@ class _UserOne extends React.Component {
                             .catch(err => {
                                 this.props.setCommand(commandEdit)
                                 this.setState({ readOnly: false, errorField: err?.form?.children })
-                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                this.props.setMessageBar(true, MessageBarType.error, err)
                             })
                             .finally(() => this.setState({ isLoading: false }))
                     })

@@ -24,6 +24,7 @@ import TeamsAll from './pages/team/all'
 import TeamOne from './pages/team/one'
 import UsersAll from './pages/user/all'
 import UserOne from './pages/user/one'
+import Modal from './component/modal'
 
 initializeIcons()
 loadTheme({
@@ -80,7 +81,7 @@ class _App extends React.Component {
                     this.props.init(me, param)
                 })
                 .catch(err => {                    
-                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                    this.props.setMessageBar(true, MessageBarType.error, err)
                 })
                 .finally(() => {
                     this.setState({ isInit: true })
@@ -93,9 +94,12 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                { false && <FullLoader isLoading={!isInit && isAuthenticated} />}
+                { true && <FullLoader isLoading={!isInit && isAuthenticated} />}
                 <Router history={history} >
-                    <Layout isDisplay={isAuthenticated}>
+                    <Layout 
+                        isDisplay={isAuthenticated}
+                        refresh={() => this.init()}
+                    >
                         <Switch>
                             <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             
@@ -121,6 +125,7 @@ class _App extends React.Component {
                         <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
                     </Switch>
                 </Router>
+                <Modal />
             </>
         )
     }

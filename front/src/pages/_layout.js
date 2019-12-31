@@ -121,7 +121,11 @@ class _Layout extends React.Component {
 
         return (
             <>
-                <Header menu={this.filterMenu(menu)} me={me}/>
+                <Header 
+                    menu={this.filterMenu(menu)} 
+                    me={me}
+                    refresh={() => this.props.refresh()}
+                />
                 <div className="layout" >
                     <aside className="is-hidden-touch">
                         <Nav

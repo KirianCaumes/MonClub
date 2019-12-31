@@ -2,11 +2,11 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
+import { setBreadcrumb, setCommand, setMessageBar, setModal } from '../../redux/actions/common'
 import { history } from '../../helper/history'
 import request from '../../helper/request'
 import Workflow from '../../component/workflow'
-import { stringToCleanString, stringToDate, isMajor } from '../../helper/date'
+import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimmeString } from '../../helper/date'
 import Loader from '../../component/loader'
 import FileInput from '../../component/fileInput'
 import { dlBlob } from '../../helper/dlBlob'
@@ -73,7 +73,7 @@ class _MemberOne extends React.Component {
                                 .catch(err => {
                                     this.props.setCommand(commandEdit)
                                     this.setState({ readOnly: false, errorField: err?.form?.children })
-                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
                                 })
                                 .finally(() => this.setState({ isLoading: false }))
                         } else {
@@ -84,10 +84,9 @@ class _MemberOne extends React.Component {
                                 })
                                 .catch(err => {
                                     this.props.setCommand(commandEdit)
-                                    this.setState({ readOnly: false, errorField: err?.form?.children })
-                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                    this.setState({ isLoading: false, readOnly: false, errorField: err?.form?.children })
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
                                 })
-                                .finally(() => this.setState({ isLoading: false }))
                         }
                     })
                 }
@@ -97,20 +96,26 @@ class _MemberOne extends React.Component {
                 text: 'Supprimer',
                 iconProps: { iconName: 'Delete' },
                 onClick: () => {
-                    this.props.setCommand([])
-                    this.setState({ isLoading: true, readOnly: true }, () => {
-                        request.deleteMember(this.props.match?.params?.id)
-                            .then(() => {
-                                this.props.setCommand(commandRead)
-                                this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimée.')
-                                history.push('/membres')
+                    this.props.setModal(
+                        true,
+                        'Supprimer le membre',
+                        'Êtes-vous certains de vouloir supprimer le membre ? Cette action est définitive.',
+                        () => {
+                            this.setState({ isLoading: true, readOnly: true }, () => {
+                                request.deleteMember(this.props.match?.params?.id)
+                                    .then(() => {
+                                        this.props.setCommand(commandRead)
+                                        this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé.')
+                                        history.push('/membres')
+                                    })
+                                    .catch(err => {
+                                        this.props.setCommand(commandEdit)
+                                        this.setState({ readOnly: false, isLoading: false })
+                                        this.props.setMessageBar(true, MessageBarType.error, err)
+                                    })
                             })
-                            .catch(err => {
-                                this.props.setCommand(commandEdit)
-                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                            })
-                            .finally(() => this.setState({ isLoading: false }))
-                    })
+                        }
+                    )
                 },
                 disabled: !this.props.match?.params?.id
             },
@@ -118,9 +123,8 @@ class _MemberOne extends React.Component {
                 key: 'validateItem',
                 text: 'Valider le workflow',
                 iconProps: { iconName: 'CheckMark' },
-                onClick: () => this.setState({ isLoading: true, data: { ...this.state.data, is_document_complete: true, is_payed: true, is_check_gest_hand: true, is_inscription_done: true } },
-                    () => { commandEdit.find(x => x.key === "saveItem").onClick() }),
-                disabled: this.state.data.is_document_complete && this.state.data.is_payed && this.state.data.is_check_gest_hand && this.state.data.is_inscription_done
+                onClick: () => this.setState({ isLoading: true, data: { ...this.state.data, is_document_complete: true, is_payed: true, is_check_gest_hand: true, is_inscription_done: true } }, () => { commandEdit.find(x => x.key === "saveItem").onClick() }),
+                disabled: (this.state.data.is_document_complete && this.state.data.is_payed && this.state.data.is_check_gest_hand && this.state.data.is_inscription_done) || !this.props.match?.params?.id
             }
         ]
 
@@ -419,7 +423,7 @@ class _MemberOne extends React.Component {
                         <Columns.Column>
                             <Label disabled={!readOnly}>Date d'inscription</Label>
                             <TextField
-                                defaultValue={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
+                                defaultValue={data?.creation_datetime ? dateToCleanDateTimmeString(new Date(data.creation_datetime)) : ''}
                                 borderless={true}
                                 readOnly={true}
                             />
@@ -706,18 +710,18 @@ class _MemberOne extends React.Component {
                                 onDownload={() => {
                                     return request.getDocument(this.props.match?.params?.id, 1)
                                         .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
                                 onUpload={file => {
                                     return request.uploadDocument(file, this.props.match?.params?.id, 1)
                                         .then(doc => {
                                             let documents = [...data.documents]
                                             documents.push(doc)
-                                            this.setState({ data: { ...this.state.data, documents: documents } })
+                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
                                         })
                                         .catch(err => {
-                                            this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                            this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } }, () => setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50))
+                                            this.props.setMessageBar(true, MessageBarType.error, err)
+                                            this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } })
                                         })
                                 }}
                                 onDelete={() => {
@@ -726,9 +730,9 @@ class _MemberOne extends React.Component {
                                             let documents = [...data.documents]
                                             const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
                                             if (currIndex > -1) documents.splice(currIndex, 1)
-                                            this.setState({ data: { ...this.state.data, documents: documents } })
+                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
                                         })
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
                             />
                         </Columns.Column>
@@ -741,7 +745,7 @@ class _MemberOne extends React.Component {
                                 onDownload={() => {
                                     return request.getAttestation(this.props.match?.params?.id)
                                         .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_2020-2021.pdf`))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
                             />
                         </Columns.Column>
@@ -759,18 +763,18 @@ class _MemberOne extends React.Component {
                                         onDownload={() => {
                                             return request.getDocument(this.props.match?.params?.id, 2)
                                                 .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
-                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                         }}
                                         onUpload={file => {
                                             return request.uploadDocument(file, this.props.match?.params?.id, 2)
                                                 .then(doc => {
                                                     let documents = [...data.documents]
                                                     documents.push(doc)
-                                                    this.setState({ data: { ...this.state.data, documents: documents } })
+                                                    this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
                                                 })
                                                 .catch(err => {
-                                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                                    this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } }, () => setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50))
+                                                    this.props.setMessageBar(true, MessageBarType.error, err)
+                                                    this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } })
                                                 })
                                         }}
                                         onDelete={() => {
@@ -779,9 +783,9 @@ class _MemberOne extends React.Component {
                                                     let documents = [...data.documents]
                                                     const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
                                                     if (currIndex > -1) documents.splice(currIndex, 1)
-                                                    this.setState({ data: { ...this.state.data, documents: documents } })
+                                                    this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
                                                 })
-                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.'))
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                         }}
                                     />
                                 </>
@@ -818,6 +822,7 @@ const mapDispatchToProps = dispatch => {
         setBreadcrumb: data => dispatch(setBreadcrumb(data)),
         setCommand: data => dispatch(setCommand(data)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
+        setModal: (show, title, subTitle, callback) => dispatch(setModal(show, title, subTitle, callback)),
     }
 }
 

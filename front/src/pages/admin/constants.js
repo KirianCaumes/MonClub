@@ -100,6 +100,7 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
+                                isMultiline: true
                             }
                         ]}
                         selectionMode={SelectionMode.none}
@@ -125,6 +126,23 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />                    
+                    
+                    <Label>Rôles :</Label>
+                    <DetailsList
+                        items={param?.roles ?? []}
+                        columns={[
+                            {
+                                key: 'name',
+                                name: 'Nom',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                                onRender: el => <>{el}</>
                             }
                         ]}
                         selectionMode={SelectionMode.none}
@@ -262,6 +280,39 @@ class _Constants extends React.Component {
                                 key: 'discount',
                                 name: 'Réduction',
                                 fieldName: 'discount',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+                    
+                    <Label>Moyens de paiements :</Label>
+                    <DetailsList
+                        items={param?.price?.payement_solution ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'icon',
+                                name: 'Icône',
+                                fieldName: 'icon',
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,

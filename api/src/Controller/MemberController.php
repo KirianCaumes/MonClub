@@ -288,7 +288,7 @@ class MemberController extends FOSRestController
         if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
-        $this->denyAccessUnlessGranted(Constants::DELETE, $member);
+        $this->denyAccessUnlessGranted(Constants::DELETE, $member,  $translator->trans('deny_delete_member'));
 
         $em = $this->getDoctrine()->getManager();
 

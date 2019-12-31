@@ -1,6 +1,6 @@
 username_not_found: L'adresse mail n'a pas été trouvée.
-username_password_not_match: Le mot de passe ne correspond pas a l'adresse mail.
-reset_token_already_exists: Un token de réinitialisation valide existe déja.
+username_password_not_match: Le mot de passe ne correspond pas à l'adresse mail.
+reset_token_already_exists: Un token de réinitialisation valide existe déjà.
 reset_token_invalid: Le token de réinitialisation est invalide.
 not_found: L'élément n'a pas été trouvé.
 document_not_found: Le document n'a pas été trouvé.
@@ -12,3 +12,4 @@ invalid_date: Date invalide.
 not_blank: Le champs ne peut pas être vide.
 member_missing_document: Un ou des documents sont manquants pour les membres. Veuillez les ajouter avant de payer.
 payment_solution_not_found: La solution de paiement n'a pas été trouvée.
+deny_delete_member: "Vous n'avez pas le droit de supprimer le membre : cette action est impossible si le membre a déjà payé."

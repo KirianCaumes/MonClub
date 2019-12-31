@@ -59,6 +59,12 @@ class Header extends React.Component {
                         <Navbar.Container position="end" className="is-hidden-touch">
                             <Navbar.Item
                                 className="is-tab"
+                                onClick={() => this.props.refresh()}
+                            >
+                                <Icon iconName='Refresh' />
+                            </Navbar.Item>
+                            <Navbar.Item
+                                className="is-tab"
                                 onClick={() => this.setState({ isOpenUser: true })}
                             >
                                 <Icon iconName='Contact' />

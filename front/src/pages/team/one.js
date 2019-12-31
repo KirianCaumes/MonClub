@@ -2,7 +2,7 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar, setLoading } from '../../redux/actions/common'
+import { setBreadcrumb, setCommand, setMessageBar, setModal } from '../../redux/actions/common'
 import { history } from '../../helper/history'
 import request from '../../helper/request'
 import Loader from '../../component/loader'
@@ -63,7 +63,7 @@ class _TeamOne extends React.Component {
                                 .catch(err => {
                                     this.props.setCommand(commandEdit)
                                     this.setState({ readOnly: false, errorField: err?.form?.children })
-                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
                                 })
                                 .finally(() => this.setState({ isLoading: false }))
                         } else {
@@ -74,10 +74,9 @@ class _TeamOne extends React.Component {
                                 })
                                 .catch(err => {
                                     this.props.setCommand(commandEdit)
-                                    this.setState({ readOnly: false, errorField: err?.form?.children })
-                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                    this.setState({ isLoading: false, readOnly: false, errorField: err?.form?.children })
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
                                 })
-                                .finally(() => this.setState({ isLoading: false }))
                         }
                     })
                 }
@@ -87,20 +86,26 @@ class _TeamOne extends React.Component {
                 text: 'Supprimer',
                 iconProps: { iconName: 'Delete' },
                 onClick: () => {
-                    this.props.setCommand([])
-                    this.setState({ isLoading: true, readOnly: true }, () => {
-                        request.deleteTeam(this.props.match?.params?.id)
+                    this.props.setModal(
+                        true,
+                        "Supprimer l'équipe",
+                        "Êtes-vous certains de vouloir supprimer l'équipe ? Cette action est définitive.",
+                        () => {
+                            this.setState({ isLoading: true, readOnly: true }, () => {
+                                request.deleteTeam(this.props.match?.params?.id)
                             .then(() => {
                                 this.props.setCommand(commandRead)
                                 this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été supprimée.')
                                 history.push('/equipes')
                             })
                             .catch(err => {
+                                this.setState({ readOnly: false, isLoading: false })
                                 this.props.setCommand(commandEdit)
-                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                this.props.setMessageBar(true, MessageBarType.error, err)
                             })
-                            .finally(() => this.setState({ isLoading: false }))
-                    })
+                            })
+                        }
+                    )
                 },
                 disabled: !this.props.match?.params?.id
             },
@@ -187,7 +192,7 @@ const mapDispatchToProps = dispatch => {
         setBreadcrumb: data => dispatch(setBreadcrumb(data)),
         setCommand: data => dispatch(setCommand(data)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
-        setLoading: bool => dispatch(setLoading(bool))
+        setModal: (show, title, subTitle, callback) => dispatch(setModal(show, title, subTitle, callback)),
     }
 }
 

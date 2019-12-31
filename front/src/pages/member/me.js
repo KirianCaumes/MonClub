@@ -1,7 +1,7 @@
 import React from 'react'
 import { MessageBarType, Text, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
+import { setBreadcrumb, setCommand, setMessageBar, setModal } from '../../redux/actions/common'
 import request from '../../helper/request'
 import Workflow from '../../component/workflow'
 import Loader from '../../component/loader'
@@ -49,7 +49,7 @@ class _MembersMe extends React.Component {
                             })
                             .catch(err => {
                                 this.setState({ errorField: err?.form?.children })
-                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                this.props.setMessageBar(true, MessageBarType.error, err)
                             })
                             .finally(() => {
                                 this.setState({ isLoading: false })
@@ -63,32 +63,40 @@ class _MembersMe extends React.Component {
                 text: 'Supprimer le membre',
                 iconProps: { iconName: 'AddFriend' },
                 onClick: () => {
-                    let id = this.props.members?.[this.state.currentPivot]?.id
-                    if (id) {
-                        this.setState({ isLoading: true }, () => {
-                            request.deleteMember(id)
-                                .then(() => {
-                                    let members = [...this.props.members]
-                                    const index = members.findIndex(x => x.id === id)
-                                    if (index > -1) members.splice(index, 1)
-                                    this.props.setMembers(members)
-                                    this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
+                    this.props.setModal(
+                        true,
+                        'Supprimer le membre',
+                        'Êtes-vous certains de vouloir supprimer le membre ? Cette action est définitive.',
+                        () => {
+                            this.props.setCommand([])
+                            let id = this.props.members?.[this.state.currentPivot]?.id
+                            if (id) {
+                                this.setState({ isLoading: true }, () => {
+                                    request.deleteMember(id)
+                                        .then(() => {
+                                            let members = [...this.props.members]
+                                            const index = members.findIndex(x => x.id === id)
+                                            if (index > -1) members.splice(index, 1)
+                                            this.props.setMembers(members)
+                                            this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
+                                        })
+                                        .catch(err => {
+                                            this.setState({ errorField: err?.form?.children })
+                                            this.props.setMessageBar(true, MessageBarType.error, err)
+                                        })
+                                        .finally(() => {
+                                            this.setState({ isLoading: false, page: 1, currentPivot: 0 })
+                                        })
                                 })
-                                .catch(err => {
-                                    this.setState({ errorField: err?.form?.children })
-                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
-                                })
-                                .finally(() => {
-                                    this.setState({ isLoading: false, page: 1, currentPivot: 0 })
-                                })
-                        })
-                    } else {
-                        let members = [...this.props.members]
-                        members.splice(this.state.currentPivot, 1)
-                        this.props.setMembers(members)
-                        this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
-                        this.setState({ currentPivot: 0 })
-                    }
+                            } else {
+                                let members = [...this.props.members]
+                                members.splice(this.state.currentPivot, 1)
+                                this.props.setMembers(members)
+                                this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
+                                this.setState({ currentPivot: 0 })
+                            }
+                        }
+                    )
                 },
                 disabled: this.props.data?.[this.state.currentPivot]?.is_payed
             }
@@ -223,7 +231,7 @@ class _MembersMe extends React.Component {
                                                                                             })
                                                                                             .catch(err => {
                                                                                                 this.setState({ errorField: err?.form?.children })
-                                                                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                                this.props.setMessageBar(true, MessageBarType.error, err)
                                                                                             })
                                                                                             .finally(() => {
                                                                                                 this.setState({ isLoading: false })
@@ -266,7 +274,7 @@ class _MembersMe extends React.Component {
                                                                                             })
                                                                                             .catch(err => {
                                                                                                 this.setState({ errorField: err?.form?.children })
-                                                                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                                                                                this.props.setMessageBar(true, MessageBarType.error, err)
                                                                                             })
                                                                                             .finally(() => {
                                                                                                 this.setState({ isLoading: false })
@@ -360,7 +368,8 @@ const mapDispatchToProps = dispatch => {
         setCommand: member => dispatch(setCommand(member)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
         setMembers: members => dispatch(setMembers(members)),
-        editMember: (member, index) => dispatch(editMember(member, index))
+        editMember: (member, index) => dispatch(editMember(member, index)),
+        setModal: (show, title, subTitle, callback) => dispatch(setModal(show, title, subTitle, callback)),
     }
 }
 
