@@ -181,7 +181,7 @@ export default {
 
         return getFetch(url, options)
     },
-    createMember: (body) => {
+    createMember: (body) => { //Unused
         const url = ["member"]
         body = {
             ...body,
@@ -199,7 +199,9 @@ export default {
         const url = ["member", "admin"]
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate)
+            birthdate: dateToString(body?.birthdate),
+            teams: body?.teams?.map(x => x.id),
+            user: body?.user?.id
         }
 
         var options = {
@@ -209,7 +211,7 @@ export default {
 
         return getFetch(url, options)
     },
-    editMember: (id, body) => {
+    editMember: (id, body) => { //Unused
         const url = ["member", id]
         body = {
             ...body,
@@ -248,7 +250,8 @@ export default {
         body = {
             ...body,
             birthdate: dateToString(body?.birthdate),
-            teams: body?.teams.map(x => x.id)
+            teams: body?.teams?.map(x => x.id),
+            user: body?.user?.id
         }
 
         var options = {

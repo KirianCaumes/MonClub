@@ -227,7 +227,7 @@ class Member
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      */
     private $user;
 

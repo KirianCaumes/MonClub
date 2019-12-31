@@ -126,7 +126,7 @@ class _TeamOne extends React.Component {
                         <Columns.Column>
                             <Columns>
                                 <Columns.Column>
-                                    <Label>Label</Label>
+                                    <Label required>Label</Label>
                                     <TextField
                                         value={data?.label ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
@@ -136,7 +136,7 @@ class _TeamOne extends React.Component {
                                     />
                                 </Columns.Column>
                                 <Columns.Column>
-                                    <Label>Label Google Contact</Label>
+                                    <Label required>Label Google Contact</Label>
                                     <TextField
                                         value={data?.label_google_contact ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}

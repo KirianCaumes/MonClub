@@ -52,9 +52,11 @@ class MemberController extends FOSRestController
                 $paramFetcher->get('teamsId')
             );
             foreach ($members as $member) { //Hide some informations
-                $member->getUser()->setPassword('');
-                $member->getUser()->setSalt('');
-                $member->getUser()->setConfirmationToken('');
+                if ($member->getUser()) {
+                    $member->getUser()->setPassword('');
+                    $member->getUser()->setSalt('');
+                    $member->getUser()->setConfirmationToken('');
+                }
             }
             return $this->handleView($this->view($members));
         } else if ($this->isGranted('ROLE_COACH')) {
@@ -102,9 +104,11 @@ class MemberController extends FOSRestController
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
-        $member->getUser()->setPassword('');
-        $member->getUser()->setSalt('');
-        $member->getUser()->setConfirmationToken('');
+        if ($member->getUser()) {
+            $member->getUser()->setPassword('');
+            $member->getUser()->setSalt('');
+            $member->getUser()->setConfirmationToken('');
+        }
 
         return $this->handleView($this->view([
             'member' => $member,
@@ -140,7 +144,7 @@ class MemberController extends FOSRestController
             $form->submit($data);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $member->setUser($this->getUser());
+                // $member->setUser($this->getUser());
                 $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
@@ -191,46 +195,6 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Edit Member.
-     * @Rest\Put("/{id}")
-     *
-     * @return Response
-     */
-    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService, int $id)
-    {
-        //Find user by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        if (!$member) {
-            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        }
-        $this->denyAccessUnlessGranted(Constants::UPDATE, $member);
-
-        $data = json_decode($request->getContent(), true);
-
-        //Check if birthdate is valid date
-        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
-            //Create form by age of member
-            if ($dateService->isMajor($data['birthdate'])) {
-                $form = $this->createForm(MemberMajorType::class, $member);
-            } else {
-                $form = $this->createForm(MemberMinorType::class, $member);
-            }
-            $form->submit($data, true);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $member->setIsReducedPrice(false);
-                $member->setIsNonCompetitive(false);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($member);
-                $em->flush();
-                return $this->handleView($this->view($member, Response::HTTP_OK));
-            }
-            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
-        }
-        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
-    }
-
-    /**
      * Edit Member for admin.
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}/admin")
@@ -259,8 +223,10 @@ class MemberController extends FOSRestController
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                $member->setIsReducedPrice(false);
-                $member->setIsNonCompetitive(false);
+                if (!$dateService->isMajor($data['birthdate'])) {
+                    $member->setIsReducedPrice(false);
+                    $member->setIsNonCompetitive(false);
+                }
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -269,6 +235,48 @@ class MemberController extends FOSRestController
                     'member' => $member,
                     'workflow' => $workflowService->getWorkflow($member)
                 ]));
+            }
+            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        }
+        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
+     * Edit Member.
+     * @Rest\Put("/{id}")
+     *
+     * @return Response
+     */
+    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService, int $id)
+    {
+        //Find user by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
+        if (!$member) {
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        }
+        $this->denyAccessUnlessGranted(Constants::UPDATE, $member);
+
+        $data = json_decode($request->getContent(), true);
+
+        //Check if birthdate is valid date
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
+            //Create form by age of member
+            if ($dateService->isMajor($data['birthdate'])) {
+                $form = $this->createForm(MemberMajorType::class, $member);
+            } else {
+                $form = $this->createForm(MemberMinorType::class, $member);
+            }
+            $form->submit($data, true);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                if (!$dateService->isMajor($data['birthdate'])) {
+                    $member->setIsReducedPrice(false);
+                    $member->setIsNonCompetitive(false);
+                }
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($member);
+                $em->flush();
+                return $this->handleView($this->view($member, Response::HTTP_OK));
             }
             return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
         }

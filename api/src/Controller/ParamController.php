@@ -10,6 +10,7 @@ use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
 use App\Entity\ParamWorkflow;
 use App\Entity\Team;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -40,7 +41,15 @@ class ParamController extends FOSRestController
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),
                 'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findall(),
                 'payement_solution' => $this->getDoctrine()->getRepository(ParamPayementSolution::class)->findall(),
-            ]
+            ],
+            'users' => $this->isGranted('ROLE_ADMIN') ?
+                array_map(
+                    function ($user) {
+                        return ['id' => $user->getId(), 'username' => $user->getUsername()];
+                    },
+                    $this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC'])
+                )
+                : []
         ]));
     }
 }

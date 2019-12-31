@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from '../../redux/actions/common'
 import { history } from '../../helper/history'
@@ -133,6 +133,7 @@ class _MemberOne extends React.Component {
 
     render() {
         const { readOnly, data, isLoading, workflow } = this.state
+        const { param } = this.props
 
         if (isLoading) return <Loader />
 
@@ -314,6 +315,7 @@ class _MemberOne extends React.Component {
                                                 options={this.choice}
                                                 errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
                                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
+                                                disabled={data?.is_reduced_price}
                                             />
                                     }
                                 </Columns.Column>
@@ -334,6 +336,7 @@ class _MemberOne extends React.Component {
                                                 options={this.choice}
                                                 errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
                                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
+                                                disabled={data?.is_non_competitive}
                                             />
                                     }
                                 </Columns.Column>
@@ -395,9 +398,9 @@ class _MemberOne extends React.Component {
                                         errorMessage={this.state.errorField?.teams?.errors?.[0]}
                                     />
                                     :
-                                    <Dropdown
+                                    <VirtualizedComboBox
                                         multiSelect
-                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
+                                        selectedKey={data?.teams?.map(x => x.id ?? x.key)}
                                         options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.teams?.errors?.[0]}
                                         onChange={(ev, item) => {
@@ -408,16 +411,27 @@ class _MemberOne extends React.Component {
                                                 const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
                                                 if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
                                             }
+                                            console.log(newSelectedItems)
                                             this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
                                         }}
                                     />
                             }
                         </Columns.Column>
                         <Columns.Column>
-                            <Label disabled={!readOnly}>Utilisateur associé</Label>
-                            <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
-                                {data?.user?.username ?? ''}
-                            </Link>
+                            <Label>Utilisateur associé</Label>
+                            {
+                                readOnly ?
+                                    <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
+                                        {data?.user?.username ?? ''}
+                                    </Link>
+                                    :
+                                    <VirtualizedComboBox
+                                        selectedKey={data?.user?.id}
+                                        options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
+                                        errorMessage={this.state.errorField?.username?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, user: item } })}
+                                    />
+                            }
                         </Columns.Column>
 
                         <Columns.Column>
