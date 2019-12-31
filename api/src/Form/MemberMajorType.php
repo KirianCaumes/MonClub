@@ -3,21 +3,21 @@
 namespace App\Form;
 
 use App\Entity\Member;
+use App\Entity\ParamDocumentCategory;
 use App\Entity\Team;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class MemberMajorType extends AbstractType
 {
@@ -27,12 +27,10 @@ class MemberMajorType extends AbstractType
             ->add('firstname')
             ->add('lastname')
             ->add('birthdate', DateType::class, [
-                'invalid_message' => 'invalid_date',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
             ])
             ->add('email', EmailType::class, [
-                'invalid_message' => 'invalid_email',
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
@@ -42,22 +40,10 @@ class MemberMajorType extends AbstractType
                     new NotBlank(['message' => 'not_blank']),
                 ]
             ])
-            ->add('postal_code', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('street', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('city', TextType::class, [
-                'constraints' => [new NotBlank(['message' => 'not_blank'])]
-            ])
-            ->add('profession', TextType::class, [
-                'required' => false,
-            ])
+            ->add('postal_code')
+            ->add('street')
+            ->add('city')
+            ->add('profession')
             ->add('parent_one_firstname', TextType::class, [
                 'disabled' => true,
             ])
@@ -88,35 +74,21 @@ class MemberMajorType extends AbstractType
             ->add('parent_two_profession', TextType::class, [
                 'disabled' => true,
             ])
-            ->add('is_evacuation_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_transport_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_image_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
+            ->add('is_evacuation_allow')
+            ->add('is_transport_allow')
+            ->add('is_image_allow')
             ->add('is_return_home_allow', CheckboxType::class, [
                 'disabled' => true,
             ])
-            ->add('is_newsletter_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_accepted', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_reduced_price', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_non_competitive', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_transfer_needed', CheckboxType::class)
-            ->add('is_payed', CheckboxType::class, [
+            ->add('is_newsletter_allow')
+            ->add('is_accepted')
+            ->add('is_reduced_price')
+            ->add('is_non_competitive')
+            ->add('is_transfer_needed')
+            ->add('is_document_complete', CheckboxType::class, [
                 'disabled' => true,
             ])
-            ->add('is_document_complete', CheckboxType::class, [
+            ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
             ])
             ->add('amount_payed', NumberType::class, [
@@ -127,15 +99,21 @@ class MemberMajorType extends AbstractType
             ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])
-            ->add('teams', EntityType::class, [
-                'class' => Team::class,
-                'disabled' => true,
-            ])
+            ])            
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('notes', TextType::class, [
+            ->add('payment_solution', EntityType::class, [
+                'class' => ParamDocumentCategory::class,
+                'disabled' => true,
+            ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'disabled' => true,
+            ])
+            ->add('teams', EntityType::class, [
+                'class' => Team::class,
+                'multiple' => true,
                 'disabled' => true,
             ])
             ->add('save', SubmitType::class);

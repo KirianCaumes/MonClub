@@ -187,12 +187,12 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_payed = false;
-
+    private $is_document_complete = false;
+    
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_document_complete = false;
+    private $is_payed = false;
 
     /**
      * @ORM\Column(type="decimal", precision=5, scale=2, nullable=true)
@@ -590,18 +590,6 @@ class Member
         return $this;
     }
 
-    public function getIsPayed(): ?bool
-    {
-        return $this->is_payed;
-    }
-
-    public function setIsPayed(?bool $is_payed): self
-    {
-        $this->is_payed = $is_payed;
-
-        return $this;
-    }
-
     public function getIsDocumentComplete(): ?bool
     {
         return $this->is_document_complete;
@@ -610,6 +598,18 @@ class Member
     public function setIsDocumentComplete(bool $is_document_complete): self
     {
         $this->is_document_complete = $is_document_complete;
+
+        return $this;
+    }
+
+    public function getIsPayed(): ?bool
+    {
+        return $this->is_payed;
+    }
+
+    public function setIsPayed(?bool $is_payed): self
+    {
+        $this->is_payed = $is_payed;
 
         return $this;
     }

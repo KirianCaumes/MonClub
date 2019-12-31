@@ -3,21 +3,19 @@
 namespace App\Form;
 
 use App\Entity\Member;
+use App\Entity\ParamDocumentCategory;
 use App\Entity\Team;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class MemberMinorType extends AbstractType
 {
@@ -30,97 +28,43 @@ class MemberMinorType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
             ])
-            ->add('email', EmailType::class, [
-                'required' => false,
-            ])
-            ->add('phone_number', TextType::class, [
-                'required' => false,
-            ])
-            ->add('postal_code', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('street', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('city', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('profession', TextType::class, [
-                'required' => false,
-            ])
+            ->add('email')
+            ->add('phone_number')
+            ->add('postal_code')
+            ->add('street')
+            ->add('city')
+            ->add('profession')
             ->add('parent_one_firstname', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_lastname', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_email', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_phone_number', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
-            ->add('parent_one_profession', TextType::class, [
-                'required' => false
-            ])
-            ->add('parent_two_firstname', TextType::class, [
-                'required' => false
-            ])
-            ->add('parent_two_lastname', TextType::class, [
-                'required' => false
-            ])
-            ->add('parent_two_email', TextType::class, [
-                'required' => false
-            ])
-            ->add('parent_two_phone_number', TextType::class, [
-                'required' => false
-            ])
-            ->add('parent_two_profession', TextType::class, [
-                'required' => false
-            ])  
-            ->add('is_evacuation_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_transport_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_image_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_return_home_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_newsletter_allow', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_accepted', CheckboxType::class, [
-                'constraints' => [new NotNull(['message' => 'not_blank'])]
-            ])
-            ->add('is_reduced_price', CheckboxType::class, [
-                'disabled' => true,
-            ])
-            ->add('is_non_competitive', CheckboxType::class, [
-                'disabled' => true,
-            ])
-            ->add('is_transfer_needed', CheckboxType::class)
-            ->add('is_payed', CheckboxType::class, [
-                'disabled' => true,
-            ])
+            ->add('parent_one_profession')
+            ->add('parent_two_firstname')
+            ->add('parent_two_lastname')
+            ->add('parent_two_email')
+            ->add('parent_two_phone_number')
+            ->add('parent_two_profession')
+            ->add('is_evacuation_allow')
+            ->add('is_transport_allow')
+            ->add('is_image_allow')
+            ->add('is_return_home_allow')
+            ->add('is_newsletter_allow')
+            ->add('is_accepted')
+            ->add('is_reduced_price')
+            ->add('is_non_competitive')
+            ->add('is_transfer_needed')
             ->add('is_document_complete', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
             ])
             ->add('amount_payed', NumberType::class, [
@@ -131,15 +75,21 @@ class MemberMinorType extends AbstractType
             ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])
-            ->add('teams', EntityType::class, [
-                'class' => Team::class,
-                'disabled' => true,
-            ])
+            ])            
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('notes', TextType::class, [
+            ->add('payment_solution', EntityType::class, [
+                'class' => ParamDocumentCategory::class,
+                'disabled' => true,
+            ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'disabled' => true,
+            ])
+            ->add('teams', EntityType::class, [
+                'class' => Team::class,
+                'multiple' => true,
                 'disabled' => true,
             ])
             ->add('save', SubmitType::class);
