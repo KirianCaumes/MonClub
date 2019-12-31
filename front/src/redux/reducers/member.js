@@ -14,7 +14,7 @@ export default function userReducer(state = initialState, action) {
             members[action.payload.index] = { ...members[action.payload.index], ...action.payload.member }
             return { ...state, members }
         case SET_MEMBERS:
-            return { ...state, members: Array.isArray(action.payload) ? action.payload : [] }
+            return { ...state, members: action.payload }
         default:
             break
     }

@@ -26,7 +26,7 @@ class _MembersMeSummary extends React.Component {
 
     render() {
         const { price } = this.state
-        const { memberIndex, errorField, readOnly, param } = this.props
+        const { memberIndex, param } = this.props
         const member = this.props.members[memberIndex]
 
         let deadlineDate = new Date(param?.global?.find(x => x.label === 'price_deadline')?.value)

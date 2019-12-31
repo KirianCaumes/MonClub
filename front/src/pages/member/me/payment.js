@@ -35,14 +35,14 @@ class _MembersMePayment extends React.Component {
                 this.props.goNext()
             })
             .catch(err => {
+                this.setState({ isLoading: false })
                 this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
             })
-            .finally(() => this.setState({ isLoading: false }))
     }
 
     render() {
         const { summary, isLoading, optionSelectedKey } = this.state
-        const { readOnly, param, members } = this.props
+        const { param } = this.props
 
         if (isLoading) return <Loader />
 
@@ -102,10 +102,11 @@ class _MembersMePayment extends React.Component {
                                     case 1:
                                         return (
                                             <PrimaryButton
-                                                text="Fake Paypal"
+                                                text="Paypal"
                                                 iconProps={{ iconName: param?.price?.payement_solution.find(x => x.id === optionSelectedKey)?.icon }}
                                                 styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                 onClick={() => this.pay()}
+                                                disabled={true}
                                             />
                                         )
                                     case 2:

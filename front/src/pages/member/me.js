@@ -11,6 +11,7 @@ import MembersMeDocuments from './me/documents'
 import MembersMePayment from './me/payment'
 import { setMembers, editMember } from '../../redux/actions/member'
 import MembersMeSummary from './me/summary'
+import MembersMeFinalisation from './me/finalisation'
 
 class _MembersMe extends React.Component {
     constructor(props) {
@@ -32,38 +33,91 @@ class _MembersMe extends React.Component {
             { text: 'Mes membres', key: 'me-members', isCurrentItem: true },
         ])
 
-        const commandRead = [
+        this.commandRead = [
             {
                 key: 'addItem',
                 text: 'Ajouter un membre',
                 iconProps: { iconName: 'AddFriend' },
                 onClick: () => {
-                    request.getNewMember()
-                        .then(res => {
-                            let members = [...this.props.members]
-                            members.push(res?.member)
-                            this.props.setMembers(members)
-                            this.setState({ currentPivot: members.length - 1, errorField: [], page: 1 })
-                            //Check if need to disable new member
-                            if (members?.length >= 4) {
-                                this.props.setCommand([])
-                                commandRead[0].disabled = true
-                                this.props.setCommand(commandRead)
-                            }
-                        })
+                    this.setState({ isLoading: true }, () => {
+                        request.getNewMember()
+                            .then(res => {
+                                let members = [...this.props.members]
+                                members.push(res?.member)
+                                this.props.setMembers(members)
+                                this.setState({ currentPivot: members.length - 1, errorField: [], page: 1 })
+                            })
+                            .catch(err => {
+                                this.setState({ errorField: err?.form?.children })
+                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                            })
+                            .finally(() => {
+                                this.setState({ isLoading: false })
+                            })
+                    })
                 },
-                disabled: this.props.members?.length >= 4
+                disabled: this.props.data?.length >= 4
+            },
+            {
+                key: 'deleteItem',
+                text: 'Supprimer le membre',
+                iconProps: { iconName: 'AddFriend' },
+                onClick: () => {
+                    let id = this.props.members?.[this.state.currentPivot]?.id
+                    if (id) {
+                        this.setState({ isLoading: true }, () => {
+                            request.deleteMember(id)
+                                .then(() => {
+                                    let members = [...this.props.members]
+                                    const index = members.findIndex(x => x.id === id)
+                                    if (index > -1) members.splice(index, 1)
+                                    this.props.setMembers(members)
+                                    this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
+                                })
+                                .catch(err => {
+                                    this.setState({ errorField: err?.form?.children })
+                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue.')
+                                })
+                                .finally(() => {
+                                    this.setState({ isLoading: false, page: 1, currentPivot: 0 })
+                                })
+                        })
+                    } else {
+                        let members = [...this.props.members]
+                        members.splice(this.state.currentPivot, 1)
+                        this.props.setMembers(members)
+                        this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
+                        this.setState({ currentPivot: 0 })
+                    }
+                },
+                disabled: this.props.data?.[this.state.currentPivot]?.is_payed
             }
         ]
 
-        this.props.setCommand(commandRead)
+        this.props.setCommand(this.commandRead)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.currentPivot !== this.state.currentPivot || prevProps.members.length !== this.props.members.length) {
+            this.props.setCommand([])
+            //Check if member can be deleted
+            if (prevState.currentPivot !== this.state.currentPivot) {
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+            }
+            //Check if need to disable new member
+            if (prevProps.members.length !== this.props.members.length) {
+                this.commandRead[0].disabled = this.props.members?.length >= 4
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+            }
+            this.props.setCommand(this.commandRead)
+        }
+
+
     }
 
     render() {
         const { isLoading, readOnly, page, currentPivot, errorField } = this.state
         const { members } = this.props
-
-        // if (isLoading) return <Loader />
 
         return (
             <section id="members-me">
@@ -76,36 +130,36 @@ class _MembersMe extends React.Component {
                             {
                                 label: "Informations",
                                 description: "",
-                                isCompleted: page >= 2 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
+                                isCompleted: page >= 2 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
                                 isActive: page === 1,
                                 isError: false
                             },
                             {
                                 label: "Document(s)",
                                 description: "",
-                                isCompleted: page >= 3 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
+                                isCompleted: page >= 3 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
                                 isActive: page === 2,
                                 isError: false
                             },
                             {
                                 label: "Récapitulatif",
                                 description: "",
-                                isCompleted: page >= 4 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
+                                isCompleted: page >= 4 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
                                 isActive: page === 3,
                                 isError: false
                             },
                             {
                                 label: "Paiement",
                                 description: "",
-                                isCompleted: page >= 5 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
+                                isCompleted: page >= 5 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
                                 isActive: page === 4,
                                 isError: false
                             },
                             {
                                 label: "Finalisation",
                                 description: "",
-                                isCompleted: page >= 6  || this.props.members?.map(x => x.is_inscription_done)?.filter(x => x)?.length,
-                                isActive: page === 5 || this.props.members?.map(x => x.is_payed)?.filter(x => x)?.length,
+                                isCompleted: page >= 6 || !this.props.members?.map(x => x.is_inscription_done)?.filter(x => !x)?.length,
+                                isActive: page === 5 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
                                 isError: false
                             }
                         ]}
@@ -117,7 +171,7 @@ class _MembersMe extends React.Component {
                                     ?
                                     <Pivot
                                         onLinkClick={(item) => {
-                                            this.setState({ page: 1, currentPivot: item.props.itemKey, errorField: {} })
+                                            this.setState({ page: 1, currentPivot: parseInt(item.props.itemKey), errorField: {} })
                                         }}
                                         selectedKey={currentPivot?.toString()}
                                     >
@@ -245,6 +299,7 @@ class _MembersMe extends React.Component {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
+                                                                            disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length}
                                                                         />
                                                                     </div>
                                                                 </>
@@ -273,7 +328,16 @@ class _MembersMe extends React.Component {
                                                 case 5:
                                                     return (
                                                         <>
-                                                            ok
+                                                            <MembersMeFinalisation />
+                                                            <Separator /><br />
+                                                            <div className="flex-row flex-space-between">
+                                                                <DefaultButton
+                                                                    text="Retour"
+                                                                    iconProps={{ iconName: 'Previous' }}
+                                                                    onClick={() => this.setState({ page: 1 })}
+                                                                />
+                                                                <div />
+                                                            </div>
                                                         </>
                                                     )
                                                 default:

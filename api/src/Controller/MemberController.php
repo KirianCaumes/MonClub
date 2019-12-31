@@ -132,6 +132,8 @@ class MemberController extends FOSRestController
             if ($dateService->isMajor($data['birthdate'])) {
                 $form = $this->createForm(MemberMajorAdminType::class, $member);
             } else {
+                $data['is_reduced_price'] = false;
+                $data['is_non_competitive'] = false;
                 $form = $this->createForm(MemberMinorAdminType::class, $member);
             }
             $data['is_accepted'] = true;
@@ -169,6 +171,8 @@ class MemberController extends FOSRestController
             if ($dateService->isMajor($data['birthdate'])) {
                 $form = $this->createForm(MemberMajorType::class, $member);
             } else {
+                $data['is_reduced_price'] = false;
+                $data['is_non_competitive'] = false;
                 $form = $this->createForm(MemberMinorType::class, $member);
             }
             $form->submit($data);
@@ -214,6 +218,8 @@ class MemberController extends FOSRestController
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -253,6 +259,8 @@ class MemberController extends FOSRestController
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();

@@ -116,7 +116,12 @@ class MemberMinorAdminType extends AbstractType
             ->add('is_accepted', CheckboxType::class, [
                 'constraints' => [new NotNull(['message' => 'not_blank'])]
             ])
-            ->add('is_reduced_price', CheckboxType::class)
+            ->add('is_reduced_price', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_non_competitive', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class)
             ->add('is_document_complete', CheckboxType::class)

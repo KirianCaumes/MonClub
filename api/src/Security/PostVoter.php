@@ -34,8 +34,6 @@ class PostVoter extends Voter
 
         if (!$user instanceof User) return false;
 
-        if ($this->security->isGranted('ROLE_ADMIN')) return true;
-
         switch ($attribute) {
             case Constants::CREATE:
                 return $this->canCreate($member, $user);
@@ -51,12 +49,16 @@ class PostVoter extends Voter
     }
 
     private function canCreate(Member $member, User $user)
-    {
+    {        
+        if ($this->security->isGranted('ROLE_ADMIN')) return true;
+        
         return true;
     }
 
     private function canRead(Member $member, User $user)
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) return true;
+
         if ($member->getUser() === $user) return true;
 
         return false;
@@ -64,6 +66,8 @@ class PostVoter extends Voter
 
     private function canUpdate(Member $member, User $user)
     {
+        if ($this->security->isGranted('ROLE_ADMIN')) return true;
+
         if ($member->getUser() === $user) return true;
 
         return false;
@@ -71,6 +75,8 @@ class PostVoter extends Voter
 
     private function canDelete(Member $member, User $user)
     {
+        if ($member->getIsPayed()) return false;
+
         if ($member->getUser() === $user) return true;
 
         return false;

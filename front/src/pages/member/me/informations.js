@@ -130,14 +130,7 @@ class _MembersMeInformations extends React.Component {
                     <Columns.Column />
                 </Columns>
                 <Checkbox
-                    label="Demande réduction chomeur ou étudiant (cocher si oui)"
-                    defaultChecked={member?.is_reduced_price}
-                    onChange={(ev, isChecked) => this.props.editMember({ is_reduced_price: isChecked }, memberIndex)}
-                    disabled={readOnly}
-                />
-                <br />
-                <Checkbox
-                    label="Demande transfert de club (cocher si oui)"
+                    label="Demande de transfert de club (cocher si oui)"
                     defaultChecked={member?.is_transfer_needed}
                     onChange={(ev, isChecked) => this.props.editMember({ is_transfer_needed: isChecked }, memberIndex)}
                     disabled={readOnly}
@@ -147,10 +140,22 @@ class _MembersMeInformations extends React.Component {
                     isMajor(member?.birthdate) &&
                     <>
                         <Checkbox
-                            label="Je souhaite jouer en loisirs et ainsi bénéficier d'une réduction (cocher si oui)"
+                            label="Demande réduction chomeur ou étudiant (cocher si oui)"
                             defaultChecked={member?.is_reduced_price}
                             onChange={(ev, isChecked) => this.props.editMember({ is_reduced_price: isChecked }, memberIndex)}
-                            disabled={readOnly}
+                            disabled={readOnly || member?.is_non_competitive}
+                        />
+                        <br />
+                    </>
+                }
+                {
+                    isMajor(member?.birthdate) &&
+                    <>
+                        <Checkbox
+                            label="Je souhaite jouer uniquement en loisirs et ainsi bénéficier d'une réduction (cocher si oui)"
+                            defaultChecked={member?.is_non_competitive}
+                            onChange={(ev, isChecked) => this.props.editMember({ is_non_competitive: isChecked }, memberIndex)}
+                            disabled={readOnly || member?.is_reduced_price}
                         />
                         <br />
                     </>

@@ -141,43 +141,48 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_evacuation_allow;
+    private $is_evacuation_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_transport_allow;
+    private $is_transport_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_image_allow;
-
-    /**
-     * @ORM\Column(type="boolean", options={"default":"0"}, nullable=true)
-     */
-    private $is_return_home_allow;
+    private $is_image_allow = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_newsletter_allow;
+    private $is_return_home_allow = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $is_newsletter_allow = false;
 
     /**
      * @Assert\IsTrue(message="invalid_must_be_true")
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_accepted;
+    private $is_accepted = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_reduced_price;
+    private $is_reduced_price = false;    
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_transfer_needed;
+    private $is_non_competitive = false;  
+
+    /**
+     * @ORM\Column(type="boolean", options={"default":"0"})
+     */
+    private $is_transfer_needed = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
@@ -557,6 +562,18 @@ class Member
     public function setIsReducedPrice(bool $is_reduced_price): self
     {
         $this->is_reduced_price = $is_reduced_price;
+
+        return $this;
+    }
+
+    public function getIsNonCompetitive(): ?bool
+    {
+        return $this->is_non_competitive;
+    }
+
+    public function setIsNonCompetitive(bool $is_non_competitive): self
+    {
+        $this->is_non_competitive = $is_non_competitive;
 
         return $this;
     }

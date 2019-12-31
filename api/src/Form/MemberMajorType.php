@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Member;
+use App\Entity\Team;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -104,7 +106,12 @@ class MemberMajorType extends AbstractType
             ->add('is_accepted', CheckboxType::class, [
                 'constraints' => [new NotNull(['message' => 'not_blank'])]
             ])
-            ->add('is_reduced_price', CheckboxType::class)
+            ->add('is_reduced_price', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
+            ->add('is_non_competitive', CheckboxType::class, [
+                'constraints' => [new NotNull(['message' => 'not_blank'])]
+            ])
             ->add('is_transfer_needed', CheckboxType::class)
             ->add('is_payed', CheckboxType::class, [
                 'disabled' => true,
@@ -119,6 +126,10 @@ class MemberMajorType extends AbstractType
                 'disabled' => true,
             ])
             ->add('is_inscription_done', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('teams', EntityType::class, [
+                'class' => Team::class,
                 'disabled' => true,
             ])
             ->add('creation_datetime', DateTimeType::class, [

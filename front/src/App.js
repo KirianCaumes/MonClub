@@ -93,7 +93,7 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                {/* <FullLoader isLoading={!isInit && isAuthenticated} /> */}
+                { false && <FullLoader isLoading={!isInit && isAuthenticated} />}
                 <Router history={history} >
                     <Layout isDisplay={isAuthenticated}>
                         <Switch>

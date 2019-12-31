@@ -291,55 +291,51 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <Columns>
-                        <Columns.Column size="one-quarter">
-                            <Label>Équipe(s)</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        multiSelect
-                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
-                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
-                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                        onChange={(ev, item) => {
-                                            const newSelectedItems = [...data.teams]
-                                            if (item.selected) {
-                                                newSelectedItems.push(item)
-                                            } else {
-                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
-                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                            }
-                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
-                                        }}
-                                    />
-                            }
-                        </Columns.Column>
+                        {
+                            isMajor(data?.birthdate) &&
+                            <>
+                                <Columns.Column>
+                                    <Label required>Loisir</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                defaultValue={this.choice.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
+                                                borderless={true}
+                                                readOnly={true}
+                                                errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
+                                            />
+                                            :
+                                            <Dropdown
+                                                defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
+                                                options={this.choice}
+                                                errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
+                                            />
+                                    }
+                                </Columns.Column>
 
-                        <Columns.Column>
-                            <Label required>Demande réduction</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
-                                        options={this.choice}
-                                        errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
-                                    />
-                            }
-                        </Columns.Column>
+                                <Columns.Column>
+                                    <Label required>Demande réduction</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                defaultValue={this.choice.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
+                                                borderless={true}
+                                                readOnly={true}
+                                                errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                            />
+                                            :
+                                            <Dropdown
+                                                defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
+                                                options={this.choice}
+                                                errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
+                                            />
+                                    }
+                                </Columns.Column>
+                            </>
+                        }
+
 
                         <Columns.Column>
                             <Label required>Demande transfert</Label>
@@ -376,8 +372,43 @@ class _MemberOne extends React.Component {
                                 }}
                             />
                         </Columns.Column>
+                        {!isMajor(data?.birthdate) &&
+                            <>
+                                <Columns.Column />
+                                <Columns.Column />
+                            </>
+                        }
                     </Columns>
                     <Columns>
+                        <Columns.Column size="one-quarter">
+                            <Label>Équipe(s)</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        multiSelect
+                                        selectedKeys={data?.teams?.map(x => x.id ?? x.key)}
+                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        onChange={(ev, item) => {
+                                            const newSelectedItems = [...data.teams]
+                                            if (item.selected) {
+                                                newSelectedItems.push(item)
+                                            } else {
+                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                            }
+                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                        }}
+                                    />
+                            }
+                        </Columns.Column>
                         <Columns.Column>
                             <Label disabled={!readOnly}>Utilisateur associé</Label>
                             <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
@@ -393,7 +424,6 @@ class _MemberOne extends React.Component {
                                 readOnly={true}
                             />
                         </Columns.Column>
-                        <Columns.Column />
                         <Columns.Column />
                     </Columns>
                     {
