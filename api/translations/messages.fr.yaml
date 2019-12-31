@@ -13,3 +13,4 @@ not_blank: Le champs ne peut pas être vide.
 member_missing_document: Un ou des documents sont manquants pour les membres. Veuillez les ajouter avant de payer.
 payment_solution_not_found: La solution de paiement n'a pas été trouvée.
 deny_delete_member: "Vous n'avez pas le droit de supprimer le membre : cette action est impossible si le membre a déjà payé."
+deny_create_member: "Vous n'avez pas le droit d'ajouter un membre supplémentaire : seuls 4 membres maximum par comptes sont autorisés."

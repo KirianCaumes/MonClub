@@ -7,7 +7,6 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamPayementSolution;
-use App\Entity\ParamWorkflow;
 use App\Form\MemberMajorAdminType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorAdminType;
@@ -126,7 +125,7 @@ class MemberController extends FOSRestController
     public function postMemberAdmin(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
     {
         $member = new Member();
-        $this->denyAccessUnlessGranted(Constants::CREATE, $member);
+        $this->denyAccessUnlessGranted(Constants::CREATE_ADMIN, $member);
 
         $data = json_decode($request->getContent(), true);
 
@@ -165,7 +164,7 @@ class MemberController extends FOSRestController
     public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
     {
         $member = new Member();
-        $this->denyAccessUnlessGranted(Constants::CREATE, $member);
+        $this->denyAccessUnlessGranted(Constants::CREATE, $member,  $translator->trans('deny_create_member'));
 
         $data = json_decode($request->getContent(), true);
 

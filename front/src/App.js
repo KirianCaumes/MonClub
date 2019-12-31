@@ -62,6 +62,10 @@ class _App extends React.Component {
         }
     }
 
+    componentDidCatch(error, info) {
+        // console.log(info)
+    }
+
     componentDidMount() {
         if (this.props.isAuthenticated) {
             this.init()
