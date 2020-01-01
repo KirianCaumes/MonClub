@@ -53,6 +53,7 @@ class _Register extends React.Component {
                         iconProps={{ iconName: 'Mail' }}
                         errorMessage={this.state.errorField.username?.errors?.[0]}
                         readOnly={this.state.isLoading}
+                        autoComplete="username"
                     />
                     <br />
                     <Label>Mot de passe</Label>
@@ -64,6 +65,7 @@ class _Register extends React.Component {
                         iconProps={{ iconName: 'PasswordField' }}
                         errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
                         readOnly={this.state.isLoading}
+                        autoComplete="new-password"
                     />
                     <br />
                     <Label>Confirmez le mot de passe</Label>
@@ -75,6 +77,7 @@ class _Register extends React.Component {
                         iconProps={{ iconName: 'PasswordField' }}
                         errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
                         readOnly={this.state.isLoading}
+                        autoComplete="new-password"
                     />
                     <br />
                     <div className="flex-row" >

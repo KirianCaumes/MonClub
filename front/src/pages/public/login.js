@@ -49,6 +49,7 @@ class _Login extends React.Component {
                         onChange={ev => this.setState({ username: ev.target.value })}
                         iconProps={{ iconName: 'Mail' }}
                         readOnly={this.state.isLoading}
+                        autoComplete="username"
                     />
                     <br />
                     <Label>Mot de passe</Label>
@@ -59,6 +60,7 @@ class _Login extends React.Component {
                         onChange={ev => this.setState({ plainPassword: ev.target.value })}
                         iconProps={{ iconName: 'PasswordField' }}
                         readOnly={this.state.isLoading}
+                        autoComplete="current-password"
                     />
                     <br />
                     <div className="flex-row" >

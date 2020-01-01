@@ -10,6 +10,7 @@ invalid_postal: Le code postal est invalide.
 #User
 already_exist: L'adresse mail est déjà utilisée.
 invalid_password: Les deux mots de passe ne correspondent pas.
+password_blacklisted: Ce mot de passe est blacklisté.
 
 #File:
 mimeTypesMessage: Le type du fichier est invalide ({{ type }}). Les types autorisés sont les images (PNG/JPG/JPEG) ou les documents (PDF).

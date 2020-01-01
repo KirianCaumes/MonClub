@@ -40,10 +40,7 @@ class Member
     private $birthdate;
 
     /**
-     * @Assert\Email(
-     *     message = "invalid_email",
-     *     checkMX = true
-     * )
+     * @Assert\Email(message = "invalid_email")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $email;
@@ -89,10 +86,7 @@ class Member
     private $parent_one_lastname;
 
     /**
-     * @Assert\Email(
-     *     message = "invalid_email",
-     *     checkMX = true
-     * )
+     * @Assert\Email(message = "invalid_email")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_one_email;
@@ -119,10 +113,7 @@ class Member
     private $parent_two_lastname;
 
     /**
-     * @Assert\Email(
-     *     message = "invalid_email",
-     *     checkMX = true
-     * )
+     * @Assert\Email(message = "invalid_email")
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $parent_two_email;

@@ -49,6 +49,7 @@ class _PasswordForgotten extends React.Component {
                         onChange={ev => this.setState({ username: ev.target.value })}
                         iconProps={{ iconName: 'Mail' }}
                         readOnly={this.state.isLoading}
+                        autoComplete="username"
                     />
                     <br />
                     <div className="flex-row" >

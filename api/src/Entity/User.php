@@ -6,6 +6,7 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Rollerworks\Component\PasswordStrength\Validator\Constraints as RollerworksPassword;
 
 /**
  * @ORM\Entity
@@ -22,15 +23,16 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @Assert\NotBlank(
-     *     message = "not_blank",
-     * )
-     * @Assert\Email(
-     *     message = "invalid_email",
-     *     checkMX = true
-     * )
+     * @Assert\NotBlank(message = "not_blank",)
+     * @Assert\Email(message = "invalid_email")
      */
     protected $username;
+
+    /**
+     * @RollerworksPassword\Blacklist(message="password_blacklisted")
+     * @RollerworksPassword\PasswordStrength(minLength=7, minStrength=3)
+     */
+    protected $plainPassword;
 
     /**
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})

@@ -48,6 +48,7 @@ class _PasswordNew extends React.Component {
                         onChange={ev => this.setState({ plainPassword: ev.target.value })}
                         iconProps={{ iconName: 'PasswordField' }}
                         readOnly={this.state.isLoading}
+                        autoComplete="new-password"
                     />
                     <br />
                     <div className="flex-row" >
