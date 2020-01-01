@@ -98,7 +98,7 @@ class _MembersMe extends React.Component {
                         }
                     )
                 },
-                disabled: this.props.data?.[this.state.currentPivot]?.is_payed
+                disabled: this.props.data?.[this.state.currentPivot]?.is_payed || this.props.data?.length === 1
             }
         ]
 
@@ -110,12 +110,12 @@ class _MembersMe extends React.Component {
             this.props.setCommand([])
             //Check if member can be deleted
             if (prevState.currentPivot !== this.state.currentPivot) {
-                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed || this.props.members?.length === 1
             }
             //Check if need to disable new member
             if (prevProps.members.length !== this.props.members.length) {
                 this.commandRead[0].disabled = this.props.members?.length >= 4
-                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed || this.props.members?.length === 1
             }
             this.props.setCommand(this.commandRead)
         }
