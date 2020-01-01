@@ -431,4 +431,14 @@ export default {
 
         return getFetch(url, options)
     },
+    postLog: (body) => {
+        const url = ["log"]
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
 }

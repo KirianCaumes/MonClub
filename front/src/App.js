@@ -63,7 +63,12 @@ class _App extends React.Component {
     }
 
     componentDidCatch(error, info) {
-        // console.log(info)
+        request.postLog({ 
+            env: process.env.NODE_ENV, 
+            datetime: new Date(), 
+            error: error.message, 
+            info: 'INFO: ' + JSON.stringify(info) + ' STACK: ' + (JSON.stringify(error?.stack) ?? error) 
+        }).then()
     }
 
     componentDidMount() {
@@ -84,7 +89,7 @@ class _App extends React.Component {
                 .then(([me, param]) => {
                     this.props.init(me, param)
                 })
-                .catch(err => {                    
+                .catch(err => {
                     this.props.setMessageBar(true, MessageBarType.error, err)
                 })
                 .finally(() => {
@@ -98,15 +103,15 @@ class _App extends React.Component {
         const { isInit } = this.state
         return (
             <>
-                { false && <FullLoader isLoading={!isInit && isAuthenticated} />}
+                {false && <FullLoader isLoading={!isInit && isAuthenticated} />}
                 <Router history={history} >
-                    <Layout 
+                    <Layout
                         isDisplay={isAuthenticated}
                         refresh={() => this.init()}
                     >
                         <Switch>
                             <PrivateRoute exact path="/" component={withData(Index, () => request.getInfos())} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            
+
                             <PrivateRoute exact path="/membres" component={MembersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membres/moi" component={withData(MembersMe, () => request.getMeMember())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/membre/nouveau" component={withData(MemberOne, () => request.getNewMember())} isAuthenticated={isAuthenticated} isInit={isInit} />

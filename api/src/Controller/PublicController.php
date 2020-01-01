@@ -122,7 +122,7 @@ class PublicController extends FOSRestController
 
         return $this->handleView($this->view([], Response::HTTP_OK));
     }
-    
+
     /**
      * Login User for Drive.
      * @Rest\Post("/login/drive")
@@ -148,5 +148,26 @@ class PublicController extends FOSRestController
         }
 
         return $this->handleView($this->view([], Response::HTTP_OK));
+    }
+
+    /**
+     * Post error from front
+     * @Rest\Post("/log")
+     *
+     * @return Response
+     */
+    public function log(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_dir(__DIR__ . '/../../var/log/front/')) mkdir(__DIR__ . '/../../var/log/front/');
+
+        file_put_contents(
+            __DIR__ . '/../../var/log/front/' . $data['env'] . '-' . explode('T', $data['datetime'])[0] . '.log',
+            '[' . $data['datetime'] . '] ' . $data['error'] . ' : ' . $data['info'] . PHP_EOL,
+            FILE_APPEND | LOCK_EX
+        );
+
+        return $this->handleView($this->view('ok', Response::HTTP_OK));
     }
 }
