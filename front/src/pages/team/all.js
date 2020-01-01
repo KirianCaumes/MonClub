@@ -5,13 +5,34 @@ import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
 import request from '../../helper/request'
+import ParentPage from '../_parentPage'
 
-class _TeamsAll extends React.Component {
+class _TeamsAll extends ParentPage {
     constructor(props) {
         super(props)
         this.state = {
             isLoading: false,
-            items: []
+            items: [],
+            columns: [
+                {
+                    key: 'label',
+                    name: 'Label',
+                    fieldName: 'label',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    isSorted: true,
+                    isSortedDescending: false
+                },
+                {
+                    key: 'label_google_contact',
+                    name: 'Label Google Contact',
+                    fieldName: 'label_google_contact',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                }
+            ]
         }
     }
 
@@ -49,25 +70,9 @@ class _TeamsAll extends React.Component {
                             <Text variant="large" className="has-text-centered" block>Aucun résultat</Text> :
                             <ShimmeredDetailsList
                                 items={this.state.items}
-                                onActiveItemChanged={item => history.push(`/equipe/${item.id}`)}
-                                columns={[
-                                    {
-                                        key: 'label',
-                                        name: 'Label',
-                                        fieldName: 'label',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                    },
-                                    {
-                                        key: 'label_google_contact',
-                                        name: 'Label Google Contact',
-                                        fieldName: 'label_google_contact',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                    }
-                                ]}
+                                onActiveItemChanged={item => history.push(`/equipe/${item.id}`)} 
+                                onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: [] })}
+                                columns={this.state.columns}
                                 selectionMode={SelectionMode.none}
                                 enableShimmer={this.state.isLoading}
                             />

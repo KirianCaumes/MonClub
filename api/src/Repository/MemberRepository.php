@@ -41,6 +41,7 @@ class MemberRepository extends ServiceEntityRepository
 
         $query->setParameter('name', '%' . $name . '%');
         if ($teamsId) $query->setParameter('teamsId', $teamsId);
+        $query->orderBy('m.lastname', 'ASC');
 
         return $query->getQuery()->getResult();
     }

@@ -6,9 +6,10 @@ import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/co
 import { history } from '../../helper/history'
 import request from '../../helper/request'
 import getWf from '../../helper/getStepWf'
-import { ROLE_ADMIN } from '../../helper/constants'
+import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from '../../helper/constants'
+import ParentPage from '../_parentPage'
 
-class _MembersAll extends React.Component {
+class _MembersAll extends ParentPage {
     constructor(props) {
         super(props)
         this.state = {
@@ -18,7 +19,43 @@ class _MembersAll extends React.Component {
                 name: '',
                 stepsId: [],
                 teamsId: []
-            }
+            },
+            columns: [
+                {
+                    key: 'lastname',
+                    name: 'Nom',
+                    fieldName: 'lastname',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    isSorted: true,
+                    isSortedDescending: false
+                },
+                {
+                    key: 'firstname',
+                    name: 'Prénom',
+                    fieldName: 'firstname',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                },
+                {
+                    key: 'step',
+                    name: 'Étape',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    onRender: member => <>{getWf(member)}</>
+                },
+                {
+                    key: 'team',
+                    name: 'Équipe',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    onRender: member => <>{member.teams?.map(team => team.label)?.join(', ')}</>
+                }
+            ]
         }
     }
 
@@ -27,7 +64,7 @@ class _MembersAll extends React.Component {
             { text: 'Membres', key: 'members' },
             { text: 'Tous les membres', key: 'all-members', isCurrentItem: true },
         ])
-        
+
         this.props.setCommand([
             {
                 key: 'newItem',
@@ -53,11 +90,12 @@ class _MembersAll extends React.Component {
 
     render() {
         const { isLoading } = this.state
+        
         return (
             <section id="member-all">
                 <div className="card" >
                     {
-                        this.props.me?.roles?.includes(ROLE_ADMIN) &&
+                        (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) &&
                         <>
                             <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
                                 <Columns className="search-inputs">
@@ -138,7 +176,7 @@ class _MembersAll extends React.Component {
                                     </Columns.Column>
                                 </Columns>
                             </form>
-                            <br/>
+                            <br />
                             <Separator >
                                 <Icon iconName="ChevronDown" />
                             </Separator>
@@ -151,56 +189,8 @@ class _MembersAll extends React.Component {
                             <ShimmeredDetailsList
                                 items={this.state.items}
                                 onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
-                                columns={[
-                                    {
-                                        key: 'lastname',
-                                        name: 'Nom',
-                                        fieldName: 'lastname',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                    },
-                                    {
-                                        key: 'firstname',
-                                        name: 'Prénom',
-                                        fieldName: 'firstname',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                    },
-                                    // {
-                                    //     key: 'email',
-                                    //     name: 'Email',
-                                    //     fieldName: 'email',
-                                    //     minWidth: 70,
-                                    //     maxWidth: 200,
-                                    //     isResizable: true,
-                                    // },
-                                    // {
-                                    //     key: 'phone_number',
-                                    //     name: 'Téléphone',
-                                    //     fieldName: 'phone_number',
-                                    //     minWidth: 70,
-                                    //     maxWidth: 200,
-                                    //     isResizable: true,
-                                    // },
-                                    {
-                                        key: 'step',
-                                        name: 'Étape',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                        onRender: member => <>{getWf(member)}</>
-                                    },
-                                    {
-                                        key: 'team',
-                                        name: 'Équipe',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                        onRender: member => <>{member.teams?.map(team => team.label)?.join(', ')}</>
-                                    }
-                                ]}
+                                onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['step', 'team'] })}
+                                columns={this.state.columns}
                                 selectionMode={SelectionMode.none}
                                 enableShimmer={this.state.isLoading}
                             />

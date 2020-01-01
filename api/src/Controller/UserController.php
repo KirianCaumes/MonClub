@@ -69,7 +69,7 @@ class UserController extends FOSRestController
      */
     public function getUsers()
     {
-        $users = $this->getDoctrine()->getRepository(User::class)->findall();
+        $users = $this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC']);
         foreach ($users as $user) { //Hide some informations
             $user->setPassword('');
             $user->setSalt('');

@@ -5,13 +5,43 @@ import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
 import { history } from '../../helper/history'
 import request from '../../helper/request'
+import ParentPage from '../_parentPage'
 
-class _UsersAll extends React.Component {
+class _UsersAll extends ParentPage {
     constructor(props) {
         super(props)
         this.state = {
             isLoading: false,
-            items: []
+            items: [],
+            columns: [
+                {
+                    key: 'username',
+                    name: 'Nom',
+                    fieldName: 'username',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    isSorted: true,
+                    isSortedDescending: false
+                },
+                {
+                    key: 'enabled',
+                    name: 'Activé',
+                    fieldName: 'enabled',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    onRender: user => <>{user.enabled ? 'Oui' : 'Non'}</>
+                },
+                {
+                    key: 'roles',
+                    name: 'Roles',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    onRender: user => <>{user.roles?.join(', ')}</>
+                }
+            ]
         }
     }
 
@@ -43,32 +73,8 @@ class _UsersAll extends React.Component {
                             <ShimmeredDetailsList
                                 items={this.state.items}
                                 onActiveItemChanged={item => history.push(`/utilisateur/${item.id}`)}
-                                columns={[
-                                    {
-                                        key: 'username',
-                                        name: 'Nom',
-                                        fieldName: 'username',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                    },
-                                    {
-                                        key: 'enabled',
-                                        name: 'Activé',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                        onRender: user => <>{user.enabled ? 'Oui' : 'Non'}</>
-                                    },
-                                    {
-                                        key: 'roles',
-                                        name: 'Roles',
-                                        minWidth: 70,
-                                        maxWidth: 200,
-                                        isResizable: true,
-                                        onRender: user => <>{user.roles?.join(', ')}</>
-                                    }
-                                ]}
+                                onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['roles'] })}
+                                columns={this.state.columns}
                                 selectionMode={SelectionMode.none}
                                 enableShimmer={this.state.isLoading}
                             />

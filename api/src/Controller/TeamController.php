@@ -27,7 +27,7 @@ class TeamController extends FOSRestController
      */
     public function getTeams()
     {
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(Team::class)->findall()));
+        return $this->handleView($this->view($this->getDoctrine()->getRepository(Team::class)->findBy([], ['label' => 'ASC'])));
     }
 
     /**
