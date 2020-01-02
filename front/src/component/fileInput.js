@@ -1,8 +1,8 @@
 import React from 'react'
 import { BaseComponent } from "@uifabric/utilities"
-import { connect } from "react-redux"
 import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text } from 'office-ui-fabric-react'
-
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 class _FileInput extends BaseComponent {
     constructor(props) {
@@ -24,12 +24,26 @@ class _FileInput extends BaseComponent {
                 <div style={{ ...this.props.style }}>
                     <div className="flex-row flex-start">
                         <DefaultButton
+                            split
                             text="Télécharger"
                             iconProps={{ iconName: 'Download' }}
                             disabled={!isFile || isDownloading}
                             onClick={() => {
                                 this.setState({ isDownloading: true })
                                 this.props.onDownload().finally(() => this.setState({ isDownloading: false }))
+                            }}
+                            menuProps={{
+                                items: [
+                                    {
+                                        key: 'open',
+                                        text: 'Visionner',
+                                        iconProps: { iconName: 'OpenInNewTab' },
+                                        onClick: () => {
+                                            this.setState({ isDownloading: true })
+                                            this.props.onOpen().finally(() => this.setState({ isDownloading: false }))
+                                        }
+                                    }
+                                ]
                             }}
                         />
                         {isDownloading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}

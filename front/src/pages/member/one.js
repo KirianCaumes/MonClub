@@ -9,7 +9,7 @@ import Workflow from '../../component/workflow'
 import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimmeString } from '../../helper/date'
 import Loader from '../../component/loader'
 import FileInput from '../../component/fileInput'
-import { dlBlob } from '../../helper/dlBlob'
+import { dlBlob, openBlob } from '../../helper/blob'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -296,6 +296,131 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <Columns>
+                        <Columns.Column size="one-quarter">
+                            <Label>Équipe(s)</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                    />
+                                    :
+                                    <VirtualizedComboBox
+                                        multiSelect
+                                        selectedKey={data?.teams?.map(x => x.id ?? x.key)}
+                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
+                                        onChange={(ev, item) => {
+                                            const newSelectedItems = [...data.teams]
+                                            if (item.selected) {
+                                                newSelectedItems.push(item)
+                                            } else {
+                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                            }
+                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                        }}
+
+                                    />
+                            }
+                        </Columns.Column>
+                        <Columns.Column size="one-quarter">
+                            <Label>Utilisateur associé</Label>
+                            {
+                                readOnly ?
+                                    <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
+                                        {data?.user?.username ?? ''}
+                                    </Link>
+                                    :
+                                    <VirtualizedComboBox
+                                        selectedKey={data?.user?.id}
+                                        options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
+                                        errorMessage={this.state.errorField?.username?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, user: item } })}
+                                    />
+                            }
+                        </Columns.Column>
+                        <Columns.Column size="one-quarter">
+                            <Label>Saison</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.season?.label}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.season?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        selectedKey={data?.season?.id}
+                                        options={[...this.props.param?.season]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.season?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, season: item } })}
+                                    />
+                            }
+                        </Columns.Column>
+
+                        <Columns.Column>
+                            <Label disabled={!readOnly}>Date d'inscription</Label>
+                            <TextField
+                                defaultValue={data?.creation_datetime ? dateToCleanDateTimmeString(new Date(data.creation_datetime)) : ''}
+                                borderless={true}
+                                readOnly={true}
+                            />
+                        </Columns.Column>
+                    </Columns>
+
+                    <br />
+                    <Text variant="large" block>Informations tarifaires</Text>
+                    <Separator />
+
+                    <Columns>
+                        <Columns.Column>
+                            <Label>Montant payé</Label>
+                            <TextField
+                                defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
+                                suffix="€"
+                                onKeyPress={ev => {
+                                    ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
+                                        ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
+                                        ev.preventDefault()
+                                }}
+                            />
+                        </Columns.Column>
+
+                        <Columns.Column>
+                            <Label>Moyen de paiement</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        defaultValue={data?.payment_solution?.label}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.payment_solution?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        defaultSelectedKey={data?.payment_solution?.id}
+                                        options={[...this.props.param?.price?.payment_solution]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.payment_solution?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
+                                    />
+                            }
+                        </Columns.Column>
+                        <Columns.Column />
+                        <Columns.Column />
+                    </Columns>
+
+                    <Columns>
                         {
                             isMajor(data?.birthdate) &&
                             <>
@@ -343,7 +468,6 @@ class _MemberOne extends React.Component {
                             </>
                         }
 
-
                         <Columns.Column>
                             <Label required>Demande transfert</Label>
                             {
@@ -363,87 +487,8 @@ class _MemberOne extends React.Component {
                                     />
                             }
                         </Columns.Column>
-                        <Columns.Column>
-                            <Label>Montant payé</Label>
-                            <TextField
-                                defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
-                                onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
-                                suffix="€"
-                                onKeyPress={ev => {
-                                    ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
-                                        ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
-                                        ev.preventDefault()
-                                }}
-                            />
-                        </Columns.Column>
-                        {!isMajor(data?.birthdate) &&
-                            <>
-                                <Columns.Column />
-                                <Columns.Column />
-                            </>
-                        }
-                    </Columns>
-                    <Columns>
-                        <Columns.Column size="one-quarter">
-                            <Label>Équipe(s)</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                    />
-                                    :
-                                    <VirtualizedComboBox
-                                        multiSelect
-                                        selectedKey={data?.teams?.map(x => x.id ?? x.key)}
-                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
-                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                        useComboBoxAsMenuWidth={true}
-                                        onChange={(ev, item) => {
-                                            const newSelectedItems = [...data.teams]
-                                            if (item.selected) {
-                                                newSelectedItems.push(item)
-                                            } else {
-                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
-                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                            }
-                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
-                                        }}
-                                    />
-                            }
-                        </Columns.Column>
-                        <Columns.Column>
-                            <Label>Utilisateur associé</Label>
-                            {
-                                readOnly ?
-                                    <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
-                                        {data?.user?.username ?? ''}
-                                    </Link>
-                                    :
-                                    <VirtualizedComboBox
-                                        selectedKey={data?.user?.id}
-                                        options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
-                                        errorMessage={this.state.errorField?.username?.errors?.[0]}
-                                        useComboBoxAsMenuWidth={true}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, user: item } })}
-                                    />
-                            }
-                        </Columns.Column>
-
-                        <Columns.Column>
-                            <Label disabled={!readOnly}>Date d'inscription</Label>
-                            <TextField
-                                defaultValue={data?.creation_datetime ? dateToCleanDateTimmeString(new Date(data.creation_datetime)) : ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
-                        </Columns.Column>
                         <Columns.Column />
+                        {!isMajor(data?.birthdate) && <><Columns.Column /> <Columns.Column /></>}
                     </Columns>
                     {
                         !isMajor(data?.birthdate) &&
@@ -727,6 +772,11 @@ class _MemberOne extends React.Component {
                                         .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
+                                onOpen={() => {
+                                    return request.getDocument(this.props.match?.params?.id, 1)
+                                        .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                }}
                                 onUpload={file => {
                                     return request.uploadDocument(file, this.props.match?.params?.id, 1)
                                         .then(doc => {
@@ -759,7 +809,12 @@ class _MemberOne extends React.Component {
                                 isFile={readOnly}
                                 onDownload={() => {
                                     return request.getAttestation(this.props.match?.params?.id)
-                                        .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_2020-2021.pdf`))
+                                        .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                }}
+                                onOpen={() => {
+                                    return request.getAttestation(this.props.match?.params?.id)
+                                        .then(file => openBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
                             />
@@ -770,7 +825,7 @@ class _MemberOne extends React.Component {
                                 data?.is_reduced_price &&
                                 <>
                                     <Label required>Jusitificatif étudiant/chomage</Label>
-                                    <FileInput
+                                    <FileInput                                  
                                         read={readOnly}
                                         errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
                                         isFile={data?.documents?.find(doc => doc?.category?.id === 2)?.document}
@@ -778,6 +833,11 @@ class _MemberOne extends React.Component {
                                         onDownload={() => {
                                             return request.getDocument(this.props.match?.params?.id, 2)
                                                 .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                        }}
+                                        onOpen={() => {
+                                            return request.getDocument(this.props.match?.params?.id, 2)
+                                                .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                                 .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                         }}
                                         onUpload={file => {

@@ -3,7 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Member;
-use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamPaymentSolution;
+use App\Entity\ParamSeason;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -104,7 +105,7 @@ class MemberMajorType extends AbstractType
                 'disabled' => true,
             ])
             ->add('payment_solution', EntityType::class, [
-                'class' => ParamDocumentCategory::class,
+                'class' => ParamPaymentSolution::class,
                 'disabled' => true,
             ])
             ->add('user', EntityType::class, [
@@ -114,6 +115,10 @@ class MemberMajorType extends AbstractType
             ->add('teams', EntityType::class, [
                 'class' => Team::class,
                 'multiple' => true,
+                'disabled' => true,
+            ])            
+            ->add('season', EntityType::class, [
+                'class' => ParamSeason::class,
                 'disabled' => true,
             ])
             ->add('save', SubmitType::class);

@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamGlobal;
-use App\Entity\ParamPayementSolution;
+use App\Entity\ParamPaymentSolution;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
+use App\Entity\ParamSeason;
 use App\Entity\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
@@ -40,8 +41,9 @@ class ParamController extends FOSRestController
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),
                 'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findall(),
-                'payement_solution' => $this->getDoctrine()->getRepository(ParamPayementSolution::class)->findall(),
+                'payment_solution' => $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findall(),
             ],
+            'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findBy(['is_active' => true]),
             'users' => $this->isGranted('ROLE_ADMIN') ?
                 array_map(
                     function ($user) {

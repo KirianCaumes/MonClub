@@ -13,6 +13,7 @@ use App\Form\DocumentType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
+use App\Service\ParamService;
 use App\Service\PriceService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,17 +99,15 @@ class FileController extends FOSRestController
     }
 
     /**
-     * Generate and get document "attestation payement".
+     * Generate and get document "attestation payment".
      * @Route("/{memberId}/attestation")
      */
-    public function getAttestation(TranslatorInterface $translator, int $memberId)
+    public function getAttestation(TranslatorInterface $translator, ParamService $paramService, int $memberId)
     {
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        $paramGlobalRepository = $this->getDoctrine()->getRepository(ParamGlobal::class);
 
         $pdfOptions = new Options();
         $pdfOptions->set(['enable_remote' => true]);
@@ -119,15 +118,16 @@ class FileController extends FOSRestController
         $dompdf->loadHtml(
             $this->renderView('pdf/attestation.html.twig', [
                 'member' => $member,
+                'season' => $paramService->getCurrentSeason(),
                 'president' => [
-                    'firstname' => $paramGlobalRepository->findOneBy(['label' => 'president_firstname'])->getValue(),
-                    'lastname' => $paramGlobalRepository->findOneBy(['label' => 'president_lastname'])->getValue()
+                    'firstname' => $paramService->getParam('president_firstname'),
+                    'lastname' => $paramService->getParam('president_lastname')
                 ]
             ])
         );
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $dompdf->stream("Attestation_".$member->getFirstname() ." ". $member->getLastname()."_2020-2021.pdf", ["Attachment" => true]);
+        $dompdf->stream("Attestation_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $paramService->getCurrentSeason()->getLabel(), ["Attachment" => true]);
     }
 
     /**

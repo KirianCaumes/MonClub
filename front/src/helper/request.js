@@ -201,7 +201,9 @@ export default {
             ...body,
             birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
-            user: body?.user?.id
+            user: body?.user?.id,
+            season: body?.season?.id,
+            payment_solution: body?.payment_solution?.id
         }
 
         var options = {
@@ -251,7 +253,9 @@ export default {
             ...body,
             birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
-            user: body?.user?.id
+            user: body?.user?.id,
+            season: body?.season?.id,
+            payment_solution: body?.payment_solution?.id
         }
 
         var options = {

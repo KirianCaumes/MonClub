@@ -13,10 +13,12 @@ class PriceService
 {
     private $em;
     private $dateService;
-    public function __construct(EntityManagerInterface $em, DateService $dateService)
+    private $ParamService;
+    public function __construct(EntityManagerInterface $em, DateService $dateService, ParamService $ParamService)
     {
         $this->em = $em;
         $this->dateService = $dateService;
+        $this->ParamService = $ParamService;
     }
 
     /**
@@ -26,16 +28,15 @@ class PriceService
     {
         $birthYear = (int) $member->getBirthdate()->format('Y');
         $age = $this->dateService->getAge($birthYear);
-        $paramGlobalRepository = $this->em->getRepository(ParamGlobal::class);
-        $priceDeadline = $paramGlobalRepository->findOneBy(['label' => 'price_deadline'])->getValue();
+        $priceDeadline = $this->ParamService->getParam('price_deadline');
         $price = 0;
 
         //Get price license
         if ($member->getIsReducedPrice()) {
             if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                $price += $paramGlobalRepository->findOneBy(['label' => 'reduced_price_before_deadline'])->getValue();
+                $price += $this->ParamService->getParam('reduced_price_before_deadline');
             } else {
-                $price += $paramGlobalRepository->findOneBy(['label' => 'reduced_price_after_deadline'])->getValue();
+                $price += $this->ParamService->getParam('reduced_price_after_deadline');
             }
         } else { //Else : normal case
             $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval($birthYear);

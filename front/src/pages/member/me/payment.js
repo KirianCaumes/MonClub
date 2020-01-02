@@ -85,7 +85,7 @@ class _MembersMePayment extends React.Component {
                 <Text variant="large" block>Choisissez votre mode de paiement</Text>
                 <Separator />
                 <ChoiceGroup
-                    options={param?.price?.payement_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
+                    options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
                     selectedKey={optionSelectedKey}
                     onChange={(ev, option) => this.setState({ optionSelectedKey: option.key })}
                 />
@@ -103,7 +103,7 @@ class _MembersMePayment extends React.Component {
                                         return (
                                             <PrimaryButton
                                                 text="Paypal"
-                                                iconProps={{ iconName: param?.price?.payement_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
                                                 styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                 onClick={() => this.pay()}
                                                 disabled={true}
@@ -128,7 +128,7 @@ class _MembersMePayment extends React.Component {
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"
-                                                    iconProps={{ iconName: param?.price?.payement_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
                                                     styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                     onClick={() => this.pay()}
                                                 />
@@ -153,7 +153,7 @@ class _MembersMePayment extends React.Component {
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"
-                                                    iconProps={{ iconName: param?.price?.payement_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
                                                     styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                     onClick={() => this.pay()}
                                                 />

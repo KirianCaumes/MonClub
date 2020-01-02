@@ -125,12 +125,12 @@ class _MembersMe extends React.Component {
 
     render() {
         const { isLoading, readOnly, page, currentPivot, errorField } = this.state
-        const { members } = this.props
+        const { members, param } = this.props
 
         return (
             <section id="members-me">
                 <div className="card" >
-                    <Text variant="xLarge" block className="has-text-centered is-uppercase">Inscription saison 2020–2021</Text>
+                    <Text variant="xLarge" block className="has-text-centered is-uppercase">Inscription saison {param?.season?.find(x => x.is_current)?.label}</Text>
                     <br />
                     <Workflow
                         className="is-hidden-mobile"
@@ -375,7 +375,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        members: state.member.members
+        members: state.member.members,
+        param: state.user.param
     }
 }
 const MembersMe = connect(mapStateToProps, mapDispatchToProps)(_MembersMe)

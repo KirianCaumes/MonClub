@@ -3,14 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Member;
-use App\Entity\ParamDocumentCategory;
+use App\Entity\ParamPaymentSolution;
+use App\Entity\ParamSeason;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -93,8 +93,7 @@ class MemberMinorAdminType extends AbstractType
                 'disabled' => true,
             ])
             ->add('payment_solution', EntityType::class, [
-                'class' => ParamDocumentCategory::class,
-                'disabled' => true,
+                'class' => ParamPaymentSolution::class,
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class
@@ -102,6 +101,9 @@ class MemberMinorAdminType extends AbstractType
             ->add('teams', EntityType::class, [
                 'class' => Team::class,
                 'multiple' => true
+            ])            
+            ->add('season', EntityType::class, [
+                'class' => ParamSeason::class
             ])
             ->add('save', SubmitType::class);
     }

@@ -163,12 +163,12 @@ class Member
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_reduced_price = false;    
+    private $is_reduced_price = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
-    private $is_non_competitive = false;  
+    private $is_non_competitive = false;
 
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
@@ -179,7 +179,7 @@ class Member
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
     private $is_document_complete = false;
-    
+
     /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
@@ -204,14 +204,14 @@ class Member
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      */
     private $creation_datetime;
-    
+
     /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $notes;
-    
+
     /**
-     * @ORM\ManyToOne(targetEntity="ParamPayementSolution")
+     * @ORM\ManyToOne(targetEntity="ParamPaymentSolution")
      * @ORM\JoinColumn(name="id_payment_solution", referencedColumnName="id")
      */
     private $payment_solution;
@@ -232,6 +232,12 @@ class Member
      * @ORM\OneToMany(targetEntity="Document", mappedBy="member")
      */
     private $documents;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="ParamSeason")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
+     */
+    private $season;
 
     public function __construct()
     {
@@ -665,12 +671,12 @@ class Member
         return $this;
     }
 
-    public function getPaymentSolution(): ?ParamPayementSolution
+    public function getPaymentSolution(): ?ParamPaymentSolution
     {
         return $this->payment_solution;
     }
 
-    public function setPaymentSolution(ParamPayementSolution $payment_solution): self
+    public function setPaymentSolution(ParamPaymentSolution $payment_solution): self
     {
         $this->payment_solution = $payment_solution;
 
@@ -709,6 +715,18 @@ class Member
     public function setDocuments(\Doctrine\Common\Collections\Collection $documents): self
     {
         $this->documents = $documents;
+
+        return $this;
+    }
+
+    public function getSeason(): ?ParamSeason
+    {
+        return $this->season;
+    }
+
+    public function setSeason(ParamSeason $season): self
+    {
+        $this->season = $season;
 
         return $this;
     }

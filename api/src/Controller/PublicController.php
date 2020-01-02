@@ -16,7 +16,7 @@ use App\Form\UserType;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use App\Service\MailService;
-use App\Service\ParamGlobalService;
+use App\Service\ParamService;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -54,10 +54,10 @@ class PublicController extends FOSRestController
      *
      * @return Response
      */
-    public function register(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager, TranslatorInterface $translator, ParamGlobalService $paramGlobalService)
+    public function register(Request $request, UserManagerInterface $userManager, JWTTokenManagerInterface $JWTManager, TranslatorInterface $translator, ParamService $ParamService)
     {
         //Disable register if needed
-        if (!filter_var($paramGlobalService->getParam('is_create_new_user_able'), FILTER_VALIDATE_BOOLEAN)) {
+        if (!filter_var($ParamService->getParam('is_create_new_user_able'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->handleView($this->view([
                 'error' => [
                     'message' => $translator->trans('register_is_disabled'),

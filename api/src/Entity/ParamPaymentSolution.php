@@ -7,9 +7,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="param_payement_solution")
+ * @ORM\Table(name="param_payment_solution")
  */
-class ParamPayementSolution
+class ParamPaymentSolution
 {
     /**
      * @ORM\Id()

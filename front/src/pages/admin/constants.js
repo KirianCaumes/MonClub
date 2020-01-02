@@ -47,7 +47,7 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Étapes workflow :</Label>
                     <DetailsList
                         items={param?.workflowStep ?? []}
@@ -72,7 +72,7 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Global :</Label>
                     <DetailsList
                         items={param?.global ?? []}
@@ -106,7 +106,7 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Catégories documents :</Label>
                     <DetailsList
                         items={param?.documentCategory ?? []}
@@ -130,8 +130,8 @@ class _Constants extends React.Component {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <br />                    
-                    
+                    <br />
+
                     <Label>Rôles :</Label>
                     <DetailsList
                         items={param?.roles ?? []}
@@ -148,7 +148,7 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Prix licences :</Label>
                     <DetailsList
                         items={param?.price?.license ?? []}
@@ -205,8 +205,8 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
-                    
+
+
                     <Label>Prix transfert :</Label>
                     <DetailsList
                         items={param?.price?.transfer ?? []}
@@ -255,7 +255,7 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Prix réduction :</Label>
                     <DetailsList
                         items={param?.price?.discount ?? []}
@@ -288,10 +288,10 @@ class _Constants extends React.Component {
                         selectionMode={SelectionMode.none}
                     />
                     <br />
-                    
+
                     <Label>Moyens de paiements :</Label>
                     <DetailsList
-                        items={param?.price?.payement_solution ?? []}
+                        items={param?.price?.payment_solution ?? []}
                         columns={[
                             {
                                 key: 'id',
@@ -316,6 +316,49 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+
+                    <Label>Saisons :</Label>
+                    <DetailsList
+                        items={param?.season ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'is_active',
+                                name: 'Actif',
+                                fieldName: 'is_active',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                                onRender: item => <>{item.is_active ? 'Oui' : 'Non'}</>
+                            },
+                            {
+                                key: 'is_current',
+                                name: 'En cours',
+                                fieldName: 'is_current',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                                onRender: item => <>{item.is_current ? 'Oui' : 'Non'}</>
                             }
                         ]}
                         selectionMode={SelectionMode.none}

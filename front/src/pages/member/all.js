@@ -18,7 +18,8 @@ class _MembersAll extends ParentPage {
             searchParms: {
                 name: '',
                 stepsId: [],
-                teamsId: []
+                teamsId: [],
+                seasonId: ''
             },
             columns: [
                 {
@@ -90,7 +91,7 @@ class _MembersAll extends ParentPage {
 
     render() {
         const { isLoading } = this.state
-        
+
         return (
             <section id="member-all">
                 <div className="card" >
@@ -99,7 +100,7 @@ class _MembersAll extends ParentPage {
                         <>
                             <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
                                 <Columns className="search-inputs">
-                                    <Columns.Column size="one-quarter">
+                                    <Columns.Column size="one-fifth">
                                         <TextField
                                             label="Nom/Prénom"
                                             disabled={isLoading}
@@ -107,7 +108,7 @@ class _MembersAll extends ParentPage {
                                             onChange={ev => this.setState({ searchParms: { ...this.state.searchParms, name: ev.target.value } })}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-quarter">
+                                    <Columns.Column size="one-fifth">
                                         <Dropdown
                                             label="Étape"
                                             disabled={isLoading}
@@ -126,7 +127,7 @@ class _MembersAll extends ParentPage {
                                             }}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-quarter">
+                                    <Columns.Column size="one-fifth">
                                         <Dropdown
                                             label="Équipe"
                                             disabled={isLoading}
@@ -141,11 +142,20 @@ class _MembersAll extends ParentPage {
                                                     const currIndex = newSelectedItems.indexOf(item.key)
                                                     if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
                                                 }
-                                                this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
+
                                             }}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-quarter">
+                                    <Columns.Column size="one-fifth">
+                                        <Dropdown
+                                            label="Saison"
+                                            disabled={isLoading}
+                                            options={[...this.props.param?.season]?.map(x => { return { key: x.id, text: x.label } })}
+                                            selectedKey={this.state.searchParms.seasonId}
+                                            onChange={(ev, item) => this.setState({ searchParms: { ...this.state.searchParms, seasonId: item.key } })}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column size="one-fifth">
                                         <Label>&#8203;</Label>
                                         <DefaultButton
                                             text="Rechercher"
@@ -164,13 +174,13 @@ class _MembersAll extends ParentPage {
                                                                 searchParms: {
                                                                     name: '',
                                                                     stepsId: [],
-                                                                    teamsId: []
+                                                                    teamsId: [],
+                                                                    seasonId: ''
                                                                 }
                                                             }, () => this.searchMembers())
                                                         }
                                                     ]
                                                 }
-
                                             }
                                         />
                                     </Columns.Column>

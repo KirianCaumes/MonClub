@@ -5,5 +5,8 @@ export function dlBlob(file, fileName) {
     document.body.appendChild(a)
     a.click()
     a.remove()
-    // window.open(window.URL.createObjectURL(file), '_blank')
+}
+
+export function openBlob(file, fileName) {
+    window.open(window.URL.createObjectURL(file), '_blank')
 }

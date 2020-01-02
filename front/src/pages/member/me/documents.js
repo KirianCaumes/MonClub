@@ -5,7 +5,7 @@ import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions
 import { Columns } from 'react-bulma-components'
 import FileInput from '../../../component/fileInput'
 import request from '../../../helper/request'
-import { dlBlob } from '../../../helper/dlBlob'
+import { dlBlob, openBlob } from '../../../helper/blob'
 import { editMember } from '../../../redux/actions/member'
 
 class _MembersMeDocuments extends React.Component {
@@ -22,7 +22,7 @@ class _MembersMeDocuments extends React.Component {
     }
 
     render() {
-        const { memberIndex, readOnly, errorField } = this.props
+        const { memberIndex, readOnly, errorField, param } = this.props
         const { errorDocument } = this.state
         const member = this.props.members[memberIndex]
 
@@ -42,6 +42,11 @@ class _MembersMeDocuments extends React.Component {
                             onDownload={() => {
                                 return request.getDocument(member.id, 1)
                                     .then(file => dlBlob(file, member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
+                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            }}                                 
+                            onOpen={() => {
+                                return request.getDocument(member.id, 1)
+                                    .then(file => openBlob(file, member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                             }}
                             onUpload={file => {
@@ -84,6 +89,11 @@ class _MembersMeDocuments extends React.Component {
                                     return request.getDocument(member.id, 2)
                                         .then(file => dlBlob(file, member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                }}                                    
+                                onOpen={() => {
+                                    return request.getDocument(member.id, 2)
+                                        .then(file => openBlob(file, member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                 }}
                                 onUpload={file => {
                                     return request.uploadDocument(file, member.id, 2)
@@ -122,7 +132,12 @@ class _MembersMeDocuments extends React.Component {
                                     isFile={readOnly}
                                     onDownload={() => {
                                         return request.getAttestation(member?.id)
-                                            .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_2020-2021.pdf`))
+                                            .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}                                    
+                                    onOpen={() => {
+                                        return request.getAttestation(member?.id)
+                                            .then(file => openBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                             .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                     }}
                                 />
@@ -147,7 +162,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        members: state.member.members
+        members: state.member.members,
+        param: state.user.param
     }
 }
 const MembersMeDocuments = connect(mapStateToProps, mapDispatchToProps)(_MembersMeDocuments)

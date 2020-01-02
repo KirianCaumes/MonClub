@@ -6,13 +6,14 @@ use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
-use App\Entity\ParamPayementSolution;
+use App\Entity\ParamPaymentSolution;
+use App\Entity\ParamSeason;
 use App\Form\MemberMajorAdminType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorAdminType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
-use App\Service\ParamGlobalService;
+use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
 use DateTime;
@@ -37,20 +38,20 @@ class MemberController extends FOSRestController
      * @QueryParam(name="name", nullable=true)
      * @QueryParam(name="stepsId", nullable=true)
      * @QueryParam(name="teamsId", nullable=true)
+     * @QueryParam(name="seasonId", nullable=true)
      * @IsGranted("ROLE_COACH")
      * @Rest\Get("")
      *
      * @return Response
      */
-    public function getMembers(ParamFetcher $paramFetcher)
+    public function getMembers(ParamFetcher $paramFetcher, ParamService $paramService)
     {
-
-        // return $this->handleView($this->view($paramFetcher->all()['teamsId']));
         if ($this->isGranted('ROLE_ADMIN')) {
             $members = $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
                 $paramFetcher->get('name'),
                 $paramFetcher->get('stepsId'),
-                $paramFetcher->get('teamsId')
+                $paramFetcher->get('teamsId'),
+                $paramFetcher->get('seasonId')
             );
             foreach ($members as $member) { //Hide some informations
                 if ($member->getUser()) {
@@ -63,7 +64,7 @@ class MemberController extends FOSRestController
         } else if ($this->isGranted('ROLE_COACH')) {
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
-            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $teams], ['lastname' => 'ASC'])));
+            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $teams, 'season' => $paramService->getCurrentSeason()], ['lastname' => 'ASC'])));
         }
     }
 
@@ -73,11 +74,11 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getMyMembers()
+    public function getMyMembers(ParamService $paramService)
     {
-        $users = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser()]);
-        if (!$users) return $this->handleView($this->view([(new Member())])); //Return empty member if none exists
-        return $this->handleView($this->view($users));
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()]);
+        if (!$members) return $this->handleView($this->view([(new Member())])); //Return empty member if none exists
+        return $this->handleView($this->view($members));
     }
 
     /**
@@ -90,8 +91,10 @@ class MemberController extends FOSRestController
     {
         return $this->handleView($this->view(['member' => (new Member())]));
     }
+
     /**
      * One member.
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("/{id}")
      *
      * @return Response
@@ -163,18 +166,18 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamGlobalService $paramGlobalService)
+    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamService $paramService)
     {
         //Disabled new member by deadline, null if not
-        if (!$paramGlobalService->getParam('new_member_deadline') && !(new \DateTime($paramGlobalService->getParam('new_member_deadline')) > new \DateTime())) {
+        if ($paramService->getParam('new_member_deadline') && !(new \DateTime($paramService->getParam('new_member_deadline')) > new \DateTime())) {
             return $this->handleView($this->view([
                 'error' => [
-                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramGlobalService->getParam('new_member_deadline')))->format('d/m/Y')]),
+                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramService->getParam('new_member_deadline')))->format('d/m/Y')]),
                     'code' => Response::HTTP_FORBIDDEN
                 ]
             ], Response::HTTP_FORBIDDEN));
         }
-        
+
         $member = new Member();
         $this->denyAccessUnlessGranted(Constants::CREATE, $member,  $translator->trans('deny_create_member'));
 
@@ -194,6 +197,7 @@ class MemberController extends FOSRestController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $member->setUser($this->getUser());
+                $member->setSeason($paramService->getCurrentSeason());
                 $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
@@ -258,13 +262,13 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamGlobalService $paramGlobalService, int $id)
+    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamService $paramService, int $id)
     {
         //Disabled edit member by deadline, null if not
-        if ($paramGlobalService->getParam('new_member_deadline') && !(new \DateTime($paramGlobalService->getParam('new_member_deadline')) > new \DateTime())) {
+        if ($paramService->getParam('new_member_deadline') && !(new \DateTime($paramService->getParam('new_member_deadline')) > new \DateTime())) {
             return $this->handleView($this->view([
                 'error' => [
-                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramGlobalService->getParam('new_member_deadline')))->format('d/m/Y')]),
+                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramService->getParam('new_member_deadline')))->format('d/m/Y')]),
                     'code' => Response::HTTP_FORBIDDEN
                 ]
             ], Response::HTTP_FORBIDDEN));
@@ -337,10 +341,10 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getPriceMe(TranslatorInterface $translator, PriceService $priceService)
+    public function getPriceMe(TranslatorInterface $translator, PriceService $priceService, ParamService $paramService)
     {
         //Find member by id
-        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false]);
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false, 'season' => $paramService->getCurrentSeason()]);
 
         if (!$members) {
             return $this->handleView($this->view(["message" => $translator->trans('members_to_pay_not_found')], Response::HTTP_NOT_FOUND));
@@ -456,12 +460,12 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService)
+    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService, ParamService $paramService)
     {
         $data = json_decode($request->getContent(), true);
 
         //Find member by id
-        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false]);
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false, 'season' => $paramService->getCurrentSeason()]);
 
         //Check docs
         foreach ($members as $member) {
@@ -471,7 +475,7 @@ class MemberController extends FOSRestController
         }
 
         //Find payment solution
-        $payment_solution = $this->getDoctrine()->getRepository(ParamPayementSolution::class)->findOneBy(['id' => $data['payment_solution']]);
+        $payment_solution = $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findOneBy(['id' => $data['payment_solution']]);
         if (!$payment_solution) {
             return $this->handleView($this->view(["message" => $translator->trans('payment_solution_not_found')], Response::HTTP_NOT_FOUND));
         }
