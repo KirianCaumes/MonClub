@@ -403,6 +403,7 @@ class _MemberOne extends React.Component {
                                         selectedKey={data?.teams?.map(x => x.id ?? x.key)}
                                         options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
                                         onChange={(ev, item) => {
                                             const newSelectedItems = [...data.teams]
                                             if (item.selected) {
@@ -411,7 +412,6 @@ class _MemberOne extends React.Component {
                                                 const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
                                                 if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
                                             }
-                                            console.log(newSelectedItems)
                                             this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
                                         }}
                                     />
@@ -429,6 +429,7 @@ class _MemberOne extends React.Component {
                                         selectedKey={data?.user?.id}
                                         options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
                                         errorMessage={this.state.errorField?.username?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, user: item } })}
                                     />
                             }

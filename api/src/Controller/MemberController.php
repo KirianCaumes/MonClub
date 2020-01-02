@@ -12,8 +12,10 @@ use App\Form\MemberMajorType;
 use App\Form\MemberMinorAdminType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
+use App\Service\ParamGlobalService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -161,8 +163,18 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService)
+    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamGlobalService $paramGlobalService)
     {
+        //Disabled new member by deadline, null if not
+        if (!$paramGlobalService->getParam('new_member_deadline') && !(new \DateTime($paramGlobalService->getParam('new_member_deadline')) > new \DateTime())) {
+            return $this->handleView($this->view([
+                'error' => [
+                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramGlobalService->getParam('new_member_deadline')))->format('d/m/Y')]),
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN));
+        }
+        
         $member = new Member();
         $this->denyAccessUnlessGranted(Constants::CREATE, $member,  $translator->trans('deny_create_member'));
 
@@ -246,8 +258,18 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, PriceService $priceService, int $id)
+    public function putMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamGlobalService $paramGlobalService, int $id)
     {
+        //Disabled edit member by deadline, null if not
+        if ($paramGlobalService->getParam('new_member_deadline') && !(new \DateTime($paramGlobalService->getParam('new_member_deadline')) > new \DateTime())) {
+            return $this->handleView($this->view([
+                'error' => [
+                    'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramGlobalService->getParam('new_member_deadline')))->format('d/m/Y')]),
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN));
+        }
+
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
         if (!$member) {
