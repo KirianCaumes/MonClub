@@ -1,11 +1,11 @@
 import React from 'react'
 import { Separator, Text, MessageBarType } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { editMember } from '../../../redux/actions/member'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { editMember } from 'redux/actions/member'
 import { Table } from 'react-bulma-components'
-import { dateToCleanDateString, getYear, getAge } from '../../../helper/date'
-import request from '../../../helper/request'
+import { dateToCleanDateString, getYear, getAge } from 'helper/date'
+import request from 'helper/request'
 
 class _MembersMeSummary extends React.Component {
     constructor(props) {

@@ -21,9 +21,9 @@ export function isMajor(birthdate) {
     return Math.abs(new Date(Date.now() - (new Date(birthdate)).getTime()).getUTCFullYear() - 1970) >= 18
 }
 
-//Convert date (string) to be displayed in string : string
+//Convert date (object) to be displayed in string : string
 export function dateToCleanDateString(date) {
-    return date ?
+    return date instanceof Date && !isNaN(date) ?
         date
             .toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
             .toLowerCase()
@@ -32,9 +32,9 @@ export function dateToCleanDateString(date) {
             .join(' ')
         : ''
 }
-//Convert date (string) to be displayed in string : string
-export function dateToCleanDateTimmeString(date) {
-    return date ?
+//Convert date (object) to be displayed in string : string
+export function dateToCleanDateTimeString(date) {
+    return date instanceof Date && !isNaN(date)  ?
         date
             .toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
             .toLowerCase()

@@ -1,4 +1,4 @@
-import store from "../redux/store";
+import store from "redux/store";
 
 //Function to get step label by user infos
 export default function getWf (user) {

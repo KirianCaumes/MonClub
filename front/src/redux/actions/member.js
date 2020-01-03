@@ -1,7 +1,7 @@
 import {
     EDIT_MEMBER,
     SET_MEMBERS,
-} from "../_action-types"
+} from "redux/_action-types"
 
 export function setMembers(members) {
     return { type: SET_MEMBERS, payload: members }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Dialog, DialogFooter, PrimaryButton, DefaultButton, DialogType } from 'office-ui-fabric-react'
-import { setModal } from '../redux/actions/common'
+import { setModal } from 'redux/actions/common'
 import { connect } from 'react-redux'
 
 class _Modal extends React.Component {

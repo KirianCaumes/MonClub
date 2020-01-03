@@ -1,6 +1,6 @@
 import {
     AUTHENTICATE, INIT,
-} from "../_action-types"
+} from "redux/_action-types"
 
 const initialState = {
     isAuthenticated: !!localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_KEY),

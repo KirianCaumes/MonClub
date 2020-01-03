@@ -1,7 +1,7 @@
 import {
     AUTHENTICATE,
     INIT
-} from "../_action-types"
+} from "redux/_action-types"
 
 export function signout() {
     localStorage.removeItem(process.env.REACT_APP_LOCAL_STORAGE_KEY)

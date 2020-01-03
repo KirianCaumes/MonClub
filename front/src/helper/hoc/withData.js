@@ -1,8 +1,8 @@
 import React from 'react'
-import Loader from '../../component/loader'
+import Loader from 'component/loader'
 import { connect } from 'react-redux'
 import { MessageBarType } from 'office-ui-fabric-react'
-import { setMessageBar, setCommand } from '../../redux/actions/common'
+import { setMessageBar, setCommand } from 'redux/actions/common'
 
 export default function withData(WrappedComponent, dataFunc) {
     class _WithData extends React.Component {

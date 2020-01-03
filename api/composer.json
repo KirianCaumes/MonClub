@@ -1,4 +1,6 @@
 {
+    "name": "monclub_api",
+    "description": "monclub_api",
     "type": "project",
     "license": "proprietary",
     "require": {

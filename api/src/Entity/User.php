@@ -30,7 +30,7 @@ class User extends BaseUser
 
     /**
      * @RollerworksPassword\Blacklist(message="password_blacklisted")
-     * @RollerworksPassword\PasswordStrength(minLength=7, minStrength=3)
+     * @RollerworksPassword\PasswordStrength(minLength=10, minStrength=4)
      */
     protected $plainPassword;
 

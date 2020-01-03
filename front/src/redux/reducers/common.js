@@ -5,7 +5,7 @@ import {
     SET_BREADCRUMB,
     SET_COMMAND,
     SET_MODAL
-} from "../_action-types"
+} from "redux/_action-types"
 
 const initialState = {
     selectedKeyURL: '/',

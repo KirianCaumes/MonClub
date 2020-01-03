@@ -2,7 +2,7 @@ import React from 'react'
 import { } from 'react-bulma-components'
 import { Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 
 class _Constants extends React.Component {
     constructor(props) {

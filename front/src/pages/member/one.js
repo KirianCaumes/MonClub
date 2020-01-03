@@ -2,14 +2,14 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar, setModal } from '../../redux/actions/common'
-import { history } from '../../helper/history'
-import request from '../../helper/request'
-import Workflow from '../../component/workflow'
-import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimmeString } from '../../helper/date'
-import Loader from '../../component/loader'
-import FileInput from '../../component/fileInput'
-import { dlBlob, openBlob } from '../../helper/blob'
+import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
+import { history } from 'helper/history'
+import request from 'helper/request'
+import Workflow from 'component/workflow'
+import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimeString } from 'helper/date'
+import Loader from 'component/loader'
+import FileInput from 'component/fileInput'
+import { dlBlob, openBlob } from 'helper/blob'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -368,7 +368,7 @@ class _MemberOne extends React.Component {
                         <Columns.Column>
                             <Label disabled={!readOnly}>Date d'inscription</Label>
                             <TextField
-                                defaultValue={data?.creation_datetime ? dateToCleanDateTimmeString(new Date(data.creation_datetime)) : ''}
+                                defaultValue={dateToCleanDateTimeString(new Date(data.creation_datetime))}
                                 borderless={true}
                                 readOnly={true}
                             />

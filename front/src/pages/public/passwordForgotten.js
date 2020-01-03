@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from "react-redux"
 import { Label, TextField, PrimaryButton, Text, MessageBarType, Spinner, SpinnerSize } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
-import { signout } from '../../redux/actions/user'
+import { signout } from 'redux/actions/user'
 import PublicLayout from './_publicLayout'
-import request from '../../helper/request'
-import { history } from '../../helper/history'
-import { setMessageBar } from '../../redux/actions/common'
+import request from 'helper/request'
+import { history } from 'helper/history'
+import { setMessageBar } from 'redux/actions/common'
 
 class _PasswordForgotten extends React.Component {
     constructor(props) {

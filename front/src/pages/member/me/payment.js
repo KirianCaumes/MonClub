@@ -1,11 +1,11 @@
 import React from 'react'
 import { Separator, Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { editMember, setMembers } from '../../../redux/actions/member'
-import request from '../../../helper/request'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { editMember, setMembers } from 'redux/actions/member'
+import request from 'helper/request'
 import { Table } from 'react-bulma-components'
-import Loader from '../../../component/loader'
+import Loader from 'component/loader'
 
 class _MembersMePayment extends React.Component {
     constructor(props) {

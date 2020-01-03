@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand } from '../redux/actions/common'
+import { setBreadcrumb, setCommand } from 'redux/actions/common'
 
 class _Error extends React.Component {
     constructor(props) {

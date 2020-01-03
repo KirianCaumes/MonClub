@@ -5,7 +5,7 @@ import {
     SET_COMMAND,
     IS_LOADING,
     SET_MODAL,
-} from "../_action-types"
+} from "redux/_action-types"
 
 import { MessageBarType } from "office-ui-fabric-react"
 

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Separator, Label, Text, ChoiceGroup, Link, TextField } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { isMajor } from '../../../helper/date'
-import { editMember } from '../../../redux/actions/member'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { isMajor } from 'helper/date'
+import { editMember } from 'redux/actions/member'
 
 class _MembersMeAutorizations extends React.Component {
     constructor(props) {

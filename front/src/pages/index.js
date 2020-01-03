@@ -1,8 +1,10 @@
 import React from 'react'
 import { Hero, Container, Heading, Columns } from 'react-bulma-components'
-import { Text, Icon } from 'office-ui-fabric-react'
+import { Text, Icon, getTheme } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand } from '../redux/actions/common'
+import { setBreadcrumb, setCommand } from 'redux/actions/common'
+import { Bar } from 'react-chartjs-2'
+import { stringToCleanString } from 'helper/date'
 
 class _Index extends React.Component {
     constructor(props) {
@@ -22,7 +24,7 @@ class _Index extends React.Component {
                 <Hero color="info">
                     <Hero.Body>
                         <Container className="flex-row">
-                            <img src={require('../asset/img/logo.png')} alt="THBC" className="is-hidden-touch" />
+                            <img src={require('asset/img/logo.png')} alt="THBC" className="is-hidden-touch" />
                             <Heading className="is-capitalized flex-col">
                                 Bienvenue : {this.props.me?.username?.split('@')?.[0]}
                             </Heading>
@@ -98,6 +100,40 @@ class _Index extends React.Component {
                         </Columns>
                     </Columns.Column>
                 </Columns>
+                {false &&
+                    <>
+                        <div className="card">
+                            <Text variant="large" className="has-text-centered" block>Activité sur les 30 derniers jours</Text>
+                            <br />
+                            <Bar
+                                data={{
+                                    labels: (() => {
+                                        let data = []
+                                        let today = new Date()
+                                        for (let i = 0; i < 30; i++) data.push(stringToCleanString(new Date().setDate(today.getDate() - i)))
+                                        return data.reverse()
+                                    })(),
+                                    datasets: [
+                                        {
+                                            data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 100)),
+                                            backgroundColor: getTheme().palette.themeLight,
+                                            borderColor: getTheme().palette.themePrimary,
+                                            hoverBackgroundColor: getTheme().palette.themeTertiary,
+                                            hoverBorderColor: getTheme().palette.themePrimary,
+                                            borderWidth: 0.5
+                                        }
+                                    ]
+                                }}
+                                legend={{
+                                    display: false
+                                }}
+                            />
+                        </div>
+
+                        <br />
+                    </>
+                }
+
                 <div className="card has-text-centered">
                     <p>En cas de soucis, veuillez contacter le club : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></p>
                 </div>

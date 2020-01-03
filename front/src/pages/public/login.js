@@ -1,12 +1,12 @@
 import React from 'react'
-import { signout, signin } from "../../redux/actions/user"
+import { signout, signin } from "redux/actions/user"
 import { connect } from "react-redux"
 import { Label, TextField, PrimaryButton, Text, MessageBarType, SpinnerSize, Spinner } from 'office-ui-fabric-react'
 import { Link } from 'react-router-dom'
 import PublicLayout from './_publicLayout'
-import request from '../../helper/request'
-import { setMessageBar } from '../../redux/actions/common'
-import { history } from '../../helper/history'
+import request from 'helper/request'
+import { setMessageBar } from 'redux/actions/common'
+import { history } from 'helper/history'
 
 class _Login extends React.Component {
     constructor(props) {

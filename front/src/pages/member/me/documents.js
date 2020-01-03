@@ -1,12 +1,12 @@
 import React from 'react'
 import { Separator, Label, Text, MessageBarType } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { Columns } from 'react-bulma-components'
-import FileInput from '../../../component/fileInput'
-import request from '../../../helper/request'
-import { dlBlob, openBlob } from '../../../helper/blob'
-import { editMember } from '../../../redux/actions/member'
+import FileInput from 'component/fileInput'
+import request from 'helper/request'
+import { dlBlob, openBlob } from 'helper/blob'
+import { editMember } from 'redux/actions/member'
 
 class _MembersMeDocuments extends React.Component {
     constructor(props) {

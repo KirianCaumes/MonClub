@@ -2,10 +2,10 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Label, TextField, MessageBarType, Dropdown } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar, setLoading } from '../../redux/actions/common'
-import { history } from '../../helper/history'
-import request from '../../helper/request'
-import Loader from '../../component/loader'
+import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
+import { history } from 'helper/history'
+import request from 'helper/request'
+import Loader from 'component/loader'
 
 class _UserOne extends React.Component {
     constructor(props) {

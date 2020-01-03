@@ -173,6 +173,15 @@
             "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "maba/dependency-injection-extra": {
+        "version": "1.0.1"
+    },
+    "maba/gentle-force": {
+        "version": "0.3.0"
+    },
+    "maba/gentle-force-bundle": {
+        "version": "0.5.4"
+    },
     "monolog/monolog": {
         "version": "1.25.3"
     },
@@ -208,6 +217,9 @@
     },
     "php": {
         "version": "7.3"
+    },
+    "predis/predis": {
+        "version": "v1.1.1"
     },
     "psr/cache": {
         "version": "1.0.1"

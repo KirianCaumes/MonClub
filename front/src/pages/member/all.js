@@ -2,12 +2,12 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Icon, ShimmeredDetailsList, MessageBarType, SelectionMode, Separator, TextField, DefaultButton, Label, Dropdown, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
-import { history } from '../../helper/history'
-import request from '../../helper/request'
-import getWf from '../../helper/getStepWf'
-import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from '../../helper/constants'
-import ParentPage from '../_parentPage'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { history } from 'helper/history'
+import request from 'helper/request'
+import getWf from 'helper/getStepWf'
+import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
+import ParentPage from 'pages/_parentPage'
 
 class _MembersAll extends ParentPage {
     constructor(props) {

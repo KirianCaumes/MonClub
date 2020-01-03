@@ -2,7 +2,7 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { connect } from "react-redux"
 import { Text, MessageBar } from 'office-ui-fabric-react'
-import { setMessageBar } from '../../redux/actions/common'
+import { setMessageBar } from 'redux/actions/common'
 
 class _PublicLayout extends React.Component {
     render() {
@@ -14,7 +14,7 @@ class _PublicLayout extends React.Component {
                     <Columns.Column>
                         <div className="flex-col">
                             <div className="card has-text-centered">
-                                <img src={require('../../asset/img/logo.png')} alt="THBC" />
+                                <img src={require('asset/img/logo.png')} alt="THBC" />
                                 <br />
                                 <Text variant="xxLarge" block>
                                     Mon Club - thouarehbc.fr

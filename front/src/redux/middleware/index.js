@@ -1,5 +1,5 @@
-import { } from "../_action-types"
-import { } from '../actions/common'
+import { } from "redux/_action-types"
+import { } from 'redux/actions/common'
 
 export function forbiddenWordsMiddleware({ dispatch }) {
     return function (next) {

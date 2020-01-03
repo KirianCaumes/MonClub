@@ -2,9 +2,9 @@ import React from 'react'
 import { Columns } from 'react-bulma-components'
 import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../../redux/actions/common'
-import { stringToCleanString, stringToDate, isMajor } from '../../../helper/date'
-import { editMember } from '../../../redux/actions/member'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
+import { editMember } from 'redux/actions/member'
 
 class _MembersMeInformations extends React.Component {
     constructor(props) {

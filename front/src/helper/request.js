@@ -1,5 +1,5 @@
-import store from '../redux/store/index.js'
-import { signout } from '../redux/actions/user.js'
+import store from 'redux/store/index.js'
+import { signout } from 'redux/actions/user.js'
 import { dateToString } from './date.js';
 
 

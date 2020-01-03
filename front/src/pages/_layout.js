@@ -1,10 +1,10 @@
 import React from 'react'
 import { Breadcrumb, MessageBar, CommandBar, Icon, Nav } from 'office-ui-fabric-react'
-import Header from '../component/layout/header';
-import { setUrl, setMessageBar } from '../redux/actions/common'
+import Header from 'component/layout/header';
+import { setUrl, setMessageBar } from 'redux/actions/common'
 import { connect } from "react-redux"
-import { history } from '../helper/history'
-import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from '../helper/constants';
+import { history } from 'helper/history'
+import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants';
 
 class _Layout extends React.Component {
     constructor(props) {

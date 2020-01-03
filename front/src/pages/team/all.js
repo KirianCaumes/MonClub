@@ -2,10 +2,10 @@ import React from 'react'
 import { } from 'react-bulma-components'
 import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
-import { setBreadcrumb, setCommand, setMessageBar } from '../../redux/actions/common'
-import { history } from '../../helper/history'
-import request from '../../helper/request'
-import ParentPage from '../_parentPage'
+import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
+import { history } from 'helper/history'
+import request from 'helper/request'
+import ParentPage from 'pages/_parentPage'
 
 class _TeamsAll extends ParentPage {
     constructor(props) {

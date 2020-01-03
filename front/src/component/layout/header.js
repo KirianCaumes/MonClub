@@ -1,7 +1,8 @@
 import React from 'react'
 import { Navbar } from 'react-bulma-components'
 import { Icon, Panel, Label, TextField } from 'office-ui-fabric-react'
-import { history } from '../../helper/history'
+import { history } from 'helper/history'
+import { dateToCleanDateTimeString } from 'helper/date'
 
 class Header extends React.Component {
     constructor(props) {
@@ -27,7 +28,7 @@ class Header extends React.Component {
                             renderAs="a"
                             onClick={() => history.push('/')}
                         >
-                            <img src={require('../../asset/img/logo.png')} alt="THBC" />
+                            <img src={require('asset/img/logo.png')} alt="THBC" />
                             <span> Mon Club</span>
                         </Navbar.Item>
                         <Navbar.Burger onClick={() => this.setState({ active: !this.state.active })} />
@@ -102,14 +103,14 @@ class Header extends React.Component {
                     <br />
                     <Label>Date de création</Label>
                     <TextField
-                        value={me?.creation_datetime ? (new Date(me?.creation_datetime)).toLocaleString('fr-FR') : ''}
+                        value={dateToCleanDateTimeString(new Date(me?.creation_datetime))}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
                     <Label>Dernière connexion</Label>
                     <TextField
-                        value={me?.last_login ? (new Date(me?.last_login)).toLocaleString('fr-FR') : ''}
+                        value={dateToCleanDateTimeString(new Date(me?.creation_datetime))}
                         borderless={true}
                         readOnly={true}
                     />
