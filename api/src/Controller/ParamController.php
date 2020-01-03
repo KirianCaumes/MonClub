@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ActivityHistory;
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamGlobal;
 use App\Entity\ParamPaymentSolution;
@@ -12,6 +13,8 @@ use App\Entity\ParamSeason;
 use App\Entity\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
+use App\Form\ActivityHistoricType;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -31,6 +34,17 @@ class ParamController extends FOSRestController
      */
     public function getParam()
     {
+        //Create new historic entry
+        $activityHistoric = new ActivityHistory();
+        $form = $this->createForm(ActivityHistoricType::class, $activityHistoric);
+        $form->submit(['date' => date('Y-m-d'), 'user' => $this->getUser()->getId()]);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($activityHistoric);
+            $em->flush();
+        }
+
         return $this->handleView($this->view([
             'teams' => $this->getDoctrine()->getRepository(Team::class)->findall(),
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),

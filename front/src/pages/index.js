@@ -4,7 +4,7 @@ import { Text, Icon, getTheme } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from 'redux/actions/common'
 import { Bar } from 'react-chartjs-2'
-import { stringToCleanString } from 'helper/date'
+import { stringToShortCleanString } from 'helper/date'
 
 class _Index extends React.Component {
     constructor(props) {
@@ -100,34 +100,35 @@ class _Index extends React.Component {
                         </Columns>
                     </Columns.Column>
                 </Columns>
-                {false &&
+                {this.props?.data?.activity_historic?.length > 0 &&
                     <>
-                        <div className="card">
+                        <div className="card graph">
                             <Text variant="large" className="has-text-centered" block>Activité sur les 30 derniers jours</Text>
                             <br />
-                            <Bar
-                                data={{
-                                    labels: (() => {
-                                        let data = []
-                                        let today = new Date()
-                                        for (let i = 0; i < 30; i++) data.push(stringToCleanString(new Date().setDate(today.getDate() - i)))
-                                        return data.reverse()
-                                    })(),
-                                    datasets: [
-                                        {
-                                            data: Array.from({ length: 30 }, () => Math.floor(Math.random() * 100)),
-                                            backgroundColor: getTheme().palette.themeLight,
-                                            borderColor: getTheme().palette.themePrimary,
-                                            hoverBackgroundColor: getTheme().palette.themeTertiary,
-                                            hoverBorderColor: getTheme().palette.themePrimary,
-                                            borderWidth: 0.5
-                                        }
-                                    ]
-                                }}
-                                legend={{
-                                    display: false
-                                }}
-                            />
+                            <div>
+                                <Bar
+                                    data={{
+                                        labels: this.props?.data?.activity_historic.map(x => stringToShortCleanString(new Date(x.date))),
+                                        datasets: [
+                                            {
+                                                data: this.props?.data?.activity_historic.map(x => x.sum),
+                                                backgroundColor: getTheme().palette.themeLight,
+                                                borderColor: getTheme().palette.themePrimary,
+                                                hoverBackgroundColor: getTheme().palette.themeTertiary,
+                                                hoverBorderColor: getTheme().palette.themePrimary,
+                                                borderWidth: 0.5
+                                            }
+                                        ]
+                                    }}
+                                    legend={{
+                                        display: false
+                                    }}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false
+                                    }}
+                                />
+                            </div>
                         </div>
 
                         <br />

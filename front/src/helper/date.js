@@ -3,6 +3,11 @@ export function stringToCleanString(str) {
     return str ? (new Date(str)).toLocaleString().slice(0, 10) : ''
 }
 
+//Convert date (string) to be displayed in string : "DD/MM"
+export function stringToShortCleanString(str) {
+    return str ? (new Date(str)).toLocaleString().slice(0, 5) : ''
+}
+
 //Convert date (string : DD/MM/YYYY) to date (object) : Date
 export function stringToDate(str) {
     str.replace('_', '')

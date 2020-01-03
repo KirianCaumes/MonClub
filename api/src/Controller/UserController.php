@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ActivityHistory;
 use App\Entity\Member;
 use App\Entity\ParamGlobal;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,8 +46,27 @@ class UserController extends FOSRestController
      */
     public function getInfos(Security $security, ParamService $paramService)
     {
+        $dateRes = [];
+        if ($security->isGranted('ROLE_ADMIN')) {
+            //Generate 30 last days
+            $datesIntval = [];
+            for ($i = 0; $i < 30; $i++) array_push($datesIntval, date('Y-m-d', strtotime('today - ' . $i . ' days')));
+            $datesIntval = array_reverse($datesIntval);
+    
+            $datesDb = $this->getDoctrine()->getRepository(ActivityHistory::class)->findCountByDate(); //Get dates historic from db
+            //Bind res from db to each days
+            foreach ($datesIntval as $date) {
+                $index = array_search(new \DateTime($date), array_column($datesDb, 'date'));
+                array_push($dateRes, [
+                    'date' => $date,
+                    'sum' => $index !== false ? intval($datesDb[$index]['sum']) : 0
+                ]);
+            }
+        }
+
         return $this->handleView($this->view([
             'text' => $security->isGranted('ROLE_ADMIN') ? $paramService->getParam('text_infos_admin') : $paramService->getParam('text_infos_user'),
+            'activity_historic' => $dateRes,
             'infos' => [
                 'users' => $security->isGranted('ROLE_ADMIN') ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
                 'members' => $security->isGranted('ROLE_ADMIN') ?
