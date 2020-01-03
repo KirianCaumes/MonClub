@@ -1,19 +1,44 @@
+
 import React from 'react'
-import { BaseComponent } from "@uifabric/utilities"
 import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text } from 'office-ui-fabric-react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-class _FileInput extends BaseComponent {
-    constructor(props) {
-        super(props)
+export default class FileInput extends React.Component {
+    static propTypes = {
+        /** Error message to be displayed */ 
+        errorMessage: PropTypes.string,
+        /** Is already a file ? */ 
+        isFile: PropTypes.bool,
+        /** Is readonly ? */ 
+        read: PropTypes.bool,
+        /** File name ? */ 
+        fileName: PropTypes.string,
+        /** Callback to download button */ 
+        onDownload: PropTypes.func,
+        /** Callback to open button */ 
+        onOpen: PropTypes.func,
+        /** Callback to upload button */ 
+        onUpload: PropTypes.func,
+        /** Callback to delete button */ 
+        onDelete: PropTypes.func,
+    }
 
-        this.state = {
-            isUploading: false,
-            isDeleteing: false,
-            isDownloading: false,
-            showDialog: false
-        }
+    static defaultProps = {
+        errorMessage: null,
+        isFile: false,
+        read: true,
+        fileName: null,
+        onDownload: () => { return new Promise() },
+        onOpen: () => { return new Promise() },
+        onUpload: () => { return new Promise() },
+        onDelete: () => { return new Promise() }
+    }
+
+    state = {
+        isUploading: false,
+        isDeleteing: false,
+        isDownloading: false,
+        showDialog: false
     }
 
     render() {
@@ -129,14 +154,3 @@ class _FileInput extends BaseComponent {
         }
     }
 }
-
-const mapDispatchToProps = dispatch => {
-    return {}
-}
-
-const mapStateToProps = state => {
-    return {}
-}
-const FileInput = connect(mapStateToProps, mapDispatchToProps)(_FileInput)
-
-export default FileInput
