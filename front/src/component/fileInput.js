@@ -28,10 +28,10 @@ export default class FileInput extends React.Component {
         isFile: false,
         read: true,
         fileName: null,
-        onDownload: () => { return new Promise() },
-        onOpen: () => { return new Promise() },
-        onUpload: () => { return new Promise() },
-        onDelete: () => { return new Promise() }
+        onDownload: () => { return Promise.resolve() },
+        onOpen: () => { return Promise.resolve() },
+        onUpload: () => { return Promise.resolve() },
+        onDelete: () => { return Promise.resolve() }
     }
 
     state = {

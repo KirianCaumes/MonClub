@@ -765,7 +765,7 @@ class _MemberOne extends React.Component {
                             <FileInput
                                 read={readOnly}
                                 errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
-                                isFile={data?.documents?.find(doc => doc?.category?.id === 1)?.document}
+                                isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
                                 fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                                 onDownload={() => {
                                     return request.getDocument(this.props.match?.params?.id, 1)
@@ -806,7 +806,7 @@ class _MemberOne extends React.Component {
                             <Label>Attestation</Label>
                             <FileInput
                                 read={true}
-                                isFile={readOnly}
+                                isFile={!!readOnly}
                                 onDownload={() => {
                                     return request.getAttestation(this.props.match?.params?.id)
                                         .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
@@ -828,7 +828,7 @@ class _MemberOne extends React.Component {
                                     <FileInput                                  
                                         read={readOnly}
                                         errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
-                                        isFile={data?.documents?.find(doc => doc?.category?.id === 2)?.document}
+                                        isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                         fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                         onDownload={() => {
                                             return request.getDocument(this.props.match?.params?.id, 2)

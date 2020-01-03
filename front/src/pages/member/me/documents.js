@@ -37,7 +37,7 @@ class _MembersMeDocuments extends React.Component {
                             // read={false}
                             read={readOnly}
                             errorMessage={errorDocument?.documentFile1?.errors?.[0] || errorField?.['1']?.[0]}
-                            isFile={member?.documents?.find(doc => doc?.category?.id === 1)?.document}
+                            isFile={!!member?.documents?.find(doc => doc?.category?.id === 1)?.document}
                             fileName={member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                             onDownload={() => {
                                 return request.getDocument(member.id, 1)
@@ -83,7 +83,7 @@ class _MembersMeDocuments extends React.Component {
                                 // read={false}
                                 read={readOnly}
                                 errorMessage={errorDocument?.documentFile2?.errors?.[0] || errorField?.['2']?.[0]}
-                                isFile={member?.documents?.find(doc => doc?.category?.id === 2)?.document}
+                                isFile={!!member?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                 fileName={member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                 onDownload={() => {
                                     return request.getDocument(member.id, 2)
@@ -129,7 +129,7 @@ class _MembersMeDocuments extends React.Component {
                                 <Label>Attestation paiement cotisation</Label>
                                 <FileInput
                                     read={true}
-                                    isFile={readOnly}
+                                    isFile={!!readOnly}
                                     onDownload={() => {
                                         return request.getAttestation(member?.id)
                                             .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))

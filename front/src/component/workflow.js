@@ -1,11 +1,17 @@
 import React from 'react'
 import { Icon } from 'office-ui-fabric-react'
+import PropTypes from 'prop-types'
 
 export default class Workflow extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {}
+    static propTypes = {
+        /** Data to display */ 
+        data: PropTypes.arrayOf(PropTypes.object),
     }
+
+    static defaultProps = {
+        data: [],
+    }
+
 
     render() {
         if (!this.props?.data || !this.props?.data?.length) return <p>Impossible d'afficher le workflow...</p>
