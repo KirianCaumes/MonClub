@@ -38,22 +38,24 @@ class MailCommand extends Command
     {
         $members = $this->em->getRepository(Member::class)->findMembersOngoing($this->paramService->getCurrentSeason());
         $usersToSend = [];
+
         foreach ($members as $member) {
-            if (!in_array($member->getUser(), $usersToSend)) array_push($usersToSend, $member->getUser());
-            // switch ($member->getCreationDatetime()->diff(new \DateTime())->format('%a')) {
-            //     case 15:
-            //         if (!in_array($member->getUser(), $usersToSend)) array_push($usersToSend, $member->getUser());
-            //         break;
-            //     case 45:
-            //         if (!in_array($member->getUser(), $usersToSend)) array_push($usersToSend, $member->getUser());
-            //         break;
-            //     default:
-            //         break;
-            // }
+            switch ($member->getCreationDatetime()->diff(new \DateTime())->format('%a')) {
+                case 15:
+                    if (!in_array($member->getUser(), $usersToSend)) array_push($usersToSend, $member->getUser());
+                    break;
+                case 45:
+                    if (!in_array($member->getUser(), $usersToSend)) array_push($usersToSend, $member->getUser());
+                    break;
+                default:
+                    break;
+            }
         }
+
         foreach ($usersToSend as $user) {
             $this->mailService->sendMemberReminder($user);
         }
+        
         $output->writeln(sizeof($usersToSend) . ' email(s) were sent.');
     }
 }
