@@ -339,7 +339,7 @@
 																	<tbody>
 																		<tr>
 																			<td>
-																				<a href="{% block url %}#{% endblock %}" target="_blank">
+																				<a target="_blank" href={% block url %}#{% endblock %}>
 																					{% block urlText %}En savoir plus
 																					{% endblock %}
 																				</a>
@@ -353,7 +353,9 @@
 												</table>
 												<p>- L'équipe du Thouaré Handball Club</p>
 												<div>
+												<a target="_blank" href="https://thouarehbc.fr">
 													<img class="img-responsive" src="https://thouarehbc.fr/wp-content/uploads/2019/08/thbc-thouare-handball-club-logo-borderless.png"/>
+												</a>
 												</div>
 											</td>
 										</tr>
@@ -372,7 +374,7 @@
 									<td class="content-block">
 										<span class="apple-link">Copyright &copy;
 											{{ "now"|date("Y") }}
-											- Monclub.thouarehbc.fr</span>
+											- monclub.thouarehbc.fr</span>
 									</td>
 								</tr>
 								<tr>

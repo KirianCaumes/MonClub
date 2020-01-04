@@ -26,7 +26,7 @@ class _PasswordNew extends React.Component {
         ev.preventDefault()
 
         this.setState({ isLoading: true }, () => {
-            request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken?.replace(/%0A/gi, '')?.replace(/\n/gi, '') })
+            request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken })
                 .then(res => {
                     history.push('/login')
                     this.props.setMessageBar(true, MessageBarType.success, 'Votre mot de passe à bien été modifié.')

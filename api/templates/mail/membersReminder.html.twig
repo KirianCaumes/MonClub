@@ -1,0 +1,20 @@
+{% extends "mail/_base.html.twig" %}
+
+{% block preheader %}
+{% endblock %}
+
+{% block textOne %}
+	Il semblerait que l'inscription d'un ou plusieurs membre(s) associé(s) à votre compte ne soit pas terminée.
+{% endblock %}
+
+{% block textTwo %}
+	Connectez-vous sur votre espace pour finaliser l'inscription afin de pouvoir participer aux entraînements et aux matchs du THBC.
+{% endblock %}
+
+{% block url %}
+	{{baseUrl}}
+{% endblock %}
+
+{% block urlText %}
+	Terminer mon inscription
+{% endblock %}

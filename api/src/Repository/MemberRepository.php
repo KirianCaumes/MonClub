@@ -52,17 +52,13 @@ class MemberRepository extends ServiceEntityRepository
     /**
      * @return Member[] Returns an array of Member objects
      */
-    // public function findMembersByFields($name, $stepId, $teamsId)
-    // {
-    //     $query = $this->getEntityManager()->getConnection()->prepare('
-    //         SELECT * 
-    //         FROM mc_member
-    //         WHERE 
-    //             (firstname LIKE :name OR lastname LIKE :name) AND 
-    //             id_team IN (:teamsId)
-    //     ');
-    //      $query->execute(['name'=> '%' . $name . '%', 'teamsId'=> $teamsId]);
-
-    //      return $query->fetchAll();
-    // }
+    public function findMembersOngoing($currentSeason)
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.season = :currentSeason')
+            ->andWhere('m.is_payed = false OR m.is_document_complete = false')
+            ->setParameter('currentSeason', $currentSeason)
+            ->getQuery()
+            ->getResult();
+    }
 }
