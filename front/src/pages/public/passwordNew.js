@@ -12,7 +12,9 @@ class _PasswordNew extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            plainPassword: ''
+            plainPassword: {},
+            isLoading: false,
+            errorField: [],
         }
     }
 
@@ -24,13 +26,13 @@ class _PasswordNew extends React.Component {
         ev.preventDefault()
 
         this.setState({ isLoading: true }, () => {
-            request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken })
+            request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken?.replace(/%0A/gi, '')?.replace(/\n/gi, '') })
                 .then(res => {
-                    this.props.setMessageBar(true, MessageBarType.success, 'Votre mot de passe à bien été modifié.')
                     history.push('/login')
+                    this.props.setMessageBar(true, MessageBarType.success, 'Votre mot de passe à bien été modifié.')
                 })
                 .catch(err => {
-                    this.setState({ isLoading: false })
+                    this.setState({ isLoading: false, errorField: err?.form?.children ? err.form.children : [] })
                     this.props.setMessageBar(true, MessageBarType.error, err)
                 })
         })
@@ -44,9 +46,22 @@ class _PasswordNew extends React.Component {
                     <TextField
                         placeholder="Votre mot de passe"
                         type="password"
-                        value={this.state.plainPassword}
-                        onChange={ev => this.setState({ plainPassword: ev.target.value })}
+                        value={this.state.plainPassword?.first}
+                        onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, first: ev.target.value } })}
                         iconProps={{ iconName: 'PasswordField' }}
+                        errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
+                        readOnly={this.state.isLoading}
+                        autoComplete="new-password"
+                    />
+                    <br />
+                    <Label>Confirmez le mot de passe</Label>
+                    <TextField
+                        placeholder="Votre mot de passe"
+                        type="password"
+                        value={this.state.plainPassword?.second}
+                        onChange={ev => this.setState({ plainPassword: { ...this.state.plainPassword, second: ev.target.value } })}
+                        iconProps={{ iconName: 'PasswordField' }}
+                        errorMessage={this.state.errorField.plainPassword?.children?.first?.errors?.[0]}
                         readOnly={this.state.isLoading}
                         autoComplete="new-password"
                     />

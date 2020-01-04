@@ -14,11 +14,6 @@ class _MembersMeDocuments extends React.Component {
         this.state = {
             errorDocument: {}
         }
-
-        this.choice = [
-            { key: 'true', text: 'Oui' },
-            { key: 'false', text: 'Non' },
-        ]
     }
 
     render() {

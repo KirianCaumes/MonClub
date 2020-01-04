@@ -13,7 +13,7 @@ class _Register extends React.Component {
         super(props)
         this.state = {
             username: '',
-            plainPassword: '',
+            plainPassword: {},
             isLoading: false,
             errorField: []
         }

@@ -1,6 +1,8 @@
 import store from 'redux/store/index.js'
 import { signout } from 'redux/actions/user.js'
 import { dateToString } from './date.js';
+import { setMessageBar } from 'redux/actions/common.js';
+import { MessageBarType } from 'office-ui-fabric-react';
 
 
 const
@@ -35,6 +37,7 @@ var getFetch = (path, options = {}) => {
                 switch (response.status) {
                     case 401:
                         store.dispatch(signout())
+                        store.dispatch(setMessageBar(true, MessageBarType.blocked, "Vous n'etes pas autorisé a effectuer cette action"))
                         break
                     default:
                         break

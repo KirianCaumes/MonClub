@@ -23,12 +23,13 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @Assert\NotBlank(message = "not_blank",)
+     * @Assert\NotBlank(message = "not_blank")
      * @Assert\Email(message = "invalid_email")
      */
     protected $username;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
      * @RollerworksPassword\Blacklist(message="password_blacklisted")
      * @RollerworksPassword\PasswordStrength(minLength=10, minStrength=4)
      */

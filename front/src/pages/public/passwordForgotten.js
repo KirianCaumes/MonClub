@@ -27,8 +27,8 @@ class _PasswordForgotten extends React.Component {
         this.setState({ isLoading: true }, () => {
             request.resetMail({ username: this.state.username })
                 .then(res => {
-                    this.props.setMessageBar(true, MessageBarType.success, 'Un email vient de vous être envoyé.')
                     history.push('/login')
+                    this.props.setMessageBar(true, MessageBarType.success, 'Un email vient de vous être envoyé.')
                 })
                 .catch(err => {
                     this.setState({ isLoading: false })

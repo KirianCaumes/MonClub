@@ -12,6 +12,7 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use App\Entity\User;
+use App\Form\UserNewPasswordType;
 use App\Form\UserType;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
@@ -127,10 +128,15 @@ class PublicController extends FOSRestController
             return $this->handleView($this->view(['message' => $translator->trans('reset_token_invalid')], Response::HTTP_BAD_REQUEST));
         }
 
-        $user->setPlainPassword($data['plainPassword']);
-        $userManager->updateUser($user, true);
+        $data = json_decode($request->getContent(), true);
+        $form = $this->createForm(UserNewPasswordType::class, $user);
+        $form->submit($data);
 
-        return $this->handleView($this->view([], Response::HTTP_OK));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userManager->updateUser($user, true);
+            return $this->handleView($this->view([], Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 
     /**

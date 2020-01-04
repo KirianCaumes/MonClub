@@ -130,8 +130,8 @@ class _App extends React.Component {
                     <Switch>
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
-                        <Route path="/motdepasse-oublie" component={PasswordForgotten} />
                         <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
+                        <Route path="/motdepasse-oublie" component={PasswordForgotten} />
                     </Switch>
                 </Router>
                 <Modal />

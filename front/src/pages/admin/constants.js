@@ -42,6 +42,14 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
+                            },
+                            {
+                                key: 'label_google_contact',
+                                name: 'Label Google Contact',
+                                fieldName: 'label_google_contact',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
                             }
                         ]}
                         selectionMode={SelectionMode.none}
@@ -143,6 +151,31 @@ class _Constants extends React.Component {
                                 maxWidth: 200,
                                 isResizable: true,
                                 onRender: el => <>{el}</>
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+
+                    <Label>Choix :</Label>
+                    <DetailsList
+                        items={param?.choices ?? []}
+                        columns={[
+                            {
+                                key: 'key',
+                                name: 'Clé',
+                                fieldName: 'key',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
+                            },                            
+                            {
+                                key: 'text',
+                                name: 'Texte',
+                                fieldName: 'text',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
                             }
                         ]}
                         selectionMode={SelectionMode.none}

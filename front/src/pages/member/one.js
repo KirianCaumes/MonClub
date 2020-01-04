@@ -21,11 +21,6 @@ class _MemberOne extends React.Component {
             workflow: [...props?.data?.workflow ?? []],
             errorField: {}
         }
-
-        this.choice = [
-            { key: 'true', text: 'Oui' },
-            { key: 'false', text: 'Non' },
-        ]
     }
 
     componentDidMount() {
@@ -151,7 +146,7 @@ class _MemberOne extends React.Component {
                                     <Columns.Column>
                                         <Dropdown
                                             selectedKey={data?.is_document_complete?.toString() ?? 'false'}
-                                            options={this.choice}
+                                            options={param?.choices}
                                             errorMessage={this.state.errorField?.is_document_complete?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_document_complete: JSON.parse(item.key) } })}
                                         />
@@ -160,7 +155,7 @@ class _MemberOne extends React.Component {
                                     <Columns.Column>
                                         <Dropdown
                                             selectedKey={data?.is_payed?.toString() ?? 'false'}
-                                            options={this.choice}
+                                            options={param?.choices}
                                             errorMessage={this.state.errorField?.is_payed?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_payed: JSON.parse(item.key) } })}
                                         />
@@ -168,7 +163,7 @@ class _MemberOne extends React.Component {
                                     <Columns.Column>
                                         <Dropdown
                                             selectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
-                                            options={this.choice}
+                                            options={param?.choices}
                                             errorMessage={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_check_gest_hand: JSON.parse(item.key) } })}
                                         />
@@ -176,7 +171,7 @@ class _MemberOne extends React.Component {
                                     <Columns.Column>
                                         <Dropdown
                                             selectedKey={data?.is_inscription_done?.toString() ?? 'false'}
-                                            options={this.choice}
+                                            options={param?.choices}
                                             errorMessage={this.state.errorField?.is_inscription_done?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_inscription_done: JSON.parse(item.key) } })}
                                         />
@@ -429,7 +424,7 @@ class _MemberOne extends React.Component {
                                     {
                                         readOnly ?
                                             <TextField
-                                                defaultValue={this.choice.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
+                                                defaultValue={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
                                                 errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
@@ -437,7 +432,7 @@ class _MemberOne extends React.Component {
                                             :
                                             <Dropdown
                                                 defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
-                                                options={this.choice}
+                                                options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
                                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
                                                 disabled={data?.is_reduced_price}
@@ -450,7 +445,7 @@ class _MemberOne extends React.Component {
                                     {
                                         readOnly ?
                                             <TextField
-                                                defaultValue={this.choice.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
+                                                defaultValue={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
                                                 errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
@@ -458,7 +453,7 @@ class _MemberOne extends React.Component {
                                             :
                                             <Dropdown
                                                 defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
-                                                options={this.choice}
+                                                options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
                                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
                                                 disabled={data?.is_non_competitive}
@@ -473,7 +468,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_transfer_needed?.errors?.[0]}
@@ -481,7 +476,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_transfer_needed?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
                                     />
@@ -633,7 +628,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
@@ -641,7 +636,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_evacuation_allow: JSON.parse(item.key) } })}
                                     />
@@ -653,7 +648,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_transport_allow?.errors?.[0]}
@@ -661,7 +656,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_transport_allow?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_transport_allow?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transport_allow: JSON.parse(item.key) } })}
                                     />
@@ -672,7 +667,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_image_allow?.errors?.[0]}
@@ -680,7 +675,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_image_allow?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_image_allow?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_image_allow: JSON.parse(item.key) } })}
                                     />
@@ -692,7 +687,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
@@ -700,7 +695,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
                                     />
@@ -714,7 +709,7 @@ class _MemberOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
@@ -722,7 +717,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_newsletter_allow: JSON.parse(item.key) } })}
                                     />
@@ -736,7 +731,7 @@ class _MemberOne extends React.Component {
                                     {
                                         readOnly ?
                                             <TextField
-                                                defaultValue={this.choice.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
+                                                defaultValue={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
                                                 errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
@@ -744,7 +739,7 @@ class _MemberOne extends React.Component {
                                             :
                                             <Dropdown
                                                 defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
-                                                options={this.choice}
+                                                options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
                                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
                                             />

@@ -9,11 +9,6 @@ class _MembersMeAutorizations extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
-
-        this.choice = [
-            { key: 'true', text: 'Oui' },
-            { key: 'false', text: 'Non' },
-        ]
     }
 
     render() {     

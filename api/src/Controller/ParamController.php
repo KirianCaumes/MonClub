@@ -51,6 +51,7 @@ class ParamController extends FOSRestController
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
             'roles' => ['ROLE_COACH', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
+            'choices' => [['key' => 'true', 'text' => 'Oui'], ['key' => 'false', 'text' => 'Non']],
             'price' => [
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),

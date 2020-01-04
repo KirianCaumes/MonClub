@@ -16,11 +16,6 @@ class _UserOne extends React.Component {
             data: { ...props?.data ?? {} },
             errorField: {}
         }
-
-        this.choice = [
-            { key: 'true', text: 'Oui' },
-            { key: 'false', text: 'Non' },
-        ]
     }
 
     componentDidMount() {
@@ -75,6 +70,7 @@ class _UserOne extends React.Component {
 
     render() {
         const { readOnly, data, isLoading } = this.state
+        const { param } = this.props
 
         if (isLoading) return <Loader />
 
@@ -124,7 +120,7 @@ class _UserOne extends React.Component {
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={this.choice.find(x => x.key === data?.enabled?.toString()).text ?? ''}
+                                        defaultValue={param?.choices.find(x => x.key === data?.enabled?.toString()).text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.enabled?.errors?.[0]}
@@ -132,7 +128,7 @@ class _UserOne extends React.Component {
                                     :
                                     <Dropdown
                                         defaultSelectedKey={data?.enabled?.toString() ?? 'false'}
-                                        options={this.choice}
+                                        options={param?.choices}
                                         errorMessage={this.state.errorField?.enabled?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, enabled: JSON.parse(item.key) } })}
                                     />
