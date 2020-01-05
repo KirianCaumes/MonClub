@@ -101,19 +101,28 @@ class _MembersMePayment extends React.Component {
                                 switch (optionSelectedKey) {
                                     case 1:
                                         return (
-                                            <PrimaryButton
-                                                text="Paypal"
-                                                iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
-                                                styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                                                onClick={() => this.pay()}
-                                                disabled={true}
-                                            />
+                                            <>
+                                                <Text>
+                                                    En appuyant sur le bouton suivant, je reconnais la véracité des informations saisie et m'engage à déposer mon paiement dans les plus bref délais.<br />
+                                                    Attention, après le payement vous ne pourrez plus modifier les informations saisis !<br />
+                                                    L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
+                                                </Text>
+                                                <br />
+                                                <br />
+                                                <PrimaryButton
+                                                    text="Paypal"
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                    onClick={() => this.pay()}
+                                                    disabled={true}
+                                                />
+                                            </>
                                         )
                                     case 2:
                                         return (
                                             <>
                                                 <Text>
-                                                    Veuillez déposer votre cheque et le(s) coupon(s) dans la boite au lettre du club (accompagné de votre nom), pres du parking de la salle de sport à l'adresse :<br />
+                                                    Veuillez déposer votre chèque à l'ordre du THBC et le(s) coupon(s) dans la boite aux lettres du club (accompagné de votre nom), près du parking de la salle de sport à l'adresse :<br />
                                                     <b>
                                                         Parc des Sports<br />
                                                         Route de la Barre<br />
@@ -123,8 +132,10 @@ class _MembersMePayment extends React.Component {
                                                 <br /><br />
                                                 <Text>
                                                     En appuyant sur le bouton suivant, je reconnais la véracité des informations saisie et m'engage à déposer mon paiement dans les plus bref délais.<br />
+                                                    Attention, après le payement vous ne pourrez plus modifier les informations saisis !<br />
                                                     L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
                                                 </Text>
+                                                <br />
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"
@@ -138,7 +149,7 @@ class _MembersMePayment extends React.Component {
                                         return (
                                             <>
                                                 <Text>
-                                                    Veuillez déposer votre cheque (accompagné de votre nom) dans la boite au lettre du club, pres du parking de la salle de sport à l'adresse :<br />
+                                                    Veuillez déposer votre chèque à l'ordre du THBC (accompagné de votre nom) dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br />
                                                     <b>
                                                         Parc des Sports<br />
                                                         Route de la Barre<br />
@@ -148,8 +159,10 @@ class _MembersMePayment extends React.Component {
                                                 <br /><br />
                                                 <Text>
                                                     En appuyant sur le bouton suivant, je reconnais la véracité des informations saisie et m'engage à déposer mon paiement dans les plus bref délais.<br />
+                                                    Attention, après le payement vous ne pourrez plus modifier les informations saisis !<br />
                                                     L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
                                                 </Text>
+                                                <br />
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"

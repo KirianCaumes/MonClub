@@ -12,7 +12,6 @@ import MembersMePayment from './me/payment'
 import { setMembers, editMember } from 'redux/actions/member'
 import MembersMeSummary from './me/summary'
 import MembersMeFinalisation from './me/finalisation'
-
 class _MembersMe extends React.Component {
     constructor(props) {
         super(props)
@@ -215,7 +214,7 @@ class _MembersMe extends React.Component {
                                                                         memberIndex={i}
                                                                     />
                                                                     <Separator /><br />
-                                                                    <div className="flex-row flex-space-between">
+                                                                    <div className="flex-row flex-space-between flex-wrap">
                                                                         <div />
                                                                         <PrimaryButton
                                                                             text="Documents"
@@ -254,7 +253,7 @@ class _MembersMe extends React.Component {
                                                                         errorField={errorField}
                                                                     />
                                                                     <Separator /><br />
-                                                                    <div className="flex-row flex-space-between">
+                                                                    <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
                                                                             text="Informations"
                                                                             iconProps={{ iconName: 'Previous' }}
@@ -296,7 +295,7 @@ class _MembersMe extends React.Component {
                                                                         memberIndex={i}
                                                                     />
                                                                     <Separator /><br />
-                                                                    <div className="flex-row flex-space-between">
+                                                                    <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
                                                                             text="Documents"
                                                                             iconProps={{ iconName: 'Previous' }}
@@ -338,7 +337,7 @@ class _MembersMe extends React.Component {
                                                         <>
                                                             <MembersMeFinalisation />
                                                             <Separator /><br />
-                                                            <div className="flex-row flex-space-between">
+                                                            <div className="flex-row flex-space-between flex-wrap">
                                                                 <DefaultButton
                                                                     text="Retour"
                                                                     iconProps={{ iconName: 'Previous' }}

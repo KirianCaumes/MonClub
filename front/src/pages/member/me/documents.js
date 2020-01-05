@@ -29,8 +29,8 @@ class _MembersMeDocuments extends React.Component {
                     <Columns.Column>
                         <Label required>Certificat médical</Label>
                         <FileInput
-                            // read={false}
-                            read={readOnly}
+                            // isRead={false}
+                            isRead={readOnly}
                             errorMessage={errorDocument?.documentFile1?.errors?.[0] || errorField?.['1']?.[0]}
                             isFile={!!member?.documents?.find(doc => doc?.category?.id === 1)?.document}
                             fileName={member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
@@ -38,7 +38,7 @@ class _MembersMeDocuments extends React.Component {
                                 return request.getDocument(member.id, 1)
                                     .then(file => dlBlob(file, member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                            }}                                 
+                            }}
                             onOpen={() => {
                                 return request.getDocument(member.id, 1)
                                     .then(file => openBlob(file, member?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
@@ -75,8 +75,8 @@ class _MembersMeDocuments extends React.Component {
                         <Columns.Column>
                             <Label required>Jusitificatif étudiant/chomage</Label>
                             <FileInput
-                                // read={false}
-                                read={readOnly}
+                                // isRead={false}
+                                isRead={readOnly}
                                 errorMessage={errorDocument?.documentFile2?.errors?.[0] || errorField?.['2']?.[0]}
                                 isFile={!!member?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                 fileName={member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
@@ -84,7 +84,7 @@ class _MembersMeDocuments extends React.Component {
                                     return request.getDocument(member.id, 2)
                                         .then(file => dlBlob(file, member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                }}                                    
+                                }}
                                 onOpen={() => {
                                     return request.getDocument(member.id, 2)
                                         .then(file => openBlob(file, member?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
@@ -118,28 +118,25 @@ class _MembersMeDocuments extends React.Component {
                         </Columns.Column>
                     }
                     <Columns.Column>
-                        {
-                            member.is_payed &&
-                            <>
-                                <Label>Attestation paiement cotisation</Label>
-                                <FileInput
-                                    read={true}
-                                    isFile={!!readOnly}
-                                    onDownload={() => {
-                                        return request.getAttestation(member?.id)
-                                            .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}                                    
-                                    onOpen={() => {
-                                        return request.getAttestation(member?.id)
-                                            .then(file => openBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                />
-                            </>
-                        }
+                        <Label>Attestation paiement cotisation</Label>
+                            <FileInput
+                                isRead={true}
+                                isFile={!!readOnly}
+                                isDisabled={!member.is_payed}
+                                tooltipContent={"Document téléchargeable une fois l'inscription finalisée."}
+                                onDownload={() => {
+                                    return request.getAttestation(member?.id)
+                                        .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                }}
+                                onOpen={() => {
+                                    return request.getAttestation(member?.id)
+                                        .then(file => openBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                }}
+                            />
                     </Columns.Column>
-                    <Columns.Column />
+                    {!member?.is_reduced_price && <Columns.Column />}
                 </Columns>
             </section >
         )

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -208,14 +208,20 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
                         <Columns.Column>
                             <Label required>Date de naissance</Label>
-                            <MaskedTextField
-                                value={stringToCleanString(data?.birthdate)}
-                                mask={"99/99/9999"}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                onBlur={ev => this.setState({ data: { ...this.state.data, birthdate: stringToDate(ev.target.value) } })}
-                                errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
-                            />
+                            <TooltipHost
+                                content="Format attendu: JJ/MM/AAAA"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <MaskedTextField
+                                    value={stringToCleanString(data?.birthdate)}
+                                    mask={"99/99/9999"}
+                                    borderless={readOnly}
+                                    readOnly={readOnly}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, birthdate: stringToDate(ev.target.value) } })}
+                                    errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
+                                />
+                            </TooltipHost>
                         </Columns.Column>
                         <Columns.Column>
                             <Label>Profession</Label>
@@ -758,7 +764,7 @@ class _MemberOne extends React.Component {
                         <Columns.Column>
                             <Label required>Certificat médical</Label>
                             <FileInput
-                                read={readOnly}
+                                isRead={readOnly}
                                 errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
                                 isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
                                 fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
@@ -800,7 +806,7 @@ class _MemberOne extends React.Component {
                         <Columns.Column>
                             <Label>Attestation</Label>
                             <FileInput
-                                read={true}
+                                isRead={true}
                                 isFile={!!readOnly}
                                 onDownload={() => {
                                     return request.getAttestation(this.props.match?.params?.id)
@@ -820,8 +826,8 @@ class _MemberOne extends React.Component {
                                 data?.is_reduced_price &&
                                 <>
                                     <Label required>Jusitificatif étudiant/chomage</Label>
-                                    <FileInput                                  
-                                        read={readOnly}
+                                    <FileInput
+                                        isRead={readOnly}
                                         errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
                                         isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
                                         fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}

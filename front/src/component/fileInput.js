@@ -1,33 +1,39 @@
 
 import React from 'react'
-import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text } from 'office-ui-fabric-react'
+import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
 export default class FileInput extends React.Component {
     static propTypes = {
-        /** Error message to be displayed */ 
+        /** Error message to be displayed */
         errorMessage: PropTypes.string,
-        /** Is already a file ? */ 
+        /** Is already a file ? */
         isFile: PropTypes.bool,
-        /** Is readonly ? */ 
-        read: PropTypes.bool,
-        /** File name ? */ 
+        /** Is readonly ? */
+        isRead: PropTypes.bool,
+        /** Is force disabled */
+        isDisabled: PropTypes.bool,
+        /** File name ? */
         fileName: PropTypes.string,
-        /** Callback to download button */ 
+        /** Tooltip text to display, null if none ? */
+        tooltipContent: PropTypes.string,        
+        /** Callback to download button */
         onDownload: PropTypes.func,
-        /** Callback to open button */ 
+        /** Callback to open button */
         onOpen: PropTypes.func,
-        /** Callback to upload button */ 
+        /** Callback to upload button */
         onUpload: PropTypes.func,
-        /** Callback to delete button */ 
+        /** Callback to delete button */
         onDelete: PropTypes.func,
     }
 
     static defaultProps = {
         errorMessage: null,
         isFile: false,
-        read: true,
+        isRead: true,
+        isDisabled: false,
         fileName: null,
+        tooltipContent: null,
         onDownload: () => { return Promise.resolve() },
         onOpen: () => { return Promise.resolve() },
         onUpload: () => { return Promise.resolve() },
@@ -43,34 +49,42 @@ export default class FileInput extends React.Component {
 
     render() {
         const { isDownloading, isUploading, isDeleteing, showDialog } = this.state
-        const { errorMessage, isFile, read, fileName } = this.props
-        if (read) {
+        const { errorMessage, isFile, isRead, fileName, isDisabled, tooltipContent } = this.props
+        if (isRead) {
             return (
                 <div style={{ ...this.props.style }}>
                     <div className="flex-row flex-start">
-                        <DefaultButton
-                            split
-                            text="Télécharger"
-                            iconProps={{ iconName: 'Download' }}
-                            disabled={!isFile || isDownloading}
-                            onClick={() => {
-                                this.setState({ isDownloading: true })
-                                this.props.onDownload().finally(() => this.setState({ isDownloading: false }))
-                            }}
-                            menuProps={{
-                                items: [
-                                    {
-                                        key: 'open',
-                                        text: 'Visionner',
-                                        iconProps: { iconName: 'OpenInNewTab' },
-                                        onClick: () => {
-                                            this.setState({ isDownloading: true })
-                                            this.props.onOpen().finally(() => this.setState({ isDownloading: false }))
+                        <TooltipHost
+                            content={tooltipContent}
+                            directionalHint={DirectionalHint.bottomCenter}
+                            delay={TooltipDelay.zero}
+                            
+                        >
+                            <DefaultButton
+                                split
+                                text="Télécharger"
+                                iconProps={{ iconName: 'Download' }}
+                                disabled={!isFile || isDownloading || isDisabled}
+                                onClick={() => {
+                                    this.setState({ isDownloading: true })
+                                    this.props.onDownload().finally(() => this.setState({ isDownloading: false }))
+                                }}
+                                menuProps={{
+                                    items: [
+                                        {
+                                            key: 'open',
+                                            text: 'Visionner',
+                                            disabled: isDisabled,
+                                            iconProps: { iconName: 'OpenInNewTab' },
+                                            onClick: () => {
+                                                this.setState({ isDownloading: true })
+                                                this.props.onOpen().finally(() => this.setState({ isDownloading: false }))
+                                            }
                                         }
-                                    }
-                                ]
-                            }}
-                        />
+                                    ]
+                                }}
+                            />
+                        </TooltipHost>
                         {isDownloading && <>&nbsp;&nbsp;<Spinner size={SpinnerSize.small} /></>}
 
                     </div>
@@ -88,11 +102,11 @@ export default class FileInput extends React.Component {
                                 this.uploadFile.value = null
                                 this.uploadFile.click()
                             }}
-                            disabled={isUploading || isFile}
+                            disabled={isUploading || isFile || isDisabled}
                         />
                         <IconButton
                             iconProps={{ iconName: 'Delete' }}
-                            disabled={isUploading || !isFile}
+                            disabled={isUploading || !isFile || isDisabled}
                             onClick={() => {
                                 this.setState({ showDialog: true })
                             }}

@@ -92,7 +92,7 @@ class _Layout extends React.Component {
                                 key: '/stockage',
                                 name: <><Icon iconName='Cloud' /> Platforme de stockage</>,
                                 title: 'Platforme de stockage',
-                                onClick: () =>  window.open(process.env.NODE_ENV !== 'production' ? process.env.REACT_APP_DRIVE_DEV : process.env.REACT_APP_DRIVE_PROD, "_blank"),
+                                onClick: () => window.open(process.env.NODE_ENV !== 'production' ? process.env.REACT_APP_DRIVE_DEV : process.env.REACT_APP_DRIVE_PROD, "_blank"),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                         ]
@@ -121,8 +121,8 @@ class _Layout extends React.Component {
 
         return (
             <>
-                <Header 
-                    menu={this.filterMenu(menu)} 
+                <Header
+                    menu={this.filterMenu(menu)}
                     me={me}
                     refresh={() => this.props.refresh()}
                 />
@@ -146,7 +146,11 @@ class _Layout extends React.Component {
                             {
                                 messageBar?.isDisplayed &&
                                 <>
-                                    <MessageBar messageBarType={this.props.messageBar.type} isMultiline={true} onDismiss={() => this.props.setMessageBar(false)}>
+                                    <MessageBar
+                                        messageBarType={this.props.messageBar.type}
+                                        isMultiline={true}
+                                        onDismiss={() => this.props.setMessageBar(false)}
+                                    >
                                         {messageBar.message}
                                     </MessageBar>
                                     <br />

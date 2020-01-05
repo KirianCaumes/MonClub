@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType } from 'office-ui-fabric-react'
+import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
@@ -48,14 +48,21 @@ class _MembersMeInformations extends React.Component {
                     </Columns.Column>
                     <Columns.Column>
                         <Label required>Date de naissance</Label>
-                        <MaskedTextField
-                            value={stringToCleanString(member?.birthdate)}
-                            mask={"99/99/9999"}
-                            borderless={readOnly}
-                            readOnly={readOnly}
-                            onBlur={ev => this.props.editMember({ birthdate: stringToDate(ev.target.value) }, memberIndex)}
-                            errorMessage={errorField?.birthdate?.errors?.[0]}
-                        />
+                        <TooltipHost
+                            content="Format attendu: JJ/MM/AAAA"
+                            directionalHint={DirectionalHint.bottomCenter}
+                            styles={{root: {width: '100%'}}}
+                            delay={TooltipDelay.zero}
+                        >
+                            <MaskedTextField
+                                value={stringToCleanString(member?.birthdate)}
+                                mask={"99/99/9999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                onBlur={ev => this.props.editMember({ birthdate: stringToDate(ev.target.value) }, memberIndex)}
+                                errorMessage={errorField?.birthdate?.errors?.[0]}
+                            />
+                        </TooltipHost>
                     </Columns.Column>
                     <Columns.Column>
                         <Label>Profession</Label>

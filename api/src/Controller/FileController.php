@@ -107,6 +107,17 @@ class FileController extends FOSRestController
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+
+        //Check if user is payed
+        if (!$member->getIsPayed()) {
+            return $this->handleView($this->view([
+                'error' => [
+                    'message' => $translator->trans('member_not_payed'),
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN));
+        }
+
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
         $pdfOptions = new Options();

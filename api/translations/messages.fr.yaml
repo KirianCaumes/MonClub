@@ -16,3 +16,4 @@ deny_delete_member: "Vous n'avez pas le droit de supprimer le membre : cette act
 deny_create_member: "Vous n'avez pas le droit d'ajouter un membre supplémentaire : seuls 4 membres maximum par comptes sont autorisés."
 register_is_disabled: "Les inscriptions sont désactivées."
 new_member_disabled: "Les inscriptions sont maintenant terminées (Date butoire : {{date}}). Contactez le club pour toutes aides."
+member_not_payed: Le membre n'a pas encore été payé.
