@@ -206,7 +206,8 @@ export default {
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,
-            payment_solution: body?.payment_solution?.id
+            payment_solution: body?.payment_solution?.id,
+            sex: body?.sex?.id
         }
 
         var options = {
@@ -233,7 +234,8 @@ export default {
     editOrCreateMember: (id, body) => {
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate)
+            birthdate: dateToString(body?.birthdate),
+            sex: body?.sex?.id
         }
         let url = ["member"]
 
@@ -258,7 +260,8 @@ export default {
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,
-            payment_solution: body?.payment_solution?.id
+            payment_solution: body?.payment_solution?.id,
+            sex: body?.sex?.id
         }
 
         var options = {
@@ -394,6 +397,15 @@ export default {
     },
     getAttestation: (memberId) => {
         const url = ["document", memberId, "attestation"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getGoogleContact: (memberId) => {
+        const url = ["document", "google-contact"]
 
         var options = {
             method: GET

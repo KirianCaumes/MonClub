@@ -227,16 +227,27 @@ class _MemberOne extends React.Component {
                                 />
                             </TooltipHost>
                         </Columns.Column>
-                        <Columns.Column>
-                            <Label htmlFor="profession">Profession</Label>
-                            <TextField
-                                id="profession"
-                                defaultValue={data?.profession ?? ''}
-                                onBlur={ev => this.setState({ data: { ...this.state.data, profession: ev.target.value } })}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                errorMessage={this.state.errorField?.profession?.errors?.[0]}
-                            />
+                        <Columns.Column size="one-quarter">
+                            <Label required htmlFor="sex">Sexe</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        id="sex"
+                                        defaultValue={data?.sex?.label}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.sex?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        id="sex"
+                                        selectedKey={data?.sex?.id}
+                                        options={[...this.props?.param?.sexes]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        errorMessage={this.state.errorField?.sex?.errors?.[0]}
+                                        useComboBoxAsMenuWidth={true}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, sex: item } })}
+                                    />
+                            }
                         </Columns.Column>
                     </Columns>
 
@@ -265,7 +276,18 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.phone_number?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column />
+                        
+                        <Columns.Column>
+                            <Label htmlFor="profession">Profession</Label>
+                            <TextField
+                                id="profession"
+                                defaultValue={data?.profession ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, profession: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.profession?.errors?.[0]}
+                            />
+                        </Columns.Column>
                         <Columns.Column />
                     </Columns>
                     <Columns>

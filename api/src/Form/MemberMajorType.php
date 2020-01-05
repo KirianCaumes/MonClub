@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Member;
 use App\Entity\ParamPaymentSolution;
 use App\Entity\ParamSeason;
+use App\Entity\ParamSex;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -101,11 +102,12 @@ class MemberMajorType extends AbstractType
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
             ]) 
-            ->add('notes', CheckboxType::class, [
-                'disabled' => true,
-            ])             
+            ->add('notes')             
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
+            ])
+            ->add('sex', EntityType::class, [
+                'class' => ParamSex::class
             ])
             ->add('payment_solution', EntityType::class, [
                 'class' => ParamPaymentSolution::class,

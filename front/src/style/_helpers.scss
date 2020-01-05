@@ -77,3 +77,9 @@
 textarea {
   resize: vertical;
 }
+
+.ms-Button-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

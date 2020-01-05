@@ -10,6 +10,7 @@ use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
 use App\Entity\ParamSeason;
+use App\Entity\ParamSex;
 use App\Entity\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
@@ -52,6 +53,7 @@ class ParamController extends FOSRestController
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
             'roles' => ['ROLE_COACH', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
             'choices' => [['key' => 'true', 'text' => 'Oui'], ['key' => 'false', 'text' => 'Non']],
+            'sexes' => $this->getDoctrine()->getRepository(ParamSex::class)->findall(),
             'price' => [
                 'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
                 'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),

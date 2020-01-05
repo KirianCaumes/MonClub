@@ -157,6 +157,31 @@ class _Constants extends React.Component {
                     />
                     <br />
 
+                    <Label>Sexes :</Label>
+                    <DetailsList
+                        items={param?.sexes ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'label',
+                                name: 'Label',
+                                fieldName: 'label',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+
                     <Label>Choix :</Label>
                     <DetailsList
                         items={param?.choices ?? []}

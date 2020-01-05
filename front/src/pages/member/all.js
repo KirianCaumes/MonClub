@@ -8,6 +8,8 @@ import request from 'helper/request'
 import getWf from 'helper/getStepWf'
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
 import ParentPage from 'pages/_parentPage'
+import { dlBlob } from 'helper/blob'
+import { stringToCleanString } from 'helper/date'
 
 class _MembersAll extends ParentPage {
     constructor(props) {
@@ -72,6 +74,16 @@ class _MembersAll extends ParentPage {
                 text: 'Nouveau',
                 iconProps: { iconName: 'Add' },
                 onClick: () => history.push('/membre/nouveau')
+            },
+            {
+                key: 'getGoogleContact',
+                text: 'Contact Google',
+                iconProps: { iconName: 'CloudDownload' },
+                onClick: () => {
+                    request.getGoogleContact()
+                        .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
+                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                }
             },
         ])
 

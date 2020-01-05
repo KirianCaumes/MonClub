@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay, Dropdown } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
@@ -67,16 +67,26 @@ class _MembersMeInformations extends React.Component {
                             />
                         </TooltipHost>
                     </Columns.Column>
-                    <Columns.Column>
-                        <Label htmlFor="profession">Profession</Label>
-                        <TextField
-                            id="profession"
-                            defaultValue={member?.profession ?? ''}
-                            onBlur={ev => this.props.editMember({ profession: ev.target.value }, memberIndex)}
-                            borderless={readOnly}
-                            readOnly={readOnly}
-                            errorMessage={errorField?.profession?.errors?.[0]}
-                        />
+                    <Columns.Column size="one-quarter">
+                        <Label required htmlFor="sex">Sexe</Label>
+                        {
+                            readOnly ?
+                                <TextField
+                                    id="sex"
+                                    defaultValue={member?.sex?.label}
+                                    borderless={true}
+                                    readOnly={true}
+                                    errorMessage={errorField?.sex?.errors?.[0]}
+                                />
+                                :
+                                <Dropdown
+                                    id="sex"
+                                    selectedKey={member?.sex?.id}
+                                    options={[...this.props?.param?.sexes]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                    errorMessage={errorField?.sex?.errors?.[0]}
+                                    onChange={(ev, item) => this.props.editMember({ sex: item }, memberIndex)}
+                                />
+                        }
                     </Columns.Column>
                 </Columns>
 
@@ -105,7 +115,19 @@ class _MembersMeInformations extends React.Component {
                             errorMessage={errorField?.phone_number?.errors?.[0]}
                         />
                     </Columns.Column>
-                    <Columns.Column />
+
+                    <Columns.Column>
+                        <Label htmlFor="profession">Profession</Label>
+                        <TextField
+                            id="profession"
+                            defaultValue={member?.profession ?? ''}
+                            onBlur={ev => this.props.editMember({ profession: ev.target.value }, memberIndex)}
+                            borderless={readOnly}
+                            readOnly={readOnly}
+                            errorMessage={errorField?.profession?.errors?.[0]}
+                        />
+                    </Columns.Column>
+
                     <Columns.Column />
                 </Columns>
                 <Columns>
@@ -335,7 +357,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        members: state.member.members
+        members: state.member.members,
+        param: state.user.param
     }
 }
 const MembersMeInformations = connect(mapStateToProps, mapDispatchToProps)(_MembersMeInformations)

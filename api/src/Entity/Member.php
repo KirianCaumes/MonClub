@@ -211,6 +211,13 @@ class Member
     private $notes;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @ORM\ManyToOne(targetEntity="ParamSex")
+     * @ORM\JoinColumn(name="id_sex", referencedColumnName="id")
+     */
+    private $sex;
+
+    /**
      * @ORM\ManyToOne(targetEntity="ParamPaymentSolution")
      * @ORM\JoinColumn(name="id_payment_solution", referencedColumnName="id")
      */
@@ -667,6 +674,18 @@ class Member
     public function setNotes(?string $notes): self
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getSex(): ?ParamSex
+    {
+        return $this->sex;
+    }
+
+    public function setSex(ParamSex $sex): self
+    {
+        $this->sex = $sex;
 
         return $this;
     }
