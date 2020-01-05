@@ -62,15 +62,18 @@
 }
 
 *.is-light {
-  font-weight: initial!important;
+  font-weight: initial !important;
 }
 
 *.is-line-through {
-  text-decoration: line-through!important;
+  text-decoration: line-through !important;
 }
-
 
 .ms-Link.link-as-input {
   font-size: 14px;
   margin-left: 8px;
+}
+
+textarea {
+  resize: vertical;
 }

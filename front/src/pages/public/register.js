@@ -44,8 +44,9 @@ class _Register extends React.Component {
         return (
             <PublicLayout>
                 <form onSubmit={this.handleSubmit.bind(this)} >
-                    <Label>Email</Label>
+                    <Label htmlFor="username">Email</Label>
                     <TextField
+                        id="username"
                         placeholder="Votre email"
                         type="email"
                         value={this.state.username}
@@ -56,8 +57,9 @@ class _Register extends React.Component {
                         autoComplete="username"
                     />
                     <br />
-                    <Label>Mot de passe</Label>
+                    <Label htmlFor="first">Mot de passe</Label>
                     <TextField
+                        id="first"
                         placeholder="Votre mot de passe"
                         type="password"
                         value={this.state.plainPassword.first}
@@ -68,8 +70,9 @@ class _Register extends React.Component {
                         autoComplete="new-password"
                     />
                     <br />
-                    <Label>Confirmez le mot de passe</Label>
+                    <Label htmlFor="second">Confirmez le mot de passe</Label>
                     <TextField
+                        id="second"
                         placeholder="Votre mot de passe"
                         type="password"
                         value={this.state.plainPassword.second}

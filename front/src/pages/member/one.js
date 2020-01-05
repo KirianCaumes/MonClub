@@ -18,6 +18,7 @@ class _MemberOne extends React.Component {
             readOnly: !!this.props.match?.params?.id,
             isLoading: false,
             data: { ...props?.data?.member ?? {} },
+            initData: { ...props?.data?.member ?? {} },
             workflow: [...props?.data?.workflow ?? []],
             errorField: {}
         }
@@ -44,7 +45,7 @@ class _MemberOne extends React.Component {
                 key: 'cancel',
                 text: 'Annuler',
                 iconProps: { iconName: 'Cancel' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandRead)),
+                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: this.state.initData }, () => this.props.setCommand(commandRead)),
                 disabled: !this.props.match?.params?.id
             },
             {
@@ -186,8 +187,9 @@ class _MemberOne extends React.Component {
                     <Separator />
                     <Columns>
                         <Columns.Column>
-                            <Label required>Prénom</Label>
+                            <Label required htmlFor="firstname">Prénom</Label>
                             <TextField
+                                id="firstname"
                                 defaultValue={data?.firstname ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, firstname: ev.target.value } })}
                                 borderless={readOnly}
@@ -197,8 +199,9 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required>Nom</Label>
+                            <Label required htmlFor="lastname">Nom</Label>
                             <TextField
+                                id="lastname"
                                 defaultValue={data?.lastname ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, lastname: ev.target.value } })}
                                 borderless={readOnly}
@@ -207,13 +210,14 @@ class _MemberOne extends React.Component {
                             />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label required>Date de naissance</Label>
+                            <Label required htmlFor="birthdate">Date de naissance</Label>
                             <TooltipHost
                                 content="Format attendu: JJ/MM/AAAA"
                                 directionalHint={DirectionalHint.bottomCenter}
                                 delay={TooltipDelay.zero}
                             >
                                 <MaskedTextField
+                                    id="birthdate"
                                     value={stringToCleanString(data?.birthdate)}
                                     mask={"99/99/9999"}
                                     borderless={readOnly}
@@ -224,8 +228,9 @@ class _MemberOne extends React.Component {
                             </TooltipHost>
                         </Columns.Column>
                         <Columns.Column>
-                            <Label>Profession</Label>
+                            <Label htmlFor="profession">Profession</Label>
                             <TextField
+                                id="profession"
                                 defaultValue={data?.profession ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, profession: ev.target.value } })}
                                 borderless={readOnly}
@@ -237,8 +242,9 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column>
-                            <Label required={isMajor(data?.birthdate)}>Email</Label>
+                            <Label required={isMajor(data?.birthdate)} htmlFor="email">Email</Label>
                             <TextField
+                                id="email"
                                 defaultValue={data?.email ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, email: ev.target.value } })}
                                 borderless={readOnly}
@@ -248,8 +254,9 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required={isMajor(data?.birthdate)}>Numéro de téléphone</Label>
+                            <Label required={isMajor(data?.birthdate)} htmlFor="phone_number">Numéro de téléphone</Label>
                             <MaskedTextField
+                                id="phone_number"
                                 value={data?.phone_number ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: ev.target.value } })}
                                 mask={"9999999999"}
@@ -263,8 +270,9 @@ class _MemberOne extends React.Component {
                     </Columns>
                     <Columns>
                         <Columns.Column>
-                            <Label required>Code postal</Label>
+                            <Label required htmlFor="postal_code">Code postal</Label>
                             <MaskedTextField
+                                id="postal_code"
                                 value={data?.postal_code ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, postal_code: ev.target.value } })}
                                 mask={"99999"}
@@ -274,8 +282,9 @@ class _MemberOne extends React.Component {
                             />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label required>Rue</Label>
+                            <Label required htmlFor="street">Rue</Label>
                             <TextField
+                                id="street"
                                 defaultValue={data?.street ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, street: ev.target.value } })}
                                 borderless={readOnly}
@@ -284,8 +293,9 @@ class _MemberOne extends React.Component {
                             />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label required>Ville</Label>
+                            <Label required htmlFor="city">Ville</Label>
                             <TextField
+                                id="city"
                                 defaultValue={data?.city ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, city: ev.target.value } })}
                                 borderless={readOnly}
@@ -298,17 +308,19 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column size="one-quarter">
-                            <Label>Équipe(s)</Label>
+                            <Label htmlFor="teams">Équipe(s)</Label>
                             {
                                 readOnly ?
                                     <TextField
-                                        defaultValue={data?.teams.map(team => team.label)?.join(', ')}
+                                        id="teams"
+                                        defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.teams?.errors?.[0]}
                                     />
                                     :
                                     <VirtualizedComboBox
+                                        id="teams"
                                         multiSelect
                                         selectedKey={data?.teams?.map(x => x.id ?? x.key)}
                                         options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
@@ -329,7 +341,7 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
-                            <Label>Utilisateur associé</Label>
+                            <Label htmlFor="username">Utilisateur associé</Label>
                             {
                                 readOnly ?
                                     <Link className="link-as-input" onClick={() => history.push(`/utilisateur/${data?.user?.id}`)}>
@@ -337,6 +349,7 @@ class _MemberOne extends React.Component {
                                     </Link>
                                     :
                                     <VirtualizedComboBox
+                                        id="username"
                                         selectedKey={data?.user?.id}
                                         options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
                                         errorMessage={this.state.errorField?.username?.errors?.[0]}
@@ -346,10 +359,11 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
-                            <Label>Saison</Label>
+                            <Label htmlFor="season">Saison</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="season"
                                         defaultValue={data?.season?.label}
                                         borderless={true}
                                         readOnly={true}
@@ -357,6 +371,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="season"
                                         selectedKey={data?.season?.id}
                                         options={[...this.props.param?.season]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.season?.errors?.[0]}
@@ -367,8 +382,9 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label disabled={!readOnly}>Date d'inscription</Label>
+                            <Label disabled={!readOnly} htmlFor="creation_datetime">Date d'inscription</Label>
                             <TextField
+                                id="creation_datetime"
                                 defaultValue={dateToCleanDateTimeString(new Date(data.creation_datetime))}
                                 borderless={true}
                                 readOnly={true}
@@ -382,8 +398,9 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column>
-                            <Label>Montant payé</Label>
+                            <Label htmlFor="amount_payed">Montant payé</Label>
                             <TextField
+                                id="amount_payed"
                                 defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
                                 borderless={readOnly}
@@ -399,10 +416,11 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label>Moyen de paiement</Label>
+                            <Label htmlFor="payment_solution">Moyen de paiement</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="payment_solution"
                                         defaultValue={data?.payment_solution?.label}
                                         borderless={true}
                                         readOnly={true}
@@ -410,6 +428,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="payment_solution"
                                         defaultSelectedKey={data?.payment_solution?.id}
                                         options={[...this.props.param?.price?.payment_solution]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.payment_solution?.errors?.[0]}
@@ -426,10 +445,11 @@ class _MemberOne extends React.Component {
                             isMajor(data?.birthdate) &&
                             <>
                                 <Columns.Column>
-                                    <Label required>Loisir</Label>
+                                    <Label required htmlFor="is_non_competitive">Loisir</Label>
                                     {
                                         readOnly ?
                                             <TextField
+                                                id="is_non_competitive"
                                                 defaultValue={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
@@ -437,6 +457,7 @@ class _MemberOne extends React.Component {
                                             />
                                             :
                                             <Dropdown
+                                                id="is_non_competitive"
                                                 defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
                                                 options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
@@ -447,10 +468,11 @@ class _MemberOne extends React.Component {
                                 </Columns.Column>
 
                                 <Columns.Column>
-                                    <Label required>Demande réduction</Label>
+                                    <Label required htmlFor="is_reduced_price">Demande réduction</Label>
                                     {
                                         readOnly ?
                                             <TextField
+                                                id="is_reduced_price"
                                                 defaultValue={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
@@ -458,6 +480,7 @@ class _MemberOne extends React.Component {
                                             />
                                             :
                                             <Dropdown
+                                                id="is_reduced_price"
                                                 defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
                                                 options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
@@ -470,10 +493,11 @@ class _MemberOne extends React.Component {
                         }
 
                         <Columns.Column>
-                            <Label required>Demande transfert</Label>
+                            <Label required htmlFor="is_transfer_needed">Demande transfert</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_transfer_needed"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -481,6 +505,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_transfer_needed"
                                         defaultSelectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_transfer_needed?.errors?.[0]}
@@ -501,8 +526,9 @@ class _MemberOne extends React.Component {
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
-                                            <Label required>Prénom</Label>
+                                            <Label required htmlFor="parent_one_firstname">Prénom</Label>
                                             <TextField
+                                                id="parent_one_firstname"
                                                 defaultValue={data?.parent_one_firstname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_firstname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -511,8 +537,9 @@ class _MemberOne extends React.Component {
                                             />
                                         </Columns.Column>
                                         <Columns.Column>
-                                            <Label required>Nom</Label>
+                                            <Label required htmlFor="parent_one_lastname">Nom</Label>
                                             <TextField
+                                                id="parent_one_lastname"
                                                 defaultValue={data?.parent_one_lastname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_lastname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -523,8 +550,9 @@ class _MemberOne extends React.Component {
                                     </Columns>
                                     <Columns>
                                         <Columns.Column>
-                                            <Label required>Email</Label>
+                                            <Label required htmlFor="parent_one_email">Email</Label>
                                             <TextField
+                                                id="parent_one_email"
                                                 defaultValue={data?.parent_one_email ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_email: ev.target.value } })}
                                                 borderless={readOnly}
@@ -533,8 +561,9 @@ class _MemberOne extends React.Component {
                                             />
                                         </Columns.Column>
                                         <Columns.Column>
-                                            <Label required>Numéro de téléphone</Label>
+                                            <Label required htmlFor="parent_one_phone_number">Numéro de téléphone</Label>
                                             <MaskedTextField
+                                                id="parent_one_phone_number"
                                                 value={data?.parent_one_phone_number ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_phone_number: ev.target.value } })}
                                                 mask={"9999999999"}
@@ -546,8 +575,9 @@ class _MemberOne extends React.Component {
                                     </Columns>
                                     <Columns>
                                         <Columns.Column>
-                                            <Label>Profession</Label>
+                                            <Label htmlFor="parent_one_profession">Profession</Label>
                                             <TextField
+                                                id="parent_one_profession"
                                                 defaultValue={data?.parent_one_profession ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_profession: ev.target.value } })}
                                                 borderless={readOnly}
@@ -564,8 +594,9 @@ class _MemberOne extends React.Component {
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
-                                            <Label>Prénom</Label>
+                                            <Label htmlFor="parent_two_firstname">Prénom</Label>
                                             <TextField
+                                                id="parent_two_firstname"
                                                 defaultValue={data?.parent_two_firstname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_firstname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -574,8 +605,9 @@ class _MemberOne extends React.Component {
                                             />
                                         </Columns.Column>
                                         <Columns.Column>
-                                            <Label>Nom</Label>
+                                            <Label htmlFor="parent_two_lastname">Nom</Label>
                                             <TextField
+                                                id="parent_two_lastname"
                                                 defaultValue={data?.parent_two_lastname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_lastname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -586,8 +618,9 @@ class _MemberOne extends React.Component {
                                     </Columns>
                                     <Columns>
                                         <Columns.Column>
-                                            <Label>Email</Label>
+                                            <Label htmlFor="parent_two_email">Email</Label>
                                             <TextField
+                                                id="parent_two_email"
                                                 defaultValue={data?.parent_two_email ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_email: ev.target.value } })}
                                                 borderless={readOnly}
@@ -596,8 +629,9 @@ class _MemberOne extends React.Component {
                                             />
                                         </Columns.Column>
                                         <Columns.Column>
-                                            <Label>Numéro de téléphone</Label>
+                                            <Label htmlFor="parent_two_phone_number">Numéro de téléphone</Label>
                                             <MaskedTextField
+                                                id="parent_two_phone_number"
                                                 value={data?.parent_two_phone_number ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_phone_number: ev.target.value } })}
                                                 mask={"9999999999"}
@@ -609,8 +643,9 @@ class _MemberOne extends React.Component {
                                     </Columns>
                                     <Columns>
                                         <Columns.Column>
-                                            <Label>Profession</Label>
+                                            <Label htmlFor="parent_two_profession">Profession</Label>
                                             <TextField
+                                                id="parent_two_profession"
                                                 defaultValue={data?.parent_two_profession ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_profession: ev.target.value } })}
                                                 borderless={readOnly}
@@ -630,10 +665,11 @@ class _MemberOne extends React.Component {
                     <Separator />
                     <Columns>
                         <Columns.Column>
-                            <Label required>Autorisation évacuation</Label>
+                            <Label required htmlFor="is_evacuation_allow">Autorisation évacuation</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_evacuation_allow"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -641,6 +677,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_evacuation_allow"
                                         defaultSelectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
@@ -650,10 +687,11 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required>Autorisation transport</Label>
+                            <Label required htmlFor="is_transport_allow">Autorisation transport</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_transport_allow"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -661,6 +699,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_transport_allow"
                                         defaultSelectedKey={data?.is_transport_allow?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_transport_allow?.errors?.[0]}
@@ -669,10 +708,11 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column>
-                            <Label required>Autorisation utilisation image</Label>
+                            <Label required htmlFor="is_image_allow">Autorisation utilisation image</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_image_allow"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -680,6 +720,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_image_allow"
                                         defaultSelectedKey={data?.is_image_allow?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_image_allow?.errors?.[0]}
@@ -689,10 +730,11 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required>Règlement intérieur accepté</Label>
+                            <Label required htmlFor="is_accepted">Règlement intérieur accepté</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_accepted"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -700,6 +742,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_accepted"
                                         defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
@@ -711,10 +754,11 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column>
-                            <Label required>Autorisation newsletter</Label>
+                            <Label required htmlFor="is_newsletter_allow">Autorisation newsletter</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="is_newsletter_allow"
                                         defaultValue={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -722,6 +766,7 @@ class _MemberOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="is_newsletter_allow"
                                         defaultSelectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
@@ -733,10 +778,11 @@ class _MemberOne extends React.Component {
                             {
                                 !isMajor(data?.birthdate) &&
                                 <>
-                                    <Label required>Autorisation retour maison</Label>
+                                    <Label required htmlFor="is_return_home_allow">Autorisation retour maison</Label>
                                     {
                                         readOnly ?
                                             <TextField
+                                                id="is_return_home_allow"
                                                 defaultValue={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
                                                 borderless={true}
                                                 readOnly={true}
@@ -744,6 +790,7 @@ class _MemberOne extends React.Component {
                                             />
                                             :
                                             <Dropdown
+                                                id="is_return_home_allow"
                                                 defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
                                                 options={param?.choices}
                                                 errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
@@ -875,8 +922,9 @@ class _MemberOne extends React.Component {
                     <Separator />
                     <Columns>
                         <Columns.Column>
-                            <Label>Notes</Label>
+                            <Label htmlFor="notes">Notes</Label>
                             <TextField
+                                id="notes"
                                 readOnly={readOnly}
                                 borderless={readOnly}
                                 multiline

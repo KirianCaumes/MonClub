@@ -80,6 +80,9 @@ class MemberMinorType extends AbstractType
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
+            ->add('notes', CheckboxType::class, [
+                'disabled' => true,
+            ])   
             ->add('payment_solution', EntityType::class, [
                 'class' => ParamPaymentSolution::class,
                 'disabled' => true,

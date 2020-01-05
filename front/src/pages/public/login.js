@@ -41,8 +41,9 @@ class _Login extends React.Component {
         return (
             <PublicLayout>
                 <form onSubmit={this.handleSubmit.bind(this)} >
-                    <Label>Email</Label>
+                    <Label htmlFor="username">Email</Label>
                     <TextField
+                        id="username"
                         placeholder="Votre email"
                         type="email"
                         value={this.state.username}
@@ -52,8 +53,9 @@ class _Login extends React.Component {
                         autoComplete="username"
                     />
                     <br />
-                    <Label>Mot de passe</Label>
+                    <Label htmlFor="password">Mot de passe</Label>
                     <TextField
+                        id="password"
                         placeholder="Votre mot de passe"
                         type="password"
                         value={this.state.plainPassword}

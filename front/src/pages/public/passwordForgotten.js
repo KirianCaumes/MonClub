@@ -41,8 +41,9 @@ class _PasswordForgotten extends React.Component {
         return (
             <PublicLayout>
                 <form onSubmit={this.handleSubmit.bind(this)} >
-                    <Label>Email</Label>
+                    <Label htmlFor="username">Email</Label>
                     <TextField
+                        id="username"
                         placeholder="Votre email"
                         type="email"
                         value={this.state.username}

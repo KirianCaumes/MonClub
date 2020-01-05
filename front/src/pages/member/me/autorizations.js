@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Label, Text, ChoiceGroup, Link, TextField } from 'office-ui-fabric-react'
+import { Separator, Label, Text, ChoiceGroup, Link, TextField, Checkbox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { isMajor } from 'helper/date'
@@ -11,7 +11,7 @@ class _MembersMeAutorizations extends React.Component {
         this.state = {}
     }
 
-    render() {     
+    render() {
         const { memberIndex, errorField, readOnly } = this.props
         const member = this.props.members[memberIndex]
 
@@ -101,16 +101,11 @@ class _MembersMeAutorizations extends React.Component {
                             <TextField errorMessage={errorField?.is_newsletter_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
-                            <ChoiceGroup
-                                options={[
-                                    {
-                                        key: 'true',
-                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions",
-                                        disabled: readOnly
-                                    }
-                                ]}
-                                selectedKey={JSON.stringify(member?.is_accepted)}
-                                onChange={(ev, option) => this.props.editMember({ is_accepted: JSON.parse(option.key) }, memberIndex)}
+                            <Checkbox
+                                label="Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"                    
+                                defaultChecked={member?.is_accepted}
+                                onChange={(ev, isChecked) => this.props.editMember({ is_accepted: isChecked }, memberIndex)}
+                                disabled={readOnly}
                             />
                             <TextField errorMessage={errorField?.is_accepted?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                         </>
@@ -214,16 +209,11 @@ class _MembersMeAutorizations extends React.Component {
                             <TextField errorMessage={errorField?.is_newsletter_allow?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
-                            <ChoiceGroup
-                                options={[
-                                    {
-                                        key: 'true',
-                                        text: "Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions",
-                                        disabled: readOnly
-                                    }
-                                ]}
-                                selectedKey={JSON.stringify(member?.is_accepted)}
-                                onChange={(ev, option) => this.props.editMember({ is_accepted: JSON.parse(option.key) }, memberIndex)}
+                            <Checkbox
+                                label="Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"                    
+                                defaultChecked={member?.is_accepted}
+                                onChange={(ev, isChecked) => this.props.editMember({ is_accepted: isChecked }, memberIndex)}
+                                disabled={readOnly}
                             />
                             <TextField errorMessage={errorField?.is_accepted?.errors?.[0]} styles={{ wrapper: { display: 'none' } }} />
                         </>

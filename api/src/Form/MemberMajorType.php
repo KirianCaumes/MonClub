@@ -100,7 +100,10 @@ class MemberMajorType extends AbstractType
             ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])            
+            ]) 
+            ->add('notes', CheckboxType::class, [
+                'disabled' => true,
+            ])             
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])

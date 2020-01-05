@@ -14,6 +14,7 @@ class _UserOne extends React.Component {
             readOnly: !!this.props.match?.params?.id,
             isLoading: false,
             data: { ...props?.data ?? {} },
+            initData: { ...props?.data ?? {} },
             errorField: {}
         }
     }
@@ -39,7 +40,7 @@ class _UserOne extends React.Component {
                 key: 'cancel',
                 text: 'Annuler',
                 iconProps: { iconName: 'Cancel' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandRead)),
+                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: { ...this.state.initData } }, () => this.props.setCommand(commandRead)),
                 disabled: !this.props.match?.params?.id
             },
             {
@@ -79,25 +80,28 @@ class _UserOne extends React.Component {
                 <div className="card" >
                     <Columns>
                         <Columns.Column>
-                            <Label disabled={!readOnly}>Nom</Label>
+                            <Label disabled={!readOnly} htmlFor="username">Nom</Label>
                             <TextField
+                                id="username"
                                 value={data?.username ?? ''}
                                 borderless={true}
                                 readOnly={true}
                             />
                         </Columns.Column>
                         <Columns.Column size="one-third">
-                            <Label>Roles</Label>
+                            <Label htmlFor="roles">Roles</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="roles"
                                         defaultValue={data?.roles?.join(', ')}
                                         borderless={true}
                                         readOnly={true}
-                                        errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                        errorMessage={this.state.errorField?.roles?.errors?.[0]}
                                     />
                                     :
                                     <Dropdown
+                                        id="roles"
                                         multiSelect
                                         selectedKeys={data?.roles}
                                         options={[...this.props.param?.roles]?.map((x, i) => { return { key: x, text: x } })}
@@ -116,10 +120,11 @@ class _UserOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column>
-                            <Label>Activé</Label>
+                            <Label htmlFor="enabled">Activé</Label>
                             {
                                 readOnly ?
                                     <TextField
+                                        id="enabled"
                                         defaultValue={param?.choices.find(x => x.key === data?.enabled?.toString()).text ?? ''}
                                         borderless={true}
                                         readOnly={true}
@@ -127,6 +132,7 @@ class _UserOne extends React.Component {
                                     />
                                     :
                                     <Dropdown
+                                        id="enabled"
                                         defaultSelectedKey={data?.enabled?.toString() ?? 'false'}
                                         options={param?.choices}
                                         errorMessage={this.state.errorField?.enabled?.errors?.[0]}
@@ -137,16 +143,18 @@ class _UserOne extends React.Component {
                     </Columns>
                     <Columns>
                         <Columns.Column>
-                            <Label disabled={!readOnly}>Date de création</Label>
+                            <Label disabled={!readOnly} htmlFor="creation_datetime">Date de création</Label>
                             <TextField
+                                id="creation_datetime"
                                 value={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
                                 borderless={true}
                                 readOnly={true}
                             />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label disabled={!readOnly}>Dernière connexion</Label>
+                            <Label disabled={!readOnly} htmlFor="last_login">Dernière connexion</Label>
                             <TextField
+                                id="last_login"
                                 value={data?.last_login ? (new Date(data.last_login)).toLocaleString('fr-FR') : ''}
                                 borderless={true}
                                 readOnly={true}

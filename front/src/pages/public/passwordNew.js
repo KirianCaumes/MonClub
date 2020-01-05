@@ -42,8 +42,9 @@ class _PasswordNew extends React.Component {
         return (
             <PublicLayout>
                 <form onSubmit={this.handleSubmit.bind(this)} >
-                    <Label>Nouveau mot de passe</Label>
+                    <Label htmlFor="first">Nouveau mot de passe</Label>
                     <TextField
+                        id="first"
                         placeholder="Votre mot de passe"
                         type="password"
                         value={this.state.plainPassword?.first}
@@ -54,8 +55,9 @@ class _PasswordNew extends React.Component {
                         autoComplete="new-password"
                     />
                     <br />
-                    <Label>Confirmez le mot de passe</Label>
+                    <Label htmlFor="second">Confirmez le mot de passe</Label>
                     <TextField
+                        id="second"
                         placeholder="Votre mot de passe"
                         type="password"
                         value={this.state.plainPassword?.second}

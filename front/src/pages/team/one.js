@@ -14,6 +14,7 @@ class _TeamOne extends React.Component {
             readOnly: !!this.props.match?.params?.id,
             isLoading: false,
             data: { ...props?.data ?? {} },
+            initData: { ...props?.data ?? {} },
             errorField: {}
         }
     }
@@ -39,7 +40,7 @@ class _TeamOne extends React.Component {
                 key: 'cancel',
                 text: 'Annuler',
                 iconProps: { iconName: 'Cancel' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandRead)),
+                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: { ...this.state.initData } }, () => this.props.setCommand(commandRead)),
                 disabled: !this.props.match?.params?.id
             },
             {
@@ -93,16 +94,16 @@ class _TeamOne extends React.Component {
                         () => {
                             this.setState({ isLoading: true, readOnly: true }, () => {
                                 request.deleteTeam(this.props.match?.params?.id)
-                            .then(() => {
-                                this.props.setCommand(commandRead)
-                                this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été supprimée.')
-                                history.push('/equipes')
-                            })
-                            .catch(err => {
-                                this.setState({ readOnly: false, isLoading: false })
-                                this.props.setCommand(commandEdit)
-                                this.props.setMessageBar(true, MessageBarType.error, err)
-                            })
+                                    .then(() => {
+                                        this.props.setCommand(commandRead)
+                                        this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été supprimée.')
+                                        history.push('/equipes')
+                                    })
+                                    .catch(err => {
+                                        this.setState({ readOnly: false, isLoading: false })
+                                        this.props.setCommand(commandEdit)
+                                        this.props.setMessageBar(true, MessageBarType.error, err)
+                                    })
                             })
                         }
                     )
@@ -126,8 +127,9 @@ class _TeamOne extends React.Component {
                         <Columns.Column>
                             <Columns>
                                 <Columns.Column>
-                                    <Label required>Label</Label>
+                                    <Label required htmlFor="label">Label</Label>
                                     <TextField
+                                        id="label"
                                         value={data?.label ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
                                         borderless={readOnly}
@@ -136,8 +138,9 @@ class _TeamOne extends React.Component {
                                     />
                                 </Columns.Column>
                                 <Columns.Column>
-                                    <Label required>Label Google Contact</Label>
+                                    <Label required htmlFor="label_google_contact">Label Google Contact</Label>
                                     <TextField
+                                        id="label_google_contact"
                                         value={data?.label_google_contact ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
                                         borderless={readOnly}

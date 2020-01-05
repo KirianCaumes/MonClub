@@ -116,6 +116,7 @@ class MemberMajorAdminType extends AbstractType
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
+            ->add('notes')
             ->add('payment_solution', EntityType::class, [
                 'class' => ParamPaymentSolution::class,
             ])

@@ -87,30 +87,34 @@ class Header extends React.Component {
                     closeButtonAriaLabel="Close"
                 >
                     <br />
-                    <Label>Nom</Label>
+                    <Label htmlFor="username">Nom</Label>
                     <TextField
+                        id="username"
                         value={me?.username ?? ''}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
-                    <Label>Roles</Label>
+                    <Label htmlFor="roles">Roles</Label>
                     <TextField
+                        id="roles"
                         defaultValue={me?.roles?.length ? me?.roles?.join(', ') : 'Utilisateur'}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
-                    <Label>Date de création</Label>
+                    <Label htmlFor="parent_twcreation_datetimeo_profession">Date de création</Label>
                     <TextField
+                        id="creation_datetime"
                         value={dateToCleanDateTimeString(new Date(me?.creation_datetime))}
                         borderless={true}
                         readOnly={true}
                     />
                     <br />
-                    <Label>Dernière connexion</Label>
+                    <Label htmlFor="last_login">Dernière connexion</Label>
                     <TextField
-                        value={dateToCleanDateTimeString(new Date(me?.creation_datetime))}
+                        id="last_login"
+                        value={dateToCleanDateTimeString(new Date(me?.last_login))}
                         borderless={true}
                         readOnly={true}
                     />
