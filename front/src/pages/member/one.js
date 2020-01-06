@@ -10,6 +10,7 @@ import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimeString }
 import Loader from 'component/loader'
 import FileInput from 'component/fileInput'
 import { dlBlob, openBlob } from 'helper/blob'
+import DropdownIcon from 'component/dropdown'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -145,35 +146,43 @@ class _MemberOne extends React.Component {
                                 <Columns>
                                     <Columns.Column />
                                     <Columns.Column>
-                                        <Dropdown
-                                            selectedKey={data?.is_document_complete?.toString() ?? 'false'}
+                                        <DropdownIcon
+                                            icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.text ?? ''}
+                                            defaultSelectedKey={data?.is_document_complete?.toString() ?? 'false'}
                                             options={param?.choices}
-                                            errorMessage={this.state.errorField?.is_document_complete?.errors?.[0]}
+                                            error={this.state.errorField?.is_document_complete?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_document_complete: JSON.parse(item.key) } })}
                                         />
                                     </Columns.Column>
 
                                     <Columns.Column>
-                                        <Dropdown
-                                            selectedKey={data?.is_payed?.toString() ?? 'false'}
+                                        <DropdownIcon
+                                            icon={param?.choices.find(x => x.key === data?.is_payed?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_payed?.toString())?.text ?? ''}
+                                            defaultSelectedKey={data?.is_payed?.toString() ?? 'false'}
                                             options={param?.choices}
-                                            errorMessage={this.state.errorField?.is_payed?.errors?.[0]}
+                                            error={this.state.errorField?.is_payed?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_payed: JSON.parse(item.key) } })}
                                         />
                                     </Columns.Column>
                                     <Columns.Column>
-                                        <Dropdown
-                                            selectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
+                                        <DropdownIcon
+                                            icon={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.text ?? ''}
+                                            defaultSelectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
                                             options={param?.choices}
-                                            errorMessage={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
+                                            error={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_check_gest_hand: JSON.parse(item.key) } })}
                                         />
                                     </Columns.Column>
                                     <Columns.Column>
-                                        <Dropdown
-                                            selectedKey={data?.is_inscription_done?.toString() ?? 'false'}
+                                        <DropdownIcon
+                                            icon={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.text ?? ''}
+                                            defaultSelectedKey={data?.is_inscription_done?.toString() ?? 'false'}
                                             options={param?.choices}
-                                            errorMessage={this.state.errorField?.is_inscription_done?.errors?.[0]}
+                                            error={this.state.errorField?.is_inscription_done?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_inscription_done: JSON.parse(item.key) } })}
                                         />
                                     </Columns.Column>
@@ -183,7 +192,7 @@ class _MemberOne extends React.Component {
                         </>
                     }
 
-                    <Text variant="large" block><Icon iconName='ContactInfo'/> Informations générales</Text>
+                    <Text variant="large" block><Icon iconName='ContactInfo' /> Informations générales</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -415,7 +424,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block><Icon iconName='NumberedList'/> Informations tarifaires</Text>
+                    <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
                     <Separator />
 
                     <Columns>
@@ -439,24 +448,16 @@ class _MemberOne extends React.Component {
 
                         <Columns.Column>
                             <Label htmlFor="payment_solution">Moyen de paiement</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="payment_solution"
-                                        defaultValue={data?.payment_solution?.label}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.payment_solution?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="payment_solution"
-                                        defaultSelectedKey={data?.payment_solution?.id}
-                                        options={[...this.props.param?.price?.payment_solution]?.map(x => { return { ...x, key: x.id, text: x.label } })}
-                                        errorMessage={this.state.errorField?.payment_solution?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="payment_solution"
+                                readOnly={readOnly}
+                                icon={data?.payment_solution?.icon}
+                                valueDisplay={data?.payment_solution?.label}
+                                defaultSelectedKey={data?.payment_solution?.id}
+                                options={[...this.props.param?.price?.payment_solution]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                error={this.state.errorField?.payment_solution?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
+                            />
                         </Columns.Column>
                         <Columns.Column />
                         <Columns.Column />
@@ -468,72 +469,48 @@ class _MemberOne extends React.Component {
                             <>
                                 <Columns.Column>
                                     <Label required htmlFor="is_non_competitive">Loisir</Label>
-                                    {
-                                        readOnly ?
-                                            <TextField
-                                                id="is_non_competitive"
-                                                defaultValue={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
-                                                borderless={true}
-                                                readOnly={true}
-                                                errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
-                                            />
-                                            :
-                                            <Dropdown
-                                                id="is_non_competitive"
-                                                defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                errorMessage={this.state.errorField?.is_non_competitive?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
-                                                disabled={data?.is_reduced_price}
-                                            />
-                                    }
+                                    <DropdownIcon
+                                        id="is_non_competitive"
+                                        readOnly={readOnly}
+                                        icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
+                                        defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_non_competitive?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
+                                        disabled={data?.is_reduced_price}
+                                    />
                                 </Columns.Column>
 
                                 <Columns.Column>
                                     <Label required htmlFor="is_reduced_price">Demande réduction</Label>
-                                    {
-                                        readOnly ?
-                                            <TextField
-                                                id="is_reduced_price"
-                                                defaultValue={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
-                                                borderless={true}
-                                                readOnly={true}
-                                                errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                            />
-                                            :
-                                            <Dropdown
-                                                id="is_reduced_price"
-                                                defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                errorMessage={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
-                                                disabled={data?.is_non_competitive}
-                                            />
-                                    }
+                                    <DropdownIcon
+                                        id="is_reduced_price"
+                                        readOnly={readOnly}
+                                        icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
+                                        defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
+                                        disabled={data?.is_non_competitive}
+                                    />
                                 </Columns.Column>
                             </>
                         }
 
                         <Columns.Column>
                             <Label required htmlFor="is_transfer_needed">Demande transfert</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_transfer_needed"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_transfer_needed?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_transfer_needed"
-                                        defaultSelectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_transfer_needed?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_transfer_needed"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_transfer_needed?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                         <Columns.Column />
                         {!isMajor(data?.birthdate) && <><Columns.Column /> <Columns.Column /></>}
@@ -544,7 +521,7 @@ class _MemberOne extends React.Component {
                             <br />
                             <Columns>
                                 <Columns.Column>
-                                    <Text variant="large" block><Icon iconName='ContactList'/> Parent 1</Text>
+                                    <Text variant="large" block><Icon iconName='ContactList' /> Parent 1</Text>
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
@@ -612,7 +589,7 @@ class _MemberOne extends React.Component {
                                 </Columns.Column>
                                 {/* <Separator vertical /> */}
                                 <Columns.Column>
-                                    <Text variant="large" block><Icon iconName='ContactList'/> Parent 2</Text>
+                                    <Text variant="large" block><Icon iconName='ContactList' /> Parent 2</Text>
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
@@ -683,142 +660,94 @@ class _MemberOne extends React.Component {
                     }
 
                     <br />
-                    <Text variant="large" block><Icon iconName='AccountManagement'/> Choix et autorisation</Text>
+                    <Text variant="large" block><Icon iconName='AccountManagement' /> Choix et autorisation</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="is_evacuation_allow">Autorisation évacuation</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_evacuation_allow"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_evacuation_allow"
-                                        defaultSelectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_evacuation_allow: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_evacuation_allow"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_evacuation_allow: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
 
                         <Columns.Column>
                             <Label required htmlFor="is_transport_allow">Autorisation transport</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_transport_allow"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_transport_allow?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_transport_allow"
-                                        defaultSelectedKey={data?.is_transport_allow?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_transport_allow?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transport_allow: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_transport_allow"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_transport_allow?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_transport_allow?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transport_allow: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                         <Columns.Column>
                             <Label required htmlFor="is_image_allow">Autorisation utilisation image</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_image_allow"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_image_allow?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_image_allow"
-                                        defaultSelectedKey={data?.is_image_allow?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_image_allow?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_image_allow: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_image_allow"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_image_allow?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_image_allow?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_image_allow: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
 
                         <Columns.Column>
                             <Label required htmlFor="is_accepted">Règlement intérieur accepté</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_accepted"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_accepted"
-                                        defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_accepted?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_accepted"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_accepted?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                     </Columns>
 
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="is_newsletter_allow">Autorisation newsletter</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="is_newsletter_allow"
-                                        defaultValue={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="is_newsletter_allow"
-                                        defaultSelectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_newsletter_allow: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="is_newsletter_allow"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_newsletter_allow: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                         <Columns.Column>
                             {
                                 !isMajor(data?.birthdate) &&
                                 <>
                                     <Label required htmlFor="is_return_home_allow">Autorisation retour maison</Label>
-                                    {
-                                        readOnly ?
-                                            <TextField
-                                                id="is_return_home_allow"
-                                                defaultValue={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
-                                                borderless={true}
-                                                readOnly={true}
-                                                errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
-                                            />
-                                            :
-                                            <Dropdown
-                                                id="is_return_home_allow"
-                                                defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                errorMessage={this.state.errorField?.is_return_home_allow?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
-                                            />
-                                    }
+                                    <DropdownIcon
+                                        id="is_return_home_allow"
+                                        readOnly={readOnly}
+                                        icon={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
+                                        defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_return_home_allow?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
+                                    />
                                 </>
                             }
                         </Columns.Column>
@@ -828,94 +757,62 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block><Icon iconName='News'/> GestHand</Text>
+                    <Text variant="large" block><Icon iconName='News' /> GestHand</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
                             <Label htmlFor="gesthand_is_photo">Photo identité</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="gesthand_is_photo"
-                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="gesthand_is_photo"
-                                        defaultSelectedKey={data?.gesthand_is_photo?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_photo: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="gesthand_is_photo"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.gesthand_is_photo?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_photo: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
 
                         <Columns.Column>
                             <Label htmlFor="gesthand_is_certificate">Certificat médical</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="gesthand_is_certificate"
-                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="gesthand_is_certificate"
-                                        defaultSelectedKey={data?.gesthand_is_certificate?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_certificate: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="gesthand_is_certificate"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.gesthand_is_certificate?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_certificate: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                         <Columns.Column>
                             <Label htmlFor="gesthand_is_health_questionnaire">Questionnaire de santé</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="gesthand_is_health_questionnaire"
-                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="gesthand_is_health_questionnaire"
-                                        defaultSelectedKey={data?.gesthand_is_health_questionnaire?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_health_questionnaire: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="gesthand_is_health_questionnaire"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.gesthand_is_health_questionnaire?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_health_questionnaire: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
 
                         <Columns.Column>
                             <Label htmlFor="gesthand_is_ffhb_authorization">Autorisarion FFHB</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="gesthand_is_ffhb_authorization"
-                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="gesthand_is_ffhb_authorization"
-                                        defaultSelectedKey={data?.gesthand_is_ffhb_authorization?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_ffhb_authorization: JSON.parse(item.key) } })}
-                                    />
-                            }
+                            <DropdownIcon
+                                id="gesthand_is_ffhb_authorization"
+                                readOnly={readOnly}
+                                icon={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.icon ?? ''}
+                                valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.text ?? ''}
+                                defaultSelectedKey={data?.gesthand_is_ffhb_authorization?.toString() ?? 'false'}
+                                options={param?.choices}
+                                error={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
+                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_ffhb_authorization: JSON.parse(item.key) } })}
+                            />
                         </Columns.Column>
                     </Columns>
 
@@ -962,7 +859,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block><Icon iconName='FabricUserFolder'/> Document(s)</Text>
+                    <Text variant="large" block><Icon iconName='FabricUserFolder' /> Document(s)</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -1075,7 +972,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment'/> Autre</Text>
+                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Autre</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
