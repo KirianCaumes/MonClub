@@ -110,6 +110,14 @@ div#root {
             }
           }
         }
+        .ms-Button--commandBar.is-expanded.ms-Button--hasMenu {
+          &:hover {
+            i.ms-Icon.ms-Button-menuIcon.is-expanded {
+                background-color: unset;
+            }
+
+          }
+        }
       }
       div.content {
         padding: 10px 35px;

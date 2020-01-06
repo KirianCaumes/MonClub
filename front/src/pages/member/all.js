@@ -76,13 +76,32 @@ class _MembersAll extends ParentPage {
                 onClick: () => history.push('/membre/nouveau')
             },
             {
-                key: 'getGoogleContact',
-                text: 'Contact Google',
+                key: 'export',
+                text: 'Export',
                 iconProps: { iconName: 'CloudDownload' },
-                onClick: () => {
-                    request.getGoogleContact()
-                        .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
-                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                subMenuProps: {
+                    items: [
+                        {
+                            key: 'getGoogleContact',
+                            text: 'Contact Google',
+                            iconProps: { iconName: 'DownloadDocument' },
+                            onClick: () => request.getGoogleContact()
+                                .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
+                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                        },
+                        {
+                            key: 'getExcelTracking',
+                            text: 'Excel suivis',
+                            iconProps: { iconName: 'ExcelDocument' },
+                            onClick: () => null
+                        },
+                        {
+                            key: 'getExcelGeneral ',
+                            text: 'Excel générales',
+                            iconProps: { iconName: 'ExcelDocument' },
+                            onClick: () => null
+                        },
+                    ]
                 }
             },
         ])

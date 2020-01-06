@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Label, Text, MessageBarType } from 'office-ui-fabric-react'
+import { Separator, Label, Text, MessageBarType, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { Columns } from 'react-bulma-components'
@@ -23,7 +23,7 @@ class _MembersMeDocuments extends React.Component {
 
         return (
             <section id="members-me-documents">
-                <Text variant="large" block>Les documents</Text>
+                <Text variant="large" block><Icon iconName='FabricUserFolder'/> Les documents</Text>
                 <Separator />
                 <Columns>
                     <Columns.Column>

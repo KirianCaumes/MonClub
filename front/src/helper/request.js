@@ -207,7 +207,9 @@ export default {
             user: body?.user?.id,
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
-            sex: body?.sex?.id
+            sex: body?.sex?.id,
+            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {
@@ -261,7 +263,9 @@ export default {
             user: body?.user?.id,
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
-            sex: body?.sex?.id
+            sex: body?.sex?.id,
+            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {

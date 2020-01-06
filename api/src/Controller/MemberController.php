@@ -144,7 +144,6 @@ class MemberController extends FOSRestController
                 $data['is_non_competitive'] = false;
                 $form = $this->createForm(MemberMinorAdminType::class, $member);
             }
-            $data['is_accepted'] = true;
             $form->submit($data);
 
             if ($form->isSubmitted() && $form->isValid()) {

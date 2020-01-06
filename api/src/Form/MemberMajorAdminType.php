@@ -114,6 +114,18 @@ class MemberMajorAdminType extends AbstractType
                     new Callback([$this, 'checkIsInscriptionDone'])
                 ]
             ])
+            ->add('gesthand_is_photo')
+            ->add('gesthand_is_certificate')
+            ->add('gesthand_certificate_date', DateTimeType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+            ])
+            ->add('gesthand_is_health_questionnaire')
+            ->add('gesthand_is_ffhb_authorization')
+            ->add('gesthand_qualification_date', DateTimeType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+            ])
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])

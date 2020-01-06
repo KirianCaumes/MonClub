@@ -1,8 +1,13 @@
 #user-one {
-    .ms-DetailsHeader {
-      padding-top: 0 !important;
+  .ms-DetailsHeader {
+    padding-top: 0 !important;
+  }
+  .ms-DetailsRow-fields {
+    cursor: pointer;
+  }
+  span {
+    > i {
+      vertical-align: bottom;
     }
-    .ms-DetailsRow-fields {
-      cursor: pointer;
-    }
+  }
 }

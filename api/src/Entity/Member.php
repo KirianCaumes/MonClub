@@ -201,6 +201,36 @@ class Member
     private $is_inscription_done = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $gesthand_is_photo = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $gesthand_is_certificate = false;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $gesthand_certificate_date;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $gesthand_is_health_questionnaire = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $gesthand_is_ffhb_authorization = false;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $gesthand_qualification_date;
+
+    /**
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      */
     private $creation_datetime;
@@ -650,6 +680,78 @@ class Member
     public function setIsInscriptionDone(bool $is_inscription_done): self
     {
         $this->is_inscription_done = $is_inscription_done;
+
+        return $this;
+    }
+
+    public function getGesthandIsPhoto(): ?bool
+    {
+        return $this->gesthand_is_photo;
+    }
+
+    public function setGesthandIsPhoto(bool $gesthand_is_photo): self
+    {
+        $this->gesthand_is_photo = $gesthand_is_photo;
+
+        return $this;
+    }
+
+    public function getGesthandIsCertificate(): ?bool
+    {
+        return $this->gesthand_is_certificate;
+    }
+
+    public function setGesthandIsCertificate(bool $gesthand_is_certificate): self
+    {
+        $this->gesthand_is_certificate = $gesthand_is_certificate;
+
+        return $this;
+    }
+
+    public function getGesthandCertificateDate(): ?\DateTimeInterface
+    {
+        return $this->gesthand_certificate_date;
+    }
+
+    public function setGesthandCertificateDate(?\DateTimeInterface $gesthand_certificate_date): self
+    {
+        $this->gesthand_certificate_date = $gesthand_certificate_date;
+
+        return $this;
+    }
+
+    public function getGesthandIsHealthQuestionnaire(): ?bool
+    {
+        return $this->gesthand_is_health_questionnaire;
+    }
+
+    public function setGesthandIsHealthQuestionnaire(bool $gesthand_is_health_questionnaire): self
+    {
+        $this->gesthand_is_health_questionnaire = $gesthand_is_health_questionnaire;
+
+        return $this;
+    }
+
+    public function getGesthandIsFfhbAuthorization(): ?bool
+    {
+        return $this->gesthand_is_ffhb_authorization;
+    }
+
+    public function setGesthandIsFfhbAuthorization(bool $gesthand_is_ffhb_authorization): self
+    {
+        $this->gesthand_is_ffhb_authorization = $gesthand_is_ffhb_authorization;
+
+        return $this;
+    }
+
+    public function getGesthandQualificationDate(): ?\DateTimeInterface
+    {
+        return $this->gesthand_qualification_date;
+    }
+
+    public function setGesthandQualificationDate(?\DateTimeInterface $gesthand_qualification_date): self
+    {
+        $this->gesthand_qualification_date = $gesthand_qualification_date;
 
         return $this;
     }

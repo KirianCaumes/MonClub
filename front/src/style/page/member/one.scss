@@ -1,2 +1,7 @@
 #member-one {
+  span {
+    > i {
+      vertical-align: bottom;
+    }
+  }
 }

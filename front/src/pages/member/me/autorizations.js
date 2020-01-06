@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Label, Text, ChoiceGroup, Link, TextField, Checkbox } from 'office-ui-fabric-react'
+import { Separator, Label, Text, ChoiceGroup, Link, TextField, Checkbox, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { isMajor } from 'helper/date'
@@ -17,7 +17,7 @@ class _MembersMeAutorizations extends React.Component {
 
         return (
             <section id="members-me-autorizations">
-                <Text variant="large" block>Autorisations {!isMajor(member?.birthdate) ? 'parentales' : ''} THBC et règlement interieur</Text>
+                <Text variant="large" block><Icon iconName='AccountManagement'/> Autorisations {!isMajor(member?.birthdate) ? 'parentales' : ''} THBC et règlement interieur</Text>
                 <Separator />
                 {
                     isMajor(member?.birthdate)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -183,7 +183,7 @@ class _MemberOne extends React.Component {
                         </>
                     }
 
-                    <Text variant="large" block>Informations générales</Text>
+                    <Text variant="large" block><Icon iconName='ContactInfo'/> Informations générales</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -276,7 +276,7 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.phone_number?.errors?.[0]}
                             />
                         </Columns.Column>
-                        
+
                         <Columns.Column>
                             <Label htmlFor="profession">Profession</Label>
                             <TextField
@@ -415,7 +415,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block>Informations tarifaires</Text>
+                    <Text variant="large" block><Icon iconName='NumberedList'/> Informations tarifaires</Text>
                     <Separator />
 
                     <Columns>
@@ -544,7 +544,7 @@ class _MemberOne extends React.Component {
                             <br />
                             <Columns>
                                 <Columns.Column>
-                                    <Text variant="large" block>Parent 1</Text>
+                                    <Text variant="large" block><Icon iconName='ContactList'/> Parent 1</Text>
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
@@ -612,7 +612,7 @@ class _MemberOne extends React.Component {
                                 </Columns.Column>
                                 {/* <Separator vertical /> */}
                                 <Columns.Column>
-                                    <Text variant="large" block>Parent 2</Text>
+                                    <Text variant="large" block><Icon iconName='ContactList'/> Parent 2</Text>
                                     <Separator />
                                     <Columns>
                                         <Columns.Column>
@@ -683,7 +683,7 @@ class _MemberOne extends React.Component {
                     }
 
                     <br />
-                    <Text variant="large" block>Choix et autorisation</Text>
+                    <Text variant="large" block><Icon iconName='AccountManagement'/> Choix et autorisation</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -826,8 +826,143 @@ class _MemberOne extends React.Component {
                         <Columns.Column />
                         <Columns.Column />
                     </Columns>
+
                     <br />
-                    <Text variant="large" block>Document(s)</Text>
+                    <Text variant="large" block><Icon iconName='News'/> GestHand</Text>
+                    <Separator />
+                    <Columns>
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_is_photo">Photo identité</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        id="gesthand_is_photo"
+                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.text ?? ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        id="gesthand_is_photo"
+                                        defaultSelectedKey={data?.gesthand_is_photo?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        errorMessage={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_photo: JSON.parse(item.key) } })}
+                                    />
+                            }
+                        </Columns.Column>
+
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_is_certificate">Certificat médical</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        id="gesthand_is_certificate"
+                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.text ?? ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        id="gesthand_is_certificate"
+                                        defaultSelectedKey={data?.gesthand_is_certificate?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        errorMessage={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_certificate: JSON.parse(item.key) } })}
+                                    />
+                            }
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_is_health_questionnaire">Questionnaire de santé</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        id="gesthand_is_health_questionnaire"
+                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.text ?? ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        id="gesthand_is_health_questionnaire"
+                                        defaultSelectedKey={data?.gesthand_is_health_questionnaire?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        errorMessage={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_health_questionnaire: JSON.parse(item.key) } })}
+                                    />
+                            }
+                        </Columns.Column>
+
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_is_ffhb_authorization">Autorisarion FFHB</Label>
+                            {
+                                readOnly ?
+                                    <TextField
+                                        id="gesthand_is_ffhb_authorization"
+                                        defaultValue={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.text ?? ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                        errorMessage={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
+                                    />
+                                    :
+                                    <Dropdown
+                                        id="gesthand_is_ffhb_authorization"
+                                        defaultSelectedKey={data?.gesthand_is_ffhb_authorization?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        errorMessage={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_ffhb_authorization: JSON.parse(item.key) } })}
+                                    />
+                            }
+                        </Columns.Column>
+                    </Columns>
+
+                    <Columns>
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_certificate_date">Date du certificat médical</Label>
+                            <TooltipHost
+                                content="Format attendu: JJ/MM/AAAA"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <MaskedTextField
+                                    id="gesthand_certificate_date"
+                                    value={stringToCleanString(data?.gesthand_certificate_date)}
+                                    mask={"99/99/9999"}
+                                    borderless={readOnly}
+                                    readOnly={readOnly}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_certificate_date: stringToDate(ev.target.value) } })}
+                                    errorMessage={this.state.errorField?.gesthand_certificate_date?.errors?.[0]}
+                                />
+                            </TooltipHost>
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label htmlFor="gesthand_qualification_date">Date de qualification</Label>
+                            <TooltipHost
+                                content="Format attendu: JJ/MM/AAAA"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <MaskedTextField
+                                    id="gesthand_qualification_date"
+                                    value={stringToCleanString(data?.gesthand_qualification_date)}
+                                    mask={"99/99/9999"}
+                                    borderless={readOnly}
+                                    readOnly={readOnly}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_qualification_date: stringToDate(ev.target.value) } })}
+                                    errorMessage={this.state.errorField?.gesthand_qualification_date?.errors?.[0]}
+                                />
+                            </TooltipHost>
+                        </Columns.Column>
+
+                        <Columns.Column />
+                        <Columns.Column />
+                    </Columns>
+
+                    <br />
+                    <Text variant="large" block><Icon iconName='FabricUserFolder'/> Document(s)</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -940,7 +1075,7 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block>Autre</Text>
+                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment'/> Autre</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>

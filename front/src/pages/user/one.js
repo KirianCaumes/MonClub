@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, Dropdown } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Dropdown, Text, Icon, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -78,6 +78,8 @@ class _UserOne extends React.Component {
         return (
             <section id="user-one">
                 <div className="card" >
+                    <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
+                    <Separator />
                     <Columns>
                         <Columns.Column>
                             <Label disabled={!readOnly} htmlFor="username">Nom</Label>

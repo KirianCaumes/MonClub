@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar } from 'office-ui-fabric-react'
+import { Separator, Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember, setMembers } from 'redux/actions/member'
@@ -48,14 +48,14 @@ class _MembersMePayment extends React.Component {
 
         return (
             <section id="members-me-paypal">
-                <Text variant="large" block>Paiement</Text>
+                <Text variant="large" block><Icon iconName='PaymentCard'/> Paiement</Text>
                 <Separator />
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={true} >
                     Attention, veuillez vérifier que tous les membres de votre famille ont bien été ajoutées et leurs documents sont complétés.<br />
                     Pour ajouter un nouveau membre, cliquez sur le bouton "Ajouter un membre" en haut de l'écran. Pour revenir en arrière, appuyant sur le bouton "Retour" en bas de l'écran.
                 </MessageBar>
                 <br />
-                <Text variant="large" block>Détails du paiement (des membres non payés)</Text>
+                <Text variant="large" block><Icon iconName='NumberedList'/> Détails du paiement (des membres non payés)</Text>
                 <Separator />
                 <Table>
                     <thead>
@@ -82,7 +82,7 @@ class _MembersMePayment extends React.Component {
                     </tfoot>
                 </Table>
                 <br />
-                <Text variant="large" block>Choisissez votre mode de paiement</Text>
+                <Text variant="large" block><Icon iconName='CheckMark'/> Choisissez votre mode de paiement</Text>
                 <Separator />
                 <ChoiceGroup
                     options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
@@ -93,7 +93,7 @@ class _MembersMePayment extends React.Component {
                     optionSelectedKey &&
                     <>
                         <br /><br />
-                        <Text variant="large" block>Procédez au paiement</Text>
+                        <Text variant="large" block><Icon iconName='Processing'/> Procédez au paiement</Text>
                         <Separator />
 
                         {

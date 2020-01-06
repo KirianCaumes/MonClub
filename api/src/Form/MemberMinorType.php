@@ -77,13 +77,29 @@ class MemberMinorType extends AbstractType
             ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])            
+            ])      
+            ->add('gesthand_is_photo', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_is_certificate', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_certificate_date', DateTimeType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_is_health_questionnaire', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_is_ffhb_authorization', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_qualification_date', DateTimeType::class, [
+                'disabled' => true,
+            ])   
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('notes', CheckboxType::class, [
-                'disabled' => true,
-            ])
+            ->add('notes')   
             ->add('sex', EntityType::class, [
                 'class' => ParamSex::class
             ])

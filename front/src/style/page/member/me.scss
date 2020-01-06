@@ -20,4 +20,9 @@
       margin: 0 0 10px auto;
     }
   }
+  span {
+    > i {
+      vertical-align: bottom;
+    }
+  }
 }

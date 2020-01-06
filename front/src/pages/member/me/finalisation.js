@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Text } from 'office-ui-fabric-react'
+import { Separator, Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 
 class _MembersMeFinalisation extends React.Component {
@@ -11,7 +11,7 @@ class _MembersMeFinalisation extends React.Component {
     render() {
         return (
             <section id="members-me-finalisation">
-                <Text variant="large" block>Votre inscription a bien été prise en compte !</Text>
+                <Text variant="large" block><Icon iconName='CheckboxComposite'/> Votre inscription a bien été prise en compte !</Text>
                 <Separator />
                 <Text>Votre inscription et votre paiement ont bien été pris en compte. Vous recevrez, apres confirmation du club de vos informations, un mail vous confirmant votre inscription au THBC.</Text>
             </section >

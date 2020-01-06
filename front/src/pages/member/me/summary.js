@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Text, MessageBarType } from 'office-ui-fabric-react'
+import { Separator, Text, MessageBarType, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember } from 'redux/actions/member'
@@ -35,11 +35,11 @@ class _MembersMeSummary extends React.Component {
 
         return (
             <section id="members-me-summary">
-                <Text variant="large" block>Récapitulatif du montant</Text>
+                <Text variant="large" block><Icon iconName='ClipboardList'/> Récapitulatif du montant</Text>
                 <Separator />
                 <Text className="has-text-justified" block>Retrouvez le récapitulatif détaillé du montant qu'il vous sera demandé de payer <b>(sont surlignées en vert les informations vous correspondantes)</b>. Si le tarif proposé ne correspond pas, veuillez retourner en arrière pour modifier vos informations.</Text>
                 <br /><br />
-                <Text variant="large" block>Tarifs</Text>
+                <Text variant="large" block><Icon iconName='NumberedList'/> Tarifs</Text>
                 <Separator />
                 <Table>
                     <thead>
@@ -111,7 +111,7 @@ class _MembersMeSummary extends React.Component {
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block className={!member?.is_transfer_needed ? 'is-line-through' : ''}>Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
+                <Text variant="large" block className={!member?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList'/> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
                 <Separator />
                 <Table className={!member?.is_transfer_needed ? 'is-line-through' : ''}>
                     <thead>
@@ -133,7 +133,7 @@ class _MembersMeSummary extends React.Component {
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block >Hand en famille (remise valable pour <b>les membres de la même famille</b>)</Text>
+                <Text variant="large" block ><Icon iconName='NumberedList'/> Hand en famille (remise valable pour <b>les membres de la même famille</b>)</Text>
                 <Separator />
                 <Table>
                     <thead>
@@ -155,7 +155,7 @@ class _MembersMeSummary extends React.Component {
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block >Total à payer pour ce membre: <b>{price} €</b></Text>
+                <Text variant="large" block ><Icon iconName='NumberSymbol'/> Total à payer pour ce membre: <b>{price} €</b></Text>
                 <br />
             </section >
         )

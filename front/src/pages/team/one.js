@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Separator } from 'office-ui-fabric-react'
+import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Separator, Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -123,6 +123,8 @@ class _TeamOne extends React.Component {
         return (
             <section id="team-one">
                 <div className="card" >
+                    <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
+                    <Separator />
                     <Columns>
                         <Columns.Column>
                             <Columns>

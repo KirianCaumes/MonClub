@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay, Dropdown } from 'office-ui-fabric-react'
+import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay, Dropdown, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
@@ -18,7 +18,7 @@ class _MembersMeInformations extends React.Component {
 
         return (
             <section id="members-me-informations">
-                <Text variant="large" block>Informations concernant le licencié</Text>
+                <Text variant="large" block><Icon iconName='ContactInfo'/> Informations concernant le licencié</Text>
                 <Separator />
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
                     Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
@@ -204,7 +204,7 @@ class _MembersMeInformations extends React.Component {
                         <br />
                         <Columns>
                             <Columns.Column>
-                                <Text variant="large" block>Parent 1</Text>
+                                <Text variant="large" block><Icon iconName='ContactList'/> Parent 1</Text>
                                 <Separator />
                                 <Columns>
                                     <Columns.Column>
@@ -272,7 +272,7 @@ class _MembersMeInformations extends React.Component {
                             </Columns.Column>
                             {/* <Separator vertical /> */}
                             <Columns.Column>
-                                <Text variant="large" block>Parent 2</Text>
+                                <Text variant="large" block><Icon iconName='ContactList'/> Parent 2</Text>
                                 <Separator />
                                 <Columns>
                                     <Columns.Column>
