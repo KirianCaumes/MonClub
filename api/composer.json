@@ -13,6 +13,7 @@
         "jms/serializer-bundle": "^3.4",
         "lexik/jwt-authentication-bundle": "^2.6",
         "nelmio/cors-bundle": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.10",
         "rollerworks/password-strength-bundle": "^2.2",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/console": "^4.4",

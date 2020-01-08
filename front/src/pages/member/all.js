@@ -84,21 +84,24 @@ class _MembersAll extends ParentPage {
                         {
                             key: 'getGoogleContact',
                             text: 'Contact Google',
-                            iconProps: { iconName: 'DownloadDocument' },
+                            iconProps: { iconName: 'TextDocumentShared' },
                             onClick: () => request.getGoogleContact()
                                 .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
                                 .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                         },
                         {
                             key: 'getExcelTracking',
-                            text: 'Excel suivis',
+                            text: 'Excel suivis membres',
                             iconProps: { iconName: 'ExcelDocument' },
-                            onClick: () => null
+                            onClick: () => request.getExcelTracking()
+                                .then(file => dlBlob(file, `export_excel_suivis-${stringToCleanString(new Date())}.xlsx`))
+                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                         },
                         {
                             key: 'getExcelGeneral ',
-                            text: 'Excel générales',
+                            text: 'Excel infos générales',
                             iconProps: { iconName: 'ExcelDocument' },
+                            disabled: true,
                             onClick: () => null
                         },
                     ]

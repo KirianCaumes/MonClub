@@ -25,6 +25,15 @@ import TeamOne from './pages/team/one'
 import UsersAll from './pages/user/all'
 import UserOne from './pages/user/one'
 import Modal from './component/modal'
+import { registerIcons } from '@uifabric/styling'
+
+//Add icons from fontawesome to Ms
+registerIcons({
+    icons: {
+        'Man': '',
+        'Woman': '',
+    }
+})
 
 initializeIcons()
 loadTheme({
@@ -63,11 +72,11 @@ class _App extends React.Component {
     }
 
     componentDidCatch(error, info) {
-        request.postLog({ 
-            env: process.env.NODE_ENV, 
-            datetime: new Date(), 
-            error: error.message, 
-            info: 'INFO: ' + JSON.stringify(info) + ' STACK: ' + (JSON.stringify(error?.stack) ?? error) 
+        request.postLog({
+            env: process.env.NODE_ENV,
+            datetime: new Date(),
+            error: error.message,
+            info: 'INFO: ' + JSON.stringify(info) + ' STACK: ' + (JSON.stringify(error?.stack) ?? error)
         }).then()
     }
 

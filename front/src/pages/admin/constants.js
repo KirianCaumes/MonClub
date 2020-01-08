@@ -176,6 +176,14 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
+                            },
+                            {
+                                key: 'icon',
+                                name: 'Icon',
+                                fieldName: 'icon',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
                             }
                         ]}
                         selectionMode={SelectionMode.none}
@@ -201,6 +209,14 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true
+                            },
+                            {
+                                key: 'icon',
+                                name: 'Icon',
+                                fieldName: 'icon',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
                             }
                         ]}
                         selectionMode={SelectionMode.none}

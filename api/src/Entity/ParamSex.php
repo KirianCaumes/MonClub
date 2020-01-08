@@ -24,6 +24,11 @@ class ParamSex
      */
     private $label;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $icon;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,6 +42,18 @@ class ParamSex
     public function setLabel(string $label): self
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(string $icon): self
+    {
+        $this->icon = $icon;
 
         return $this;
     }

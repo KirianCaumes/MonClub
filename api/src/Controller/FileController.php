@@ -102,7 +102,7 @@ class FileController extends FOSRestController
     /**
      * Generate and get csv for GoogleContact.
      * @IsGranted("ROLE_ADMIN")
-     * @Route("/google-contact")
+     * @Route("/google/contact")
      */
     public function getGoogleContact(ParamService $paramService)
     {
@@ -153,6 +153,66 @@ class FileController extends FOSRestController
         }
 
         return $this->handleView($this->view(''));
+    }
+
+    /**
+     * Generate and get csv for GoogleContact.
+     * @IsGranted("ROLE_ADMIN")
+     * @Route("/excel/tracking")
+     */
+    public function getExcelTracking(ParamService $paramService)
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->fromArray(['Année de naissance', 'Nom', 'Prénom', 'Photo', 'Certificat', 'date certificat', 'identité PHOTO / CI', 'attestation quest santé', 'autorisation FFHB', 'date FINALISATION/valid/qualif', 'e-mail', 'père', 'mère', 'validation @ mail'], null, 'A1');
+
+        $colors = ['#FFFFFF', '#00FFFF', '#FFFF00', '#FF9900', '#00FF00'];
+
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['season' => $paramService->getCurrentSeason()]);
+        foreach ($members as $key => $member) {
+            $row = $key + 2;
+            $sheet->setCellValue('A' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('Y') : ''));
+            $sheet->setCellValue('B' . $row, ($member->getLastname()));
+            $sheet->setCellValue('C' . $row, ($member->getFirstname()));
+            $sheet->setCellValue('D' . $row, ($member->getGesthandIsPhoto() ? 'Ok' : ''));
+            $sheet->setCellValue('E' . $row, ($member->getGesthandIsCertificate() ? 'Ok' : ''));
+            $sheet->setCellValue('F' . $row, ($member->getGesthandCertificateDate() ? $member->getGesthandCertificateDate()->format('Y') : ''));
+            $sheet->setCellValue('G' . $row, ($member->getGesthandIsPhoto() ? 'Ok' : ''));
+            $sheet->setCellValue('H' . $row, ($member->getGesthandIsHealthQuestionnaire() ? 'Ok' : ''));
+            $sheet->setCellValue('I' . $row, ($member->getGesthandIsFfhbAuthorization() ? 'Ok' : ''));
+            $sheet->setCellValue('J' . $row, ($member->getGesthandQualificationDate() ? $member->getGesthandQualificationDate()->format('Y') : ''));
+            $sheet->setCellValue('K' . $row, (function () use ($member) {
+                $mails = array_filter([$member->getEmail(), $member->getParentOneEmail(), $member->getParentTwoEmail()]);
+                return implode(' / ', $mails);
+            })());
+            $sheet->setCellValue('L' . $row, ($member->getParentOneProfession() ? $member->getParentOneProfession() : ''));
+            $sheet->setCellValue('M' . $row, ($member->getParentTwoProfession() ? $member->getParentTwoProfession() : ''));
+            $sheet->setCellValue('N' . $row, '');
+
+            $sheet->getStyle('A' . $row . ':J' . $row)->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('a2bef9');
+        }
+
+        //Resize auto columns
+        for ($col = 'A'; $col !== 'O'; $col++) $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+
+        //Return
+        $response = new StreamedResponse(
+            function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="excel_suivis.xls"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
     }
 
     /**

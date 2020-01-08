@@ -408,8 +408,17 @@ export default {
 
         return getFetch(url, options)
     },
-    getGoogleContact: (memberId) => {
-        const url = ["document", "google-contact"]
+    getGoogleContact: () => {
+        const url = ["document", "google", "contact"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    getExcelTracking: () => {
+        const url = ["document", "excel", "tracking"]
 
         var options = {
             method: GET
