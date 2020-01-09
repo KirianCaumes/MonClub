@@ -21,26 +21,26 @@ class _MembersAll extends ParentPage {
                 name: '',
                 stepsId: [],
                 teamsId: [],
-                seasonId: ''
+                seasonId: props.param?.season?.find(x => x.is_current)?.id
             },
             columns: [
                 {
                     key: 'lastname',
                     name: 'Nom',
-                    fieldName: 'lastname',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
                     isSorted: true,
-                    isSortedDescending: false
+                    isSortedDescending: false,
+                    onRender: member => <span className="is-capitalized">{member.lastname}</span>
                 },
                 {
                     key: 'firstname',
                     name: 'Prénom',
-                    fieldName: 'firstname',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
+                    onRender: member => <span className="is-capitalized">{member.firstname}</span>
                 },
                 {
                     key: 'step',
@@ -48,7 +48,7 @@ class _MembersAll extends ParentPage {
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
-                    onRender: member => <>{getWf(member)}</>
+                    onRender: member => <span className="is-capitalized">{getWf(member)}</span>
                 },
                 {
                     key: 'team',
@@ -56,7 +56,7 @@ class _MembersAll extends ParentPage {
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
-                    onRender: member => <>{member.teams?.map(team => team.label)?.join(', ')}</>
+                    onRender: member => <span className="is-capitalized">{member.teams?.map(team => team.label)?.join(', ')}</span>
                 }
             ]
         }
@@ -101,8 +101,9 @@ class _MembersAll extends ParentPage {
                             key: 'getExcelGeneral ',
                             text: 'Excel infos générales',
                             iconProps: { iconName: 'ExcelDocument' },
-                            disabled: true,
-                            onClick: () => null
+                            onClick: () => request.getExcelGeneral()
+                                .then(file => dlBlob(file, `export_excel_informations_generales-${stringToCleanString(new Date())}.xlsx`))
+                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                         },
                     ]
                 }

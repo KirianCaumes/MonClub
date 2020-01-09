@@ -29,7 +29,6 @@ class User extends BaseUser
     protected $username;
 
     /**
-     * @Assert\NotBlank(message = "not_blank")
      * @RollerworksPassword\Blacklist(message="password_blacklisted")
      * @RollerworksPassword\PasswordStrength(minLength=10, minStrength=4)
      */

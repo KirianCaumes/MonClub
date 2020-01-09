@@ -2,11 +2,13 @@
 
 namespace App\Form;
 
+use App\Entity\Team;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -22,6 +24,10 @@ class UserAdminType extends AbstractType
                     'ROLE_ADMIN' => 'ROLE_ADMIN',
                     'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
                 ],
+                'multiple' => true
+            ])       
+            ->add('teams', EntityType::class, [
+                'class' => Team::class,
                 'multiple' => true
             ])
             ->add('enabled', CheckboxType::class)

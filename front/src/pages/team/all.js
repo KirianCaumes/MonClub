@@ -22,7 +22,8 @@ class _TeamsAll extends ParentPage {
                     maxWidth: 200,
                     isResizable: true,
                     isSorted: true,
-                    isSortedDescending: false
+                    isSortedDescending: false,
+                    onRender: team => <span className="is-capitalized">{team.label}</span>
                 },
                 {
                     key: 'label_google_contact',
@@ -31,6 +32,7 @@ class _TeamsAll extends ParentPage {
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
+                    onRender: team => <span className="is-capitalized">{team.label_google_contact}</span>
                 }
             ]
         }

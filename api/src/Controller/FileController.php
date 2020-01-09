@@ -9,6 +9,7 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamGlobal;
+use App\Entity\Team;
 use App\Form\DocumentType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorType;
@@ -32,73 +33,6 @@ use Vich\UploaderBundle\Handler\DownloadHandler;
  */
 class FileController extends FOSRestController
 {
-    /**
-     * Post Document.
-     * @Rest\Post("/{memberId}/{documentCategoryId}")
-     *
-     * @return Response
-     */
-    public function postDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
-    {
-        //Find member by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
-        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        //Find document categoru by id
-        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
-        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
-
-        //Save document
-        $document = new Document();
-        $form = $this->createForm(DocumentType::class, $document);
-        $form->submit($request->files->all());
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            //Check if doc with current category for current user exists
-            $docs = $this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member, 'category' => $documentCategory]);
-            if ($docs) {
-                foreach ($docs as $doc) $em->remove($doc);
-                $em->flush();
-            }
-
-            $document->setMember($member);
-            $document->setCategory($documentCategory);
-            $em->persist($document);
-            $em->flush();
-            return $this->handleView($this->view($document, Response::HTTP_CREATED));
-        }
-        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
-    }
-
-    /**
-     * Delete Document.
-     * @Rest\Delete("/{memberId}/{documentCategoryId}")
-     *
-     * @return Response
-     */
-    public function deleteDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
-    {
-        //Find member by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
-        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        //Find document categoru by id
-        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
-        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
-
-        //Find document
-        $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
-        if (!$document) return $this->handleView($this->view(["message" => $translator->trans('document_not_found')], Response::HTTP_NOT_FOUND));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($document);
-        $em->flush();
-        return $this->handleView($this->view([]));
-    }
-
     /**
      * Generate and get csv for GoogleContact.
      * @IsGranted("ROLE_ADMIN")
@@ -167,21 +101,19 @@ class FileController extends FOSRestController
 
         $sheet->fromArray(['Année de naissance', 'Nom', 'Prénom', 'Photo', 'Certificat', 'date certificat', 'identité PHOTO / CI', 'attestation quest santé', 'autorisation FFHB', 'date FINALISATION/valid/qualif', 'e-mail', 'père', 'mère', 'validation @ mail'], null, 'A1');
 
-        $colors = ['#FFFFFF', '#00FFFF', '#FFFF00', '#FF9900', '#00FF00'];
-
         $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['season' => $paramService->getCurrentSeason()]);
+        $row = 2;
         foreach ($members as $key => $member) {
-            $row = $key + 2;
             $sheet->setCellValue('A' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('Y') : ''));
             $sheet->setCellValue('B' . $row, ($member->getLastname()));
             $sheet->setCellValue('C' . $row, ($member->getFirstname()));
             $sheet->setCellValue('D' . $row, ($member->getGesthandIsPhoto() ? 'Ok' : ''));
             $sheet->setCellValue('E' . $row, ($member->getGesthandIsCertificate() ? 'Ok' : ''));
-            $sheet->setCellValue('F' . $row, ($member->getGesthandCertificateDate() ? $member->getGesthandCertificateDate()->format('Y') : ''));
+            $sheet->setCellValue('F' . $row, ($member->getGesthandCertificateDate() ? $member->getGesthandCertificateDate()->format('d/m/Y') : ''));
             $sheet->setCellValue('G' . $row, ($member->getGesthandIsPhoto() ? 'Ok' : ''));
             $sheet->setCellValue('H' . $row, ($member->getGesthandIsHealthQuestionnaire() ? 'Ok' : ''));
             $sheet->setCellValue('I' . $row, ($member->getGesthandIsFfhbAuthorization() ? 'Ok' : ''));
-            $sheet->setCellValue('J' . $row, ($member->getGesthandQualificationDate() ? $member->getGesthandQualificationDate()->format('Y') : ''));
+            $sheet->setCellValue('J' . $row, ($member->getGesthandQualificationDate() ? $member->getGesthandQualificationDate()->format('d/m/Y') : ''));
             $sheet->setCellValue('K' . $row, (function () use ($member) {
                 $mails = array_filter([$member->getEmail(), $member->getParentOneEmail(), $member->getParentTwoEmail()]);
                 return implode(' / ', $mails);
@@ -192,15 +124,64 @@ class FileController extends FOSRestController
 
             $sheet->getStyle('A' . $row . ':J' . $row)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('a2bef9');
+                ->getStartColor()->setARGB((function () use ($member) {
+                    if (
+                        $member->getIsDocumentComplete() &&
+                        !$member->getIsPayed() &&
+                        !$member->getIsCheckGestHand() &&
+                        !$member->getIsInscriptionDone()
+                    ) {
+                        return Constants::COLORS[1];
+                    } else if (
+                        $member->getIsDocumentComplete() &&
+                        $member->getIsPayed() &&
+                        !$member->getIsCheckGestHand() &&
+                        !$member->getIsInscriptionDone()
+                    ) {
+                        return Constants::COLORS[2];
+                    } else if (
+                        $member->getIsDocumentComplete() &&
+                        $member->getIsPayed() &&
+                        $member->getIsCheckGestHand() &&
+                        !$member->getIsInscriptionDone()
+                    ) {
+                        return Constants::COLORS[3];
+                    } else if (
+                        $member->getIsDocumentComplete() &&
+                        $member->getIsPayed() &&
+                        $member->getIsCheckGestHand() &&
+                        $member->getIsInscriptionDone()
+                    ) {
+                        return Constants::COLORS[4];
+                    } else {
+                        return Constants::COLORS[0];
+                    }
+                })());
+            $row++;
         }
 
-        //Resize auto columns
-        for ($col = 'A'; $col !== 'O'; $col++) $spreadsheet->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+        //Add legends
+        $sheet->getStyle('A' . ($row + 1))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[0]);
+        $sheet->setCellValue('B' . ($row + 1), "Le licencié n'a rien fait");
+        $sheet->getStyle('A' . ($row + 2))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[1]);
+        $sheet->setCellValue('B' . ($row + 2), "Le licencié est inscris et à envoyé ses docs");
+        $sheet->getStyle('A' . ($row + 3))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[2]);
+        $sheet->setCellValue('B' . ($row + 3), "Le licencié a payé");
+        $sheet->getStyle('A' . ($row + 4))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[3]);
+        $sheet->setCellValue('B' . ($row + 4), "Le licencié est bien inscirs sur Gesthand");
+        $sheet->getStyle('A' . ($row + 5))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[4]);
+        $sheet->setCellValue('B' . ($row + 5), "Les licencié est inscris");
 
+        //Resize auto columns
+        for ($col = 'A'; $col !== 'O'; $col++) $sheet->getColumnDimension($col)->setAutoSize(true);
+
+        //Add borders: HS
+        $sheet->getStyle('A1:N' . $row)->applyFromArray(['borders' => ['allborders' => ['style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE, 'color' => ['argb' => '0000']]]]);
+
+        //Freeze first row
+        $sheet->freezePane('C2');
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-
 
         //Return
         $response = new StreamedResponse(
@@ -213,6 +194,184 @@ class FileController extends FOSRestController
         $response->headers->set('Cache-Control', 'max-age=0');
 
         return $response;
+    }
+
+    /**
+     * Generate and get excel 'infos general'.
+     * @IsGranted("ROLE_ADMIN")
+     * @Route("/excel/general")
+     */
+    public function getExcelGeneral(ParamService $paramService)
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        $teams = $this->getDoctrine()->getRepository(Team::class)->findAll();
+        foreach ($teams as $index => $team) {
+            if ($index > 0) $spreadsheet->createSheet();
+            $spreadsheet->setActiveSheetIndex($index);
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle($team->getLabel());
+
+            $sheet->fromArray(['Nom', 'Prenom', 'Date naissance', 'Email', 'Email Parent 1', 'Email Parent 2', 'Adresse', 'Ville', 'Code postal', 'Tel', 'Tel Parent 1', 'Tel Parent 2', 'Prof. Parent 1', 'Prof. Parent 2'], null, 'A1');
+
+            $members = $this->getDoctrine()->getRepository(Member::class)->findByTeamsAndSeason([$team], $paramService->getCurrentSeason());
+
+            $row = 2;
+            foreach ($members as $member) {
+                $sheet->setCellValue('A' . $row, ($member->getLastname()));
+                $sheet->setCellValue('B' . $row, ($member->getFirstname()));
+                $sheet->setCellValue('C' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('d/m/Y') : ''));
+                $sheet->setCellValue('D' . $row, ($member->getEmail() ? $member->getEmail() : ''));
+                $sheet->setCellValue('E' . $row, ($member->getParentOneEmail() ? $member->getParentOneEmail() : ''));
+                $sheet->setCellValue('F' . $row, ($member->getParentTwoEmail() ? $member->getParentTwoEmail() : ''));
+                $sheet->setCellValue('G' . $row, ($member->getStreet() ? $member->getStreet() : ''));
+                $sheet->setCellValue('H' . $row, ($member->getCity() ? $member->getCity() : ''));
+                $sheet->setCellValue('I' . $row, ($member->getPostalCode() ? $member->getPostalCode() : ''));
+                $sheet->setCellValue('J' . $row, ($member->getPhoneNumber() ? $member->getPhoneNumber() : ''));
+                $sheet->setCellValue('K' . $row, ($member->getParentOnePhoneNumber() ? $member->getParentOnePhoneNumber() : ''));
+                $sheet->setCellValue('L' . $row, ($member->getParentTwoPhoneNumber() ? $member->getParentTwoPhoneNumber() : ''));
+                $sheet->setCellValue('M' . $row, ($member->getParentOneProfession() ? $member->getParentOneProfession() : ''));
+                $sheet->setCellValue('N' . $row, ($member->getParentTwoProfession() ? $member->getParentTwoProfession() : ''));
+
+                $sheet->getStyle('A' . $row . ':N' . $row)->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB((function () use ($member) {
+                        if (
+                            $member->getIsDocumentComplete() &&
+                            !$member->getIsPayed() &&
+                            !$member->getIsCheckGestHand() &&
+                            !$member->getIsInscriptionDone()
+                        ) {
+                            return Constants::COLORS[1];
+                        } else if (
+                            $member->getIsDocumentComplete() &&
+                            $member->getIsPayed() &&
+                            !$member->getIsCheckGestHand() &&
+                            !$member->getIsInscriptionDone()
+                        ) {
+                            return Constants::COLORS[2];
+                        } else if (
+                            $member->getIsDocumentComplete() &&
+                            $member->getIsPayed() &&
+                            $member->getIsCheckGestHand() &&
+                            !$member->getIsInscriptionDone()
+                        ) {
+                            return Constants::COLORS[3];
+                        } else if (
+                            $member->getIsDocumentComplete() &&
+                            $member->getIsPayed() &&
+                            $member->getIsCheckGestHand() &&
+                            $member->getIsInscriptionDone()
+                        ) {
+                            return Constants::COLORS[4];
+                        } else {
+                            return Constants::COLORS[0];
+                        }
+                    })());
+                $row++;
+            }
+
+            //Add legends
+            $sheet->getStyle('A' . ($row + 1))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[0]);
+            $sheet->setCellValue('B' . ($row + 1), "Le licencié n'a rien fait");
+            $sheet->getStyle('A' . ($row + 2))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[1]);
+            $sheet->setCellValue('B' . ($row + 2), "Le licencié est inscris et à envoyé ses docs");
+            $sheet->getStyle('A' . ($row + 3))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[2]);
+            $sheet->setCellValue('B' . ($row + 3), "Le licencié a payé");
+            $sheet->getStyle('A' . ($row + 4))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[3]);
+            $sheet->setCellValue('B' . ($row + 4), "Le licencié est bien inscirs sur Gesthand");
+            $sheet->getStyle('A' . ($row + 5))->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB(Constants::COLORS[4]);
+            $sheet->setCellValue('B' . ($row + 5), "Les licencié est inscris");
+
+            //Resize auto columns
+            for ($col = 'A'; $col !== 'O'; $col++) $sheet->getColumnDimension($col)->setAutoSize(true);
+
+            //Add borders: HS
+            $sheet->getStyle('A1:N' . $row)->applyFromArray(['borders' => ['allborders' => ['style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOUBLE, 'color' => ['argb' => '0000']]]]);
+
+            //Freeze first row
+            $sheet->freezePane('A2');
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        //Return
+        $response = new StreamedResponse(
+            function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="excel_suivis.xls"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
+    }
+    /**
+     * Post Document.
+     * @Rest\Post("/{memberId}/{documentCategoryId}")
+     *
+     * @return Response
+     */
+    public function postDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        //Find document categoru by id
+        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
+        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+
+        //Save document
+        $document = new Document();
+        $form = $this->createForm(DocumentType::class, $document);
+        $form->submit($request->files->all());
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            //Check if doc with current category for current user exists
+            $docs = $this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member, 'category' => $documentCategory]);
+            if ($docs) {
+                foreach ($docs as $doc) $em->remove($doc);
+                $em->flush();
+            }
+
+            $document->setMember($member);
+            $document->setCategory($documentCategory);
+            $em->persist($document);
+            $em->flush();
+            return $this->handleView($this->view($document, Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
+     * Delete Document.
+     * @Rest\Delete("/{memberId}/{documentCategoryId}")
+     *
+     * @return Response
+     */
+    public function deleteDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        //Find document categoru by id
+        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
+        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+
+        //Find document
+        $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
+        if (!$document) return $this->handleView($this->view(["message" => $translator->trans('document_not_found')], Response::HTTP_NOT_FOUND));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($document);
+        $em->flush();
+        return $this->handleView($this->view([]));
     }
 
     /**

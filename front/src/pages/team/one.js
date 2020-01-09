@@ -23,7 +23,7 @@ class _TeamOne extends React.Component {
         this.props.setBreadcrumb([
             { text: 'Équipe', key: 'teams' },
             { text: 'Toutes les équipes', key: 'all-teams', onClick: () => history.push('/equipes') },
-            { text: `${this.props.match?.params?.id ? (this.state.data?.label ?? '') : 'Nouveau'}`, key: 'teamOne', isCurrentItem: true },
+            { text: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.label ?? '') : 'Nouveau'}</span>, key: 'teamOne', isCurrentItem: true },
         ])
 
         const commandRead = [

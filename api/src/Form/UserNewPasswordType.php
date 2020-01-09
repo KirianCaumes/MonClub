@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Entity\User;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserNewPasswordType extends AbstractType
 {
@@ -18,6 +19,9 @@ class UserNewPasswordType extends AbstractType
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
                 'invalid_message' => 'invalid_password',
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
             ])
             ->add('save', SubmitType::class);
     }

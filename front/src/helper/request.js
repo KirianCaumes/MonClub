@@ -426,6 +426,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getExcelGeneral: () => {
+        const url = ["document", "excel", "general"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     deleteDocument: (memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
 
@@ -455,6 +464,10 @@ export default {
     },
     editUser: (id, body) => {
         const url = ["user", id]
+        body = {
+            ...body,
+            teams: body?.teams?.map(x => x.id)
+        }
 
         var options = {
             method: PUT,

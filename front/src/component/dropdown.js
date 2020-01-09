@@ -11,7 +11,7 @@ export default class DropdownIcon extends React.Component {
         /** Value to display on read */
         valueDisplay: PropTypes.string,
         /** Selected key for dropdown */
-        defaultSelectedKey: PropTypes.any,
+        selectedKey: PropTypes.any,
         /** Errors */
         error: PropTypes.string,
         /** Is readonly */
@@ -28,7 +28,7 @@ export default class DropdownIcon extends React.Component {
         id: "",
         icon: "",
         valueDisplay: null,
-        defaultSelectedKey: null,
+        selectedKey: null,
         error: "",
         readOnly: false,
         options: [{}],
@@ -38,7 +38,7 @@ export default class DropdownIcon extends React.Component {
 
 
     render() {
-        const { id, icon, valueDisplay, defaultSelectedKey, error, readOnly, options, onChange, disabled } = this.props
+        const { id, icon, valueDisplay, selectedKey, error, readOnly, options, onChange, disabled } = this.props
 
         if (readOnly) {
             return (
@@ -57,7 +57,7 @@ export default class DropdownIcon extends React.Component {
             return (
                 <Dropdown
                     id={id}
-                    defaultSelectedKey={defaultSelectedKey}
+                    selectedKey={selectedKey}
                     options={options}
                     errorMessage={error}
                     onChange={(ev, item) => onChange(ev, item)}

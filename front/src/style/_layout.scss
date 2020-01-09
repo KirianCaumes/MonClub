@@ -110,12 +110,16 @@ div#root {
             }
           }
         }
-        .ms-Button--commandBar.is-expanded.ms-Button--hasMenu {
-          &:hover {
-            i.ms-Icon.ms-Button-menuIcon.is-expanded {
+        .ms-Button--commandBar {
+          .is-expanded.ms-Button--hasMenu {
+            &:hover {
+              i.ms-Icon.ms-Button-menuIcon.is-expanded {
                 background-color: unset;
+              }
             }
-
+          }
+          .ms-Button-label {
+            overflow: visible !important;
           }
         }
       }

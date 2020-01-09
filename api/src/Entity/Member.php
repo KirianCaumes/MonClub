@@ -211,6 +211,9 @@ class Member
     private $gesthand_is_certificate = false;
 
     /**
+     * @Assert\Date(message = "invalid_date")
+     * @Assert\GreaterThanOrEqual("01-01-1900")
+     * @Assert\LessThan("now")
      * @ORM\Column(type="date", nullable=true)
      */
     private $gesthand_certificate_date;
@@ -226,6 +229,9 @@ class Member
     private $gesthand_is_ffhb_authorization = false;
 
     /**
+     * @Assert\Date(message = "invalid_date")
+     * @Assert\GreaterThanOrEqual("01-01-1900")
+     * @Assert\LessThan("now")
      * @ORM\Column(type="date", nullable=true)
      */
     private $gesthand_qualification_date;
@@ -260,8 +266,19 @@ class Member
     private $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Team", inversedBy="members")
+     * @ORM\ManyToMany(targetEntity="Team")
      * @ORM\JoinTable(name="member_team")
+     * 
+     * @ORM\ManyToMany(targetEntity="Team", inversedBy="members")
+     * @ORM\JoinTable(
+     *  name="member_teams",
+     *  joinColumns={
+     *      @ORM\JoinColumn(name="member_id", referencedColumnName="id")
+     *  },
+     *  inverseJoinColumns={
+     *      @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     *  }
+     * )
      */
     private $teams;
 

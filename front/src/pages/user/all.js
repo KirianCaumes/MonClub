@@ -17,21 +17,20 @@ class _UsersAll extends ParentPage {
                 {
                     key: 'username',
                     name: 'Nom',
-                    fieldName: 'username',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
                     isSorted: true,
-                    isSortedDescending: false
+                    isSortedDescending: false,
+                    onRender: user => <span className="is-capitalized">{user.username}</span>
                 },
                 {
                     key: 'enabled',
                     name: 'Activé',
-                    fieldName: 'enabled',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
-                    onRender: user => <>{user.enabled ? 'Oui' : 'Non'}</>
+                    onRender: user => <span className="is-capitalized">{user.enabled ? 'Oui' : 'Non'}</span>
                 },
                 {
                     key: 'roles',
@@ -39,7 +38,7 @@ class _UsersAll extends ParentPage {
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
-                    onRender: user => <>{user.roles?.join(', ')}</>
+                    onRender: user => <span className="is-capitalized">{user.roles?.join(', ')}</span>
                 }
             ]
         }

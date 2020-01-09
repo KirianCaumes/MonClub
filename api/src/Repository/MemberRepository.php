@@ -61,4 +61,26 @@ class MemberRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
+    public function findByTeamsAndSeason($teams, $currentSeason)
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.teams', 'c')
+            ->where('c.id IN(:teamId)')
+            ->andWhere('m.season = :currentSeason')
+            ->orderBy('m.lastname', 'ASC')
+            ->setParameter('teamId', (function () use ($teams) {
+                $teamsId = [];
+                foreach ($teams as $team) {
+                    array_push($teamsId, $team->getId());
+                }
+                return implode(',', $teamsId);
+            })())
+            ->setParameter('currentSeason', $currentSeason)
+            ->getQuery()
+            ->getResult();
+    }
 }

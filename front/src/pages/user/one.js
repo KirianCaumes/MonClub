@@ -1,11 +1,12 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, Dropdown, Text, Icon, Separator } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Dropdown, Text, Icon, Separator, VirtualizedComboBox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
 import { history } from 'helper/history'
 import request from 'helper/request'
 import Loader from 'component/loader'
+import { ROLE_COACH } from 'helper/constants'
 
 class _UserOne extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class _UserOne extends React.Component {
         this.props.setBreadcrumb([
             { text: 'Administration', key: 'administration' },
             { text: 'Les comptes', key: 'users', onClick: () => history.push('/utilisateurs') },
-            { text: `${this.props.match?.params?.id ? (this.state.data?.username ?? '') : ''}`, key: 'userOne', isCurrentItem: true },
+            { text: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.username ?? '') : ''}</span>, key: 'userOne', isCurrentItem: true },
         ])
 
         const commandRead = [
@@ -51,7 +52,7 @@ class _UserOne extends React.Component {
                     this.setState({ isLoading: true, readOnly: true }, () => {
                         this.props.setCommand([])
                         request.editUser(this.props.match?.params?.id, { ...this.state.data })
-                            .then(res => this.setState({ data: res }, () => {
+                            .then(res => this.setState({ data: res, errorField: {} }, () => {
                                 this.props.setCommand(commandRead)
                                 this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été modifiée.')
                             }))
@@ -78,7 +79,7 @@ class _UserOne extends React.Component {
         return (
             <section id="user-one">
                 <div className="card" >
-                    <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
+                    <Text variant="large" block><Icon iconName='BulletedList' /> Informations générales</Text>
                     <Separator />
                     <Columns>
                         <Columns.Column>
@@ -144,6 +145,42 @@ class _UserOne extends React.Component {
                         </Columns.Column>
                     </Columns>
                     <Columns>
+                        {
+                            data?.roles.includes(ROLE_COACH) &&
+                            <Columns.Column size="one-third">
+                                <Label htmlFor="teams">Équipe(s)</Label>
+                                {
+                                    readOnly ?
+                                        <TextField
+                                            id="teams"
+                                            defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
+                                            borderless={true}
+                                            readOnly={true}
+                                            errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                        />
+                                        :
+                                        <VirtualizedComboBox
+                                            id="teams"
+                                            multiSelect
+                                            selectedKey={data?.teams?.map(x => x.id ?? x.key)}
+                                            options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                            errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                            useComboBoxAsMenuWidth={true}
+                                            onChange={(ev, item) => {
+                                                const newSelectedItems = [...data.teams]
+                                                if (item.selected) {
+                                                    newSelectedItems.push(item)
+                                                } else {
+                                                    const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                    if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                }
+                                                this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                            }}
+
+                                        />
+                                }
+                            </Columns.Column>
+                        }
                         <Columns.Column>
                             <Label disabled={!readOnly} htmlFor="creation_datetime">Date de création</Label>
                             <TextField
@@ -162,7 +199,7 @@ class _UserOne extends React.Component {
                                 readOnly={true}
                             />
                         </Columns.Column>
-                        <Columns.Column />
+                        {!data?.roles.includes(ROLE_COACH) && <Columns.Column />}
                     </Columns>
                 </div>
             </section >

@@ -9,4 +9,5 @@ class Constants
     public const READ = 'READ';
     public const UPDATE = 'UPDATE';
     public const DELETE = 'DELETE';
+    public const COLORS = ['FFFFFF', '00FFFF', 'FFFF00', 'FF9900', '00FF00'];
 }

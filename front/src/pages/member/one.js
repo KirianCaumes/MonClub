@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon } from 'office-ui-fabric-react'
+import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon, IconButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -11,6 +11,7 @@ import Loader from 'component/loader'
 import FileInput from 'component/fileInput'
 import { dlBlob, openBlob } from 'helper/blob'
 import DropdownIcon from 'component/dropdown'
+import { ROLE_ADMIN } from 'helper/constants'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -29,7 +30,7 @@ class _MemberOne extends React.Component {
         this.props.setBreadcrumb([
             { text: 'Membres', key: 'members' },
             { text: 'Tous les membres', key: 'all-members', onClick: () => history.push('/membres') },
-            { text: `${this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}`, key: 'member', isCurrentItem: true },
+            { text: <span className="is-capitalized">{this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</span>, key: 'member', isCurrentItem: true },
         ])
 
         const commandRead = [
@@ -37,7 +38,8 @@ class _MemberOne extends React.Component {
                 key: 'editItem',
                 text: 'Modifier',
                 iconProps: { iconName: 'Edit' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandEdit))
+                onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandEdit)),
+                disabled: !this.props.me?.roles?.includes(ROLE_ADMIN)
             }
         ]
 
@@ -149,7 +151,7 @@ class _MemberOne extends React.Component {
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.text ?? ''}
-                                            defaultSelectedKey={data?.is_document_complete?.toString() ?? 'false'}
+                                            selectedKey={data?.is_document_complete?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_document_complete?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_document_complete: JSON.parse(item.key) } })}
@@ -160,7 +162,7 @@ class _MemberOne extends React.Component {
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_payed?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_payed?.toString())?.text ?? ''}
-                                            defaultSelectedKey={data?.is_payed?.toString() ?? 'false'}
+                                            selectedKey={data?.is_payed?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_payed?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_payed: JSON.parse(item.key) } })}
@@ -170,7 +172,7 @@ class _MemberOne extends React.Component {
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.text ?? ''}
-                                            defaultSelectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
+                                            selectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_check_gest_hand: JSON.parse(item.key) } })}
@@ -180,7 +182,7 @@ class _MemberOne extends React.Component {
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.text ?? ''}
-                                            defaultSelectedKey={data?.is_inscription_done?.toString() ?? 'false'}
+                                            selectedKey={data?.is_inscription_done?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_inscription_done?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_inscription_done: JSON.parse(item.key) } })}
@@ -390,7 +392,7 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
-                            <Label htmlFor="season">Saison</Label>
+                            <Label required htmlFor="season">Saison</Label>
                             {
                                 readOnly ?
                                     <TextField
@@ -453,7 +455,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={data?.payment_solution?.icon}
                                 valueDisplay={data?.payment_solution?.label}
-                                defaultSelectedKey={data?.payment_solution?.id}
+                                selectedKey={data?.payment_solution?.id}
                                 options={[...this.props.param?.price?.payment_solution]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                 error={this.state.errorField?.payment_solution?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
@@ -474,7 +476,7 @@ class _MemberOne extends React.Component {
                                         readOnly={readOnly}
                                         icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
                                         valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
-                                        defaultSelectedKey={data?.is_non_competitive?.toString() ?? 'false'}
+                                        selectedKey={data?.is_non_competitive?.toString() ?? 'false'}
                                         options={param?.choices}
                                         error={this.state.errorField?.is_non_competitive?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
@@ -489,7 +491,7 @@ class _MemberOne extends React.Component {
                                         readOnly={readOnly}
                                         icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
                                         valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
-                                        defaultSelectedKey={data?.is_reduced_price?.toString() ?? 'false'}
+                                        selectedKey={data?.is_reduced_price?.toString() ?? 'false'}
                                         options={param?.choices}
                                         error={this.state.errorField?.is_reduced_price?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
@@ -506,7 +508,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
+                                selectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_transfer_needed?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
@@ -660,8 +662,28 @@ class _MemberOne extends React.Component {
                     }
 
                     <br />
-                    <Text variant="large" block><Icon iconName='AccountManagement' /> Choix et autorisation</Text>
-                    <Separator />
+                    <div className="flex-row flex-start ">
+                        <Text variant="large" block><Icon iconName='AccountManagement' /> Choix et autorisation</Text>
+                        {
+                            !readOnly &&
+                            <>
+                                &nbsp;
+                                <TooltipHost
+                                    content={"Cliquer pout tout valider"}
+                                    directionalHint={DirectionalHint.topCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <IconButton
+                                        iconProps={{ iconName: 'Accept' }}
+                                        title="Tout valider"
+                                        onClick={() => this.setState({ data: { ...this.state.data, is_evacuation_allow: true, is_transport_allow: true, is_image_allow: true, is_accepted: true, is_newsletter_allow: true, is_return_home_allow: !isMajor(data?.birthdate) } })}
+                                    />
+                                </TooltipHost>
+                            </>
+                        }
+
+                    </div>
+                    <Separator styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="is_evacuation_allow">Autorisation évacuation</Label>
@@ -670,7 +692,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_evacuation_allow?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
+                                selectedKey={data?.is_evacuation_allow?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_evacuation_allow?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_evacuation_allow: JSON.parse(item.key) } })}
@@ -684,7 +706,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_transport_allow?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_transport_allow?.toString() ?? 'false'}
+                                selectedKey={data?.is_transport_allow?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_transport_allow?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transport_allow: JSON.parse(item.key) } })}
@@ -697,7 +719,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_image_allow?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_image_allow?.toString() ?? 'false'}
+                                selectedKey={data?.is_image_allow?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_image_allow?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_image_allow: JSON.parse(item.key) } })}
@@ -711,7 +733,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_accepted?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_accepted?.toString() ?? 'false'}
+                                selectedKey={data?.is_accepted?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_accepted?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_accepted: JSON.parse(item.key) } })}
@@ -727,7 +749,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.is_newsletter_allow?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
+                                selectedKey={data?.is_newsletter_allow?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.is_newsletter_allow?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_newsletter_allow: JSON.parse(item.key) } })}
@@ -743,7 +765,7 @@ class _MemberOne extends React.Component {
                                         readOnly={readOnly}
                                         icon={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.icon ?? ''}
                                         valueDisplay={param?.choices.find(x => x.key === data?.is_return_home_allow?.toString())?.text ?? ''}
-                                        defaultSelectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
+                                        selectedKey={data?.is_return_home_allow?.toString() ?? 'false'}
                                         options={param?.choices}
                                         error={this.state.errorField?.is_return_home_allow?.errors?.[0]}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_return_home_allow: JSON.parse(item.key) } })}
@@ -757,8 +779,28 @@ class _MemberOne extends React.Component {
                     </Columns>
 
                     <br />
-                    <Text variant="large" block><Icon iconName='News' /> GestHand</Text>
-                    <Separator />
+                    <div className="flex-row flex-start ">
+                        <Text variant="large" block><Icon iconName='News' /> GestHand</Text>
+                        {
+                            !readOnly &&
+                            <>
+                                &nbsp;
+                                <TooltipHost
+                                    content={"Cliquer pout tout valider"}
+                                    directionalHint={DirectionalHint.topCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <IconButton
+                                        iconProps={{ iconName: 'Accept' }}
+                                        title="Tout valider"
+                                        primary
+                                        onClick={() => this.setState({ data: { ...this.state.data, gesthand_is_photo: true, gesthand_is_certificate: true, gesthand_is_health_questionnaire: true, gesthand_is_ffhb_authorization: true } })}
+                                    />
+                                </TooltipHost>
+                            </>
+                        }
+                    </div>
+                    <Separator styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
                     <Columns>
                         <Columns.Column>
                             <Label htmlFor="gesthand_is_photo">Photo identité</Label>
@@ -767,7 +809,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_photo?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.gesthand_is_photo?.toString() ?? 'false'}
+                                selectedKey={data?.gesthand_is_photo?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.gesthand_is_photo?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_photo: JSON.parse(item.key) } })}
@@ -781,7 +823,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_certificate?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.gesthand_is_certificate?.toString() ?? 'false'}
+                                selectedKey={data?.gesthand_is_certificate?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.gesthand_is_certificate?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_certificate: JSON.parse(item.key) } })}
@@ -794,7 +836,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_health_questionnaire?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.gesthand_is_health_questionnaire?.toString() ?? 'false'}
+                                selectedKey={data?.gesthand_is_health_questionnaire?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.gesthand_is_health_questionnaire?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_health_questionnaire: JSON.parse(item.key) } })}
@@ -808,7 +850,7 @@ class _MemberOne extends React.Component {
                                 readOnly={readOnly}
                                 icon={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.icon ?? ''}
                                 valueDisplay={param?.choices.find(x => x.key === data?.gesthand_is_ffhb_authorization?.toString())?.text ?? ''}
-                                defaultSelectedKey={data?.gesthand_is_ffhb_authorization?.toString() ?? 'false'}
+                                selectedKey={data?.gesthand_is_ffhb_authorization?.toString() ?? 'false'}
                                 options={param?.choices}
                                 error={this.state.errorField?.gesthand_is_ffhb_authorization?.errors?.[0]}
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, gesthand_is_ffhb_authorization: JSON.parse(item.key) } })}

@@ -64,7 +64,7 @@ class MemberController extends FOSRestController
         } else if ($this->isGranted('ROLE_COACH')) {
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
-            return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['team' => $teams, 'season' => $paramService->getCurrentSeason()], ['lastname' => 'ASC'])));
+            return  $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findByTeamsAndSeason($teams, $paramService->getCurrentSeason())));
         }
     }
 
@@ -77,7 +77,11 @@ class MemberController extends FOSRestController
     public function getMyMembers(ParamService $paramService)
     {
         $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()]);
-        if (!$members) return $this->handleView($this->view([(new Member())])); //Return empty member if none exists
+        if (!$members) { //Return empty member if none exists
+            $member = new Member();
+            $member->setSeason($paramService->getCurrentSeason());
+            return $this->handleView($this->view([$member]));
+        }
         return $this->handleView($this->view($members));
     }
 
@@ -87,14 +91,16 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getNewMember()
+    public function getNewMember(ParamService $paramService)
     {
-        return $this->handleView($this->view(['member' => (new Member())]));
+        $member = new Member();
+        $member->setSeason($paramService->getCurrentSeason());
+        return $this->handleView($this->view(['member' => $member]));
     }
 
     /**
      * One member.
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_COACH")
      * @Rest\Get("/{id}")
      *
      * @return Response
@@ -104,7 +110,7 @@ class MemberController extends FOSRestController
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
         if (!$member) {
-            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')])); //Return empty member if none exists
+            return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND)); //Return empty member if none exists
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
@@ -489,6 +495,6 @@ class MemberController extends FOSRestController
         }
         $em->flush();
 
-        return $this->handleView($this->view($members), Response::HTTP_OK);
+        return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])), Response::HTTP_OK);
     }
 }

@@ -120,7 +120,10 @@ class MemberMinorAdminType extends AbstractType
                 'multiple' => true
             ])            
             ->add('season', EntityType::class, [
-                'class' => ParamSeason::class
+                'class' => ParamSeason::class,
+                'constraints' => [
+                    new NotBlank(['message' => 'not_blank']),
+                ]
             ])
             ->add('save', SubmitType::class);
     }
