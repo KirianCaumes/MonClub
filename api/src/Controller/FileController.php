@@ -36,7 +36,7 @@ class FileController extends FOSRestController
     /**
      * Generate and get csv for GoogleContact.
      * @IsGranted("ROLE_ADMIN")
-     * @Route("/google/contact")
+     * @Route("/google/contact", methods={"GET"})
      */
     public function getGoogleContact(ParamService $paramService)
     {
@@ -90,9 +90,9 @@ class FileController extends FOSRestController
     }
 
     /**
-     * Generate and get csv for GoogleContact.
+     * Generate and get Excel with tracking informations.
      * @IsGranted("ROLE_ADMIN")
-     * @Route("/excel/tracking")
+     * @Route("/excel/tracking", methods={"GET"})
      */
     public function getExcelTracking(ParamService $paramService)
     {
@@ -199,7 +199,7 @@ class FileController extends FOSRestController
     /**
      * Generate and get excel 'infos general'.
      * @IsGranted("ROLE_ADMIN")
-     * @Route("/excel/general")
+     * @Route("/excel/general", methods={"GET"})
      */
     public function getExcelGeneral(ParamService $paramService)
     {
@@ -376,7 +376,7 @@ class FileController extends FOSRestController
 
     /**
      * Generate and get document "attestation payment".
-     * @Route("/{memberId}/attestation")
+     * @Route("/{memberId}/attestation", methods={"GET"})
      */
     public function getAttestation(TranslatorInterface $translator, ParamService $paramService, int $memberId)
     {
@@ -419,7 +419,7 @@ class FileController extends FOSRestController
 
     /**
      * Get document.
-     * @Route("/{memberId}/{documentCategoryId}")
+     * @Route("/{memberId}/{documentCategoryId}", methods={"GET"})
      */
     public function downloadDocument(DownloadHandler $downloadHandler, TranslatorInterface $translator, int $memberId, int $documentCategoryId): Response
     {
