@@ -17,6 +17,7 @@ class _UsersAll extends ParentPage {
                 {
                     key: 'username',
                     name: 'Nom',
+                    fieldName: 'username',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
@@ -27,6 +28,7 @@ class _UsersAll extends ParentPage {
                 {
                     key: 'enabled',
                     name: 'Activé',
+                    fieldName: 'enabled',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,

@@ -27,6 +27,7 @@ class _MembersAll extends ParentPage {
                 {
                     key: 'lastname',
                     name: 'Nom',
+                    fieldName: 'lastname',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
@@ -37,6 +38,7 @@ class _MembersAll extends ParentPage {
                 {
                     key: 'firstname',
                     name: 'Prénom',
+                    fieldName: 'firstname',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
