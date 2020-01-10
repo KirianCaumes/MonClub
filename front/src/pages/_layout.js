@@ -82,6 +82,13 @@ class _Layout extends React.Component {
                                 onClick: () => history.push('/constantes'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
+                            {
+                                key: '/parametres',
+                                name: <><Icon iconName='DataManagementSettings' /> Les paramètres</>,
+                                title: 'Les paramètres',
+                                onClick: () => history.push('/parametres'),
+                                isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
+                            },
                         ]
                     },
                     {

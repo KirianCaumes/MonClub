@@ -128,7 +128,7 @@ class _MembersMeInformations extends React.Component {
                         />
                     </Columns.Column>
 
-                    <Columns.Column />
+                    <Columns.Column className="is-hidden-touch"/>
                 </Columns>
                 <Columns>
                     <Columns.Column>
@@ -165,7 +165,7 @@ class _MembersMeInformations extends React.Component {
                             errorMessage={errorField?.city?.errors?.[0]}
                         />
                     </Columns.Column>
-                    <Columns.Column />
+                    <Columns.Column className="is-hidden-touch"/>
                 </Columns>
                 <Checkbox
                     label="Demande de transfert de club (cocher si oui)"
@@ -267,7 +267,7 @@ class _MembersMeInformations extends React.Component {
                                             errorMessage={errorField?.parent_one_profession?.errors?.[0]}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column />
+                                    <Columns.Column className="is-hidden-touch"/>
                                 </Columns>
                             </Columns.Column>
                             {/* <Separator vertical /> */}
@@ -335,7 +335,7 @@ class _MembersMeInformations extends React.Component {
                                             errorMessage={errorField?.parent_two_profession?.errors?.[0]}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column />
+                                    <Columns.Column className="is-hidden-touch"/>
                                 </Columns>
                             </Columns.Column>
                         </Columns>

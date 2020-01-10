@@ -101,6 +101,25 @@ export default {
         }
 
         return getFetch(url, options)
+    },    
+    editParam: (label, value) => {
+        const url = ["param", label]
+
+        var options = {
+            method: PUT,
+            body: JSON.stringify({ value })
+        }
+
+        return getFetch(url, options)
+    },
+    editCurrentSeason: (id) => {
+        const url = ["param", "current-season", id]
+
+        var options = {
+            method: PUT
+        }
+
+        return getFetch(url, options)
     },
     authenticate: (data) => {
         const url = ["login"]

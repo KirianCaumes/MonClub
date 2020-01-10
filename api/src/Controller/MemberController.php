@@ -206,6 +206,16 @@ class MemberController extends FOSRestController
             ], Response::HTTP_FORBIDDEN));
         }
 
+        //Disable if needed
+        if (!filter_var($paramService->getParam('is_create_new_member_able'), FILTER_VALIDATE_BOOLEAN)) {
+            return $this->handleView($this->view([
+                'error' => [
+                    'message' => $translator->trans('register_is_disabled'),
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN));
+        }
+
         $member = new Member();
         $this->denyAccessUnlessGranted(Constants::CREATE, $member,  $translator->trans('deny_create_member'));
 
@@ -306,6 +316,16 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view([
                 'error' => [
                     'message' => $translator->trans('new_member_disabled', ['{{date}}' => (new \DateTime($paramService->getParam('new_member_deadline')))->format('d/m/Y')]),
+                    'code' => Response::HTTP_FORBIDDEN
+                ]
+            ], Response::HTTP_FORBIDDEN));
+        }
+        
+        //Disable if needed
+        if (!filter_var($paramService->getParam('is_create_new_member_able'), FILTER_VALIDATE_BOOLEAN)) {
+            return $this->handleView($this->view([
+                'error' => [
+                    'message' => $translator->trans('register_is_disabled'),
                     'code' => Response::HTTP_FORBIDDEN
                 ]
             ], Response::HTTP_FORBIDDEN));

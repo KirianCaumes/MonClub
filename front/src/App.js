@@ -26,6 +26,7 @@ import UsersAll from './pages/user/all'
 import UserOne from './pages/user/one'
 import Modal from './component/modal'
 import { registerIcons } from '@uifabric/styling'
+import Settings from 'pages/admin/settings'
 
 //Add icons from fontawesome to Ms
 registerIcons({
@@ -134,6 +135,7 @@ class _App extends React.Component {
                             <PrivateRoute path="/equipe/:id" component={withData(TeamOne, (props) => request.getOneTeam(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute path="/constantes" component={Constants} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/parametres" component={Settings} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>
                     </Layout>
                     <Switch>

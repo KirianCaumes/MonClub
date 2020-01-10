@@ -199,7 +199,7 @@ class _UserOne extends React.Component {
                                 readOnly={true}
                             />
                         </Columns.Column>
-                        {!data?.roles.includes(ROLE_COACH) && <Columns.Column />}
+                        {!data?.roles.includes(ROLE_COACH) && <Columns.Column className="is-hidden-touch"/>}
                     </Columns>
                 </div>
             </section >

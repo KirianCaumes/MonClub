@@ -136,7 +136,7 @@ class _MembersMeDocuments extends React.Component {
                                 }}
                             />
                     </Columns.Column>
-                    {!member?.is_reduced_price && <Columns.Column />}
+                    {!member?.is_reduced_price && <Columns.Column className="is-hidden-touch"/>}
                 </Columns>
             </section >
         )

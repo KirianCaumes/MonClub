@@ -19,13 +19,17 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Param controller.
  * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
- * @SWG\Tag(name="Team")
+ * @SWG\Tag(name="Param")
  * @Route("/api/param", name="api_")
  */
 class ParamController extends FOSRestController
@@ -64,7 +68,7 @@ class ParamController extends FOSRestController
                 'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findall(),
                 'payment_solution' => $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findall(),
             ],
-            'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findBy(['is_active' => true]),
+            'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findAll(),
             'users' => $this->isGranted('ROLE_ADMIN') ?
                 array_map(
                     function ($user) {
@@ -74,5 +78,69 @@ class ParamController extends FOSRestController
                 )
                 : []
         ]));
+    }
+
+    /**
+     * Edit ParamGloball.
+     * @SWG\Parameter(name="paramglobal",in="body", description="ParamGlobal to edit", format="application/json", @SWG\Schema(@Model(type=ParamGlobal::class)))
+     * @SWG\Response(response=200, description="ParamGlobal edited", @SWG\Schema(@Model(type=ParamGlobal::class)))
+     * @SWG\Response(response=404, description="ParamGlobal not found")
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @Rest\Put("/{label}")
+     *
+     * @return Response
+     */
+    public function putParamGlobal(Request $request, TranslatorInterface $translator, string $label)
+    {
+        //Find param by label
+        $param = $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => $label]);
+        if (!$param) {
+            return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $param->setValue($data['value']);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($param);
+        $em->flush();
+
+        return $this->handleView($this->view($param, Response::HTTP_OK));
+    }
+
+
+    /**
+     * Edit current season.
+     * @SWG\Response(response=200, description="ParamSeason edited", @SWG\Schema(@Model(type=ParamSeason::class)))
+     * @SWG\Response(response=404, description="ParamSeason not found")
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @Rest\Put("/current-season/{id}")
+     *
+     * @return Response
+     */
+    public function putCurrentSeason(Request $request, TranslatorInterface $translator, int $id)
+    {
+        //Find param by id
+        $season = $this->getDoctrine()->getRepository(ParamSeason::class)->findOneBy(['id' => $id]);
+        if (!$season) {
+            return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($this->getDoctrine()->getRepository(ParamSeason::class)->findAll() as $s) {
+            $s->setIsCurrent(false);
+            if ($s->getId() <= $season->getId()) {
+                $s->setIsActive(true);
+            } else {
+                $s->setIsActive(false);
+            }
+            $em->persist($s);
+        }
+
+        $season->setIsCurrent(true);
+        $em->persist($season);
+        $em->flush();
+
+        return $this->handleView($this->view($season, Response::HTTP_OK));
     }
 }

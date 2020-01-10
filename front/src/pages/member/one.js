@@ -11,7 +11,7 @@ import Loader from 'component/loader'
 import FileInput from 'component/fileInput'
 import { dlBlob, openBlob } from 'helper/blob'
 import DropdownIcon from 'component/dropdown'
-import { ROLE_ADMIN } from 'helper/constants'
+import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
 
 class _MemberOne extends React.Component {
     constructor(props) {
@@ -39,7 +39,7 @@ class _MemberOne extends React.Component {
                 text: 'Modifier',
                 iconProps: { iconName: 'Edit' },
                 onClick: () => this.setState({ readOnly: !this.state.readOnly }, () => this.props.setCommand(commandEdit)),
-                disabled: !this.props.me?.roles?.includes(ROLE_ADMIN)
+                disabled: !this.props.me?.roles?.includes(ROLE_ADMIN) && !this.props.me?.roles?.includes(ROLE_SUPER_ADMIN)
             }
         ]
 
@@ -146,7 +146,7 @@ class _MemberOne extends React.Component {
                             {
                                 !readOnly &&
                                 <Columns>
-                                    <Columns.Column />
+                                    <Columns.Column className="is-hidden-mobile"/>
                                     <Columns.Column>
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
@@ -299,7 +299,7 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.profession?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
                     <Columns>
                         <Columns.Column>
@@ -336,7 +336,7 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.city?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
 
                     <Columns>
@@ -406,7 +406,7 @@ class _MemberOne extends React.Component {
                                     <Dropdown
                                         id="season"
                                         selectedKey={data?.season?.id}
-                                        options={[...this.props.param?.season]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                        options={[...this.props.param?.season]?.filter(x => x.is_active)?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.season?.errors?.[0]}
                                         useComboBoxAsMenuWidth={true}
                                         onChange={(ev, item) => this.setState({ data: { ...this.state.data, season: item } })}
@@ -461,8 +461,8 @@ class _MemberOne extends React.Component {
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
                             />
                         </Columns.Column>
-                        <Columns.Column />
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
 
                     <Columns>
@@ -514,8 +514,8 @@ class _MemberOne extends React.Component {
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
                             />
                         </Columns.Column>
-                        <Columns.Column />
-                        {!isMajor(data?.birthdate) && <><Columns.Column /> <Columns.Column /></>}
+                        <Columns.Column className="is-hidden-touch"/>
+                        {!isMajor(data?.birthdate) && <><Columns.Column className="is-hidden-touch"/> <Columns.Column className="is-hidden-touch"/></>}
                     </Columns>
                     {
                         !isMajor(data?.birthdate) &&
@@ -586,7 +586,7 @@ class _MemberOne extends React.Component {
                                                 errorMessage={this.state.errorField?.parent_one_profession?.errors?.[0]}
                                             />
                                         </Columns.Column>
-                                        <Columns.Column />
+                                        <Columns.Column className="is-hidden-touch"/>
                                     </Columns>
                                 </Columns.Column>
                                 {/* <Separator vertical /> */}
@@ -654,7 +654,7 @@ class _MemberOne extends React.Component {
                                                 errorMessage={this.state.errorField?.parent_two_profession?.errors?.[0]}
                                             />
                                         </Columns.Column>
-                                        <Columns.Column />
+                                        <Columns.Column className="is-hidden-touch"/>
                                     </Columns>
                                 </Columns.Column>
                             </Columns>
@@ -774,8 +774,8 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
 
-                        <Columns.Column />
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
 
                     <br />
@@ -896,8 +896,8 @@ class _MemberOne extends React.Component {
                             </TooltipHost>
                         </Columns.Column>
 
-                        <Columns.Column />
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
 
                     <br />
@@ -1010,7 +1010,7 @@ class _MemberOne extends React.Component {
                                 </>
                             }
                         </Columns.Column>
-                        <Columns.Column />
+                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
 
                     <br />

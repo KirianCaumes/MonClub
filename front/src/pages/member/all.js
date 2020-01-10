@@ -185,7 +185,7 @@ class _MembersAll extends ParentPage {
                                         <Dropdown
                                             label="Saison"
                                             disabled={isLoading}
-                                            options={[...this.props.param?.season]?.map(x => { return { key: x.id, text: x.label } })}
+                                            options={[...this.props.param?.season]?.filter(x => x.is_active)?.map(x => { return { key: x.id, text: x.label } })}
                                             selectedKey={this.state.searchParms.seasonId}
                                             onChange={(ev, item) => this.setState({ searchParms: { ...this.state.searchParms, seasonId: item.key } })}
                                         />
