@@ -146,7 +146,7 @@ class _MemberOne extends React.Component {
                             {
                                 !readOnly &&
                                 <Columns>
-                                    <Columns.Column className="is-hidden-mobile"/>
+                                    <Columns.Column className="is-hidden-mobile" />
                                     <Columns.Column>
                                         <DropdownIcon
                                             icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
@@ -201,6 +201,7 @@ class _MemberOne extends React.Component {
                             <Label required htmlFor="firstname">Prénom</Label>
                             <TextField
                                 id="firstname"
+                                placeholder="Prénom"
                                 defaultValue={data?.firstname ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, firstname: ev.target.value } })}
                                 borderless={readOnly}
@@ -213,6 +214,7 @@ class _MemberOne extends React.Component {
                             <Label required htmlFor="lastname">Nom</Label>
                             <TextField
                                 id="lastname"
+                                placeholder="Nom"
                                 defaultValue={data?.lastname ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, lastname: ev.target.value } })}
                                 borderless={readOnly}
@@ -221,22 +223,25 @@ class _MemberOne extends React.Component {
                             />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label required htmlFor="birthdate">Date de naissance</Label>
-                            <TooltipHost
-                                content="Format attendu: JJ/MM/AAAA"
-                                directionalHint={DirectionalHint.bottomCenter}
-                                delay={TooltipDelay.zero}
-                            >
-                                <MaskedTextField
-                                    id="birthdate"
-                                    value={stringToCleanString(data?.birthdate)}
-                                    mask={"99/99/9999"}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, birthdate: stringToDate(ev.target.value) } })}
-                                    errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
-                                />
-                            </TooltipHost>
+                            <div className="flex-row flex-start">
+                                <Label required htmlFor="birthdate">Date de naissance</Label>
+                                <TooltipHost
+                                    content="Format attendu: JJ/MM/AAAA"
+                                    directionalHint={DirectionalHint.bottomCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <Icon iconName="Info" className="icon-info-label is-required" />
+                                </TooltipHost>
+                            </div>
+                            <MaskedTextField
+                                id="birthdate"
+                                value={stringToCleanString(data?.birthdate)}
+                                mask={"99/99/9999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, birthdate: stringToDate(ev.target.value) } })}
+                                errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
+                            />
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
                             <Label required htmlFor="sex">Sexe</Label>
@@ -244,6 +249,7 @@ class _MemberOne extends React.Component {
                                 readOnly ?
                                     <TextField
                                         id="sex"
+                                        placeholder="Sexe"
                                         defaultValue={data?.sex?.label}
                                         borderless={true}
                                         readOnly={true}
@@ -252,6 +258,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         id="sex"
+                                        placeholder="Sexe"
                                         selectedKey={data?.sex?.id}
                                         options={[...this.props?.param?.sexes]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.sex?.errors?.[0]}
@@ -267,6 +274,7 @@ class _MemberOne extends React.Component {
                             <Label required={isMajor(data?.birthdate)} htmlFor="email">Email</Label>
                             <TextField
                                 id="email"
+                                placeholder="Email"
                                 defaultValue={data?.email ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, email: ev.target.value } })}
                                 borderless={readOnly}
@@ -276,9 +284,19 @@ class _MemberOne extends React.Component {
                         </Columns.Column>
 
                         <Columns.Column>
-                            <Label required={isMajor(data?.birthdate)} htmlFor="phone_number">Numéro de téléphone</Label>
+                            <div className="flex-row flex-start">
+                                <Label required={isMajor(data?.birthdate)} htmlFor="phone_number">Numéro de téléphone</Label>
+                                <TooltipHost
+                                    content="Exemple de format attendu: 0123456789"
+                                    directionalHint={DirectionalHint.bottomCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <Icon iconName="Info" className={`icon-info-label ${isMajor(data?.birthdate) ? 'is-required' : 'is-not-required'}`} />
+                                </TooltipHost>
+                            </div>
                             <MaskedTextField
                                 id="phone_number"
+                                placeholder="Numéro de téléphone"
                                 value={data?.phone_number ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: ev.target.value } })}
                                 mask={"9999999999"}
@@ -292,6 +310,7 @@ class _MemberOne extends React.Component {
                             <Label htmlFor="profession">Profession</Label>
                             <TextField
                                 id="profession"
+                                placeholder="Profession"
                                 defaultValue={data?.profession ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, profession: ev.target.value } })}
                                 borderless={readOnly}
@@ -299,13 +318,14 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.profession?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="postal_code">Code postal</Label>
                             <MaskedTextField
                                 id="postal_code"
+                                placeholder="Code postal"
                                 value={data?.postal_code ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, postal_code: ev.target.value } })}
                                 mask={"99999"}
@@ -318,6 +338,7 @@ class _MemberOne extends React.Component {
                             <Label required htmlFor="street">Rue</Label>
                             <TextField
                                 id="street"
+                                placeholder="Rue"
                                 defaultValue={data?.street ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, street: ev.target.value } })}
                                 borderless={readOnly}
@@ -329,6 +350,7 @@ class _MemberOne extends React.Component {
                             <Label required htmlFor="city">Ville</Label>
                             <TextField
                                 id="city"
+                                placeholder="Ville"
                                 defaultValue={data?.city ?? ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, city: ev.target.value } })}
                                 borderless={readOnly}
@@ -336,7 +358,7 @@ class _MemberOne extends React.Component {
                                 errorMessage={this.state.errorField?.city?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
 
                     <Columns>
@@ -346,6 +368,7 @@ class _MemberOne extends React.Component {
                                 readOnly ?
                                     <TextField
                                         id="teams"
+                                        placeholder="Équipe(s)"
                                         defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
                                         borderless={true}
                                         readOnly={true}
@@ -354,6 +377,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <VirtualizedComboBox
                                         id="teams"
+                                        placeholder="Équipe(s)"
                                         multiSelect
                                         selectedKey={data?.teams?.map(x => x.id ?? x.key)}
                                         options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
@@ -383,6 +407,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <VirtualizedComboBox
                                         id="username"
+                                        placeholder="Utilisateur associé"
                                         selectedKey={data?.user?.id}
                                         options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
                                         errorMessage={this.state.errorField?.username?.errors?.[0]}
@@ -397,6 +422,7 @@ class _MemberOne extends React.Component {
                                 readOnly ?
                                     <TextField
                                         id="season"
+                                        placeholder="Saison"
                                         defaultValue={data?.season?.label}
                                         borderless={true}
                                         readOnly={true}
@@ -405,6 +431,7 @@ class _MemberOne extends React.Component {
                                     :
                                     <Dropdown
                                         id="season"
+                                        placeholder="Saison"
                                         selectedKey={data?.season?.id}
                                         options={[...this.props.param?.season]?.filter(x => x.is_active)?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                         errorMessage={this.state.errorField?.season?.errors?.[0]}
@@ -418,6 +445,7 @@ class _MemberOne extends React.Component {
                             <Label disabled={!readOnly} htmlFor="creation_datetime">Date d'inscription</Label>
                             <TextField
                                 id="creation_datetime"
+                                placeholder="Date d'inscription"
                                 defaultValue={dateToCleanDateTimeString(new Date(data.creation_datetime))}
                                 borderless={true}
                                 readOnly={true}
@@ -434,6 +462,7 @@ class _MemberOne extends React.Component {
                             <Label htmlFor="amount_payed">Montant payé</Label>
                             <TextField
                                 id="amount_payed"
+                                placeholder="Montant payé"
                                 defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
                                 onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
                                 borderless={readOnly}
@@ -452,6 +481,7 @@ class _MemberOne extends React.Component {
                             <Label htmlFor="payment_solution">Moyen de paiement</Label>
                             <DropdownIcon
                                 id="payment_solution"
+                                placeholder="Moyen de paiement"
                                 readOnly={readOnly}
                                 icon={data?.payment_solution?.icon}
                                 valueDisplay={data?.payment_solution?.label}
@@ -461,8 +491,8 @@ class _MemberOne extends React.Component {
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
                             />
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
 
                     <Columns>
@@ -514,8 +544,8 @@ class _MemberOne extends React.Component {
                                 onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
                             />
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
-                        {!isMajor(data?.birthdate) && <><Columns.Column className="is-hidden-touch"/> <Columns.Column className="is-hidden-touch"/></>}
+                        <Columns.Column className="is-hidden-touch" />
+                        {!isMajor(data?.birthdate) && <><Columns.Column className="is-hidden-touch" /> <Columns.Column className="is-hidden-touch" /></>}
                     </Columns>
                     {
                         !isMajor(data?.birthdate) &&
@@ -530,6 +560,7 @@ class _MemberOne extends React.Component {
                                             <Label required htmlFor="parent_one_firstname">Prénom</Label>
                                             <TextField
                                                 id="parent_one_firstname"
+                                                placeholder="Prénom"
                                                 defaultValue={data?.parent_one_firstname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_firstname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -541,6 +572,7 @@ class _MemberOne extends React.Component {
                                             <Label required htmlFor="parent_one_lastname">Nom</Label>
                                             <TextField
                                                 id="parent_one_lastname"
+                                                placeholder="Nom"
                                                 defaultValue={data?.parent_one_lastname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_lastname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -554,6 +586,7 @@ class _MemberOne extends React.Component {
                                             <Label required htmlFor="parent_one_email">Email</Label>
                                             <TextField
                                                 id="parent_one_email"
+                                                placeholder="Email"
                                                 defaultValue={data?.parent_one_email ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_email: ev.target.value } })}
                                                 borderless={readOnly}
@@ -565,6 +598,7 @@ class _MemberOne extends React.Component {
                                             <Label required htmlFor="parent_one_phone_number">Numéro de téléphone</Label>
                                             <MaskedTextField
                                                 id="parent_one_phone_number"
+                                                placeholder="Numéro de téléphone"
                                                 value={data?.parent_one_phone_number ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_phone_number: ev.target.value } })}
                                                 mask={"9999999999"}
@@ -579,6 +613,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_one_profession">Profession</Label>
                                             <TextField
                                                 id="parent_one_profession"
+                                                placeholder="Profession"
                                                 defaultValue={data?.parent_one_profession ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_profession: ev.target.value } })}
                                                 borderless={readOnly}
@@ -586,7 +621,7 @@ class _MemberOne extends React.Component {
                                                 errorMessage={this.state.errorField?.parent_one_profession?.errors?.[0]}
                                             />
                                         </Columns.Column>
-                                        <Columns.Column className="is-hidden-touch"/>
+                                        <Columns.Column className="is-hidden-touch" />
                                     </Columns>
                                 </Columns.Column>
                                 {/* <Separator vertical /> */}
@@ -598,6 +633,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_two_firstname">Prénom</Label>
                                             <TextField
                                                 id="parent_two_firstname"
+                                                placeholder="Prénom"
                                                 defaultValue={data?.parent_two_firstname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_firstname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -609,6 +645,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_two_lastname">Nom</Label>
                                             <TextField
                                                 id="parent_two_lastname"
+                                                placeholder="Nom"
                                                 defaultValue={data?.parent_two_lastname ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_lastname: ev.target.value } })}
                                                 borderless={readOnly}
@@ -622,6 +659,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_two_email">Email</Label>
                                             <TextField
                                                 id="parent_two_email"
+                                                placeholder="Email"
                                                 defaultValue={data?.parent_two_email ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_email: ev.target.value } })}
                                                 borderless={readOnly}
@@ -633,6 +671,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_two_phone_number">Numéro de téléphone</Label>
                                             <MaskedTextField
                                                 id="parent_two_phone_number"
+                                                placeholder="Numéro de téléphone"
                                                 value={data?.parent_two_phone_number ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_phone_number: ev.target.value } })}
                                                 mask={"9999999999"}
@@ -647,6 +686,7 @@ class _MemberOne extends React.Component {
                                             <Label htmlFor="parent_two_profession">Profession</Label>
                                             <TextField
                                                 id="parent_two_profession"
+                                                placeholder="Profession"
                                                 defaultValue={data?.parent_two_profession ?? ''}
                                                 onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_profession: ev.target.value } })}
                                                 borderless={readOnly}
@@ -654,7 +694,7 @@ class _MemberOne extends React.Component {
                                                 errorMessage={this.state.errorField?.parent_two_profession?.errors?.[0]}
                                             />
                                         </Columns.Column>
-                                        <Columns.Column className="is-hidden-touch"/>
+                                        <Columns.Column className="is-hidden-touch" />
                                     </Columns>
                                 </Columns.Column>
                             </Columns>
@@ -774,8 +814,8 @@ class _MemberOne extends React.Component {
                             }
                         </Columns.Column>
 
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
 
                     <br />
@@ -860,44 +900,50 @@ class _MemberOne extends React.Component {
 
                     <Columns>
                         <Columns.Column>
-                            <Label htmlFor="gesthand_certificate_date">Date du certificat médical</Label>
-                            <TooltipHost
-                                content="Format attendu: JJ/MM/AAAA"
-                                directionalHint={DirectionalHint.bottomCenter}
-                                delay={TooltipDelay.zero}
-                            >
-                                <MaskedTextField
-                                    id="gesthand_certificate_date"
-                                    value={stringToCleanString(data?.gesthand_certificate_date)}
-                                    mask={"99/99/9999"}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_certificate_date: stringToDate(ev.target.value) } })}
-                                    errorMessage={this.state.errorField?.gesthand_certificate_date?.errors?.[0]}
-                                />
-                            </TooltipHost>
+                            <div className="flex-row flex-start">
+                                <Label htmlFor="gesthand_certificate_date">Date du certificat médical</Label>
+                                <TooltipHost
+                                    content="Format attendu: JJ/MM/AAAA"
+                                    directionalHint={DirectionalHint.bottomCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <Icon iconName="Info" className="icon-info-label is-not-required" />
+                                </TooltipHost>
+                            </div>
+                            <MaskedTextField
+                                id="gesthand_certificate_date"
+                                value={stringToCleanString(data?.gesthand_certificate_date)}
+                                mask={"99/99/9999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_certificate_date: stringToDate(ev.target.value) } })}
+                                errorMessage={this.state.errorField?.gesthand_certificate_date?.errors?.[0]}
+                            />
                         </Columns.Column>
                         <Columns.Column>
-                            <Label htmlFor="gesthand_qualification_date">Date de qualification</Label>
-                            <TooltipHost
-                                content="Format attendu: JJ/MM/AAAA"
-                                directionalHint={DirectionalHint.bottomCenter}
-                                delay={TooltipDelay.zero}
-                            >
-                                <MaskedTextField
-                                    id="gesthand_qualification_date"
-                                    value={stringToCleanString(data?.gesthand_qualification_date)}
-                                    mask={"99/99/9999"}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_qualification_date: stringToDate(ev.target.value) } })}
-                                    errorMessage={this.state.errorField?.gesthand_qualification_date?.errors?.[0]}
-                                />
-                            </TooltipHost>
+                            <div className="flex-row flex-start">
+                                <Label htmlFor="gesthand_qualification_date">Date de qualification</Label>
+                                <TooltipHost
+                                    content="Format attendu: JJ/MM/AAAA"
+                                    directionalHint={DirectionalHint.bottomCenter}
+                                    delay={TooltipDelay.zero}
+                                >
+                                    <Icon iconName="Info" className="icon-info-label is-not-required" />
+                                </TooltipHost>
+                            </div>
+                            <MaskedTextField
+                                id="gesthand_qualification_date"
+                                value={stringToCleanString(data?.gesthand_qualification_date)}
+                                mask={"99/99/9999"}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, gesthand_qualification_date: stringToDate(ev.target.value) } })}
+                                errorMessage={this.state.errorField?.gesthand_qualification_date?.errors?.[0]}
+                            />
                         </Columns.Column>
 
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
 
                     <br />
@@ -951,6 +997,8 @@ class _MemberOne extends React.Component {
                             <FileInput
                                 isRead={true}
                                 isFile={!!readOnly}
+                                isDisabled={!data.is_payed}
+                                tooltipContent={!data.is_payed ? "Document téléchargeable une fois l'inscription finalisée." : ''}
                                 onDownload={() => {
                                     return request.getAttestation(this.props.match?.params?.id)
                                         .then(file => dlBlob(file, `${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
@@ -1010,7 +1058,7 @@ class _MemberOne extends React.Component {
                                 </>
                             }
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column className="is-hidden-touch" />
                     </Columns>
 
                     <br />
@@ -1021,6 +1069,7 @@ class _MemberOne extends React.Component {
                             <Label htmlFor="notes">Notes</Label>
                             <TextField
                                 id="notes"
+                                placeholder="Notes"
                                 readOnly={readOnly}
                                 borderless={readOnly}
                                 multiline

@@ -121,9 +121,9 @@ class _MembersMeDocuments extends React.Component {
                         <Label>Attestation paiement cotisation</Label>
                             <FileInput
                                 isRead={true}
-                                isFile={!!readOnly}
+                                isFile={true}
                                 isDisabled={!member.is_payed}
-                                tooltipContent={"Document téléchargeable une fois l'inscription finalisée."}
+                                tooltipContent={!member.is_payed ? "Document téléchargeable une fois l'inscription finalisée." : ''}
                                 onDownload={() => {
                                     return request.getAttestation(member?.id)
                                         .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))

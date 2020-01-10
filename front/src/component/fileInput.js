@@ -57,8 +57,7 @@ export default class FileInput extends React.Component {
                         <TooltipHost
                             content={tooltipContent}
                             directionalHint={DirectionalHint.bottomCenter}
-                            delay={TooltipDelay.zero}
-                            
+                            delay={TooltipDelay.zero}                            
                         >
                             <DefaultButton
                                 split

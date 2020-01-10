@@ -132,6 +132,7 @@ class _TeamOne extends React.Component {
                                     <Label required htmlFor="label">Label</Label>
                                     <TextField
                                         id="label"
+                                        placeholder="Label"
                                         value={data?.label ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
                                         borderless={readOnly}
@@ -143,6 +144,7 @@ class _TeamOne extends React.Component {
                                     <Label required htmlFor="label_google_contact">Label Google Contact</Label>
                                     <TextField
                                         id="label_google_contact"
+                                        placeholder="Label Google Contact"
                                         value={data?.label_google_contact ?? ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
                                         borderless={readOnly}

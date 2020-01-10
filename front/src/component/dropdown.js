@@ -10,6 +10,8 @@ export default class DropdownIcon extends React.Component {
         icon: PropTypes.string,
         /** Value to display on read */
         valueDisplay: PropTypes.string,
+        /** Value to display on read and when no value*/
+        placeholder: PropTypes.string,        
         /** Selected key for dropdown */
         selectedKey: PropTypes.any,
         /** Errors */
@@ -28,6 +30,7 @@ export default class DropdownIcon extends React.Component {
         id: "",
         icon: "",
         valueDisplay: null,
+        placeholder: null,
         selectedKey: null,
         error: "",
         readOnly: false,
@@ -38,15 +41,16 @@ export default class DropdownIcon extends React.Component {
 
 
     render() {
-        const { id, icon, valueDisplay, selectedKey, error, readOnly, options, onChange, disabled } = this.props
+        const { id, icon, valueDisplay, placeholder, selectedKey, error, readOnly, options, onChange, disabled } = this.props
 
         if (readOnly) {
             return (
                 <div className="flex-row flex-start">
-                    <Icon className="flex-col" style={{ marginRight: '1px', height: 'auto' }} iconName={icon} />
+                    {icon && <Icon className="flex-col" style={{ marginRight: '1px', height: 'auto' }} iconName={icon} />}
                     <TextField
                         id={id}
                         defaultValue={valueDisplay}
+                        placeholder={placeholder}
                         borderless={true}
                         readOnly={true}
                         errorMessage={error}
@@ -58,6 +62,7 @@ export default class DropdownIcon extends React.Component {
                 <Dropdown
                     id={id}
                     selectedKey={selectedKey}
+                    placeholder={placeholder}
                     options={options}
                     errorMessage={error}
                     onChange={(ev, item) => onChange(ev, item)}

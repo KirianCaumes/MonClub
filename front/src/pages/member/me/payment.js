@@ -22,7 +22,7 @@ class _MembersMePayment extends React.Component {
             .then(res => this.setState({ summary: res.price }))
             .catch(err => {
                 this.props.goBack()
-                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
+                this.props.setMessageBar(true, MessageBarType.error, err)
             })
             .finally(() => this.setState({ isLoading: false }))
     }

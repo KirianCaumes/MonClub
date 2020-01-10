@@ -83,3 +83,13 @@ textarea {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.icon-info-label {
+  cursor: help;
+  &.is-required {
+    margin: 5px 0px 0px -5px;
+  }
+  &.is-not-required {
+    margin: 5px 0px 0px 5px;
+  }
+}

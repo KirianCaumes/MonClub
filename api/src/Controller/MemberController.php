@@ -171,8 +171,23 @@ class MemberController extends FOSRestController
             $form->submit($data);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                // $member->setUser($this->getUser());
                 $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+                if (!$dateService->isMajor($data['birthdate'])) {
+                    $member->setIsReducedPrice(false);
+                    $member->setIsNonCompetitive(false);
+                } else {
+                    $member->setParentOneFirstname(null);
+                    $member->setParentOneLastname(null);
+                    $member->setParentOnePhoneNumber(null);
+                    $member->setParentOneEmail(null);
+                    $member->setParentOneProfession(null);
+                    $member->setParentTwoFirstname(null);
+                    $member->setParentTwoLastname(null);
+                    $member->setParentTwoPhoneNumber(null);
+                    $member->setParentTwoEmail(null);
+                    $member->setParentTwoProfession(null);
+                    $member->setIsReturnHomeAllow(false);
+                }
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -237,6 +252,22 @@ class MemberController extends FOSRestController
                 $member->setUser($this->getUser());
                 $member->setSeason($paramService->getCurrentSeason());
                 $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+                if (!$dateService->isMajor($data['birthdate'])) {
+                    $member->setIsReducedPrice(false);
+                    $member->setIsNonCompetitive(false);
+                } else {
+                    $member->setParentOneFirstname(null);
+                    $member->setParentOneLastname(null);
+                    $member->setParentOnePhoneNumber(null);
+                    $member->setParentOneEmail(null);
+                    $member->setParentOneProfession(null);
+                    $member->setParentTwoFirstname(null);
+                    $member->setParentTwoLastname(null);
+                    $member->setParentTwoPhoneNumber(null);
+                    $member->setParentTwoEmail(null);
+                    $member->setParentTwoProfession(null);
+                    $member->setIsReturnHomeAllow(false);
+                }
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
@@ -283,6 +314,18 @@ class MemberController extends FOSRestController
                 if (!$dateService->isMajor($data['birthdate'])) {
                     $member->setIsReducedPrice(false);
                     $member->setIsNonCompetitive(false);
+                } else {
+                    $member->setParentOneFirstname(null);
+                    $member->setParentOneLastname(null);
+                    $member->setParentOnePhoneNumber(null);
+                    $member->setParentOneEmail(null);
+                    $member->setParentOneProfession(null);
+                    $member->setParentTwoFirstname(null);
+                    $member->setParentTwoLastname(null);
+                    $member->setParentTwoPhoneNumber(null);
+                    $member->setParentTwoEmail(null);
+                    $member->setParentTwoProfession(null);
+                    $member->setIsReturnHomeAllow(false);
                 }
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
@@ -320,7 +363,7 @@ class MemberController extends FOSRestController
                 ]
             ], Response::HTTP_FORBIDDEN));
         }
-        
+
         //Disable if needed
         if (!filter_var($paramService->getParam('is_create_new_member_able'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->handleView($this->view([
@@ -354,6 +397,18 @@ class MemberController extends FOSRestController
                 if (!$dateService->isMajor($data['birthdate'])) {
                     $member->setIsReducedPrice(false);
                     $member->setIsNonCompetitive(false);
+                } else {
+                    $member->setParentOneFirstname(null);
+                    $member->setParentOneLastname(null);
+                    $member->setParentOnePhoneNumber(null);
+                    $member->setParentOneEmail(null);
+                    $member->setParentOneProfession(null);
+                    $member->setParentTwoFirstname(null);
+                    $member->setParentTwoLastname(null);
+                    $member->setParentTwoPhoneNumber(null);
+                    $member->setParentTwoEmail(null);
+                    $member->setParentTwoProfession(null);
+                    $member->setIsReturnHomeAllow(false);
                 }
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);

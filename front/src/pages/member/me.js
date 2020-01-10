@@ -118,8 +118,6 @@ class _MembersMe extends React.Component {
             }
             this.props.setCommand(this.commandRead)
         }
-
-
     }
 
     render() {
@@ -203,13 +201,13 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeInformations
-                                                                        readOnly={member.is_payed || readOnly}
+                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
                                                                     <br />
                                                                     <MembersMeAutorizations
-                                                                        readOnly={member.is_payed || readOnly}
+                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
@@ -221,7 +219,7 @@ class _MembersMe extends React.Component {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                if (!member.is_payed && !readOnly) {
+                                                                                if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         request.editOrCreateMember(member?.id, { ...member })
                                                                                             .then(res => {
@@ -248,7 +246,7 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeDocuments
-                                                                        readOnly={member.is_payed || readOnly}
+                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         memberIndex={i}
                                                                         errorField={errorField}
                                                                     />
@@ -264,7 +262,7 @@ class _MembersMe extends React.Component {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                if (!member.is_payed && !readOnly) {
+                                                                                if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         request.validateMemberDocument(member?.id)
                                                                                             .then(res => {
@@ -291,7 +289,7 @@ class _MembersMe extends React.Component {
                                                             return (
                                                                 <>
                                                                     <MembersMeSummary
-                                                                        readOnly={member.is_payed || readOnly}
+                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         memberIndex={i}
                                                                     />
                                                                     <Separator /><br />

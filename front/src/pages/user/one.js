@@ -86,6 +86,7 @@ class _UserOne extends React.Component {
                             <Label disabled={!readOnly} htmlFor="username">Nom</Label>
                             <TextField
                                 id="username"
+                                placeholder="Nom"
                                 value={data?.username ?? ''}
                                 borderless={true}
                                 readOnly={true}
@@ -97,6 +98,7 @@ class _UserOne extends React.Component {
                                 readOnly ?
                                     <TextField
                                         id="roles"
+                                        placeholder="Roles"
                                         defaultValue={data?.roles?.join(', ')}
                                         borderless={true}
                                         readOnly={true}
@@ -153,6 +155,7 @@ class _UserOne extends React.Component {
                                     readOnly ?
                                         <TextField
                                             id="teams"
+                                            placeholder="Équipe(s)"
                                             defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
                                             borderless={true}
                                             readOnly={true}

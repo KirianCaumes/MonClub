@@ -18,7 +18,7 @@ class _MembersMeInformations extends React.Component {
 
         return (
             <section id="members-me-informations">
-                <Text variant="large" block><Icon iconName='ContactInfo'/> Informations concernant le licencié</Text>
+                <Text variant="large" block><Icon iconName='ContactInfo' /> Informations concernant le licencié</Text>
                 <Separator />
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
                     Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
@@ -29,6 +29,7 @@ class _MembersMeInformations extends React.Component {
                         <Label required htmlFor="firstname">Prénom</Label>
                         <TextField
                             id="firstname"
+                            placeholder="Prénom"
                             defaultValue={member?.firstname ?? ''}
                             onBlur={ev => this.props.editMember({ firstname: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -41,6 +42,7 @@ class _MembersMeInformations extends React.Component {
                         <Label required htmlFor="lastname">Nom</Label>
                         <TextField
                             id="lastname"
+                            placeholder="Nom"
                             defaultValue={member?.lastname ?? ''}
                             onBlur={ev => this.props.editMember({ lastname: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -49,23 +51,26 @@ class _MembersMeInformations extends React.Component {
                         />
                     </Columns.Column>
                     <Columns.Column>
-                        <Label required htmlFor="birthdate">Date de naissance</Label>
-                        <TooltipHost
-                            content="Format attendu: JJ/MM/AAAA"
-                            directionalHint={DirectionalHint.bottomCenter}
-                            styles={{ root: { width: '100%' } }}
-                            delay={TooltipDelay.zero}
-                        >
-                            <MaskedTextField
-                                id="birthdate"
-                                value={stringToCleanString(member?.birthdate)}
-                                mask={"99/99/9999"}
-                                borderless={readOnly}
-                                readOnly={readOnly}
-                                onBlur={ev => this.props.editMember({ birthdate: stringToDate(ev.target.value) }, memberIndex)}
-                                errorMessage={errorField?.birthdate?.errors?.[0]}
-                            />
-                        </TooltipHost>
+                        <div className="flex-row flex-start">
+                            <Label required htmlFor="birthdate">Date de naissance</Label>
+                            <TooltipHost
+                                content="Format attendu: JJ/MM/AAAA"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <Icon iconName="Info" className="icon-info-label is-required" />
+                            </TooltipHost>
+                        </div>
+                        <MaskedTextField
+                            id="birthdate"
+                            placeholder="Date de naissance"
+                            value={stringToCleanString(member?.birthdate)}
+                            mask={"99/99/9999"}
+                            borderless={readOnly}
+                            readOnly={readOnly}
+                            onBlur={ev => this.props.editMember({ birthdate: stringToDate(ev.target.value) }, memberIndex)}
+                            errorMessage={errorField?.birthdate?.errors?.[0]}
+                        />
                     </Columns.Column>
                     <Columns.Column size="one-quarter">
                         <Label required htmlFor="sex">Sexe</Label>
@@ -73,6 +78,7 @@ class _MembersMeInformations extends React.Component {
                             readOnly ?
                                 <TextField
                                     id="sex"
+                                    placeholder="Sexe"
                                     defaultValue={member?.sex?.label}
                                     borderless={true}
                                     readOnly={true}
@@ -81,6 +87,7 @@ class _MembersMeInformations extends React.Component {
                                 :
                                 <Dropdown
                                     id="sex"
+                                    placeholder="Sexe"
                                     selectedKey={member?.sex?.id}
                                     options={[...this.props?.param?.sexes]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                     errorMessage={errorField?.sex?.errors?.[0]}
@@ -95,6 +102,7 @@ class _MembersMeInformations extends React.Component {
                         <Label required={isMajor(member?.birthdate)} htmlFor="email">Email</Label>
                         <TextField
                             id="email"
+                            placeholder="Email"
                             defaultValue={member?.email ?? ''}
                             onBlur={ev => this.props.editMember({ email: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -104,9 +112,19 @@ class _MembersMeInformations extends React.Component {
                     </Columns.Column>
 
                     <Columns.Column>
-                        <Label required={isMajor(member?.birthdate)} htmlFor="phone_number">Numéro de téléphone</Label>
+                        <div className="flex-row flex-start">
+                            <Label required={isMajor(member?.birthdate)} htmlFor="phone_number">Numéro de téléphone</Label>
+                            <TooltipHost
+                                content="Exemple de format attendu: 0123456789"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <Icon iconName="Info" className="icon-info-label is-required" />
+                            </TooltipHost>
+                        </div>
                         <MaskedTextField
                             id="phone_number"
+                            placeholder="Numéro de téléphone"
                             value={member?.phone_number ?? ''}
                             onBlur={ev => this.props.editMember({ phone_number: ev.target.value }, memberIndex)}
                             mask={"9999999999"}
@@ -120,6 +138,7 @@ class _MembersMeInformations extends React.Component {
                         <Label htmlFor="profession">Profession</Label>
                         <TextField
                             id="profession"
+                            placeholder="Profession"
                             defaultValue={member?.profession ?? ''}
                             onBlur={ev => this.props.editMember({ profession: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -128,13 +147,14 @@ class _MembersMeInformations extends React.Component {
                         />
                     </Columns.Column>
 
-                    <Columns.Column className="is-hidden-touch"/>
+                    <Columns.Column className="is-hidden-touch" />
                 </Columns>
                 <Columns>
                     <Columns.Column>
                         <Label required htmlFor="postal_code">Code postal</Label>
                         <MaskedTextField
                             id="postal_code"
+                            placeholder="Code postal"
                             value={member?.postal_code ?? ''}
                             onBlur={ev => this.props.editMember({ postal_code: ev.target.value }, memberIndex)}
                             mask={"99999"}
@@ -147,6 +167,7 @@ class _MembersMeInformations extends React.Component {
                         <Label required htmlFor="street">Rue</Label>
                         <TextField
                             id="street"
+                            placeholder="Rue"
                             defaultValue={member?.street ?? ''}
                             onBlur={ev => this.props.editMember({ street: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -158,6 +179,7 @@ class _MembersMeInformations extends React.Component {
                         <Label required htmlFor="city">Ville</Label>
                         <TextField
                             id="city"
+                            placeholder="Ville"
                             defaultValue={member?.city ?? ''}
                             onBlur={ev => this.props.editMember({ city: ev.target.value }, memberIndex)}
                             borderless={readOnly}
@@ -165,7 +187,7 @@ class _MembersMeInformations extends React.Component {
                             errorMessage={errorField?.city?.errors?.[0]}
                         />
                     </Columns.Column>
-                    <Columns.Column className="is-hidden-touch"/>
+                    <Columns.Column className="is-hidden-touch" />
                 </Columns>
                 <Checkbox
                     label="Demande de transfert de club (cocher si oui)"
@@ -204,13 +226,14 @@ class _MembersMeInformations extends React.Component {
                         <br />
                         <Columns>
                             <Columns.Column>
-                                <Text variant="large" block><Icon iconName='ContactList'/> Parent 1</Text>
+                                <Text variant="large" block><Icon iconName='ContactList' /> Parent 1</Text>
                                 <Separator />
                                 <Columns>
                                     <Columns.Column>
                                         <Label required htmlFor="parent_one_firstname">Prénom</Label>
                                         <TextField
                                             id="parent_one_firstname"
+                                            placeholder="Prénom"
                                             defaultValue={member?.parent_one_firstname ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_one_firstname: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -222,6 +245,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label required htmlFor="parent_one_lastname">Nom</Label>
                                         <TextField
                                             id="parent_one_lastname"
+                                            placeholder="Nom"
                                             defaultValue={member?.parent_one_lastname ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_one_lastname: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -235,6 +259,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label required htmlFor="parent_one_email">Email</Label>
                                         <TextField
                                             id="parent_one_email"
+                                            placeholder="Email"
                                             defaultValue={member?.parent_one_email ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_one_email: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -246,6 +271,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label required htmlFor="parent_one_phone_number">Numéro de téléphone</Label>
                                         <MaskedTextField
                                             id="parent_one_phone_number"
+                                            placeholder="Numéro de téléphone"
                                             value={member?.parent_one_phone_number ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_one_phone_number: ev.target.value }, memberIndex)}
                                             mask={"9999999999"}
@@ -260,6 +286,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label htmlFor="parent_one_profession">Profession</Label>
                                         <TextField
                                             id="parent_one_profession"
+                                            placeholder="Profession"
                                             defaultValue={member?.parent_one_profession ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_one_profession: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -267,18 +294,19 @@ class _MembersMeInformations extends React.Component {
                                             errorMessage={errorField?.parent_one_profession?.errors?.[0]}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column className="is-hidden-touch"/>
+                                    <Columns.Column className="is-hidden-touch" />
                                 </Columns>
                             </Columns.Column>
                             {/* <Separator vertical /> */}
                             <Columns.Column>
-                                <Text variant="large" block><Icon iconName='ContactList'/> Parent 2</Text>
+                                <Text variant="large" block><Icon iconName='ContactList' /> Parent 2</Text>
                                 <Separator />
                                 <Columns>
                                     <Columns.Column>
                                         <Label htmlFor="parent_two_firstname">Prénom</Label>
                                         <TextField
                                             id="parent_two_firstname"
+                                            placeholder="Prénom"
                                             defaultValue={member?.parent_two_firstname ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_two_firstname: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -290,6 +318,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label htmlFor="parent_two_lastname">Nom</Label>
                                         <TextField
                                             id="parent_two_lastname"
+                                            placeholder="Nom"
                                             defaultValue={member?.parent_two_lastname ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_two_lastname: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -303,6 +332,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label htmlFor="parent_two_email">Email</Label>
                                         <TextField
                                             id="parent_two_email"
+                                            placeholder="Email"
                                             defaultValue={member?.parent_two_email ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_two_email: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -314,6 +344,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label htmlFor="parent_two_phone_number">Numéro de téléphone</Label>
                                         <MaskedTextField
                                             id="parent_two_phone_number"
+                                            placeholder="Numéro de téléphone"
                                             value={member?.parent_two_phone_number ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_two_phone_number: ev.target.value }, memberIndex)}
                                             mask={"9999999999"}
@@ -328,6 +359,7 @@ class _MembersMeInformations extends React.Component {
                                         <Label htmlFor="parent_two_profession">Profession</Label>
                                         <TextField
                                             id="parent_two_profession"
+                                            placeholder="Profession"
                                             defaultValue={member?.parent_two_profession ?? ''}
                                             onBlur={ev => this.props.editMember({ parent_two_profession: ev.target.value }, memberIndex)}
                                             borderless={readOnly}
@@ -335,7 +367,7 @@ class _MembersMeInformations extends React.Component {
                                             errorMessage={errorField?.parent_two_profession?.errors?.[0]}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column className="is-hidden-touch"/>
+                                    <Columns.Column className="is-hidden-touch" />
                                 </Columns>
                             </Columns.Column>
                         </Columns>
