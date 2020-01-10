@@ -7,10 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method ParamPriceTransfer|null find($id, $lockMode = null, $lockVersion = null)
- * @method ParamPriceTransfer|null findOneBy(array $criteria, array $orderBy = null)
- * @method ParamPriceTransfer[]    findAll()
- * @method ParamPriceTransfer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository for Param Price Transfer
+ * @method findOneByAgeInterval    findOneByYearInterval(int $age)
  */
 class ParamPriceTransferRepository extends ServiceEntityRepository
 {
@@ -19,6 +17,9 @@ class ParamPriceTransferRepository extends ServiceEntityRepository
         parent::__construct($registry, ParamPriceTransfer::class);
     }
 
+    /**
+     * Find ParamPriceTransfer by age
+     */
     public function findOneByAgeInterval($age): ?ParamPriceTransfer
     {
         return $this->createQueryBuilder('m')

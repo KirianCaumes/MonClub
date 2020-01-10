@@ -7,10 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method ParamPriceLicense|null find($id, $lockMode = null, $lockVersion = null)
- * @method ParamPriceLicense|null findOneBy(array $criteria, array $orderBy = null)
- * @method ParamPriceLicense[]    findAll()
- * @method ParamPriceLicense[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository for Param Price License
+ * @method ParamPriceLicense    findOneByYearInterval(int $year)
  */
 class ParamPriceLicenseRepository extends ServiceEntityRepository
 {
@@ -19,7 +17,10 @@ class ParamPriceLicenseRepository extends ServiceEntityRepository
         parent::__construct($registry, ParamPriceLicense::class);
     }
 
-    public function findOneByYearInterval($year): ?ParamPriceLicense
+    /**
+     * Find PriceLicense by year interval
+     */
+    public function findOneByYearInterval(int $year): ?ParamPriceLicense
     {
         return $this->createQueryBuilder('m')
             ->where('m.min_year <= :val')

@@ -157,6 +157,39 @@ class _Constants extends React.Component {
                     />
                     <br />
 
+                    <Label>Choix :</Label>
+                    <DetailsList
+                        items={param?.choices ?? []}
+                        columns={[
+                            {
+                                key: 'key',
+                                name: 'Clé',
+                                fieldName: 'key',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
+                            },
+                            {
+                                key: 'text',
+                                name: 'Texte',
+                                fieldName: 'text',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
+                            },
+                            {
+                                key: 'icon',
+                                name: 'Icon',
+                                fieldName: 'icon',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+
                     <Label>Sexes :</Label>
                     <DetailsList
                         items={param?.sexes ?? []}
@@ -176,39 +209,6 @@ class _Constants extends React.Component {
                                 minWidth: 70,
                                 maxWidth: 200,
                                 isResizable: true,
-                            },
-                            {
-                                key: 'icon',
-                                name: 'Icon',
-                                fieldName: 'icon',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true,
-                            }
-                        ]}
-                        selectionMode={SelectionMode.none}
-                    />
-                    <br />
-
-                    <Label>Choix :</Label>
-                    <DetailsList
-                        items={param?.choices ?? []}
-                        columns={[
-                            {
-                                key: 'key',
-                                name: 'Clé',
-                                fieldName: 'key',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true
-                            },                            
-                            {
-                                key: 'text',
-                                name: 'Texte',
-                                fieldName: 'text',
-                                minWidth: 70,
-                                maxWidth: 200,
-                                isResizable: true
                             },
                             {
                                 key: 'icon',
@@ -433,6 +433,31 @@ class _Constants extends React.Component {
                                 maxWidth: 200,
                                 isResizable: true,
                                 onRender: item => <>{item.is_current ? 'Oui' : 'Non'}</>
+                            }
+                        ]}
+                        selectionMode={SelectionMode.none}
+                    />
+                    <br />
+
+                    <Label>Utilisateurs :</Label>
+                    <DetailsList
+                        items={param?.users ?? []}
+                        columns={[
+                            {
+                                key: 'id',
+                                name: 'Id',
+                                fieldName: 'id',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
+                            },
+                            {
+                                key: 'username',
+                                name: 'Nom',
+                                fieldName: 'username',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true,
                             }
                         ]}
                         selectionMode={SelectionMode.none}

@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\User;
 use Twig\Environment;
 
+/**
+ * Service to handle mail
+ */
 class MailService
 {
     protected $mailer;

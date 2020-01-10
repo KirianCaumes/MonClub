@@ -3,13 +3,12 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\ParamGlobal;
-use App\Entity\ParamPriceLicense;
-use App\Entity\ParamPriceTransfer;
-use App\Entity\ParamReductionFamily;
 use App\Entity\ParamWorkflow;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Service to return worflow for a member
+ */
 class WorkflowService
 {
     private $em;

@@ -6,6 +6,9 @@ use App\Entity\ParamGlobal;
 use App\Entity\ParamSeason;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Service to manipulate param
+ */
 class ParamService
 {
     private $em;

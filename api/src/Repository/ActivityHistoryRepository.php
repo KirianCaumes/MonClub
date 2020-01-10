@@ -7,10 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method ActivityHistory|null find($id, $lockMode = null, $lockVersion = null)
- * @method ActivityHistory|null findOneBy(array $criteria, array $orderBy = null)
- * @method ActivityHistory[]    findAll()
- * @method ActivityHistory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository for Activity History
+ * @method []    findCountByDate()
  */
 class ActivityHistoryRepository extends ServiceEntityRepository
 {
@@ -18,6 +16,10 @@ class ActivityHistoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ActivityHistory::class);
     }
+
+    /**
+     * Get number connexion from each days
+     */
     public function findCountByDate()
     {
         return $this->createQueryBuilder("a")

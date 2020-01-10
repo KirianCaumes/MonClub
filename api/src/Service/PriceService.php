@@ -3,12 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\ParamGlobal;
 use App\Entity\ParamPriceLicense;
 use App\Entity\ParamPriceTransfer;
 use App\Entity\ParamReductionFamily;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Service to get price to pay
+ */
 class PriceService
 {
     private $em;

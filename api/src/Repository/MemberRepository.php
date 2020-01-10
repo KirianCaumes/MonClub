@@ -3,14 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\Member;
+use App\Entity\ParamSeason;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
- * @method Member|null find($id, $lockMode = null, $lockVersion = null)
- * @method Member|null findOneBy(array $criteria, array $orderBy = null)
- * @method Member[]    findAll()
- * @method Member[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository for Member
+ * @method Member[]    findMembersByFields(string $name, string $stepsId, string $teamsId, string $seasonId)
+ * @method Member[]    findMembersOngoing(ParaSeason $currentSeason)
+ * @method Member[]    findByTeamsAndSeason(Team[] $teams, ParamSeason $currentSeason)
  */
 class MemberRepository extends ServiceEntityRepository
 {
@@ -20,9 +21,9 @@ class MemberRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Member[] Returns an array of Member objects
+     * Search members
      */
-    public function findMembersByFields($name, $stepsId, $teamsId, $seasonId)
+    public function findMembersByFields(string $name, string $stepsId, string $teamsId, string $seasonId)
     {
         $query = $this->createQueryBuilder('m');
         if ($teamsId) $query->join('m.teams', 'c');
@@ -50,9 +51,9 @@ class MemberRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Member[] Returns an array of Member objects
+     * Get members ongoing
      */
-    public function findMembersOngoing($currentSeason)
+    public function findMembersOngoing(ParamSeason $currentSeason)
     {
         return $this->createQueryBuilder('m')
             ->where('m.season = :currentSeason')
@@ -63,9 +64,9 @@ class MemberRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Member[] Returns an array of Member objects
+     * Get members by teams and season
      */
-    public function findByTeamsAndSeason($teams, $currentSeason)
+    public function findByTeamsAndSeason(array $teams, ParamSeason $currentSeason)
     {
         return $this->createQueryBuilder('m')
             ->join('m.teams', 'c')

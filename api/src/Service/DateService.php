@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+/**
+ * Service to manipulate Date
+ */
 class DateService
 {
     public function __construct()

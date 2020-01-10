@@ -10,6 +10,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Generate mail to remind member who have action to do
+ */
 class MailCommand extends Command
 {
     private $em;
@@ -55,7 +58,7 @@ class MailCommand extends Command
         foreach ($usersToSend as $user) {
             $this->mailService->sendMemberReminder($user);
         }
-        
+
         $output->writeln(sizeof($usersToSend) . ' email(s) were sent.');
     }
 }

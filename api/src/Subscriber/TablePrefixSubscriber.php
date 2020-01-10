@@ -5,6 +5,9 @@ namespace App\Subscriber;
 use Doctrine\Common\EventSubscriber;
 use \Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 
+/**
+ * Add prefix to table by env
+ */
 class TablePrefixSubscriber implements EventSubscriber
 {
     protected $prefix = '';
