@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
-use App\Entity\ParamGlobal;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -18,17 +16,30 @@ use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use App\Service\MailService;
 use App\Service\ParamService;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * User controller.
+ * @SWG\Tag(name="Public")
  * @Route("/api", name="api_")
  */
 class PublicController extends FOSRestController
 {
     /**
      * Login User.
+     * @SWG\Parameter(name="user",in="body", description="Log User", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="username", type="string"),
+     *      @SWG\Property(property="plainPassword", type="string"),
+     * )))
+     * @SWG\Response(response=200, description="User is logged", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="token", type="string")
+     * ))
+     * @SWG\Response(response=401, description="Wrong password")
+     * @SWG\Response(response=404, description="User not found")
      * @Rest\Post("/login")
      *
      * @return Response
@@ -39,7 +50,7 @@ class PublicController extends FOSRestController
         $user = $userManager->findUserByUsername($data['username']);
 
         if (!$user) {
-            return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_UNAUTHORIZED));
+            return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_NOT_FOUND));
         }
 
         if (!(new BCryptPasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
@@ -51,6 +62,20 @@ class PublicController extends FOSRestController
 
     /**
      * Create User.
+     * @SWG\Parameter(name="user",in="body", description="Register User", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="username", type="string"),
+     *      @SWG\Property(property="plainPassword", type="object", 
+     *          @SWG\Property(property="first", type="string"),
+     *          @SWG\Property(property="second", type="string"),
+     *      )),
+     * )))
+     * @SWG\Response(response=201, description="User is registered", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="token", type="string")
+     * ))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=403, description="Feature disabled")
      * @Rest\Post("/register")
      *
      * @return Response
@@ -84,6 +109,12 @@ class PublicController extends FOSRestController
 
     /**
      * Send an email to reset password.
+     * @SWG\Parameter(name="user", in="body", description="Reset password by sending email with token", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="username", type="string")
+     * )))
+     * @SWG\Response(response=200, description="Login user")
+     * @SWG\Response(response=400, description="User not found")
      * @Rest\Post("/reset/mail")
      *
      * @return Response
@@ -115,6 +146,12 @@ class PublicController extends FOSRestController
 
     /**
      * Reset password.
+     * @SWG\Parameter(name="member", in="body", description="Reset password by reset token", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="resetToken", type="string")
+     * )))
+     * @SWG\Response(response=200, description="User's password changed")
+     * @SWG\Response(response=400, description="User not found")
      * @Rest\Post("/reset")
      *
      * @return Response
@@ -141,6 +178,14 @@ class PublicController extends FOSRestController
 
     /**
      * Login User for Drive.
+     * @SWG\Parameter(name="user",in="body", description="Log User for drive", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="username", type="string"),
+     *      @SWG\Property(property="plainPassword", type="string"),
+     * )))
+     * @SWG\Response(response=200, description="User is logged")
+     * @SWG\Response(response=401, description="Wrong password")
+     * @SWG\Response(response=404, description="User not found")
      * @Rest\Post("/login/drive")
      *
      * @return Response
@@ -168,6 +213,14 @@ class PublicController extends FOSRestController
 
     /**
      * Post error from front
+     * @SWG\Parameter(name="error",in="body", description="Append error in log", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="env", type="string"),
+     *      @SWG\Property(property="datetime", type="string"),
+     *      @SWG\Property(property="error", type="string"),
+     *      @SWG\Property(property="info", type="string"),
+     * )))
+     * @SWG\Response(response=200, description="Log added")
      * @Rest\Post("/log")
      *
      * @return Response

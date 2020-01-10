@@ -16,15 +16,20 @@ use Symfony\Component\Security\Core\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * User controller.
+ * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
+ * @SWG\Tag(name="User")
  * @Route("/api/user", name="api_")
  */
 class UserController extends FOSRestController
 {
     /**
      * Get User.
+     * @SWG\Response(response=200, description="Returns current User", @SWG\Schema(@Model(type=User::class)))
      * @Rest\Get("/me")
      *
      * @return Response
@@ -40,6 +45,7 @@ class UserController extends FOSRestController
 
     /**
      * Get info for dashboard.
+     * @SWG\Response(response=200, description="Returns infos for dashboard", @SWG\Schema(@Model(type="object")))
      * @Rest\Get("/infos")
      *
      * @return Response
@@ -85,6 +91,7 @@ class UserController extends FOSRestController
 
     /**
      * Lists all users.
+     * @SWG\Response(response=200, description="Returns Users", @SWG\Schema(type="array", @Model(type=User::class)))
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Rest\Get("")
      *
@@ -103,6 +110,8 @@ class UserController extends FOSRestController
 
     /**
      * Get one user.
+     * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
+     * @SWG\Response(response=404, description="User not found")
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Rest\Get("/{id}")
      *
@@ -125,6 +134,9 @@ class UserController extends FOSRestController
 
     /**
      * Edit User.
+     * @SWG\Parameter(name="user",in="body", description="New user", format="application/json", @SWG\Schema(@Model(type=User::class)))
+     * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
+     * @SWG\Response(response=404, description="USer not found")
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Rest\Put("/{id}")
      *

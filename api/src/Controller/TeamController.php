@@ -11,15 +11,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
- * Param controller.
+ * Team controller.
+ * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
+ * @SWG\Tag(name="Team")
  * @Route("/api/team", name="api_")
  */
 class TeamController extends FOSRestController
 {
     /**
      * Lists all Teams.
+     * @SWG\Response(response=200, description="Returns Teams", @SWG\Schema(type="array", @Model(type=Team::class)))
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("")
      *
@@ -32,6 +37,7 @@ class TeamController extends FOSRestController
 
     /**
      * Get one empty Team.
+     * @SWG\Response(response=200, description="Returns new Team", @SWG\Schema(@Model(type=Team::class)))
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("/new")
      *
@@ -44,6 +50,8 @@ class TeamController extends FOSRestController
 
     /**
      * Get one Team.
+     * @SWG\Response(response=200, description="Returns Team", @SWG\Schema(@Model(type=Team::class)))
+     * @SWG\Response(response=404, description="Team not found")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("/{id}")
      *
@@ -60,6 +68,9 @@ class TeamController extends FOSRestController
 
     /**
      * Create Team.
+     * @SWG\Parameter(name="team",in="body", description="New team", format="application/json", @SWG\Schema(@Model(type=Team::class)))
+     * @SWG\Response(response=201, description="Returns team created", @SWG\Schema(@Model(type=Team::class)))
+     * @SWG\Response(response=400, description="Error in data")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("")
      *
@@ -83,6 +94,10 @@ class TeamController extends FOSRestController
 
     /**
      * Edit Team.
+     * @SWG\Parameter(name="team",in="body", description="New team", format="application/json", @SWG\Schema(@Model(type=Team::class)))
+     * @SWG\Response(response=200, description="Returns team", @SWG\Schema(@Model(type=Team::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=404, description="Team not found")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}")
      *
@@ -111,6 +126,8 @@ class TeamController extends FOSRestController
 
     /**
      * Delete Team.
+     * @SWG\Response(response=200, description="Team deleted")
+     * @SWG\Response(response=404, description="Team not found")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Delete("/{id}")
      *

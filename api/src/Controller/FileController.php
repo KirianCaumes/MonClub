@@ -8,14 +8,9 @@ use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
-use App\Entity\ParamGlobal;
 use App\Entity\Team;
 use App\Form\DocumentType;
-use App\Form\MemberMajorType;
-use App\Form\MemberMinorType;
-use App\Service\DateService;
 use App\Service\ParamService;
-use App\Service\PriceService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -24,17 +19,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Validator\Constraints\Image;
 use Vich\UploaderBundle\Handler\DownloadHandler;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 
 /**
  * Member controller.
+ * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
+ * @SWG\Tag(name="File")
  * @Route("/api/document", name="api_")
  */
 class FileController extends FOSRestController
 {
     /**
      * Generate and get csv for GoogleContact.
+     * @SWG\Response(response=200, description="Returns CSV", @SWG\Schema(type="file"))
      * @IsGranted("ROLE_ADMIN")
      * @Route("/google/contact", methods={"GET"})
      */
@@ -91,6 +91,7 @@ class FileController extends FOSRestController
 
     /**
      * Generate and get Excel with tracking informations.
+     * @SWG\Response(response=200, description="Returns Xlsx", @SWG\Schema(type="file"))
      * @IsGranted("ROLE_ADMIN")
      * @Route("/excel/tracking", methods={"GET"})
      */
@@ -198,6 +199,7 @@ class FileController extends FOSRestController
 
     /**
      * Generate and get excel 'infos general'.
+     * @SWG\Response(response=200, description="Returns Xlsx", @SWG\Schema(type="file"))
      * @IsGranted("ROLE_ADMIN")
      * @Route("/excel/general", methods={"GET"})
      */
@@ -307,75 +309,10 @@ class FileController extends FOSRestController
 
         return $response;
     }
-    /**
-     * Post Document.
-     * @Rest\Post("/{memberId}/{documentCategoryId}")
-     *
-     * @return Response
-     */
-    public function postDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
-    {
-        //Find member by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
-        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        //Find document categoru by id
-        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
-        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
-
-        //Save document
-        $document = new Document();
-        $form = $this->createForm(DocumentType::class, $document);
-        $form->submit($request->files->all());
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            //Check if doc with current category for current user exists
-            $docs = $this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member, 'category' => $documentCategory]);
-            if ($docs) {
-                foreach ($docs as $doc) $em->remove($doc);
-                $em->flush();
-            }
-
-            $document->setMember($member);
-            $document->setCategory($documentCategory);
-            $em->persist($document);
-            $em->flush();
-            return $this->handleView($this->view($document, Response::HTTP_CREATED));
-        }
-        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
-    }
-
-    /**
-     * Delete Document.
-     * @Rest\Delete("/{memberId}/{documentCategoryId}")
-     *
-     * @return Response
-     */
-    public function deleteDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
-    {
-        //Find member by id
-        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
-        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        //Find document categoru by id
-        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
-        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
-
-        //Find document
-        $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
-        if (!$document) return $this->handleView($this->view(["message" => $translator->trans('document_not_found')], Response::HTTP_NOT_FOUND));
-
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($document);
-        $em->flush();
-        return $this->handleView($this->view([]));
-    }
 
     /**
      * Generate and get document "attestation payment".
+     * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
      * @Route("/{memberId}/attestation", methods={"GET"})
      */
     public function getAttestation(TranslatorInterface $translator, ParamService $paramService, int $memberId)
@@ -419,6 +356,7 @@ class FileController extends FOSRestController
 
     /**
      * Get document.
+     * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
      * @Route("/{memberId}/{documentCategoryId}", methods={"GET"})
      */
     public function downloadDocument(DownloadHandler $downloadHandler, TranslatorInterface $translator, int $memberId, int $documentCategoryId): Response
@@ -435,5 +373,78 @@ class FileController extends FOSRestController
         //Return document
         $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
         return $downloadHandler->downloadObject($document, 'documentFile', null, $document->getDocument()->getOriginalName(), false);
+    }
+
+    /**
+     * Post Document.
+     * @SWG\Parameter(name="file", in="formData", description="file", type="file")))
+     * @SWG\Response(response=201, description="Returns Document created", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=404, description="Member or DocumentCategory not found")
+     * @Rest\Post("/{memberId}/{documentCategoryId}")
+     *
+     * @return Response
+     */
+    public function postDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        //Find document categoru by id
+        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
+        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+
+        //Save document
+        $document = new Document();
+        $form = $this->createForm(DocumentType::class, $document);
+        $form->submit($request->files->all());
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            //Check if doc with current category for current user exists
+            $docs = $this->getDoctrine()->getRepository(Document::class)->findBy(['member' => $member, 'category' => $documentCategory]);
+            if ($docs) {
+                foreach ($docs as $doc) $em->remove($doc);
+                $em->flush();
+            }
+
+            $document->setMember($member);
+            $document->setCategory($documentCategory);
+            $em->persist($document);
+            $em->flush();
+            return $this->handleView($this->view($document, Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
+     * Delete Document.
+     * @SWG\Response(response=200, description="Document deleted")
+     * @SWG\Response(response=404, description="Member, DocumentCategory, or Member not found not found")
+     * @Rest\Delete("/{memberId}/{documentCategoryId}")
+     *
+     * @return Response
+     */
+    public function deleteDocument(Request $request, TranslatorInterface $translator, int $memberId, int $documentCategoryId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        //Find document categoru by id
+        $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
+        if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+
+        //Find document
+        $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
+        if (!$document) return $this->handleView($this->view(["message" => $translator->trans('document_not_found')], Response::HTTP_NOT_FOUND));
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($document);
+        $em->flush();
+        return $this->handleView($this->view([]));
     }
 }

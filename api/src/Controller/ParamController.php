@@ -15,20 +15,24 @@ use App\Entity\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\ActivityHistoricType;
-use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
  * Param controller.
+ * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
+ * @SWG\Tag(name="Team")
  * @Route("/api/param", name="api_")
  */
 class ParamController extends FOSRestController
 {
     /**
      * Lists all Param Global.
+     * @SWG\Response(response=200, description="Returns params", @SWG\Schema(@Model(type="object")))
      * @Rest\Get("")
      *
      * @return Response

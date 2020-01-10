@@ -7,7 +7,6 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\ParamDocumentCategory;
 use App\Entity\ParamPaymentSolution;
-use App\Entity\ParamSeason;
 use App\Form\MemberMajorAdminType;
 use App\Form\MemberMajorType;
 use App\Form\MemberMinorAdminType;
@@ -16,7 +15,6 @@ use App\Service\DateService;
 use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
-use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -26,19 +24,25 @@ use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 
 /**
  * Member controller.
+ * @SWG\Parameter(name="Authorization", in="header", required=true, type="string", default="Bearer ", description="Bearer token")
+ * @SWG\Tag(name="Member")
  * @Route("/api/member", name="api_")
  */
 class MemberController extends FOSRestController
 {
     /**
      * Lists all member.
-     * @QueryParam(name="name", nullable=true)
-     * @QueryParam(name="stepsId", nullable=true)
-     * @QueryParam(name="teamsId", nullable=true)
-     * @QueryParam(name="seasonId", nullable=true)
+     * @QueryParam(name="name", nullable=true, description="String of firstname/lastname to filter")
+     * @QueryParam(name="stepsId", nullable=true, description="Steps ids to filter (ex: '1,2,3,')")
+     * @QueryParam(name="teamsId", nullable=true, description="Teams ids to filter (ex: '1,2,3,')")
+     * @QueryParam(name="seasonId", nullable=true, description="Seasons ids to filter (ex: '1,2,3,')")
+     * @SWG\Response(response=200, description="Returns members", @SWG\Schema(type="array", @Model(type=Member::class)))
      * @IsGranted("ROLE_COACH")
      * @Rest\Get("")
      *
@@ -69,7 +73,8 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Lists all member.
+     * Get member by User connected.
+     * @SWG\Response(response=200, description="Returns members", @SWG\Schema(type="array", @Model(type=Member::class)))
      * @Rest\Get("/me")
      *
      * @return Response
@@ -87,6 +92,10 @@ class MemberController extends FOSRestController
 
     /**
      * Get new member.
+     * @SWG\Response(response=200, description="Returns new member", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="member", @Model(type=Member::class)),
+     * ))
      * @Rest\Get("/new")
      *
      * @return Response
@@ -99,7 +108,13 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * One member.
+     * Get one member by id.
+     * @SWG\Response(response=200, description="Returns member", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="member", @Model(type=Member::class)),
+     *      @SWG\Property(property="workflow", type="array", @SWG\Items(type="object")),
+     * ))
+     * @SWG\Response(response=404, description="Member not found")
      * @IsGranted("ROLE_COACH")
      * @Rest\Get("/{id}")
      *
@@ -127,7 +142,10 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Create Member Admin.
+     * Create new member for Admin user
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=201, description="Returns member created", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Error in data")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("/admin")
      *
@@ -166,7 +184,12 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Create Member.
+     * Create Member for user.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=201, description="Returns member created", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=403, description="Feature disabled")
+     * @SWG\Response(response=404, description="Member not found")
      * @Rest\Post("")
      *
      * @return Response
@@ -216,6 +239,10 @@ class MemberController extends FOSRestController
 
     /**
      * Edit Member for admin.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns member", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=404, description="Member not found")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}/admin")
      *
@@ -262,7 +289,12 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Edit Member.
+     * Edit Member for user.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns members", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=403, description="Feature disabled")
+     * @SWG\Response(response=404, description="Member not found")
      * @Rest\Put("/{id}")
      *
      * @return Response
@@ -315,6 +347,8 @@ class MemberController extends FOSRestController
 
     /**
      * Delete Member.
+     * @SWG\Response(response=200, description="Member deleted")
+     * @SWG\Response(response=404, description="Member not found")
      * @Rest\Delete("/{id}")
      *
      * @return Response
@@ -341,7 +375,10 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Get price for all User's Member.
+     * Get price for all User's Members.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns prices", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=404, description="Members not found")
      * @Rest\Get("/me/price")
      *
      * @return Response
@@ -360,6 +397,9 @@ class MemberController extends FOSRestController
 
     /**
      * Get price for a Member.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns price", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=404, description="Member not found")
      * @Rest\Get("/{id}/price")
      *
      * @return Response
@@ -377,7 +417,11 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Validate document.
+     * Validate document for a given Member.
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns member", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Files are missing")
+     * @SWG\Response(response=404, description="Members not found")
      * @Rest\Post("/{id}/validate-document")
      *
      * @return Response
@@ -435,32 +479,11 @@ class MemberController extends FOSRestController
     }
 
     /**
-     * Get wf for a Member.
-     * @IsGranted("ROLE_COACH")
-     * @Rest\Get("/{id}/workflow")
-     *
-     * @return Response
-     */
-    public function getWorkflow(TranslatorInterface $translator, int $id)
-    {
-        // //Find member by id
-        // $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
-        // if (!$member) {
-        //     return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        // }
-        // $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        // return $this->handleView($this->view([
-        //     'isCreated' => true,
-        //     'isDocumentComplete' => $member->getIsDocumentComplete(),
-        //     'isPayed' => $member->getIsPayed(),
-        //     'isCheckGestHand' => $member->getIsCheckGestHand(),
-        //     'isInscriptionDone' => $member->getIsInscriptionDone()
-        // ]));
-    }
-
-    /**
-     * Pay for mine Members
+     * Pay for User's Members
+     * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=200, description="Returns members", @SWG\Schema(@Model(type=Member::class)))
+     * @SWG\Response(response=400, description="Files are missing")
+     * @SWG\Response(response=404, description="Payment solution or Members not found")
      * @Rest\Post("/me/pay")
      *
      * @return Response

@@ -11,12 +11,10 @@ use Vich\UploaderBundle\Handler\DownloadHandler;
 class MainController extends AbstractController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/", name="index", methods={"GET"})
      */
     public function index()
     {
-        return new Response(
-            '<html><body>Hello world</body></html>'
-        );
+        return new Response('<h1>MonClub API</h1>');
     }
 }
