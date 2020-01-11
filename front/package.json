@@ -26,11 +26,14 @@
     "react-scripts": "3.3.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "rimraf": "^3.0.0",
     "sass-loader": "^8.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-sw": "node ./src/sw-build.js",
+    "clean-cra-sw": "rimraf ./build/precache-manifest.*.js && rimraf ./build/service-worker.js",
+    "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -50,6 +53,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^16.9.17"
+    "@types/react": "^16.9.17",
+    "workbox-build": "^4.3.1"
   }
 }

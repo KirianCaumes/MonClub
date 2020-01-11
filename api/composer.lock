@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37e729d49fee21b54a76e366f7f6e84a",
+    "content-hash": "3dc7bcb8857ee3b1cfed509e77793e8c",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -49,6 +49,55 @@
                 "transliterator"
             ],
             "time": "2017-04-04T11:38:05+00:00"
+        },
+        {
+            "name": "dfridrich/php-mime-type",
+            "version": "v2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dfridrich/PhpMimeType.git",
+                "reference": "adaefb4a0de58a5c6a9c21c83ef2592e9cd28be7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dfridrich/PhpMimeType/zipball/adaefb4a0de58a5c6a9c21c83ef2592e9cd28be7",
+                "reference": "adaefb4a0de58a5c6a9c21c83ef2592e9cd28be7",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6|^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.0",
+                "symfony/http-foundation": "^2.8 || ^3.0"
+            },
+            "suggest": {
+                "symfony/http-foundation": "Allows you to get prepared Symfony response."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Defr\\PhpMimeType\\": "src/",
+                    "Defr\\": "legacy/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dennis Fridrich",
+                    "email": "fridrich.dennis@gmail.com"
+                }
+            ],
+            "description": "Simple PHP class for guessing file mime type based on file extension with ability to use in Symfony project.",
+            "homepage": "https://github.com/dfridrich/PhpMimeType",
+            "keywords": [
+                "mimetype",
+                "php"
+            ],
+            "time": "2018-01-26T11:24:13+00:00"
         },
         {
             "name": "doctrine/annotations",

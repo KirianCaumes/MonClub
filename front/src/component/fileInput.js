@@ -3,7 +3,7 @@ import React from 'react'
 import { PrimaryButton, Spinner, SpinnerSize, TextField, IconButton, DefaultButton, DialogType, Dialog, DialogFooter, Text, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
-export default class FileInput extends React.Component {
+export default class FileInput extends React.PureComponent {
     static propTypes = {
         /** Error message to be displayed */
         errorMessage: PropTypes.string,

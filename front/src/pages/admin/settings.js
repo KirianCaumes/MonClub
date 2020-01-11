@@ -7,7 +7,7 @@ import request from 'helper/request'
 import { dateToString, stringToCleanString, stringToDate } from 'helper/date'
 import DropdownIcon from 'component/dropdown'
 
-class _Settings extends React.Component {
+class _Settings extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

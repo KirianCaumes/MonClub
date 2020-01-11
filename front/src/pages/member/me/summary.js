@@ -7,7 +7,7 @@ import { Table } from 'react-bulma-components'
 import { dateToCleanDateString, getYear, getAge } from 'helper/date'
 import request from 'helper/request'
 
-class _MembersMeSummary extends React.Component {
+class _MembersMeSummary extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

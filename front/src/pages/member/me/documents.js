@@ -8,7 +8,7 @@ import request from 'helper/request'
 import { dlBlob, openBlob } from 'helper/blob'
 import { editMember } from 'redux/actions/member'
 
-class _MembersMeDocuments extends React.Component {
+class _MembersMeDocuments extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

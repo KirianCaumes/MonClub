@@ -2,7 +2,7 @@ import React from 'react'
 import { Separator, Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 
-class _MembersMeFinalisation extends React.Component {
+class _MembersMeFinalisation extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {}

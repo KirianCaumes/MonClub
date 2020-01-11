@@ -12,7 +12,7 @@ import MembersMePayment from './me/payment'
 import { setMembers, editMember } from 'redux/actions/member'
 import MembersMeSummary from './me/summary'
 import MembersMeFinalisation from './me/finalisation'
-class _MembersMe extends React.Component {
+class _MembersMe extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

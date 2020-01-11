@@ -7,6 +7,7 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "dfridrich/php-mime-type": "^2.0",
         "dompdf/dompdf": "^0.8.3",
         "friendsofsymfony/rest-bundle": "^2.6",
         "friendsofsymfony/user-bundle": "^2.1",

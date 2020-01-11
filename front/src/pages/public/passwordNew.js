@@ -8,7 +8,7 @@ import request from 'helper/request'
 import { setMessageBar } from 'redux/actions/common'
 import { history } from 'helper/history'
 
-class _PasswordNew extends React.Component {
+class _PasswordNew extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

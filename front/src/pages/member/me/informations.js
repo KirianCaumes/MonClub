@@ -6,7 +6,7 @@ import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
 import { editMember } from 'redux/actions/member'
 
-class _MembersMeInformations extends React.Component {
+class _MembersMeInformations extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {}

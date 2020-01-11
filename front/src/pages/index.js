@@ -6,7 +6,7 @@ import { setBreadcrumb, setCommand } from 'redux/actions/common'
 import { Bar } from 'react-chartjs-2'
 import { stringToShortCleanString } from 'helper/date'
 
-class _Index extends React.Component {
+class _Index extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {}

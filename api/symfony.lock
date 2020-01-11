@@ -2,6 +2,9 @@
     "behat/transliterator": {
         "version": "v1.2.0"
     },
+    "dfridrich/php-mime-type": {
+        "version": "v2.0.3"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {

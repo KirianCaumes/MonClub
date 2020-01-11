@@ -7,7 +7,7 @@ import request from 'helper/request'
 import { Table } from 'react-bulma-components'
 import Loader from 'component/loader'
 
-class _MembersMePayment extends React.Component {
+class _MembersMePayment extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

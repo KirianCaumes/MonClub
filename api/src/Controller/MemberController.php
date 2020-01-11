@@ -12,6 +12,7 @@ use App\Form\MemberMajorType;
 use App\Form\MemberMinorAdminType;
 use App\Form\MemberMinorType;
 use App\Service\DateService;
+use App\Service\MailService;
 use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
@@ -289,7 +290,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function putMemberAdmin(Request $request, DateService $dateService, TranslatorInterface $translator, WorkflowService $workflowService, int $id)
+    public function putMemberAdmin(Request $request, DateService $dateService, TranslatorInterface $translator, WorkflowService $workflowService, MailService $mailService, int $id)
     {
         //Find user by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
@@ -308,6 +309,10 @@ class MemberController extends FOSRestController
             } else {
                 $form = $this->createForm(MemberMinorAdminType::class, $member);
             }
+
+            //Check to know if have to send email for inscription done
+            $emailInscriptionDone = ($data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
+
             $form->submit($data, true);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -330,6 +335,8 @@ class MemberController extends FOSRestController
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($member);
                 $em->flush();
+
+                if ($emailInscriptionDone) $mailService->sendInscriptionDone($member->getUser(), $member);
 
                 return $this->handleView($this->view([
                     'member' => $member,

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Member;
 use App\Entity\User;
 use Twig\Environment;
 
@@ -67,6 +68,25 @@ class MailService
                 ->setTo($user->getEmail())
                 ->setBody($this->twig->render('/mail/membersReminder.html.twig', [
                     'user' => $user,
+                    'baseUrl' => $this->baseUrl
+                ]))
+        );
+    }
+
+    /**
+     * Send an email to notice inscription is validated by the club
+     */
+    public function sendInscriptionDone(User $user, Member $member)
+    {
+        return $this->mailer->send(
+            (new \Swift_Message())
+                ->setContentType('text/html')
+                ->setFrom($this->from)
+                ->setSubject('Votre inscription à été validée - MonClub THBC')
+                ->setTo($user->getEmail())
+                ->setBody($this->twig->render('/mail/membersInscriptionDone.html.twig', [
+                    'user' => $user,
+                    'member' => $member,
                     'baseUrl' => $this->baseUrl
                 ]))
         );

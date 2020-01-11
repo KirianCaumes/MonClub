@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-export default class ParentPage extends React.Component {
+export default class ParentPage extends React.PureComponent {
     _onColumnClick = (params, ev, column) => {
         if (!Array.isArray(params.dataName) || params.dataName.length > 2 || params.dataName.length < 1) {
             console.error("'params.dataName' should be array with one or two arguments only")

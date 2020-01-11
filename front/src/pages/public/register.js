@@ -8,7 +8,7 @@ import request from 'helper/request'
 import { history } from 'helper/history'
 import { setMessageBar } from 'redux/actions/common'
 
-class _Register extends React.Component {
+class _Register extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

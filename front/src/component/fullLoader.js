@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default class FullLoader extends React.Component {    
+export default class FullLoader extends React.PureComponent {    
     static propTypes = {
         /** Is app loading ? */ 
         isLoading: PropTypes.bool,

@@ -64,7 +64,7 @@ loadTheme({
     }
 })
 
-class _App extends React.Component {
+class _App extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

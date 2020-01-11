@@ -3,7 +3,7 @@ import { Dialog, DialogFooter, PrimaryButton, DefaultButton, DialogType } from '
 import { setModal } from 'redux/actions/common'
 import { connect } from 'react-redux'
 
-class _Modal extends React.Component {
+class _Modal extends React.PureComponent {
     render() {
         const { modal, setModal } = this.props
         

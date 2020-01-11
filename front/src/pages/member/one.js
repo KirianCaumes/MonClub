@@ -13,7 +13,7 @@ import { dlBlob, openBlob } from 'helper/blob'
 import DropdownIcon from 'component/dropdown'
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
 
-class _MemberOne extends React.Component {
+class _MemberOne extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

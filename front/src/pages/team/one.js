@@ -7,7 +7,7 @@ import { history } from 'helper/history'
 import request from 'helper/request'
 import Loader from 'component/loader'
 
-class _TeamOne extends React.Component {
+class _TeamOne extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

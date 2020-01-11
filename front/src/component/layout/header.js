@@ -4,7 +4,7 @@ import { Icon, Panel, Label, TextField } from 'office-ui-fabric-react'
 import { history } from 'helper/history'
 import { dateToCleanDateTimeString } from 'helper/date'
 
-class Header extends React.Component {
+class Header extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

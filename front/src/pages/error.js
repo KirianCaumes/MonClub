@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from 'redux/actions/common'
 
-class _Error extends React.Component {
+class _Error extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {}

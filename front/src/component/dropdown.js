@@ -2,7 +2,7 @@ import React from 'react'
 import { Icon, TextField, Dropdown } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
-export default class DropdownIcon extends React.Component {
+export default class DropdownIcon extends React.PureComponent {
     static propTypes = {
         /** Html id */
         id: PropTypes.string,

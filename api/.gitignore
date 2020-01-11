@@ -14,3 +14,5 @@
 
 /ressources/document/*
 /src/Migrations/*
+
+/public/app/*

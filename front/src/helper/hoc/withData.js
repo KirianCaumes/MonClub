@@ -5,7 +5,7 @@ import { MessageBarType } from 'office-ui-fabric-react'
 import { setMessageBar, setCommand } from 'redux/actions/common'
 
 export default function withData(WrappedComponent, dataFunc) {
-    class _WithData extends React.Component {
+    class _WithData extends React.PureComponent {
         constructor(props) {
             super(props)
             this.state = {

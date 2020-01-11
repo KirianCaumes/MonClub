@@ -2,7 +2,7 @@ import React from 'react'
 import { Icon } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
-export default class Workflow extends React.Component {
+export default class Workflow extends React.PureComponent {
     static propTypes = {
         /** Data to display */ 
         data: PropTypes.arrayOf(PropTypes.object),

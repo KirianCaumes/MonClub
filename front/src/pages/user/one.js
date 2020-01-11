@@ -8,7 +8,7 @@ import request from 'helper/request'
 import Loader from 'component/loader'
 import { ROLE_COACH } from 'helper/constants'
 
-class _UserOne extends React.Component {
+class _UserOne extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {

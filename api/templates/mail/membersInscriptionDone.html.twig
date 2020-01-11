@@ -1,0 +1,18 @@
+{% extends "mail/_base.html.twig" %}
+
+{% block preheader %}{% endblock %}
+
+{% block textOne %}
+	L'inscription de
+	{{member.firstname|capitalize}}
+	{{member.lastname|capitalize}}
+	associé à votre compte à été validé par le club.
+{% endblock %}
+
+{% block textTwo %}
+	Vous pouvez désormais participer aux entraînements et aux matchs, lorsque la saison aura débuté.
+{% endblock %}
+
+{% block url %}{% endblock %}
+
+{% block urlText %}{% endblock %}

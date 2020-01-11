@@ -6,7 +6,7 @@ import { connect } from "react-redux"
 import { history } from 'helper/history'
 import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants';
 
-class _Layout extends React.Component {
+class _Layout extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
