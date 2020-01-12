@@ -126,11 +126,7 @@ class PublicController extends FOSRestController
 
         if (!$user) {
             return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_BAD_REQUEST));
-        }
-
-        if ($user->isPasswordRequestNonExpired(4)) {
-            return $this->handleView($this->view(["message" => $translator->trans('reset_token_already_exists')], Response::HTTP_BAD_REQUEST));
-        }
+        }       
 
         if (!$user->getConfirmationToken()) {
             $user->setConfirmationToken((new TokenGenerator())->generateToken());
@@ -163,6 +159,10 @@ class PublicController extends FOSRestController
 
         if (!$user) {
             return $this->handleView($this->view(['message' => $translator->trans('reset_token_invalid')], Response::HTTP_BAD_REQUEST));
+        }         
+
+        if (!$user->isPasswordRequestNonExpired(intval($_ENV['JWT_TOKENTTL']))) {
+            return $this->handleView($this->view(["message" => $translator->trans('reset_token_expired')], Response::HTTP_BAD_REQUEST));
         }
 
         $data = json_decode($request->getContent(), true);
@@ -170,6 +170,8 @@ class PublicController extends FOSRestController
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setConfirmationToken(null);
+            $user->setPasswordRequestedAt(null);
             $userManager->updateUser($user, true);
             return $this->handleView($this->view([], Response::HTTP_CREATED));
         }

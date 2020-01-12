@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -33,7 +31,7 @@ class MainController extends AbstractController
     {
         $prefix = in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) ? __DIR__ . "../../../public/" : '';
         if ($filename && file_exists($prefix . "app/" . $filename)) {
-            $response = new BinaryFileResponse("app/" . $filename);
+            $response = new Response(file_get_contents($prefix . "app/" . $filename));
             $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get($prefix . "app/" . $filename));
             return $response;
         } else {

@@ -27,16 +27,16 @@ if ('function' === typeof importScripts) {
         //         ]
         //     }), 'GET');
 
-        workbox.routing.registerRoute(
-            /\/api\/param/,
-            new workbox.strategies.NetworkFirst({
-                cacheName: "monclub-api-param",
-                plugins: [
-                    new workbox.cacheableResponse.Plugin({
-                        statuses: [0, 200]
-                    })
-                ]
-            }), 'GET');
+        // workbox.routing.registerRoute(
+        //     /\/api\/param/,
+        //     new workbox.strategies.NetworkFirst({
+        //         cacheName: "monclub-api-param",
+        //         plugins: [
+        //             new workbox.cacheableResponse.Plugin({
+        //                 statuses: [0, 200]
+        //             })
+        //         ]
+        //     }), 'GET');
 
         workbox.routing.registerRoute(
             /.(?:png|jpg|jpeg|svg)/,

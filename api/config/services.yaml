@@ -38,6 +38,13 @@ services:
         class: App\Subscriber\TablePrefixSubscriber
         tags:
             - { name: doctrine.event_subscriber }
+
+    jwt_expired_listener:
+        class: App\EventListener\JWTListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
 # FOS user config
 fos_user:
     db_driver:      orm # other valid values are 'mongodb', 'couchdb' and 'propel'

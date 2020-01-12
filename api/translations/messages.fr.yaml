@@ -1,7 +1,11 @@
 username_not_found: L'adresse mail n'a pas été trouvée.
 username_password_not_match: Le mot de passe ne correspond pas à l'adresse mail.
-reset_token_already_exists: Un token de réinitialisation valide existe déjà.
-reset_token_invalid: Le token de réinitialisation est invalide.
+reset_token_invalid: Le jeton de réinitialisation est invalide.
+reset_token_expired: Le jeton de réinitialisation est expiré.
+token_invalid: Votre jeton de session est invalide, veuillez vous reconnecter.
+token_missing: Votre jeton de session est manquant, veuillez vous reconnecter.
+token_expired: Votre jeton de session est expiré, veuillez vous reconnecter.
+
 not_found: L'élément n'a pas été trouvé.
 document_not_found: Le document n'a pas été trouvé.
 member_not_found: Le membre n'a pas été trouvé.

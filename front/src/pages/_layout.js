@@ -123,7 +123,7 @@ class _Layout extends React.PureComponent {
     render() {
         const { selectedKeyURL, breadcrumb, command, messageBar, me } = this.props
         const { menu } = this.state
-
+        
         if (!this.props.isDisplay) return this.props.children
 
         return (
