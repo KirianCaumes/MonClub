@@ -113,7 +113,7 @@ class _App extends React.PureComponent {
         const { isInit } = this.state
         return (
             <>
-                {false && <FullLoader isLoading={!isInit && isAuthenticated} />}
+                {process.env.NODE_ENV === 'production' && <FullLoader isLoading={!isInit && isAuthenticated} />}
                 <Router history={history} >
                     <Layout
                         isDisplay={isAuthenticated}

@@ -7,7 +7,7 @@ import { setMessageBar } from 'redux/actions/common'
 class _PublicLayout extends React.PureComponent {
     render() {
         return (
-            <section id="login" style={{ backgroundImage: require('asset/img/bg2.jpg') }}>
+            <section id="login" style={{ backgroundImage: `url(${require('asset/img/bg2.jpg')})` }}>
                 <Columns>
                     <Columns.Column className="is-hidden-touch" />
 

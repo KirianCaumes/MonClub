@@ -11,11 +11,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainController extends AbstractController
 {
     /**
-     * @Route("/static/{folder}/{filename}", requirements={"el"="[0-9a-z_.]*"}, methods={"GET"})
+     * @Route("/static/{folder}/{filename}", requirements={"filename"="[0-9a-z_.]*"}, methods={"GET"})
      */
     public function static(string $folder, string $filename)
     {
-        $file = __DIR__ . "../../../public/app/static/" . $folder . "/" . $filename;
+        $prefix = in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) ? __DIR__ . "../../../public/" : '';
+        $file = $prefix . "app/static/" . $folder . "/" . $filename;
         if (file_exists($file)) {
             $response = new Response(file_get_contents($file));
             $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get($file));
@@ -30,14 +31,15 @@ class MainController extends AbstractController
      */
     public function index(?string $filename)
     {
-        if ($filename && file_exists(__DIR__ . "../../../public/app/" . $filename)) {
-            $response = new BinaryFileResponse(__DIR__ . "../../../public/app/".$filename);
-            $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get(__DIR__ . "../../../public/app/".$filename));
+        $prefix = in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1']) ? __DIR__ . "../../../public/" : '';
+        if ($filename && file_exists($prefix . "app/" . $filename)) {
+            $response = new BinaryFileResponse("app/" . $filename);
+            $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get($prefix . "app/" . $filename));
             return $response;
         } else {
-            if (file_exists(__DIR__ . "../../../public/app/index.html")) {
-                $response = new Response(file_get_contents(__DIR__ . "../../../public/app/index.html"));
-                $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get(__DIR__ . "../../../public/app/index.html"));
+            if (file_exists($prefix . "app/index.html")) {
+                $response = new Response(file_get_contents($prefix . "app/index.html"));
+                $response->headers->set('Content-Type', \Defr\PhpMimeType\MimeType::get($prefix . "app/index.html"));
                 return $response;
             } else {
                 return new Response("App Not Found.");

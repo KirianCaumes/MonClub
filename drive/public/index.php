@@ -15,6 +15,7 @@ define('VERSION', '2.3.8');
 define('APP_TITLE', 'Drive - thouarehbc.fr');
 
 $api_url = "http://localhost:5000/api/login/drive";
+// $api_url = "https://monclub-test.thouarehbc.fr/api/login/drive";
 
 // Auth with login/password (set true/false to enable/disable it)
 // Is independent from IP white- and blacklisting
