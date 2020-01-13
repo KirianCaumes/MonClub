@@ -56,6 +56,25 @@ class Header extends React.PureComponent {
                                     </Navbar.Item>
                                 ))
                             }
+                            <Navbar.Item dropdown>
+                                <Navbar.Dropdown>
+                                    <Navbar.Item
+                                        onClick={() => this.setState({ active: false }, () => this.props.refresh())}
+                                    >
+                                        <Icon iconName='Refresh' /> Rafraichir
+                                    </Navbar.Item>
+                                    <Navbar.Item
+                                        onClick={() => this.setState({ isOpenUser: true })}
+                                    >
+                                        <Icon iconName='Contact' /> Utilisateur
+                                    </Navbar.Item>
+                                    <Navbar.Item
+                                        onClick={() => history.push('/login')}
+                                    >
+                                        <Icon iconName='ReleaseGate' /> Se déconnecter
+                                    </Navbar.Item>
+                                </Navbar.Dropdown>
+                            </Navbar.Item>
                         </Navbar.Container>
                         <Navbar.Container position="end" className="is-hidden-touch">
                             <Navbar.Item

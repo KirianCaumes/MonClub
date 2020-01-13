@@ -164,7 +164,7 @@ class _MembersMe extends React.PureComponent {
                                 label: "Finalisation",
                                 description: "",
                                 isCompleted: page >= 6 || !this.props.members?.map(x => x.is_inscription_done)?.filter(x => !x)?.length,
-                                isActive: page === 5 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
+                                isActive: page === 5,
                                 isError: false
                             }
                         ]}

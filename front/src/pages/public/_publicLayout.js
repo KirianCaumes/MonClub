@@ -17,7 +17,7 @@ class _PublicLayout extends React.PureComponent {
                                 <img src={require('asset/img/logo.png')} alt="THBC" />
                                 <br />
                                 <Text variant="xxLarge" block>
-                                    Mon Club - thouarehbc.fr
+                                    Mon Club - THBC
                                 </Text>
                                 <br />
 

@@ -27,6 +27,7 @@ div#root {
         // background-color: $grey;
         i {
           color: $blue !important;
+          vertical-align: bottom;
         }
         .navbar-link {
           &:hover {
