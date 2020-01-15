@@ -31,6 +31,11 @@ class ParamWorkflow
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $message;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +61,18 @@ class ParamWorkflow
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
 
         return $this;
     }

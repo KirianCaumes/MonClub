@@ -33,6 +33,10 @@
 //admin
 @import "./page/admin/settings.scss";
 
+//Component
+@import "./component/workflow.scss";
+
+
 html {
   min-height: 100%;
   height: 100%;

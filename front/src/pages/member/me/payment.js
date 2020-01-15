@@ -13,7 +13,8 @@ class _MembersMePayment extends React.PureComponent {
         this.state = {
             summary: [],
             isLoading: true,
-            optionSelectedKey: ''
+            paymentKey: '',
+            amountPayedOther: 0
         }
     }
 
@@ -28,7 +29,7 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     pay() {
-        request.pay({ payment_solution: this.state.optionSelectedKey })
+        request.pay({ payment_solution: this.state.paymentKey })
             .then(res => {
                 this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
                 this.props.setMembers(res)
@@ -41,21 +42,21 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     render() {
-        const { summary, isLoading, optionSelectedKey } = this.state
+        const { summary, isLoading, paymentKey } = this.state
         const { param } = this.props
 
         if (isLoading) return <Loader />
 
         return (
             <section id="members-me-paypal">
-                <Text variant="large" block><Icon iconName='PaymentCard'/> Paiement</Text>
+                <Text variant="large" block><Icon iconName='PaymentCard' /> Paiement</Text>
                 <Separator />
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={true} >
                     Attention, veuillez vérifier que tous les membres de votre famille ont bien été ajoutées et leurs documents sont complétés.<br />
                     Pour ajouter un nouveau membre, cliquez sur le bouton "Ajouter un membre" en haut de l'écran. Pour revenir en arrière, appuyant sur le bouton "Retour" en bas de l'écran.
                 </MessageBar>
                 <br />
-                <Text variant="large" block><Icon iconName='NumberedList'/> Détails du paiement (des membres non payés)</Text>
+                <Text variant="large" block><Icon iconName='NumberedList' /> Détails du paiement (des membres non payés)</Text>
                 <Separator />
                 <Table>
                     <thead>
@@ -82,23 +83,23 @@ class _MembersMePayment extends React.PureComponent {
                     </tfoot>
                 </Table>
                 <br />
-                <Text variant="large" block><Icon iconName='CheckMark'/> Choisissez votre mode de paiement</Text>
+                <Text variant="large" block><Icon iconName='CheckMark' /> Choisissez votre mode de paiement</Text>
                 <Separator />
                 <ChoiceGroup
                     options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
-                    selectedKey={optionSelectedKey}
-                    onChange={(ev, option) => this.setState({ optionSelectedKey: option.key })}
+                    selectedKey={paymentKey}
+                    onChange={(ev, option) => this.setState({ paymentKey: option.key })}
                 />
                 {
-                    optionSelectedKey &&
+                    paymentKey &&
                     <>
                         <br /><br />
-                        <Text variant="large" block><Icon iconName='Processing'/> Procédez au paiement</Text>
+                        <Text variant="large" block><Icon iconName='Processing' /> Procédez au paiement</Text>
                         <Separator />
 
                         {
                             (() => {
-                                switch (optionSelectedKey) {
+                                switch (paymentKey) {
                                     case 1:
                                         return (
                                             <>
@@ -111,7 +112,7 @@ class _MembersMePayment extends React.PureComponent {
                                                 <br />
                                                 <PrimaryButton
                                                     text="Paypal"
-                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
                                                     styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                     onClick={() => this.pay()}
                                                     disabled={true}
@@ -136,10 +137,19 @@ class _MembersMePayment extends React.PureComponent {
                                                     L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
                                                 </Text>
                                                 <br />
+                                                <Label required htmlFor="amount_payed_other">Montant payé en bon</Label>
+                                                <MaskedTextField
+                                                    id="amount_payed_other"
+                                                    value={data.amount_payed_other}
+                                                    mask={"999"}
+                                                    onBlur={ev => this.setState({ amount_payed_other: ev.target.value })}
+                                                    errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
+                                                />
+                                                <br />
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"
-                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
                                                     styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                     onClick={() => this.pay()}
                                                 />
@@ -166,7 +176,7 @@ class _MembersMePayment extends React.PureComponent {
                                                 <br />
                                                 <PrimaryButton
                                                     text="Je valide"
-                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === optionSelectedKey)?.icon }}
+                                                    iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
                                                     styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                     onClick={() => this.pay()}
                                                 />

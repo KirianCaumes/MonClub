@@ -1059,8 +1059,8 @@ class _MemberOne extends React.PureComponent {
                                 <FileInput
                                     isRead={true}
                                     isFile={!!readOnly}
-                                    isDisabled={!data.is_payed}
-                                    tooltipContent={!data.is_payed ? "Document téléchargeable une fois l'inscription finalisée." : ''}
+                                    isDisabled={!data.is_payed || !data.is_inscription_done}
+                                    tooltipContent={!data.is_payed ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
                                     onDownload={() => {
                                         return request.getAttestation(this.props.match?.params?.id)
                                             .then(file => dlBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
@@ -1079,6 +1079,7 @@ class _MemberOne extends React.PureComponent {
                                 <DefaultButton
                                     text="Télécharger"
                                     iconProps={{ iconName: 'Download' }}
+                                    disabled={!readOnly}
                                     onClick={() => this.setState({ isModalNonObjectionOpen: true })}
                                 />
                             </Columns.Column>
@@ -1150,7 +1151,7 @@ class _MemberOne extends React.PureComponent {
                             isDisabled={!nonObjection.address || !nonObjection.club}
                             onDownload={() => {
                                 return request.getNonObjection(this.props.match?.params?.id, nonObjection)
-                                    .then(file => dlBlob(file, `Lettre_non_opposition_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                    .then(file => this.setState({ isModalNonObjectionOpen: false }, () => dlBlob(file, `Lettre_non_opposition_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`)))
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                             }}
                             onOpen={() => {

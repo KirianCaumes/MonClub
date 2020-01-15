@@ -1,10 +1,10 @@
 import React from 'react'
-import { Icon } from 'office-ui-fabric-react'
+import { Icon, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
 export default class Workflow extends React.PureComponent {
     static propTypes = {
-        /** Data to display */ 
+        /** Data to display */
         data: PropTypes.arrayOf(PropTypes.object),
     }
 
@@ -26,17 +26,23 @@ export default class Workflow extends React.PureComponent {
                         return (
                             <div key={i} className={`step-item ${cn}`}>
                                 <div className="step-marker">
-                                    {(() => {
-                                        if (row.isCompleted) {
-                                            return <Icon iconName="CheckMark" />
-                                        } else if (row.isActive) {
-                                            return <Icon iconName="ProgressRingDots" />
-                                        } else if (row.isError) {
-                                            return "!"
-                                        } else {
-                                            return <Icon iconName="More" />
-                                        }
-                                    })()}
+                                    <TooltipHost
+                                        content={row.message}
+                                        directionalHint={DirectionalHint.topCenter}
+                                        delay={TooltipDelay.zero}
+                                    >
+                                        {(() => {
+                                            if (row.isError) {
+                                                return <Icon iconName="Exclamation" className={row.message ? 'info' : ''} />
+                                            } else if (row.isCompleted) {
+                                                return <Icon iconName="CheckMark" className={row.message ? 'info' : ''} />
+                                            } else if (row.isActive) {
+                                                return <Icon iconName="ProgressRingDots" className={row.message ? 'info' : ''} />
+                                            } else {
+                                                return <Icon iconName="More" className={row.message ? 'info' : ''} />
+                                            }
+                                        })()}
+                                    </TooltipHost>
                                 </div>
                                 <div className="step-details">
                                     <p className="step-title">{row.label}</p>

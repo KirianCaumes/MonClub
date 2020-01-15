@@ -38,13 +38,14 @@ VALUES
     (1, 'Certificat médical'), 
     (2, 'Justificatif étudiant/chomeur');
 
-INSERT INTO `mc_dev_param_workflow` (`id`, `label`, `description`) 
+INSERT INTO `mc_dev_param_workflow` (`id`, `label`, `description`, `message`) 
 VALUES 
-    (1, 'Créé', 'L''utilisateur est créé.'), 
-    (2, 'Documents', 'L''utilisateur à fournis les documents nécessaires.'), 
-    (3, 'Payé','L''utilisateur à payé.'), 
-    (4, 'Gest''hand', 'L''utilisateur est bien inscris sur Gest''hand.'), 
-    (5, 'Qualifié', 'L''inscription est finalisée.');
+    (1, 'Créé', 'L''utilisateur est créé.', null), 
+    (2, 'Documents', 'L''utilisateur à fournis les documents nécessaires.', 'Passer cet élément de "Oui" à "Non" réactivera l''édition du membre pour l''utilisateur propriétaire et lui enverras un mail lui signalant que ces documents sont invalides.'), 
+    (3, 'Payé','L''utilisateur à payé.', null), 
+    (4, 'Gest''hand', 'L''utilisateur est bien inscris sur Gest''hand.', null), 
+    (5, 'Qualifié', 'L''inscription est finalisée.', 'Passer cet élément de "Non" à "Oui" enverra un mail à l''utilisateur lui signalant que l''inscription de membre est validée.
+');
 
 INSERT INTO `mc_dev_param_payment_solution` (`id`, `label`, `icon`) 
 VALUES 
@@ -56,7 +57,7 @@ INSERT INTO `mc_dev_param_season` (`id`, `label`, `is_active`, `is_current`)
 VALUES 
     (1, '2018/2019', true, false), (2, '2019/2020', true, true), (3, '2020/2021', false, false), (4, '2021/2022', false, false), (5, '2022/2023', false, false), (6, '2023/2024', false, false), (7, '2024/2025', false, false), (8, '2025/2026', false, false), (9, '2026/2027', false, false), (10, '2027/2028', false, false), (11, '2028/2029', false, false), (12, '2029/2030', false, false), (13, '2030/2031', false, false), (14, '2031/2032', false, false), (15, '2032/2033', false, false), (16, '2033/2034', false, false), (17, '2034/2035', false, false), (18, '2035/2036', false, false), (19, '2036/2037', false, false), (20, '2037/2038', false, false), (21, '2038/2039', false, false), (22, '2039/2040', false, false), (23, '2040/2041', false, false), (24, '2041/2042', false, false), (25, '2042/2043', false, false), (26, '2043/2044', false, false), (27, '2044/2045', false, false), (28, '2045/2046', false, false), (29, '2046/2047', false, false), (30, '2047/2048', false, false), (31, '2048/2049', false, false), (32, '2049/2050', false, false), (33, '2050/2051', false, false);
 
-INSERT INTO `mc_dev_param_sex` (`id`, `label`, `icon`) 
+INSERT INTO `mc_dev_param_sex` (`id`, `label`, `icon`, `civility`) 
 VALUES
-    (1, 'Homme', 'Man'),
-    (2, 'Femme', 'Woman');
+    (1, 'Homme', 'Man', 'Monsieur'),
+    (2, 'Femme', 'Woman', 'Madame');

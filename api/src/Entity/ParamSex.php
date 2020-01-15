@@ -25,6 +25,12 @@ class ParamSex
     private $label;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $civility;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $icon;
@@ -42,6 +48,18 @@ class ParamSex
     public function setLabel(string $label): self
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    public function getCivility(): ?string
+    {
+        return $this->civility;
+    }
+
+    public function setCivility(string $civility): self
+    {
+        $this->civility = $civility;
 
         return $this;
     }

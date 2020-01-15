@@ -33,6 +33,7 @@ registerIcons({
     icons: {
         'Man': '',
         'Woman': '',
+        'Exclamation': '!'
     }
 })
 

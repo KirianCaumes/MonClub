@@ -324,10 +324,10 @@ class FileController extends FOSRestController
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
 
         //Check if user is payed
-        if (!$member->getIsPayed()) {
+        if (!$member->getIsPayed() || !$member->getIsInscriptionDone()) {
             return $this->handleView($this->view([
                 'error' => [
-                    'message' => $translator->trans('member_not_payed'),
+                    'message' => $translator->trans('member_not_payed_or_done'),
                     'code' => Response::HTTP_FORBIDDEN
                 ]
             ], Response::HTTP_FORBIDDEN));
@@ -382,6 +382,7 @@ class FileController extends FOSRestController
                 'member' => $member,
                 'address' => $paramFetcher->get('address'),
                 'club' => $paramFetcher->get('club'),
+                'civility' => $member->getSex()->getCivility(),
                 'president' => [
                     'firstname' => $paramService->getParam('president_firstname'),
                     'lastname' => $paramService->getParam('president_lastname')

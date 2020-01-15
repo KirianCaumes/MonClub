@@ -1,3 +1,16 @@
 .steps {
-    
+  .step-marker {
+    .ms-TooltipHost {
+      width: 100%;
+      text-align: center;
+      i {
+        vertical-align: bottom;
+        font-style: initial;
+        width: 100%;
+        &.info {
+          cursor: help;
+        }
+      }
+    }
+  }
 }
