@@ -132,6 +132,9 @@ class _MembersAll extends ParentPage {
         return (
             <section id="member-all">
                 <div className="card" >
+                    <div className="head">
+                        <h1><Icon iconName='RecruitmentManagement' /> Rechercher parmis l'ensemble des membres</h1>
+                    </div>
                     {
                         (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) &&
                         <>

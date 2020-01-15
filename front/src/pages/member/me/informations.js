@@ -1,10 +1,11 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Separator, TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay, Dropdown, Icon } from 'office-ui-fabric-react'
+import { TextField, Label, Text, MaskedTextField, Checkbox, MessageBar, MessageBarType, TooltipHost, DirectionalHint, TooltipDelay, Dropdown, Icon, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
 import { editMember } from 'redux/actions/member'
+import Divider from 'component/divider'
 
 class _MembersMeInformations extends React.PureComponent {
     constructor(props) {
@@ -18,12 +19,92 @@ class _MembersMeInformations extends React.PureComponent {
 
         return (
             <section id="members-me-informations">
-                <Text variant="large" block><Icon iconName='ContactInfo' /> Informations concernant le licencié</Text>
-                <Separator />
+                {/* <Text variant="large" block><Icon iconName='ContactInfo' /> Informations concernant le licencié</Text>
+                <Divider /> */}
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
                     Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
                 </MessageBar>
                 <br />
+
+                <Text variant="large" block><Icon iconName='ContactInfo' /> Vos informations</Text>
+                <Divider />
+                <Columns>
+                    <Columns.Column>
+                        <Label required htmlFor="firstname">Prénom</Label>
+                        <TextField
+                            id="firstname"
+                            placeholder="Prénom"
+                            defaultValue={member?.firstname ?? ''}
+                            onBlur={ev => this.props.editMember({ firstname: ev.target.value }, memberIndex)}
+                            borderless={readOnly}
+                            readOnly={readOnly}
+                            errorMessage={errorField?.firstname?.errors?.[0]}
+                        />
+                        <br />
+                        <Label required htmlFor="lastname">Nom</Label>
+                        <TextField
+                            id="lastname"
+                            placeholder="Nom"
+                            defaultValue={member?.lastname ?? ''}
+                            onBlur={ev => this.props.editMember({ lastname: ev.target.value }, memberIndex)}
+                            borderless={readOnly}
+                            readOnly={readOnly}
+                            errorMessage={errorField?.lastname?.errors?.[0]}
+                        />
+                        <br />
+                        <div className="flex-row flex-start">
+                            <Label required htmlFor="birthdate">Date de naissance</Label>
+                            <TooltipHost
+                                content="Format attendu: JJ/MM/AAAA"
+                                directionalHint={DirectionalHint.bottomCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <Icon iconName="Info" className="icon-info-label is-required" />
+                            </TooltipHost>
+                        </div>
+                        <MaskedTextField
+                            id="birthdate"
+                            placeholder="Date de naissance"
+                            value={stringToCleanString(member?.birthdate)}
+                            mask={"99/99/9999"}
+                            borderless={readOnly}
+                            readOnly={readOnly}
+                            onBlur={ev => this.props.editMember({ birthdate: stringToDate(ev.target.value) }, memberIndex)}
+                            errorMessage={errorField?.birthdate?.errors?.[0]}
+                        />
+                        <br />
+                        <Label required htmlFor="sex">Sexe</Label>
+                        {
+                            readOnly ?
+                                <TextField
+                                    id="sex"
+                                    placeholder="Sexe"
+                                    defaultValue={member?.sex?.label}
+                                    borderless={true}
+                                    readOnly={true}
+                                    errorMessage={errorField?.sex?.errors?.[0]}
+                                />
+                                :
+                                <Dropdown
+                                    id="sex"
+                                    placeholder="Sexe"
+                                    selectedKey={member?.sex?.id}
+                                    options={[...this.props?.param?.sexes]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                    errorMessage={errorField?.sex?.errors?.[0]}
+                                    onChange={(ev, item) => this.props.editMember({ sex: item }, memberIndex)}
+                                />
+                        }
+                    </Columns.Column>
+                    <Separator vertical className="is-hidden-mobile" />
+                    <Columns.Column>
+                        cc
+                    </Columns.Column>
+                </Columns>
+                <br />
+
+                <Text variant="large" block><Icon iconName='medium' /> Vos informations</Text>
+                <Divider />
+
                 <Columns>
                     <Columns.Column>
                         <Label required htmlFor="firstname">Prénom</Label>
@@ -227,7 +308,7 @@ class _MembersMeInformations extends React.PureComponent {
                         <Columns>
                             <Columns.Column>
                                 <Text variant="large" block><Icon iconName='ContactList' /> Parent 1</Text>
-                                <Separator />
+                                <Divider />
                                 <Columns>
                                     <Columns.Column>
                                         <Label required htmlFor="parent_one_firstname">Prénom</Label>
@@ -300,7 +381,7 @@ class _MembersMeInformations extends React.PureComponent {
                             {/* <Separator vertical /> */}
                             <Columns.Column>
                                 <Text variant="large" block><Icon iconName='ContactList' /> Parent 2</Text>
-                                <Separator />
+                                <Divider />
                                 <Columns>
                                     <Columns.Column>
                                         <Label htmlFor="parent_two_firstname">Prénom</Label>

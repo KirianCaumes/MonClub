@@ -1,3 +1,5 @@
+@import "./_variables.scss";
+
 @mixin flex-row {
   display: flex;
   justify-content: center;
@@ -51,6 +53,23 @@
   padding: 25px;
   border-radius: 2px;
   word-break: break-word;
+  .head {
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(to left, $dark-blue, $blue);
+    border-bottom: 2px rgba($dark-grey,0.7) solid;
+    margin: -25px -25px 15px -25px;
+    padding: 5px 5px 5px 5px;
+    h1 {
+      color: $white;
+      text-align: center;
+      padding: 0;
+      font-size: 1.2em;
+      margin: 5px 0;
+      > i {
+        vertical-align: bottom;
+      }
+    }
+  }
 }
 
 *.is-bold {
@@ -79,7 +98,7 @@ textarea {
 }
 
 .ms-Button-label {
-//   overflow: hidden;
+  //   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -92,4 +111,8 @@ textarea {
   &.is-not-required {
     margin: 5px 0px 0px 5px;
   }
+}
+
+.left-tab {
+  margin-left: 15px;
 }

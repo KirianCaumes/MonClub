@@ -1,12 +1,13 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, Dropdown, Text, Icon, Separator, VirtualizedComboBox } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Dropdown, Text, Icon, VirtualizedComboBox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
 import { history } from 'helper/history'
 import request from 'helper/request'
 import Loader from 'component/loader'
 import { ROLE_COACH } from 'helper/constants'
+import Divider from 'component/divider'
 
 class _UserOne extends React.PureComponent {
     constructor(props) {
@@ -80,7 +81,7 @@ class _UserOne extends React.PureComponent {
             <section id="user-one">
                 <div className="card" >
                     <Text variant="large" block><Icon iconName='BulletedList' /> Informations générales</Text>
-                    <Separator />
+                    <Divider />
                     <Columns>
                         <Columns.Column>
                             <Label disabled={!readOnly} htmlFor="username">Nom</Label>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Text, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator } from 'office-ui-fabric-react'
+import { MessageBarType, Text, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -12,6 +12,7 @@ import MembersMePayment from './me/payment'
 import { setMembers, editMember } from 'redux/actions/member'
 import MembersMeSummary from './me/summary'
 import MembersMeFinalisation from './me/finalisation'
+import Divider from 'component/divider'
 class _MembersMe extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -19,7 +20,7 @@ class _MembersMe extends React.PureComponent {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 4,
+            page: 1,
             currentPivot: 0
         }
 
@@ -127,7 +128,9 @@ class _MembersMe extends React.PureComponent {
         return (
             <section id="members-me">
                 <div className="card" >
-                    <Text variant="xLarge" block className="has-text-centered is-uppercase">Inscription saison {param?.season?.find(x => x.is_current)?.label}</Text>
+                    <div className="head">
+                        <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label}</h1>
+                    </div>
                     <br />
                     <Workflow
                         className="is-hidden-mobile"
@@ -171,6 +174,8 @@ class _MembersMe extends React.PureComponent {
                     />
                     {isLoading ? <Loader /> :
                         <>
+                            <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres créés</Text>
+                            <Divider />
                             {
                                 page <= 3
                                     ?
@@ -211,7 +216,8 @@ class _MembersMe extends React.PureComponent {
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <Separator /><br />
+                                                                    <Divider />
+                                                                    <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <div />
                                                                         <PrimaryButton
@@ -250,7 +256,8 @@ class _MembersMe extends React.PureComponent {
                                                                         memberIndex={i}
                                                                         errorField={errorField}
                                                                     />
-                                                                    <Separator /><br />
+                                                                    <Divider />
+                                                                    <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
                                                                             text="Informations"
@@ -292,7 +299,8 @@ class _MembersMe extends React.PureComponent {
                                                                         readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <Separator /><br />
+                                                                    <Divider />
+                                                                    <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
                                                                             text="Documents"
@@ -334,7 +342,8 @@ class _MembersMe extends React.PureComponent {
                                                     return (
                                                         <>
                                                             <MembersMeFinalisation />
-                                                            <Separator /><br />
+                                                            <Divider />
+                                                            <br />
                                                             <div className="flex-row flex-space-between flex-wrap">
                                                                 <DefaultButton
                                                                     text="Retour"

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, Separator, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon, IconButton, DefaultButton, Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon, IconButton, DefaultButton, Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -12,6 +12,7 @@ import FileInput from 'component/fileInput'
 import { dlBlob, openBlob } from 'helper/blob'
 import DropdownIcon from 'component/dropdown'
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
+import Divider from 'component/divider'
 
 class _MemberOne extends React.PureComponent {
     constructor(props) {
@@ -145,9 +146,14 @@ class _MemberOne extends React.PureComponent {
             <>
                 <section id="member-one">
                     <div className="card" >
+                        <div className="head">
+                            <h1><Icon iconName='Contact' /> Toutes les informations sur le membre: {this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</h1>
+                        </div>
                         {
                             this.props.match?.params?.id &&
                             <>
+                                <Text variant="large" block><Icon iconName='WorkFlow' /> Workflow d'avancement de l'inscription</Text>
+                                <Divider />
                                 <Workflow data={workflow} />
                                 {
                                     !readOnly &&
@@ -201,7 +207,7 @@ class _MemberOne extends React.PureComponent {
                         }
 
                         <Text variant="large" block><Icon iconName='ContactInfo' /> Informations générales</Text>
-                        <Separator />
+                        <Divider />
                         <Columns>
                             <Columns.Column>
                                 <Label required htmlFor="firstname">Prénom</Label>
@@ -461,7 +467,7 @@ class _MemberOne extends React.PureComponent {
 
                         <br />
                         <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
-                        <Separator />
+                        <Divider />
 
                         <Columns>
                             <Columns.Column>
@@ -560,7 +566,7 @@ class _MemberOne extends React.PureComponent {
                                 <Columns>
                                     <Columns.Column>
                                         <Text variant="large" block><Icon iconName='ContactList' /> Parent 1</Text>
-                                        <Separator />
+                                        <Divider />
                                         <Columns>
                                             <Columns.Column>
                                                 <Label required htmlFor="parent_one_firstname">Prénom</Label>
@@ -633,7 +639,7 @@ class _MemberOne extends React.PureComponent {
                                     {/* <Separator vertical /> */}
                                     <Columns.Column>
                                         <Text variant="large" block><Icon iconName='ContactList' /> Parent 2</Text>
-                                        <Separator />
+                                        <Divider />
                                         <Columns>
                                             <Columns.Column>
                                                 <Label htmlFor="parent_two_firstname">Prénom</Label>
@@ -729,7 +735,7 @@ class _MemberOne extends React.PureComponent {
                             }
 
                         </div>
-                        <Separator styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
+                        <Divider styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
                         <Columns>
                             <Columns.Column>
                                 <Label required htmlFor="is_evacuation_allow">Autorisation évacuation</Label>
@@ -846,7 +852,7 @@ class _MemberOne extends React.PureComponent {
                                 </>
                             }
                         </div>
-                        <Separator styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
+                        <Divider styles={{ root: { marginTop: !readOnly ? '-5px' : 'auto' } }} />
                         <Columns>
                             <Columns.Column>
                                 <Label htmlFor="gesthand_is_photo">Photo identité</Label>
@@ -965,7 +971,7 @@ class _MemberOne extends React.PureComponent {
 
                         <br />
                         <Text variant="large" block><Icon iconName='FabricUserFolder' /> Document(s)</Text>
-                        <Separator />
+                        <Divider />
                         <Columns>
                             <Columns.Column>
                                 <Label required>Certificat médical</Label>
@@ -1088,7 +1094,7 @@ class _MemberOne extends React.PureComponent {
 
                         <br />
                         <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Autre</Text>
-                        <Separator />
+                        <Divider />
                         <Columns>
                             <Columns.Column>
                                 <Label htmlFor="notes">Notes</Label>

@@ -6,6 +6,7 @@ import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/action
 import { history } from 'helper/history'
 import request from 'helper/request'
 import Loader from 'component/loader'
+import Divider from 'component/divider'
 
 class _TeamOne extends React.PureComponent {
     constructor(props) {
@@ -124,7 +125,7 @@ class _TeamOne extends React.PureComponent {
             <section id="team-one">
                 <div className="card" >
                     <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
-                    <Separator />
+                    <Divider />
                     <Columns>
                         <Columns.Column>
                             <Columns>

@@ -1,11 +1,12 @@
 import React from 'react'
-import { Separator, Text, MessageBarType, Icon } from 'office-ui-fabric-react'
+import { Text, MessageBarType, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember } from 'redux/actions/member'
 import { Table } from 'react-bulma-components'
 import { dateToCleanDateString, getYear, getAge } from 'helper/date'
 import request from 'helper/request'
+import Divider from 'component/divider'
 
 class _MembersMeSummary extends React.PureComponent {
     constructor(props) {
@@ -36,11 +37,11 @@ class _MembersMeSummary extends React.PureComponent {
         return (
             <section id="members-me-summary">
                 <Text variant="large" block><Icon iconName='ClipboardList'/> Récapitulatif du montant</Text>
-                <Separator />
+                <Divider />
                 <Text className="has-text-justified" block>Retrouvez le récapitulatif détaillé du montant qu'il vous sera demandé de payer <b>(sont surlignées en vert les informations vous correspondantes)</b>. Si le tarif proposé ne correspond pas, veuillez retourner en arrière pour modifier vos informations.</Text>
                 <br /><br />
                 <Text variant="large" block><Icon iconName='NumberedList'/> Tarifs</Text>
-                <Separator />
+                <Divider />
                 <Table>
                     <thead>
                         <tr>
@@ -112,7 +113,7 @@ class _MembersMeSummary extends React.PureComponent {
                 </Table>
                 <br />
                 <Text variant="large" block className={!member?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList'/> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
-                <Separator />
+                <Divider />
                 <Table className={!member?.is_transfer_needed ? 'is-line-through' : ''}>
                     <thead>
                         <tr>
@@ -134,7 +135,7 @@ class _MembersMeSummary extends React.PureComponent {
                 </Table>
                 <br />
                 <Text variant="large" block ><Icon iconName='NumberedList'/> Hand en famille (remise valable pour <b>les membres de la même famille</b>)</Text>
-                <Separator />
+                <Divider />
                 <Table>
                     <thead>
                         <tr>

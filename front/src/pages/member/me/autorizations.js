@@ -1,9 +1,10 @@
 import React from 'react'
-import { Separator, Label, Text, ChoiceGroup, Link, TextField, Checkbox, Icon } from 'office-ui-fabric-react'
+import { Label, Text, ChoiceGroup, Link, TextField, Checkbox, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { isMajor } from 'helper/date'
 import { editMember } from 'redux/actions/member'
+import Divider from 'component/divider'
 
 class _MembersMeAutorizations extends React.PureComponent {
     constructor(props) {
@@ -18,7 +19,7 @@ class _MembersMeAutorizations extends React.PureComponent {
         return (
             <section id="members-me-autorizations">
                 <Text variant="large" block><Icon iconName='AccountManagement'/> Autorisations {!isMajor(member?.birthdate) ? 'parentales' : ''} THBC et règlement interieur</Text>
-                <Separator />
+                <Divider />
                 {
                     isMajor(member?.birthdate)
                         ?

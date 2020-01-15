@@ -1,11 +1,12 @@
 import React from 'react'
-import { Separator, Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar, Icon } from 'office-ui-fabric-react'
+import { Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar, Icon, MaskedTextField, Label } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember, setMembers } from 'redux/actions/member'
 import request from 'helper/request'
 import { Table } from 'react-bulma-components'
 import Loader from 'component/loader'
+import Divider from 'component/divider'
 
 class _MembersMePayment extends React.PureComponent {
     constructor(props) {
@@ -50,14 +51,14 @@ class _MembersMePayment extends React.PureComponent {
         return (
             <section id="members-me-paypal">
                 <Text variant="large" block><Icon iconName='PaymentCard' /> Paiement</Text>
-                <Separator />
+                <Divider />
                 <MessageBar messageBarType={MessageBarType.warning} isMultiline={true} >
                     Attention, veuillez vérifier que tous les membres de votre famille ont bien été ajoutées et leurs documents sont complétés.<br />
                     Pour ajouter un nouveau membre, cliquez sur le bouton "Ajouter un membre" en haut de l'écran. Pour revenir en arrière, appuyant sur le bouton "Retour" en bas de l'écran.
                 </MessageBar>
                 <br />
                 <Text variant="large" block><Icon iconName='NumberedList' /> Détails du paiement (des membres non payés)</Text>
-                <Separator />
+                <Divider />
                 <Table>
                     <thead>
                         <tr>
@@ -84,7 +85,7 @@ class _MembersMePayment extends React.PureComponent {
                 </Table>
                 <br />
                 <Text variant="large" block><Icon iconName='CheckMark' /> Choisissez votre mode de paiement</Text>
-                <Separator />
+                <Divider />
                 <ChoiceGroup
                     options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
                     selectedKey={paymentKey}
@@ -95,7 +96,7 @@ class _MembersMePayment extends React.PureComponent {
                     <>
                         <br /><br />
                         <Text variant="large" block><Icon iconName='Processing' /> Procédez au paiement</Text>
-                        <Separator />
+                        <Divider />
 
                         {
                             (() => {
@@ -140,7 +141,7 @@ class _MembersMePayment extends React.PureComponent {
                                                 <Label required htmlFor="amount_payed_other">Montant payé en bon</Label>
                                                 <MaskedTextField
                                                     id="amount_payed_other"
-                                                    value={data.amount_payed_other}
+                                                    value={this.state.amount_payed_other}
                                                     mask={"999"}
                                                     onBlur={ev => this.setState({ amount_payed_other: ev.target.value })}
                                                     errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
@@ -189,7 +190,7 @@ class _MembersMePayment extends React.PureComponent {
                         }
                     </>
                 }
-                <Separator />
+                <Divider />
                 <br />
                 <div className="flex-row flex-space-between">
                     <DefaultButton

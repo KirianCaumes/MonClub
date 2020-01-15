@@ -1,5 +1,5 @@
 import React from 'react'
-import { Separator, Label, Text, MessageBarType, Icon } from 'office-ui-fabric-react'
+import { Label, Text, MessageBarType, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { Columns } from 'react-bulma-components'
@@ -7,6 +7,7 @@ import FileInput from 'component/fileInput'
 import request from 'helper/request'
 import { dlBlob, openBlob } from 'helper/blob'
 import { editMember } from 'redux/actions/member'
+import Divider from 'component/divider'
 
 class _MembersMeDocuments extends React.PureComponent {
     constructor(props) {
@@ -24,7 +25,7 @@ class _MembersMeDocuments extends React.PureComponent {
         return (
             <section id="members-me-documents">
                 <Text variant="large" block><Icon iconName='FabricUserFolder'/> Les documents</Text>
-                <Separator />
+                <Divider />
                 <Columns>
                     <Columns.Column>
                         <Label required>Certificat médical</Label>
