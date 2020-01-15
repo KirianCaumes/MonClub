@@ -105,6 +105,9 @@ class MemberMajorType extends AbstractType
             ->add('gesthand_is_photo', CheckboxType::class, [
                 'disabled' => true,
             ])
+            ->add('gesthand_is_photo_id', CheckboxType::class, [
+                'disabled' => true,
+            ])
             ->add('gesthand_is_certificate', CheckboxType::class, [
                 'disabled' => true,
             ])

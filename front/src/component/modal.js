@@ -12,7 +12,7 @@ class _Modal extends React.PureComponent {
                 hidden={!modal.show}
                 onDismiss={() => setModal(false, modal.title, modal.subTitle, modal.callback)}
                 dialogContentProps={{
-                    type: DialogType.normal,
+                    type: DialogType.largeHeader,
                     title: modal.title,
                     subText: modal.subTitle
                 }}

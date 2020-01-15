@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -352,6 +354,47 @@ class FileController extends FOSRestController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         $dompdf->stream("Attestation_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $paramService->getCurrentSeason()->getLabel(), ["Attachment" => true]);
+    }
+
+    /**
+     * Generate and get document "lettre de non opposition".
+     * @QueryParam(name="address", nullable=true, description="String of address")
+     * @QueryParam(name="club", nullable=true, description="Club name")
+     * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
+     * @Route("/{memberId}/non-objection", methods={"GET"})
+     */
+    public function getNonObjection(TranslatorInterface $translator, ParamFetcher $paramFetcher, ParamService $paramService, int $memberId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        $pdfOptions = new Options();
+        $pdfOptions->set(['enable_remote' => true]);
+
+        $dompdf = new Dompdf($pdfOptions);
+        $dompdf->setBasePath(realpath(__DIR__ . '/../../public/'));
+
+        $dompdf->loadHtml(
+            $this->renderView('pdf/nonObjection.html.twig', [
+                'member' => $member,
+                'address' => $paramFetcher->get('address'),
+                'club' => $paramFetcher->get('club'),
+                'president' => [
+                    'firstname' => $paramService->getParam('president_firstname'),
+                    'lastname' => $paramService->getParam('president_lastname')
+                ],
+                'secretary' => [
+                    'firstname' => $paramService->getParam('secretary_firstname'),
+                    'lastname' => $paramService->getParam('secretary_lastname')
+                ]
+            ])
+        );
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        $dompdf->stream("Lettre-de-non-objection_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $paramService->getCurrentSeason()->getLabel(), ["Attachment" => true]);
     }
 
     /**

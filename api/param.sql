@@ -29,7 +29,9 @@ VALUES
     (7, 'president_lastname', 'paire'), 
     (8, 'is_create_new_user_able', 'true'), 
     (9, 'new_member_deadline', ''),
-    (10, 'is_create_new_member_able', 'true');
+    (10, 'is_create_new_member_able', 'true'),
+    (11, 'secretary_firstname', 'carole'), 
+    (12, 'secretary_lastname', 'blanchard');
 
 INSERT INTO `mc_dev_param_document_category` (`id`, `label`) 
 VALUES 

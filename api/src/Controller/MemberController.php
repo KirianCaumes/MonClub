@@ -312,6 +312,8 @@ class MemberController extends FOSRestController
 
             //Check to know if have to send email for inscription done
             $emailInscriptionDone = ($data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
+            //Check to know if have to send email for invalid document
+            $emailDocumentInvalid = ($data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
 
             $form->submit($data, true);
 
@@ -337,6 +339,7 @@ class MemberController extends FOSRestController
                 $em->flush();
 
                 if ($emailInscriptionDone) $mailService->sendInscriptionDone($member->getUser(), $member);
+                if ($emailDocumentInvalid) $mailService->sendDocumentInvalid($member->getUser(), $member);
 
                 return $this->handleView($this->view([
                     'member' => $member,

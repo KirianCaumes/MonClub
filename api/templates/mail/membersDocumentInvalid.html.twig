@@ -1,0 +1,22 @@
+{% extends "mail/_base.html.twig" %}
+
+{% block preheader %}{% endblock %}
+
+{% block textOne %}
+	Après vérification du membre
+	{{member.firstname|capitalize}}
+	{{member.lastname|capitalize}}
+	, un ou plusieurs de vos documents sont invalides. Il est notamment possible que la date du certificat soit invalide ou que celui-ci soit expiré.
+{% endblock %}
+
+{% block textTwo %}
+	La modification de vos données à été débloquées. Veuillez déposer les nouvelles mises à jour.
+{% endblock %}
+
+{% block url %}
+	{{baseUrl}}
+{% endblock %}
+
+{% block urlText %}
+	Modifier mes documents
+{% endblock %}

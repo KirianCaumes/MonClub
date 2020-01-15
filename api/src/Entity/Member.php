@@ -208,6 +208,11 @@ class Member
     /**
      * @ORM\Column(type="boolean")
      */
+    private $gesthand_is_photo_id = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
     private $gesthand_is_certificate = false;
 
     /**
@@ -709,6 +714,18 @@ class Member
     public function setGesthandIsPhoto(bool $gesthand_is_photo): self
     {
         $this->gesthand_is_photo = $gesthand_is_photo;
+
+        return $this;
+    }
+
+    public function getGesthandIsPhotoId(): ?bool
+    {
+        return $this->gesthand_is_photo_id;
+    }
+
+    public function setGesthandIsPhotoId(bool $gesthand_is_photo_id): self
+    {
+        $this->gesthand_is_photo_id = $gesthand_is_photo_id;
 
         return $this;
     }

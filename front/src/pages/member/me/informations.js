@@ -119,7 +119,7 @@ class _MembersMeInformations extends React.PureComponent {
                                 directionalHint={DirectionalHint.bottomCenter}
                                 delay={TooltipDelay.zero}
                             >
-                                <Icon iconName="Info" className="icon-info-label is-required" />
+                                <Icon iconName="Info" className={`icon-info-label ${isMajor(member?.birthdate) ? 'is-required' : 'is-not-required'}`} />
                             </TooltipHost>
                         </div>
                         <MaskedTextField

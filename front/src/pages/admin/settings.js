@@ -13,6 +13,8 @@ class _Settings extends React.PureComponent {
         this.state = {
             president_firstname: props.param?.global?.find(x => x.label === 'president_firstname')?.value,
             president_lastname: props.param?.global?.find(x => x.label === 'president_lastname')?.value,
+            secretary_firstname: props.param?.global?.find(x => x.label === 'secretary_firstname')?.value,
+            secretary_lastname: props.param?.global?.find(x => x.label === 'secretary_lastname')?.value,
             price_deadline: props.param?.global?.find(x => x.label === 'price_deadline')?.value,
             new_member_deadline: props.param?.global?.find(x => x.label === 'new_member_deadline')?.value,
             is_create_new_user_able: props.param?.global?.find(x => x.label === 'is_create_new_user_able')?.value,
@@ -73,9 +75,42 @@ class _Settings extends React.PureComponent {
                                     }
                                 />
                             </div>
+                        </Columns.Column><Columns.Column>
+                            <Label required htmlFor="secretary_firstname">Prénom du secrétaire</Label>
+                            <div className="flex-row">
+                                <TextField
+                                    id="secretary_firstname"
+                                    defaultValue={this.state.secretary_firstname}
+                                    onBlur={ev => this.setState({ secretary_firstname: ev.target.value })}
+                                />
+                                <IconButton
+                                    iconProps={{ iconName: 'Save' }}
+                                    title="Enregistrer"
+                                    onClick={() => request.editParam('secretary_firstname', this.state.secretary_firstname)
+                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, "L'élément à bien été mise à jour."))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }
+                                />
+                            </div>
                         </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
+                        <Columns.Column>
+                            <Label required htmlFor="secretary_lastname">Nom du secrétaire</Label>
+                            <div className="flex-row">
+                                <TextField
+                                    id="secretary_lastname"
+                                    defaultValue={this.state.secretary_lastname}
+                                    onBlur={ev => this.setState({ secretary_lastname: ev.target.value })}
+                                />
+                                <IconButton
+                                    iconProps={{ iconName: 'Save' }}
+                                    title="Enregistrer"
+                                    onClick={() => request.editParam('secretary_lastname', this.state.secretary_lastname)
+                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, "L'élément à bien été mise à jour."))
+                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }
+                                />
+                            </div>
+                        </Columns.Column>
                     </Columns>
                     <Columns>
                         <Columns.Column>

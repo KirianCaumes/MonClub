@@ -1,0 +1,44 @@
+{% extends "pdf/_base.html.twig" %}
+
+{% block style %}
+    <!-- <link href="../../public/css/nonObjection.css" rel="stylesheet" />-->
+    <link href="css/nonObjection.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <!-- <img src="../../public/img/logo.png" class="logo"> -->
+    <img src="./img/logo.png" class="logo">
+    <p>
+        Thouaré Handball Club<br />
+        Route de la Barre<br />
+        44470 Thouaré sur Loire<br />
+        <a href="https://thouarehbc.fr">https://thouarehbc.fr</a><br />
+        <br /><br />
+        SIRET : 529 434 102 00032
+    </p>
+    <p class="has-text-right">
+    <span class="is-uppercase">{{club}}</span><br/>
+    {{address|nl2br}}
+    <br/>
+    A l’attention du Président<br/><br/>
+    Thouaré sur Loire, le {{"now"|date("d/m/Y")}}
+    </p>
+    <br /><br />
+
+    <h1>OBJET : lettre de non-opposition mutation hors période</h1>
+    <br /><br />
+    <p>
+        Madame, Monsieur,<br/>
+        Conformément à l’article 57.1.1 des règlements généraux de la FFHB, le Thouaré Handball Club informe le Club <span class="is-uppercase">{{club}}</span> qu’il ne s’oppose pas à la mutation de Monsieur <span class="is-capitalized">{{member.firstname}}</span> <span class="is-uppercase">{{member.lastname}}</span>.
+    </p>
+    <br />
+    <!-- <img src="../../public/img/singature_club.jpg" class="signature"> -->
+    <img src="./img/singature_club.jpg" class="signature">
+    <p class="has-text-right signature">
+        P/o Le président du THBC<br />
+        <span class="is-capitalized">{{president.firstname}}</span> <span class="is-uppercase">{{president.lastname}}</span>
+        <br/><br/>        
+        Secrétaire<br />
+        <span class="is-capitalized">{{secretary.firstname}}</span> <span class="is-uppercase">{{secretary.lastname}}</span>
+    </p>
+{% endblock %}

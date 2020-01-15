@@ -135,7 +135,7 @@ export default class FileInput extends React.PureComponent {
                         hidden={!showDialog}
                         onDismiss={() => this.setState({ showDialog: false })}
                         dialogContentProps={{
-                            type: DialogType.normal,
+                            type: DialogType.largeHeader,
                             title: 'Supprimer le document',
                             subText: 'Êtes-vous certains de vouloir supprimer le document ? Cette action est définitive.'
                         }}

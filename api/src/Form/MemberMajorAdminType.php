@@ -115,6 +115,7 @@ class MemberMajorAdminType extends AbstractType
                 ]
             ])
             ->add('gesthand_is_photo')
+            ->add('gesthand_is_photo_id')
             ->add('gesthand_is_certificate')
             ->add('gesthand_certificate_date', DateTimeType::class, [
                 'widget' => 'single_text',

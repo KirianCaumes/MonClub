@@ -423,6 +423,16 @@ export default {
 
         return getFetch(url, options)
     },
+    getNonObjection: (memberId, params) => {
+        const url = ["document", memberId, "non-objection"]
+
+        var options = {
+            method: GET,
+            params
+        }
+
+        return getFetch(url, options)
+    },
     getGoogleContact: () => {
         const url = ["document", "google", "contact"]
 

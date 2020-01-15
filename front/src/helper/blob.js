@@ -2,7 +2,11 @@ export function dlBlob(file, fileName) {
     let a = document.createElement('a')
     a.href = window.URL.createObjectURL(file)
     a.download = fileName
-    document.body.appendChild(a)
+    if (document.querySelector('.ms-Dialog-actionsRight')) { //Workaround to dl from a modal
+        document.querySelector('.ms-Dialog-actionsRight').appendChild(a)
+    } else {
+        document.body.appendChild(a)
+    }
     a.click()
     a.remove()
 }

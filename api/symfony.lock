@@ -1,7 +1,4 @@
 {
-    "behat/transliterator": {
-        "version": "v1.2.0"
-    },
     "dfridrich/php-mime-type": {
         "version": "v2.0.3"
     },
@@ -421,11 +418,17 @@
     "symfony/orm-pack": {
         "version": "v1.0.7"
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.13.1"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.12.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.12.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.13.1"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.12.0"
@@ -485,6 +488,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.3.6"
+    },
+    "symfony/string": {
+        "version": "v5.0.2"
     },
     "symfony/swiftmailer-bundle": {
         "version": "2.5",

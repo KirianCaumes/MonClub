@@ -91,4 +91,23 @@ class MailService
                 ]))
         );
     }
+
+    /**
+     * Send an email to notice the user that his documents are invalid
+     */
+    public function sendDocumentInvalid(User $user, Member $member)
+    {
+        return $this->mailer->send(
+            (new \Swift_Message())
+                ->setContentType('text/html')
+                ->setFrom($this->from)
+                ->setSubject('Certains documents sont invalides - MonClub THBC')
+                ->setTo($user->getEmail())
+                ->setBody($this->twig->render('/mail/membersDocumentInvalid.html.twig', [
+                    'user' => $user,
+                    'member' => $member,
+                    'baseUrl' => $this->baseUrl
+                ]))
+        );
+    }
 }
