@@ -1,6 +1,7 @@
 #index {
   .hero {
-    background: linear-gradient(to right, #2b6ca3 0%, #2b6ca3 75%, #0f3375);
+    background: linear-gradient(to left bottom, #2b6ca3 0%, #2b6ca3 55%, #0f3375);
+    // background: linear-gradient(to right, #2b6ca3 0%, #2b6ca3 75%, #0f3375);
     border-radius: 3px;
     @include ms-depth-16;
     .hero-body {

@@ -28,6 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Member controller.
@@ -573,7 +574,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService, ParamService $paramService)
+    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService, ParamService $paramService, ValidatorInterface $validator)
     {
         $data = json_decode($request->getContent(), true);
 
@@ -588,9 +589,28 @@ class MemberController extends FOSRestController
         }
 
         //Find payment solution
-        $payment_solution = $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findOneBy(['id' => $data['payment_solution']]);
-        if (!$payment_solution) {
+        $paymentSolution = $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findOneBy(['id' => $data['payment_solution']]);
+        if (!$paymentSolution) {
             return $this->handleView($this->view(["message" => $translator->trans('payment_solution_not_found')], Response::HTTP_NOT_FOUND));
+        }
+
+        //Set amount other pay if solution 3
+        if ($paymentSolution->getId() === 3) {
+            foreach ($data['each'] as $el) {
+                foreach ($members as $member) {
+                    if ($member->getId() === $el['id']) {
+                        $member->setAmountPayedOther($el['price_other']);
+                        $validation = $validator->validate($member);
+                        if (count($validation) > 0) {
+                            return $this->handleView($this->view(['form' => ['children' => [$validation[0]->getPropertyPath() => ['errors' => [$validation[0]->getMessage()]]]]], Response::HTTP_BAD_REQUEST));
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($members as $member) {
+                $member->setAmountPayedOther(null);
+            }
         }
 
         //TODO : connect return api payment 
@@ -598,7 +618,7 @@ class MemberController extends FOSRestController
         foreach ($members as $member) {
             $member->setIsPayed(true);
             $member->setAmountPayed($priceService->getPrice($member));
-            $member->setPaymentSolution($payment_solution);
+            $member->setPaymentSolution($paymentSolution);
             $em->persist($member);
         }
         $em->flush();

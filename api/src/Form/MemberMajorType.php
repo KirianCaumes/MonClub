@@ -96,6 +96,9 @@ class MemberMajorType extends AbstractType
             ->add('amount_payed', NumberType::class, [
                 'disabled' => true,
             ])
+            ->add('amount_payed_other', NumberType::class, [
+                'disabled' => true,
+            ]) 
             ->add('is_check_gest_hand', CheckboxType::class, [
                 'disabled' => true,
             ])

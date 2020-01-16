@@ -80,7 +80,12 @@ class PriceService
         $prices = [];
         $total = 0;
         foreach ($members as $member) {
-            array_push($prices, ['name' => ucwords($member->getLastName()) . ' ' . ucwords($member->getFirstName()), 'price' => $this->getPrice($member)]);
+            array_push($prices, [
+                'id' => $member->getId(),
+                'name' => ucwords($member->getLastName()) . ' ' . ucwords($member->getFirstName()),
+                'price' => $this->getPrice($member),
+                'price_other' => $member->getAmountPayedOther()
+            ]);
             $total += $this->getPrice($member);
         }
 

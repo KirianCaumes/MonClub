@@ -191,6 +191,12 @@ class Member
     private $amount_payed;
 
     /**
+     * @Assert\LessThan(propertyPath="amount_payed")
+     * @ORM\Column(type="integer", precision=5, scale=2, nullable=true)
+     */
+    private $amount_payed_other;
+
+    /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
     private $is_check_gest_hand = false;
@@ -678,6 +684,18 @@ class Member
     public function setAmountPayed(?float $amount_payed): self
     {
         $this->amount_payed = $amount_payed;
+
+        return $this;
+    }
+
+    public function getAmountPayedOther(): ?int
+    {
+        return $this->amount_payed_other;
+    }
+
+    public function setAmountPayedOther(?int $amount_payed_other): self
+    {
+        $this->amount_payed_other = $amount_payed_other;
 
         return $this;
     }

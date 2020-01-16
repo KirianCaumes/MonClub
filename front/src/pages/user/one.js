@@ -80,6 +80,9 @@ class _UserOne extends React.PureComponent {
         return (
             <section id="user-one">
                 <div className="card" >
+                    <div className="head">
+                        <h1><Icon iconName='Teamwork' /> Toutes les informations sur l'utilisateur: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.username ?? '') : ''}</span></h1>
+                    </div>
                     <Text variant="large" block><Icon iconName='BulletedList' /> Informations générales</Text>
                     <Divider />
                     <Columns>

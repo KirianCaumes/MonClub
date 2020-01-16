@@ -1,6 +1,6 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text } from 'office-ui-fabric-react'
+import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -68,18 +68,18 @@ class _UsersAll extends ParentPage {
         return (
             <section id="user-all">
                 <div className="card" >
-                    {
-                        this.state.items.length === 0 && !this.state.isLoading ?
-                            <Text variant="large" className="has-text-centered" block>Aucun résultat</Text> :
-                            <ShimmeredDetailsList
-                                items={this.state.items}
-                                onActiveItemChanged={item => history.push(`/utilisateur/${item.id}`)}
-                                onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['roles'] })}
-                                columns={this.state.columns}
-                                selectionMode={SelectionMode.none}
-                                enableShimmer={this.state.isLoading}
-                            />
-                    }
+                    <div className="head">
+                        <h1><Icon iconName='Teamwork' /> Rechercher parmis l'ensemble des utilisateurs</h1>
+                    </div>
+                    <ShimmeredDetailsList
+                        items={this.state.items}
+                        onActiveItemChanged={item => history.push(`/utilisateur/${item.id}`)}
+                        onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['roles'] })}
+                        columns={this.state.columns}
+                        selectionMode={SelectionMode.none}
+                        enableShimmer={this.state.isLoading}
+                    />
+                    {this.state.items.length === 0 && !this.state.isLoading && <Text variant="large" className="has-text-centered" block>Aucun résultat</Text>}
                 </div >
             </section >
         )

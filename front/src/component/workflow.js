@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
 
 export default class Workflow extends React.PureComponent {
@@ -31,7 +31,8 @@ export default class Workflow extends React.PureComponent {
                                         directionalHint={DirectionalHint.topCenter}
                                         delay={TooltipDelay.zero}
                                     >
-                                        {(() => {
+                                        {i + 1}
+                                        {/* {(() => {
                                             if (row.isError) {
                                                 return <Icon iconName="Exclamation" className={row.message ? 'info' : ''} />
                                             } else if (row.isCompleted) {
@@ -41,12 +42,12 @@ export default class Workflow extends React.PureComponent {
                                             } else {
                                                 return <Icon iconName="More" className={row.message ? 'info' : ''} />
                                             }
-                                        })()}
+                                        })()} */}
                                     </TooltipHost>
                                 </div>
                                 <div className="step-details">
-                                    <p className="step-title">{row.label}</p>
-                                    <p className="is-hidden-touch">{row.description}</p>
+                                    <p className="step-title" style={{ marginBottom: row.description.length ? '1em' : '0' }}>{row.label}</p>
+                                    <p className="is-hidden-touch" >{row.description}</p>
                                 </div>
                             </div>
                         )

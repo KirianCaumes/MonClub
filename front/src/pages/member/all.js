@@ -233,18 +233,15 @@ class _MembersAll extends ParentPage {
                             <br />
                         </>
                     }
-                    {
-                        this.state.items.length === 0 && !this.state.isLoading ?
-                            <Text variant="large" className="has-text-centered" block>Aucun résultat</Text> :
-                            <ShimmeredDetailsList
-                                items={this.state.items}
-                                onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
-                                onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['step', 'team'] })}
-                                columns={this.state.columns}
-                                selectionMode={SelectionMode.none}
-                                enableShimmer={this.state.isLoading}
-                            />
-                    }
+                    <ShimmeredDetailsList
+                        items={this.state.items}
+                        onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
+                        onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['step', 'team'] })}
+                        columns={this.state.columns}
+                        selectionMode={SelectionMode.none}
+                        enableShimmer={this.state.isLoading}
+                    />
+                    {this.state.items.length === 0 && !this.state.isLoading && <Text variant="large" className="has-text-centered" block>Aucun résultat</Text>}
                 </div >
             </section >
         )

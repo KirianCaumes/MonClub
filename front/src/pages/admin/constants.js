@@ -1,6 +1,6 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
+import { Label, DetailsList, SelectionMode, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 
@@ -23,6 +23,9 @@ class _Constants extends React.PureComponent {
         return (
             <section>
                 <div className="card" >
+                    <div className="head">
+                        <h1><Icon iconName='OfflineStorage' /> Liste des contantes</h1>
+                    </div>
                     <Label>Équipe :</Label>
                     <DetailsList
                         items={param?.teams ?? []}
