@@ -11,15 +11,13 @@ use Twig\Environment;
  */
 class MailService
 {
+    protected $swiftMailer;
     protected $mailer;
-    protected $twig;
-    protected $from;
 
-    public function __construct(\Swift_Mailer $mailer,  Environment $twig)
+    public function __construct(\Swift_Mailer $swiftMailer, Environment $twig)
     {
-        $this->mailer = $mailer;
+        $this->swiftMailer = $swiftMailer;
         $this->twig = $twig;
-        $this->from = 'monclub@thouarehbc.fr';
         $this->baseUrl = "";
         switch ($_ENV['APP_ENV']) {
             case 'dev':
@@ -37,21 +35,46 @@ class MailService
     }
 
     /**
+     * Handle sending email
+     */
+    private function send(string $to, string $subject, string $body)
+    {
+        //Use smtp google if localhost
+        if ($_ENV['APP_ENV'] === 'dev') {
+            return $this->swiftMailer->send(
+                (new \Swift_Message())
+                    ->setContentType('text/html')
+                    ->setFrom('inscription@thouarehbc.fr')
+                    ->setSubject($subject . ' - MonClub THBC')
+                    ->setTo($to)
+                    ->setBody($body)
+            );
+        }
+
+        return mail(
+            $to,
+            $subject . ' - MonClub THBC',
+            $body,
+            "From: Mon Club - THBC <inscription@thouarehbc.fr>\r\n" .
+                "Reply-To: inscription@thouarehbc.fr" . "\r\n" .
+                "Content-Type: text/html; charset=UTF-8" . "\r\n" .
+                "X-Mailer: PHP/" . phpversion()
+        );
+    }
+
+    /**
      * Send an email to reset password.
      */
     public function sendReset(User $user)
     {
-        return $this->mailer->send(
-            (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom($this->from)
-                ->setSubject('Réinitialisation de votre mot de passe - MonClub THBC')
-                ->setTo($user->getEmail())
-                ->setBody($this->twig->render('/mail/resetPassword.html.twig', [
-                    'token' => $user->getConfirmationToken(),
-                    'user' => $user,
-                    'baseUrl' => $this->baseUrl
-                ]))
+        return $this->send(
+            $user->getEmail(),
+            'Réinitialisation de votre mot de passe',
+            $this->twig->render('/mail/resetPassword.html.twig', [
+                'token' => $user->getConfirmationToken(),
+                'user' => $user,
+                'baseUrl' => $this->baseUrl
+            ])
         );
     }
 
@@ -60,16 +83,13 @@ class MailService
      */
     public function sendMemberReminder(User $user)
     {
-        return $this->mailer->send(
-            (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom($this->from)
-                ->setSubject('Vous avez des membres en attente - MonClub THBC')
-                ->setTo($user->getEmail())
-                ->setBody($this->twig->render('/mail/membersReminder.html.twig', [
-                    'user' => $user,
-                    'baseUrl' => $this->baseUrl
-                ]))
+        return $this->send(
+            $user->getEmail(),
+            'Vous avez des membres en attente',
+            $this->twig->render('/mail/membersReminder.html.twig', [
+                'user' => $user,
+                'baseUrl' => $this->baseUrl
+            ])
         );
     }
 
@@ -78,36 +98,14 @@ class MailService
      */
     public function sendInscriptionDone(User $user, Member $member)
     {
-        return $this->mailer->send(
-            (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom($this->from)
-                ->setSubject('Votre inscription à été validée - MonClub THBC')
-                ->setTo($user->getEmail())
-                ->setBody($this->twig->render('/mail/membersInscriptionDone.html.twig', [
-                    'user' => $user,
-                    'member' => $member,
-                    'baseUrl' => $this->baseUrl
-                ]))
-        );
-    }
-
-    /**
-     * Send an email to notice the user that his documents are invalid
-     */
-    public function sendDocumentInvalid(User $user, Member $member)
-    {
-        return $this->mailer->send(
-            (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom($this->from)
-                ->setSubject('Certains documents sont invalides - MonClub THBC')
-                ->setTo($user->getEmail())
-                ->setBody($this->twig->render('/mail/membersDocumentInvalid.html.twig', [
-                    'user' => $user,
-                    'member' => $member,
-                    'baseUrl' => $this->baseUrl
-                ]))
+        return $this->send(
+            $user->getEmail(),
+            'Votre inscription à été validée',
+            $this->twig->render('/mail/membersInscriptionDone.html.twig', [
+                'user' => $user,
+                'member' => $member,
+                'baseUrl' => $this->baseUrl
+            ])
         );
     }
 }
