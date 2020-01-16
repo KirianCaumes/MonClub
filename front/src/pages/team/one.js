@@ -124,6 +124,9 @@ class _TeamOne extends React.PureComponent {
         return (
             <section id="team-one">
                 <div className="card" >
+                    <div className="head">
+                        <h1><Icon iconName='Teamwork' /> Toutes les informations sur l'équipe: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.label ?? '') : 'Nouveau'}</span></h1>
+                    </div>
                     <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
                     <Divider />
                     <Columns>

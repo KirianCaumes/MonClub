@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, IconButton, MaskedTextField, Dropdown } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, IconButton, MaskedTextField, Dropdown, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import request from 'helper/request'
@@ -39,6 +39,9 @@ class _Settings extends React.PureComponent {
         return (
             <section id="admin-settings">
                 <div className="card" >
+                    <div className="head">
+                        <h1><Icon iconName='DataManagementSettings' /> Liste des paramètres</h1>
+                    </div>
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="president_firstname">Prénom du président</Label>

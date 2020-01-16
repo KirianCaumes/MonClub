@@ -83,7 +83,21 @@ class MemberMinorAdminType extends AbstractType
                         'value' => 1000
                     ])
                 ],
-            ])
+            ])            
+            ->add('amount_payed_other', NumberType::class, [
+                'scale' => 2,
+                'constraints' => [
+                    new Type([
+                        'type' => 'float',
+                    ]),
+                    new GreaterThanOrEqual([
+                        'value' => 0,
+                    ]),
+                    new LessThan([
+                        'value' => 1000
+                    ])
+                ],
+            ]) 
             ->add('is_check_gest_hand')
             ->add('is_inscription_done', CheckboxType::class, [
                 'constraints' => [

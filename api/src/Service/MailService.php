@@ -92,7 +92,7 @@ class MailService
             ])
         );
     }
-
+    
     /**
      * Send an email to notice inscription is validated by the club
      */
@@ -105,6 +105,22 @@ class MailService
                 'user' => $user,
                 'member' => $member,
                 'baseUrl' => $this->baseUrl
+            ])
+        );
+    }
+    
+    /**
+     * Send an email to remind unfinished member.
+     */
+    public function sendWarningEnableUser(User $user,$inactivityDate)
+    {
+        return $this->send(
+            $user->getEmail(),
+            'Attention votre compte sera désactivé',
+            $this->twig->render('/mail/warningEnableUser.html.twig', [
+                'user' => $user,
+                'baseUrl' => $this->baseUrl,
+                'inactivityDate' =>  $inactivityDate,
             ])
         );
     }

@@ -49,14 +49,15 @@
 
 *.card {
   background: white;
-  @include ms-depth-4;
+  @include ms-depth-16;
   padding: 25px;
   border-radius: 2px;
   word-break: break-word;
   .head {
+    display: none;
     border-radius: 2px 2px 0 0;
-    background: linear-gradient(to left, $dark-blue, $blue);
-    border-bottom: 2px rgba($dark-grey,0.7) solid;
+    background: linear-gradient(to right top, $dark-blue, $blue);
+    border-bottom: 2px rgba($dark-grey, 0.7) solid;
     margin: -25px -25px 15px -25px;
     padding: 5px 5px 5px 5px;
     h1 {
@@ -69,6 +70,9 @@
         vertical-align: bottom;
       }
     }
+  }
+  i {
+    //   color: $dark-blue!important;
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Text, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon } from 'office-ui-fabric-react'
+import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -12,7 +12,7 @@ import MembersMePayment from './me/payment'
 import { setMembers, editMember } from 'redux/actions/member'
 import MembersMeSummary from './me/summary'
 import MembersMeFinalisation from './me/finalisation'
-import Divider from 'component/divider'
+
 class _MembersMe extends React.PureComponent {
     constructor(props) {
         super(props)
@@ -20,7 +20,7 @@ class _MembersMe extends React.PureComponent {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 1,
+            page: 4,
             currentPivot: 0
         }
 
@@ -36,7 +36,7 @@ class _MembersMe extends React.PureComponent {
         this.commandRead = [
             {
                 key: 'addItem',
-                text: 'Ajouter un membre',
+                text: 'Ajouter',
                 iconProps: { iconName: 'AddFriend' },
                 onClick: () => {
                     this.setState({ isLoading: true }, () => {
@@ -60,7 +60,7 @@ class _MembersMe extends React.PureComponent {
             },
             {
                 key: 'deleteItem',
-                text: 'Supprimer le membre',
+                text: 'Supprimer',
                 iconProps: { iconName: 'AddFriend' },
                 onClick: () => {
                     this.props.setModal(
@@ -131,7 +131,6 @@ class _MembersMe extends React.PureComponent {
                     <div className="head">
                         <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label}</h1>
                     </div>
-                    <br />
                     <Workflow
                         className="is-hidden-mobile"
                         data={[
@@ -172,51 +171,54 @@ class _MembersMe extends React.PureComponent {
                             }
                         ]}
                     />
-                    {isLoading ? <Loader /> :
-                        <>
-                            <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres créés</Text>
-                            <Divider />
-                            {
-                                page <= 3
-                                    ?
-                                    <Pivot
-                                        onLinkClick={(item) => {
-                                            this.setState({ page: 1, currentPivot: parseInt(item.props.itemKey), errorField: {} })
-                                        }}
-                                        selectedKey={currentPivot?.toString()}
-                                    >
-                                        {members.map((member, i) => (
-                                            <PivotItem
-                                                key={i}
-                                                itemKey={i.toString()}
-                                                headerText={(() => {
-                                                    if (window.innerWidth > 768) {
-                                                        return `${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`
-                                                    } else {
-                                                        return undefined
-                                                    }
-                                                })()}
-                                                itemIcon="Contact"
-                                                data-content={null}
-                                            >
-                                                <br />
-                                                {(() => {
-                                                    switch (page) {
-                                                        case 1:
-                                                            return (
-                                                                <>
-                                                                    <MembersMeInformations
-                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
-                                                                        errorField={errorField}
-                                                                        memberIndex={i}
-                                                                    />
-                                                                    <br />
+                </div>
+                <br />
+                {isLoading ? <Loader /> :
+                    <>
+                        {/* <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres créés</Text>
+                            <Divider /> */}
+                        {
+                            page <= 3
+                                ?
+                                <Pivot
+                                    onLinkClick={(item) => {
+                                        this.setState({ page: 1, currentPivot: parseInt(item.props.itemKey), errorField: {} })
+                                    }}
+                                    selectedKey={currentPivot?.toString()}
+                                >
+                                    {members.map((member, i) => (
+                                        <PivotItem
+                                            key={i}
+                                            itemKey={i.toString()}
+                                            headerText={(() => {
+                                                if (window.innerWidth > 768) {
+                                                    return `${(member?.firstname && member?.lastname) ? ((member?.firstname ?? '') + ' ' + (member?.lastname ?? '')) : 'Nouveau'}`
+                                                } else {
+                                                    return undefined
+                                                }
+                                            })()}
+                                            itemIcon="Contact"
+                                            data-content={null}
+                                        >
+                                            <br />
+                                            {(() => {
+                                                switch (page) {
+                                                    case 1:
+                                                        return (
+                                                            <>
+                                                                <MembersMeInformations
+                                                                    readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                    errorField={errorField}
+                                                                    memberIndex={i}
+                                                                />
+                                                                <br />
+                                                                <div className="card">
                                                                     <MembersMeAutorizations
                                                                         readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <Divider />
+                                                                    <Separator />
                                                                     <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <div />
@@ -246,17 +248,19 @@ class _MembersMe extends React.PureComponent {
                                                                             }}
                                                                         />
                                                                     </div>
-                                                                </>
-                                                            )
-                                                        case 2:
-                                                            return (
-                                                                <>
+                                                                </div>
+                                                            </>
+                                                        )
+                                                    case 2:
+                                                        return (
+                                                            <>
+                                                                <div className="card">
                                                                     <MembersMeDocuments
                                                                         readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         memberIndex={i}
                                                                         errorField={errorField}
                                                                     />
-                                                                    <Divider />
+                                                                    <Separator />
                                                                     <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
@@ -290,16 +294,18 @@ class _MembersMe extends React.PureComponent {
                                                                             }}
                                                                         />
                                                                     </div>
-                                                                </>
-                                                            )
-                                                        case 3:
-                                                            return (
-                                                                <>
+                                                                </div>
+                                                            </>
+                                                        )
+                                                    case 3:
+                                                        return (
+                                                            <>
+                                                                <div className="card">
                                                                     <MembersMeSummary
                                                                         readOnly={(member.is_payed && member.is_document_complete) || readOnly}
                                                                         memberIndex={i}
                                                                     />
-                                                                    <Divider />
+                                                                    <Separator />
                                                                     <br />
                                                                     <div className="flex-row flex-space-between flex-wrap">
                                                                         <DefaultButton
@@ -315,34 +321,36 @@ class _MembersMe extends React.PureComponent {
                                                                             disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length}
                                                                         />
                                                                     </div>
-                                                                </>
-                                                            )
-                                                        default:
-                                                            return (null)
-                                                    }
-                                                })()}
-                                            </PivotItem>
-                                        ))}
-                                    </Pivot>
-                                    :
-                                    <>
-                                        {(() => {
-                                            switch (page) {
-                                                case 4:
-                                                    return (
-                                                        <>
-                                                            <MembersMePayment
-                                                                readOnly={readOnly}
-                                                                goNext={() => this.setState({ page: this.state.page + 1 })}
-                                                                goBack={() => this.setState({ page: 1 })}
-                                                            />
-                                                        </>
-                                                    )
-                                                case 5:
-                                                    return (
-                                                        <>
+                                                                </div>
+                                                            </>
+                                                        )
+                                                    default:
+                                                        return (null)
+                                                }
+                                            })()}
+                                        </PivotItem>
+                                    ))}
+                                </Pivot>
+                                :
+                                <>
+                                    {(() => {
+                                        switch (page) {
+                                            case 4:
+                                                return (
+                                                    <>
+                                                        <MembersMePayment
+                                                            readOnly={readOnly}
+                                                            goNext={() => this.setState({ page: this.state.page + 1 })}
+                                                            goBack={() => this.setState({ page: 1 })}
+                                                        />
+                                                    </>
+                                                )
+                                            case 5:
+                                                return (
+                                                    <>
+                                                        <div className="card">
                                                             <MembersMeFinalisation />
-                                                            <Divider />
+                                                            <Separator />
                                                             <br />
                                                             <div className="flex-row flex-space-between flex-wrap">
                                                                 <DefaultButton
@@ -352,17 +360,17 @@ class _MembersMe extends React.PureComponent {
                                                                 />
                                                                 <div />
                                                             </div>
-                                                        </>
-                                                    )
-                                                default:
-                                                    return (null)
-                                            }
-                                        })()}
-                                    </>
-                            }
-                        </>
-                    }
-                </div>
+                                                        </div>
+                                                    </>
+                                                )
+                                            default:
+                                                return (null)
+                                        }
+                                    })()}
+                                </>
+                        }
+                    </>
+                }
             </section >
         )
     }

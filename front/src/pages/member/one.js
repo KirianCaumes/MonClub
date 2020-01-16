@@ -147,7 +147,7 @@ class _MemberOne extends React.PureComponent {
                 <section id="member-one">
                     <div className="card" >
                         <div className="head">
-                            <h1><Icon iconName='Contact' /> Toutes les informations sur le membre: {this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</h1>
+                            <h1><Icon iconName='Contact' /> Toutes les informations sur le membre: <span className="is-capitalized">{this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</span></h1>
                         </div>
                         {
                             this.props.match?.params?.id &&
@@ -202,9 +202,11 @@ class _MemberOne extends React.PureComponent {
                                         </Columns.Column>
                                     </Columns>
                                 }
-                                <br />
                             </>
                         }
+                    </div>
+                    <br />
+                    <div className="card" >
 
                         <Text variant="large" block><Icon iconName='ContactInfo' /> Informations générales</Text>
                         <Divider />
@@ -464,8 +466,9 @@ class _MemberOne extends React.PureComponent {
                                 />
                             </Columns.Column>
                         </Columns>
-
-                        <br />
+                    </div>
+                    <br />
+                    <div className="card" >
                         <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
                         <Divider />
 
@@ -488,6 +491,45 @@ class _MemberOne extends React.PureComponent {
                                     }}
                                 />
                             </Columns.Column>
+                            <Columns.Column>
+
+                                <div className="flex-row flex-start">
+                                <Label htmlFor="amount_payed_other">Montant autre payé</Label>
+                                    <TooltipHost
+                                        content="Corresponds au prix payé en coupons."
+                                        directionalHint={DirectionalHint.bottomCenter}
+                                        delay={TooltipDelay.zero}
+                                    >
+                                        <Icon iconName="Info" className="icon-info-label is-not-required" />
+                                    </TooltipHost>
+                                </div>
+                                <TextField
+                                    id="amount_payed_other"
+                                    placeholder="Montant autre payé"
+                                    defaultValue={!isNaN(data?.amount_payed_other) ? (data?.amount_payed_other ?? '') : ''}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed_other: parseFloat(ev.target.value?.replace(',', '.')) } })}
+                                    borderless={readOnly}
+                                    readOnly={readOnly}
+                                    errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
+                                    suffix="€"
+                                    onKeyPress={ev => {
+                                        ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
+                                            ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
+                                            ev.preventDefault()
+                                    }}
+                                />
+                            </Columns.Column>
+                            <Columns.Column>
+                                <Label htmlFor="amount_real_payed">Montant réel payé</Label>
+                                <TextField
+                                    id="amount_real_payed"
+                                    placeholder="Montant réel payé"
+                                    value={!isNaN(data?.amount_payed_other) && !isNaN(data?.amount_payed) ? (data?.amount_payed - data?.amount_payed_other) : (isNaN(data?.amount_payed_other) ? data?.amount_payed : 0)}
+                                    borderless={true}
+                                    readOnly={true}
+                                    suffix="€"
+                                />
+                            </Columns.Column>
 
                             <Columns.Column>
                                 <Label htmlFor="payment_solution">Moyen de paiement</Label>
@@ -503,8 +545,6 @@ class _MemberOne extends React.PureComponent {
                                     onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
                                 />
                             </Columns.Column>
-                            <Columns.Column className="is-hidden-touch" />
-                            <Columns.Column className="is-hidden-touch" />
                         </Columns>
 
                         <Columns>
@@ -713,7 +753,10 @@ class _MemberOne extends React.PureComponent {
                             </>
                         }
 
-                        <br />
+                    </div>
+                    <br />
+                    <div className="card" >
+
                         <div className="flex-row flex-start ">
                             <Text variant="large" block><Icon iconName='AccountManagement' /> Choix et autorisation</Text>
                             {
@@ -829,8 +872,9 @@ class _MemberOne extends React.PureComponent {
                             <Columns.Column className="is-hidden-touch" />
                             <Columns.Column className="is-hidden-touch" />
                         </Columns>
-
-                        <br />
+                    </div>
+                    <br />
+                    <div className="card" >
                         <div className="flex-row flex-start ">
                             <Text variant="large" block><Icon iconName='News' /> GestHand</Text>
                             {
@@ -969,7 +1013,9 @@ class _MemberOne extends React.PureComponent {
                             </Columns.Column>
                         </Columns>
 
-                        <br />
+                    </div>
+                    <br />
+                    <div className="card" >
                         <Text variant="large" block><Icon iconName='FabricUserFolder' /> Document(s)</Text>
                         <Divider />
                         <Columns>
@@ -1091,8 +1137,9 @@ class _MemberOne extends React.PureComponent {
                             </Columns.Column>
                             {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
                         </Columns>
-
-                        <br />
+                    </div>
+                    <br />
+                    <div className="card" >
                         <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Autre</Text>
                         <Divider />
                         <Columns>

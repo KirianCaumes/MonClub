@@ -1,4 +1,8 @@
 #members-me {
+    .ms-FocusZone {
+        @extend .card;
+        padding: 10px;
+    }
   #members-me-autorizations {
     .ms-ChoiceField-field {
       &::before {
