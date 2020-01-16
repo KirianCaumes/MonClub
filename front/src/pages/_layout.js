@@ -10,15 +10,33 @@ class _Layout extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            menu: []
+            menu: [],
+            posNav: 0
         }
     }
 
     componentDidMount() {
         this.props.setUrl(history.location.pathname)
+        window.addEventListener('scroll', this.listenScroll)
     }
 
-    componentDidUpdate(prevProps) {
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.listenScroll)
+    }
+
+    listenScroll = () => {
+        // console.log(window.scrollY, window.scrollY > 130 ? window.scrollY : 0)
+        console.log("scroll")
+        if (this.scroll) clearTimeout(this.scroll)
+        this.scroll = setTimeout(() => this.setState({ posNav: window.scrollY > 95 ? window.scrollY - 95 : 0 }), 50)
+    }
+
+    componentDidUpdate(prevProps) {        
+        if (prevProps.selectedKeyURL !== this.props.selectedKeyURL) {
+            window.scrollTo(0, 0)
+            this.setState({ posNav: 0 })
+        }
+
         //Re render menu if user when info user change 
         if (prevProps.me !== this.props.me) {
             this.setState({
@@ -122,8 +140,8 @@ class _Layout extends React.PureComponent {
 
     render() {
         const { selectedKeyURL, breadcrumb, command, messageBar, me } = this.props
-        const { menu } = this.state
-        
+        const { menu, posNav } = this.state
+
         if (!this.props.isDisplay) return this.props.children
 
         return (
@@ -134,9 +152,9 @@ class _Layout extends React.PureComponent {
                     refresh={() => this.props.refresh()}
                 />
                 <div className="layout" >
-                    <aside className="is-hidden-touch">
+                    <aside className="is-hidden-touch" >
                         <Nav
-                            styles={{ root: { width: 240, overflowY: 'auto' }, chevronButton: { borderColor: "transparent" } }}
+                            styles={{ root: { width: 240, overflowY: 'auto', marginTop: posNav, transition: '.5s' }, chevronButton: { borderColor: "transparent" } }}
                             selectedKey={selectedKeyURL}
                             groups={this.filterMenu(menu)}
                         />
