@@ -29,10 +29,9 @@ class ClearUsers extends Command
         parent::__construct();
     }
 
-
     protected function configure()
     {
-        //php bin\console app:mail
+        //php bin\console app:userWarning
         $this
             ->setName('app:userWarning')
             ->setDescription("Generate mail to warn user enable account");
@@ -40,7 +39,6 @@ class ClearUsers extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        //$members = $this->em->getRepository(Member::class)->findMembersOngoing($this->paramService->getCurrentSeason());
         $users = $this->em->getRepository(User::class)->findAll($this->paramService->getCurrentSeason());
         $usersToSend = [];
 
@@ -50,7 +48,7 @@ class ClearUsers extends Command
                     if (!in_array($user, $usersToSend)) array_push($usersToSend, $user);
                     break;
                 case 105:
-                    $user ->setEnabled('false');
+                    $user->setEnabled('false');
                     break;
                 default:
                     break;
@@ -59,11 +57,9 @@ class ClearUsers extends Command
 
         foreach ($usersToSend as $user) {
             $inactivityDate = $user->getCreationDatetime()->diff(new \DateTime())->format('%a');
-            $this->mailService->sendMemberReminder($user,$inactivityDate);
-
+            $this->mailService->sendWarningEnableUser($user, $inactivityDate);
         }
 
         $output->writeln(sizeof($usersToSend) . ' email(s) were sent.');
     }
 }
-
