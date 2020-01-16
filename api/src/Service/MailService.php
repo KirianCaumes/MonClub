@@ -91,4 +91,23 @@ class MailService
                 ]))
         );
     }
+
+    /**
+     * Send an email to remind unfinished member.
+     */
+    public function sendWarningEnableUser(User $user,$inactivityDate)
+    {
+        return $this->mailer->send(
+            (new \Swift_Message())
+                ->setContentType('text/html')
+                ->setFrom($this->from)
+                ->setSubject('Attention votre compte sera désactivé - MonClub THBC')
+                ->setTo($user->getEmail())
+                ->setBody($this->twig->render('/mail/warningEnableUser.html.twig', [
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl,
+                    'inactivityDate' =>  $inactivityDate,
+                ]))
+        );
+    }
 }

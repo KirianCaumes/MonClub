@@ -1,0 +1,17 @@
+{% extends "mail/_base.html.twig" %}
+
+{% block preheader %}
+{% endblock %}
+
+{% block textOne %}
+	Votre compte est inactif depuis {{ inactivityDate }} jours.
+{% endblock %}
+
+{% block textTwo %}
+	Si aucune connexion n'est effectué sur votre compte d'ici les 15 jours suivants la réception de ce mail, votre compte sera désactivé.
+{% endblock %}
+
+{% block url %}
+	{{baseUrl}}
+{% endblock %}
+
