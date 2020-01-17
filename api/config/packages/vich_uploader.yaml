@@ -4,8 +4,10 @@ vich_uploader:
     mappings:
         doc:
             uri_prefix: /document
-            upload_destination: '%kernel.project_dir%/ressources/document'
-            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            upload_destination: '%kernel.project_dir%/resources/document'
+            # namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            directory_namer: namer.directory_namer
+            namer: namer.file_namer
 
             inject_on_load: false
             delete_on_update: true

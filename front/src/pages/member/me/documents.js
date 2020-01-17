@@ -124,7 +124,7 @@ class _MembersMeDocuments extends React.PureComponent {
                                 isRead={true}
                                 isFile={true}
                                 isDisabled={!member.is_payed || !member.is_inscription_done}
-                                tooltipContent={!member.is_payed ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
+                                tooltipContent={!member.is_payed || !member.is_inscription_done ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
                                 onDownload={() => {
                                     return request.getAttestation(member?.id)
                                         .then(file => dlBlob(file, `${member?.firstname?.charAt(0).toUpperCase()}${member?.firstname?.slice(1)}_${member?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))

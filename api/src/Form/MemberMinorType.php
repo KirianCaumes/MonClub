@@ -75,6 +75,12 @@ class MemberMinorType extends AbstractType
             ->add('amount_payed_other', NumberType::class, [
                 'disabled' => true,
             ]) 
+            ->add('is_license_renewal', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('payment_notes', TextType::class, [
+                'disabled' => true,
+            ])
             ->add('is_check_gest_hand', CheckboxType::class, [
                 'disabled' => true,
             ])
@@ -105,7 +111,9 @@ class MemberMinorType extends AbstractType
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('notes')   
+            ->add('notes', TextType::class, [
+                'disabled' => true,
+            ])      
             ->add('sex', EntityType::class, [
                 'class' => ParamSex::class
             ])

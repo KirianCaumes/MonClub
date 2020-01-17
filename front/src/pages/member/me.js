@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator } from 'office-ui-fabric-react'
+import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -20,7 +20,7 @@ class _MembersMe extends React.PureComponent {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 4,
+            page: 1,
             currentPivot: 0
         }
 
@@ -131,6 +131,9 @@ class _MembersMe extends React.PureComponent {
                     <div className="head">
                         <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label}</h1>
                     </div>
+                    <Text variant="large" block className="has-text-centered"><b>Inscription saison {param?.season?.find(x => x.is_current)?.label}</b></Text>
+                    <br />
+
                     <Workflow
                         className="is-hidden-mobile"
                         data={[
