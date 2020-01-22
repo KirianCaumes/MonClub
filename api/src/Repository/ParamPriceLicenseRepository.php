@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ParamPriceLicense;
+use App\Entity\Param\ParamPriceLicense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

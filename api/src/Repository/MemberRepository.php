@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Member;
-use App\Entity\ParamSeason;
+use App\Entity\Param\ParamSeason;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

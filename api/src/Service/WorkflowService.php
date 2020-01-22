@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\ParamWorkflow;
+use App\Entity\Param\ParamWorkflow;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

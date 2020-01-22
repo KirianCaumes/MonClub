@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Member;
 
 use App\Entity\Member;
-use App\Entity\ParamPaymentSolution;
-use App\Entity\ParamSeason;
-use App\Entity\ParamSex;
+use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamSeason;
+use App\Entity\Param\ParamSex;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,67 +24,45 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class MemberMajorAdminType extends AbstractType
+class MemberMinorAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('firstname')
             ->add('lastname')
-            ->add('birthdate', DateType::class, [
+            ->add('birthdate', DateTimeType::class, [
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
             ])
-            ->add('email', EmailType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
-            ->add('phone_number', TextType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
-            ])
+            ->add('email')
+            ->add('phone_number')
             ->add('postal_code')
             ->add('street')
             ->add('city')
             ->add('profession')
             ->add('parent_one_firstname', TextType::class, [
-                'disabled' => true,
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_lastname', TextType::class, [
-                'disabled' => true,
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_email', TextType::class, [
-                'disabled' => true,
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
             ->add('parent_one_phone_number', TextType::class, [
-                'disabled' => true,
+                'constraints' => [new NotBlank(['message' => 'not_blank'])]
             ])
-            ->add('parent_one_profession', TextType::class, [
-                'disabled' => true,
-            ])
-            ->add('parent_two_firstname', TextType::class, [
-                'disabled' => true,
-            ])
-            ->add('parent_two_lastname', TextType::class, [
-                'disabled' => true,
-            ])
-            ->add('parent_two_email', TextType::class, [
-                'disabled' => true,
-            ])
-            ->add('parent_two_phone_number', TextType::class, [
-                'disabled' => true,
-            ])
-            ->add('parent_two_profession', TextType::class, [
-                'disabled' => true,
-            ])
+            ->add('parent_one_profession')
+            ->add('parent_two_firstname')
+            ->add('parent_two_lastname')
+            ->add('parent_two_email')
+            ->add('parent_two_phone_number')
+            ->add('parent_two_profession')
             ->add('is_evacuation_allow')
             ->add('is_transport_allow')
             ->add('is_image_allow')
-            ->add('is_return_home_allow', CheckboxType::class, [
-                'disabled' => true,
-            ])
+            ->add('is_return_home_allow')
             ->add('is_newsletter_allow')
             ->add('is_accepted')
             ->add('is_reduced_price')
@@ -107,7 +83,7 @@ class MemberMajorAdminType extends AbstractType
                         'value' => 1000
                     ])
                 ],
-            ])
+            ])            
             ->add('amount_payed_other', NumberType::class, [
                 'scale' => 2,
                 'constraints' => [
@@ -121,7 +97,7 @@ class MemberMajorAdminType extends AbstractType
                         'value' => 1000
                     ])
                 ],
-            ])            
+            ]) 
             ->add('is_license_renewal')
             ->add('payment_notes')
             ->add('is_check_gest_hand')
@@ -159,7 +135,7 @@ class MemberMajorAdminType extends AbstractType
             ->add('teams', EntityType::class, [
                 'class' => Team::class,
                 'multiple' => true
-            ])
+            ])            
             ->add('season', EntityType::class, [
                 'class' => ParamSeason::class,
                 'constraints' => [

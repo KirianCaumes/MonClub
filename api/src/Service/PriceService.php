@@ -3,9 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Member;
-use App\Entity\ParamPriceLicense;
-use App\Entity\ParamPriceTransfer;
-use App\Entity\ParamReductionFamily;
+use App\Entity\Param\ParamPriceLicense;
+use App\Entity\Param\ParamPriceTransfer;
+use App\Entity\Param\ParamReductionFamily;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

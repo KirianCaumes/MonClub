@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Member;
 
 use App\Entity\Member;
-use App\Entity\ParamPaymentSolution;
-use App\Entity\ParamSeason;
-use App\Entity\ParamSex;
+use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamSeason;
+use App\Entity\Param\ParamSex;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,14 +17,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\LessThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class MemberMinorAdminType extends AbstractType
+class MemberMinorType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -68,79 +63,76 @@ class MemberMinorAdminType extends AbstractType
             ->add('is_reduced_price')
             ->add('is_non_competitive')
             ->add('is_transfer_needed')
-            ->add('is_document_complete')
-            ->add('is_payed')
+            ->add('is_document_complete', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_payed', CheckboxType::class, [
+                'disabled' => true,
+            ])
             ->add('amount_payed', NumberType::class, [
-                'scale' => 2,
-                'constraints' => [
-                    new Type([
-                        'type' => 'float',
-                    ]),
-                    new GreaterThanOrEqual([
-                        'value' => 0,
-                    ]),
-                    new LessThan([
-                        'value' => 1000
-                    ])
-                ],
-            ])            
+                'disabled' => true,
+            ])
             ->add('amount_payed_other', NumberType::class, [
-                'scale' => 2,
-                'constraints' => [
-                    new Type([
-                        'type' => 'float',
-                    ]),
-                    new GreaterThanOrEqual([
-                        'value' => 0,
-                    ]),
-                    new LessThan([
-                        'value' => 1000
-                    ])
-                ],
+                'disabled' => true,
             ]) 
-            ->add('is_license_renewal')
-            ->add('payment_notes')
-            ->add('is_check_gest_hand')
+            ->add('is_license_renewal', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('payment_notes', TextType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_check_gest_hand', CheckboxType::class, [
+                'disabled' => true,
+            ])
             ->add('is_inscription_done', CheckboxType::class, [
-                'constraints' => [
-                    new Callback([$this, 'checkIsInscriptionDone'])
-                ]
+                'disabled' => true,
+            ])      
+            ->add('gesthand_is_photo', CheckboxType::class, [
+                'disabled' => true,
             ])
-            ->add('gesthand_is_photo')
-            ->add('gesthand_is_photo_id')
-            ->add('gesthand_is_certificate')
+            ->add('gesthand_is_photo_id', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_is_certificate', CheckboxType::class, [
+                'disabled' => true,
+            ])
             ->add('gesthand_certificate_date', DateTimeType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
+                'disabled' => true,
             ])
-            ->add('gesthand_is_health_questionnaire')
-            ->add('gesthand_is_ffhb_authorization')
+            ->add('gesthand_is_health_questionnaire', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('gesthand_is_ffhb_authorization', CheckboxType::class, [
+                'disabled' => true,
+            ])
             ->add('gesthand_qualification_date', DateTimeType::class, [
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-            ])
+                'disabled' => true,
+            ])   
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
-            ->add('notes')
+            ->add('notes', TextType::class, [
+                'disabled' => true,
+            ])      
             ->add('sex', EntityType::class, [
                 'class' => ParamSex::class
             ])
             ->add('payment_solution', EntityType::class, [
                 'class' => ParamPaymentSolution::class,
+                'disabled' => true,
             ])
             ->add('user', EntityType::class, [
-                'class' => User::class
+                'class' => User::class,
+                'disabled' => true,
             ])
             ->add('teams', EntityType::class, [
                 'class' => Team::class,
-                'multiple' => true
-            ])            
+                'multiple' => true,
+                'disabled' => true,
+            ])          
             ->add('season', EntityType::class, [
                 'class' => ParamSeason::class,
-                'constraints' => [
-                    new NotBlank(['message' => 'not_blank']),
-                ]
+                'disabled' => true,
             ])
             ->add('save', SubmitType::class);
     }
@@ -151,18 +143,5 @@ class MemberMinorAdminType extends AbstractType
             'csrf_protection' => false,
             'allow_extra_fields' => true
         ]);
-    }
-
-    public static function checkIsInscriptionDone($is_inscription_done, ExecutionContextInterface $context, $payload)
-    {
-        $root = $context->getRoot();
-        if ($root instanceof \Symfony\Component\Form\Form) {
-            $is_document_complete = $root->getViewData()->getIsDocumentComplete();
-            $is_payed = $root->getViewData()->getIsPayed();
-            $is_check_gest_hand = $root->getViewData()->getIsCheckGestHand();
-            if ($is_inscription_done && (!$is_document_complete || !$is_payed || !$is_check_gest_hand)) {
-                $context->buildViolation('invalid_is_inscription_done')->atPath('is_inscription_done')->addViolation();
-            }
-        }
     }
 }

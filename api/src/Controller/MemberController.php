@@ -5,12 +5,12 @@ namespace App\Controller;
 use App\Constants;
 use App\Entity\Document;
 use App\Entity\Member;
-use App\Entity\ParamDocumentCategory;
-use App\Entity\ParamPaymentSolution;
-use App\Form\MemberMajorAdminType;
-use App\Form\MemberMajorType;
-use App\Form\MemberMinorAdminType;
-use App\Form\MemberMinorType;
+use App\Entity\Param\ParamDocumentCategory;
+use App\Entity\Param\ParamPaymentSolution;
+use App\Form\Member\MemberMajorAdminType;
+use App\Form\Member\MemberMajorType;
+use App\Form\Member\MemberMinorAdminType;
+use App\Form\Member\MemberMinorType;
 use App\Service\DateService;
 use App\Service\MailService;
 use App\Service\ParamService;
@@ -59,13 +59,6 @@ class MemberController extends FOSRestController
                 $paramFetcher->get('teamsId'),
                 $paramFetcher->get('seasonId')
             );
-            foreach ($members as $member) { //Hide some informations
-                if ($member->getUser()) {
-                    $member->getUser()->setPassword('');
-                    $member->getUser()->setSalt('');
-                    $member->getUser()->setConfirmationToken('');
-                }
-            }
             return $this->handleView($this->view($members));
         } else if ($this->isGranted('ROLE_COACH')) {
             $teams = [];
@@ -88,6 +81,22 @@ class MemberController extends FOSRestController
             $member = new Member();
             $member->setSeason($paramService->getCurrentSeason());
             return $this->handleView($this->view([$member]));
+        }
+        return $this->handleView($this->view($members));
+    }
+
+    /**
+     * Get member by User connected from previous season.
+     * @SWG\Response(response=200, description="Returns members", @SWG\Schema(type="array", @Model(type=Member::class)))
+     * @Rest\Get("/me/previous-season")
+     *
+     * @return Response
+     */
+    public function getMyPreviousMembers(ParamService $paramService)
+    {
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getPreviousSeason()]);
+        foreach ($members as $member) {
+            $member->setId(null);
         }
         return $this->handleView($this->view($members));
     }
@@ -130,13 +139,7 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND)); //Return empty member if none exists
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
-
-        if ($member->getUser()) {
-            $member->getUser()->setPassword('');
-            $member->getUser()->setSalt('');
-            $member->getUser()->setConfirmationToken('');
-        }
-
+        
         return $this->handleView($this->view([
             'member' => $member,
             'workflow' => $workflowService->getWorkflow($member)

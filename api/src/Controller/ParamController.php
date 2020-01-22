@@ -3,15 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\ActivityHistory;
-use App\Entity\ParamDocumentCategory;
-use App\Entity\ParamGlobal;
-use App\Entity\ParamPaymentSolution;
-use App\Entity\ParamPriceLicense;
-use App\Entity\ParamPriceTransfer;
-use App\Entity\ParamReductionFamily;
-use App\Entity\ParamSeason;
-use App\Entity\ParamSex;
-use App\Entity\ParamWorkflow;
+use App\Entity\Param\ParamDocumentCategory;
+use App\Entity\Param\ParamGlobal;
+use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamPriceLicense;
+use App\Entity\Param\ParamPriceTransfer;
+use App\Entity\Param\ParamReductionFamily;
+use App\Entity\Param\ParamSeason;
+use App\Entity\Param\ParamSex;
+use App\Entity\Param\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\ActivityHistoricType;

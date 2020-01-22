@@ -99,7 +99,25 @@ class _MembersMe extends React.PureComponent {
                     )
                 },
                 disabled: this.props.data?.[this.state.currentPivot]?.is_payed || this.props.data?.length === 1
-            }
+            },
+            {
+                key: 'te',
+                text: 'test',
+                iconProps: { iconName: 'AddFriend' },
+                onClick: () => {
+                        request.getMePreviousMember()
+                            .then(res => {
+                                console.log(res)
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                            .finally(() => {
+                                this.setState({ isLoading: false })
+                            })
+                },
+                disabled: this.props.data?.length >= 4
+            },
         ]
 
         this.props.setCommand(this.commandRead)

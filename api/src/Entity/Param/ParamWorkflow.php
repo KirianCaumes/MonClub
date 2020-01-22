@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Param;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="param_global")
+ * @ORM\Table(name="param_workflow")
  * @UniqueEntity(fields={"label"}, message="already_exist")
  */
-class ParamGlobal
+class ParamWorkflow
 {
     /**
      * @ORM\Id()
@@ -27,10 +27,14 @@ class ParamGlobal
     private $label;
 
     /**
-     * @Assert\NotBlank(message = "not_blank")
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
-    private $value;
+    private $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $message;
 
     public function getId(): ?int
     {
@@ -49,14 +53,26 @@ class ParamGlobal
         return $this;
     }
 
-    public function getValue(): ?string
+    public function getDescription(): ?string
     {
-        return $this->value;
+        return $this->description;
     }
 
-    public function setValue(string $value): self
+    public function setDescription(string $description): self
     {
-        $this->value = $value;
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
 
         return $this;
     }

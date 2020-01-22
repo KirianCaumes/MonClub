@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Param;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="param_workflow")
- * @UniqueEntity(fields={"label"}, message="already_exist")
+ * @ORM\Table(name="param_sex")
  */
-class ParamWorkflow
+class ParamSex
 {
     /**
      * @ORM\Id()
@@ -27,14 +25,15 @@ class ParamWorkflow
     private $label;
 
     /**
+     * @Assert\NotBlank(message = "not_blank")
      * @ORM\Column(type="string", length=255)
      */
-    private $description;
+    private $civility;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private $message;
+    private $icon;
 
     public function getId(): ?int
     {
@@ -53,26 +52,26 @@ class ParamWorkflow
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getCivility(): ?string
     {
-        return $this->description;
+        return $this->civility;
     }
 
-    public function setDescription(string $description): self
+    public function setCivility(string $civility): self
     {
-        $this->description = $description;
+        $this->civility = $civility;
 
         return $this;
     }
 
-    public function getMessage(): ?string
+    public function getIcon(): ?string
     {
-        return $this->message;
+        return $this->icon;
     }
 
-    public function setMessage(string $message): self
+    public function setIcon(string $icon): self
     {
-        $this->message = $message;
+        $this->icon = $icon;
 
         return $this;
     }

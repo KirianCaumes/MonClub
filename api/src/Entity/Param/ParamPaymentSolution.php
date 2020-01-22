@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Param;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="param_sex")
+ * @ORM\Table(name="param_payment_solution")
  */
-class ParamSex
+class ParamPaymentSolution
 {
     /**
      * @ORM\Id()
@@ -28,11 +28,6 @@ class ParamSex
      * @Assert\NotBlank(message = "not_blank")
      * @ORM\Column(type="string", length=255)
      */
-    private $civility;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $icon;
 
     public function getId(): ?int
@@ -48,18 +43,6 @@ class ParamSex
     public function setLabel(string $label): self
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function getCivility(): ?string
-    {
-        return $this->civility;
-    }
-
-    public function setCivility(string $civility): self
-    {
-        $this->civility = $civility;
 
         return $this;
     }

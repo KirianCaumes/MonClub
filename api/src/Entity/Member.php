@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamSeason;
+use App\Entity\Param\ParamSex;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -269,13 +272,13 @@ class Member
 
     /**
      * @Assert\NotBlank(message = "not_blank")
-     * @ORM\ManyToOne(targetEntity="ParamSex")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSex")
      * @ORM\JoinColumn(name="id_sex", referencedColumnName="id")
      */
     private $sex;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ParamPaymentSolution")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamPaymentSolution")
      * @ORM\JoinColumn(name="id_payment_solution", referencedColumnName="id")
      */
     private $payment_solution;
@@ -309,7 +312,7 @@ class Member
     private $documents;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ParamSeason")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSeason")
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
      */
     private $season;

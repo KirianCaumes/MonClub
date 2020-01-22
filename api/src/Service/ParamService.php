@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\ParamGlobal;
-use App\Entity\ParamSeason;
+use App\Entity\Param\ParamGlobal;
+use App\Entity\Param\ParamSeason;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -30,8 +30,18 @@ class ParamService
     /**
      * Get current season
      */
-    public function getCurrentSeason():ParamSeason
+    public function getCurrentSeason(): ParamSeason
     {
         return $this->em->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]);
+    }
+
+    /**
+     * Get previous season
+     */
+    public function getPreviousSeason(): ParamSeason
+    {
+        $season = $this->em->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]);
+        if ($season && $season->getId() > 1) return $this->em->getRepository(ParamSeason::class)->findOneBy(['id' => $season->getId() - 1]);
+        return null;
     }
 }

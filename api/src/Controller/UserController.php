@@ -4,13 +4,13 @@ namespace App\Controller;
 
 use App\Entity\ActivityHistory;
 use App\Entity\Member;
-use App\Entity\ParamGlobal;
+use App\Entity\Param\ParamGlobal;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\User;
-use App\Form\UserAdminType;
+use App\Form\User\UserAdminType;
 use App\Service\ParamService;
 use Symfony\Component\Security\Core\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -36,11 +36,7 @@ class UserController extends FOSRestController
      */
     public function getMe()
     {
-        $user = $this->getUser();
-        $user->setPassword('');
-        $user->setSalt('');
-        $user->setConfirmationToken('');
-        return $this->handleView($this->view($user, Response::HTTP_OK));
+        return $this->handleView($this->view($this->getUser(), Response::HTTP_OK));
     }
 
     /**
@@ -99,13 +95,7 @@ class UserController extends FOSRestController
      */
     public function getUsers()
     {
-        $users = $this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC']);
-        foreach ($users as $user) { //Hide some informations
-            $user->setPassword('');
-            $user->setSalt('');
-            $user->setConfirmationToken('');
-        }
-        return $this->handleView($this->view($users));
+        return $this->handleView($this->view($this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC'])));
     }
 
     /**
@@ -124,10 +114,6 @@ class UserController extends FOSRestController
         if (!$user) {
             return $this->handleView($this->view(["message" => $translator->trans('user_not_found')]));
         }
-
-        $user->setPassword('');
-        $user->setSalt('');
-        $user->setConfirmationToken('');
 
         return $this->handleView($this->view($user));
     }

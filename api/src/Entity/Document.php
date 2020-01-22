@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Param\ParamDocumentCategory;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Entity\File as EmbeddedFile;
@@ -50,7 +51,7 @@ class Document
     private $member;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ParamDocumentCategory")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamDocumentCategory")
      * @ORM\JoinColumn(name="id_category", referencedColumnName="id", onDelete="CASCADE")
      */
     private $category;

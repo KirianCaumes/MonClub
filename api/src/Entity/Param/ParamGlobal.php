@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Param;
 
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="param_payment_solution")
+ * @ORM\Table(name="param_global")
+ * @UniqueEntity(fields={"label"}, message="already_exist")
  */
-class ParamPaymentSolution
+class ParamGlobal
 {
     /**
      * @ORM\Id()
@@ -26,9 +28,9 @@ class ParamPaymentSolution
 
     /**
      * @Assert\NotBlank(message = "not_blank")
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
-    private $icon;
+    private $value;
 
     public function getId(): ?int
     {
@@ -47,14 +49,14 @@ class ParamPaymentSolution
         return $this;
     }
 
-    public function getIcon(): ?string
+    public function getValue(): ?string
     {
-        return $this->icon;
+        return $this->value;
     }
 
-    public function setIcon(string $icon): self
+    public function setValue(string $value): self
     {
-        $this->icon = $icon;
+        $this->value = $value;
 
         return $this;
     }

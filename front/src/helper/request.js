@@ -199,6 +199,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getMePreviousMember: () => {
+        const url = ["member", "me", "previous-season"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     createMember: (body) => { //Unused
         const url = ["member"]
         body = {

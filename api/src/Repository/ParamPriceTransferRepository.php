@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\ParamPriceTransfer;
+use App\Entity\Param\ParamPriceTransfer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
