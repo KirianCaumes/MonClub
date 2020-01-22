@@ -100,12 +100,19 @@ class _MembersAll extends ParentPage {
                                 .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                         },
                         {
-                            key: 'getExcelGeneral ',
+                            key: 'getExcelGeneral',
                             text: 'Excel infos générales',
                             iconProps: { iconName: 'ExcelDocument' },
                             onClick: () => request.getExcelGeneral()
                                 .then(file => dlBlob(file, `export_excel_informations_generales-${stringToCleanString(new Date())}.xlsx`))
                                 .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                        },
+                        {
+                            key: 'getExcelCalculHand',
+                            text: 'Excel calcul hand',
+                            iconProps: { iconName: 'ExcelDocument' },
+                            onClick: () => null,
+                            disabled: true
                         },
                     ]
                 }

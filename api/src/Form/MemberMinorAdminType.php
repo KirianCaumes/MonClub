@@ -98,6 +98,8 @@ class MemberMinorAdminType extends AbstractType
                     ])
                 ],
             ]) 
+            ->add('is_license_renewal')
+            ->add('payment_notes')
             ->add('is_check_gest_hand')
             ->add('is_inscription_done', CheckboxType::class, [
                 'constraints' => [

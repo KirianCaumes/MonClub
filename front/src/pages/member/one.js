@@ -472,6 +472,72 @@ class _MemberOne extends React.PureComponent {
                         <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
                         <Divider />
 
+
+                        <Columns>
+                            {
+                                isMajor(data?.birthdate) &&
+                                <>
+                                    <Columns.Column>
+                                        <Label required htmlFor="is_non_competitive">Loisir</Label>
+                                        <DropdownIcon
+                                            id="is_non_competitive"
+                                            readOnly={readOnly}
+                                            icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
+                                            selectedKey={data?.is_non_competitive?.toString() ?? 'false'}
+                                            options={param?.choices}
+                                            error={this.state.errorField?.is_non_competitive?.errors?.[0]}
+                                            onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
+                                            disabled={data?.is_reduced_price}
+                                        />
+                                    </Columns.Column>
+
+                                    <Columns.Column>
+                                        <Label required htmlFor="is_reduced_price">Demande réduction</Label>
+                                        <DropdownIcon
+                                            id="is_reduced_price"
+                                            readOnly={readOnly}
+                                            icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
+                                            selectedKey={data?.is_reduced_price?.toString() ?? 'false'}
+                                            options={param?.choices}
+                                            error={this.state.errorField?.is_reduced_price?.errors?.[0]}
+                                            onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
+                                            disabled={data?.is_non_competitive}
+                                        />
+                                    </Columns.Column>
+                                </>
+                            }
+
+                            <Columns.Column>
+                                <Label required htmlFor="is_transfer_needed">Demande transfert</Label>
+                                <DropdownIcon
+                                    id="is_transfer_needed"
+                                    readOnly={readOnly}
+                                    icon={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.icon ?? ''}
+                                    valueDisplay={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
+                                    selectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
+                                    options={param?.choices}
+                                    error={this.state.errorField?.is_transfer_needed?.errors?.[0]}
+                                    onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
+                                />
+                            </Columns.Column>
+                            <Columns.Column>
+                                <Label required htmlFor="is_license_renewal">Renouvellement</Label>
+                                <DropdownIcon
+                                    id="is_license_renewal"
+                                    readOnly={readOnly}
+                                    icon={param?.choices.find(x => x.key === data?.is_license_renewal?.toString())?.icon ?? ''}
+                                    valueDisplay={param?.choices.find(x => x.key === data?.is_license_renewal?.toString())?.text ?? ''}
+                                    selectedKey={data?.is_license_renewal?.toString() ?? 'false'}
+                                    options={param?.choices}
+                                    error={this.state.errorField?.is_license_renewal?.errors?.[0]}
+                                    onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_license_renewal: JSON.parse(item.key) } })}
+                                />
+                            </Columns.Column>
+                            {!isMajor(data?.birthdate) && <><Columns.Column className="is-hidden-touch" /> <Columns.Column className="is-hidden-touch" /></>}
+                        </Columns>
+
                         <Columns>
                             <Columns.Column>
                                 <Label htmlFor="amount_payed">Montant payé</Label>
@@ -494,7 +560,7 @@ class _MemberOne extends React.PureComponent {
                             <Columns.Column>
 
                                 <div className="flex-row flex-start">
-                                <Label htmlFor="amount_payed_other">Montant autre payé</Label>
+                                    <Label htmlFor="amount_payed_other">Montant autre payé</Label>
                                     <TooltipHost
                                         content="Corresponds au prix payé en coupons."
                                         directionalHint={DirectionalHint.bottomCenter}
@@ -548,61 +614,27 @@ class _MemberOne extends React.PureComponent {
                         </Columns>
 
                         <Columns>
-                            {
-                                isMajor(data?.birthdate) &&
-                                <>
-                                    <Columns.Column>
-                                        <Label required htmlFor="is_non_competitive">Loisir</Label>
-                                        <DropdownIcon
-                                            id="is_non_competitive"
-                                            readOnly={readOnly}
-                                            icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
-                                            valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
-                                            selectedKey={data?.is_non_competitive?.toString() ?? 'false'}
-                                            options={param?.choices}
-                                            error={this.state.errorField?.is_non_competitive?.errors?.[0]}
-                                            onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
-                                            disabled={data?.is_reduced_price}
-                                        />
-                                    </Columns.Column>
-
-                                    <Columns.Column>
-                                        <Label required htmlFor="is_reduced_price">Demande réduction</Label>
-                                        <DropdownIcon
-                                            id="is_reduced_price"
-                                            readOnly={readOnly}
-                                            icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
-                                            valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
-                                            selectedKey={data?.is_reduced_price?.toString() ?? 'false'}
-                                            options={param?.choices}
-                                            error={this.state.errorField?.is_reduced_price?.errors?.[0]}
-                                            onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
-                                            disabled={data?.is_non_competitive}
-                                        />
-                                    </Columns.Column>
-                                </>
-                            }
-
                             <Columns.Column>
-                                <Label required htmlFor="is_transfer_needed">Demande transfert</Label>
-                                <DropdownIcon
-                                    id="is_transfer_needed"
+                                <Label htmlFor="payment_notes">Notes sur le paiement</Label>
+                                <TextField
+                                    id="payment_notes"
+                                    placeholder="Notes sur le paiement"
                                     readOnly={readOnly}
-                                    icon={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.icon ?? ''}
-                                    valueDisplay={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
-                                    selectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
-                                    options={param?.choices}
-                                    error={this.state.errorField?.is_transfer_needed?.errors?.[0]}
-                                    onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_transfer_needed: JSON.parse(item.key) } })}
+                                    borderless={readOnly}
+                                    multiline
+                                    autoAdjustHeight
+                                    defaultValue={data?.payment_notes ?? ''}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, payment_notes: ev.target.value } })}
+                                    errorMessage={this.state.errorField?.payment_notes?.errors?.[0]}
                                 />
                             </Columns.Column>
-                            <Columns.Column className="is-hidden-touch" />
-                            {!isMajor(data?.birthdate) && <><Columns.Column className="is-hidden-touch" /> <Columns.Column className="is-hidden-touch" /></>}
                         </Columns>
-                        {
-                            !isMajor(data?.birthdate) &&
-                            <>
-                                <br />
+                    </div>
+                    {
+                        !isMajor(data?.birthdate) &&
+                        <>
+                            <br />
+                            <div className="card" >
                                 <Columns>
                                     <Columns.Column>
                                         <Text variant="large" block><Icon iconName='ContactList' /> Parent 1</Text>
@@ -750,10 +782,9 @@ class _MemberOne extends React.PureComponent {
                                         </Columns>
                                     </Columns.Column>
                                 </Columns>
-                            </>
-                        }
-
-                    </div>
+                            </div>
+                        </>
+                    }
                     <br />
                     <div className="card" >
 
@@ -1025,6 +1056,7 @@ class _MemberOne extends React.PureComponent {
                                     isRead={readOnly}
                                     errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
                                     isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
+                                    isDisabled={!this.props.match?.params?.id}
                                     fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                                     onDownload={() => {
                                         return request.getDocument(this.props.match?.params?.id, 1)
@@ -1069,6 +1101,7 @@ class _MemberOne extends React.PureComponent {
                                         isRead={readOnly}
                                         errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
                                         isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
+                                        isDisabled={!this.props.match?.params?.id}
                                         fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                         onDownload={() => {
                                             return request.getDocument(this.props.match?.params?.id, 2)
@@ -1112,7 +1145,7 @@ class _MemberOne extends React.PureComponent {
                                     isRead={true}
                                     isFile={!!readOnly}
                                     isDisabled={!data.is_payed || !data.is_inscription_done}
-                                    tooltipContent={!data.is_payed ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
+                                    tooltipContent={!data.is_payed || !data.is_inscription_done ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
                                     onDownload={() => {
                                         return request.getAttestation(this.props.match?.params?.id)
                                             .then(file => dlBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))

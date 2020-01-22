@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon, TextField, Dropdown } from 'office-ui-fabric-react'
 import PropTypes from 'prop-types'
+import { SharedColors } from '@uifabric/fluent-theme/lib/fluent/FluentColors'
 
 export default class DropdownIcon extends React.PureComponent {
     static propTypes = {
@@ -11,7 +12,7 @@ export default class DropdownIcon extends React.PureComponent {
         /** Value to display on read */
         valueDisplay: PropTypes.string,
         /** Value to display on read and when no value*/
-        placeholder: PropTypes.string,        
+        placeholder: PropTypes.string,
         /** Selected key for dropdown */
         selectedKey: PropTypes.any,
         /** Errors */
@@ -39,6 +40,17 @@ export default class DropdownIcon extends React.PureComponent {
         disabled: false
     }
 
+    getIconColor(iconName) {
+        switch (iconName) {
+            case 'Accept':
+                return SharedColors.green10
+            case 'Cancel':
+                return SharedColors.red10
+            default:
+                return ''
+        }
+    }
+
 
     render() {
         const { id, icon, valueDisplay, placeholder, selectedKey, error, readOnly, options, onChange, disabled } = this.props
@@ -46,7 +58,7 @@ export default class DropdownIcon extends React.PureComponent {
         if (readOnly) {
             return (
                 <div className="flex-row flex-start">
-                    {icon && <Icon className="flex-col" style={{ marginRight: '1px', height: 'auto' }} iconName={icon} />}
+                    {icon && <Icon className="flex-col" style={{ marginRight: '1px', height: 'auto' }} iconName={icon} styles={{ root: { color: this.getIconColor(icon) } }} />}
                     <TextField
                         id={id}
                         defaultValue={valueDisplay}
@@ -70,7 +82,7 @@ export default class DropdownIcon extends React.PureComponent {
                     onRenderOption={option => {
                         return (
                             <>
-                                {option.icon && <Icon style={{ marginRight: '8px', verticalAlign: 'bottom' }} iconName={option.icon} />}
+                                {option.icon && <Icon style={{ marginRight: '8px', verticalAlign: 'bottom' }} iconName={option.icon} styles={{ root: { color: this.getIconColor(option.icon) } }} />}
                                 <span>{option.text}</span>
                             </>
                         )
@@ -80,7 +92,7 @@ export default class DropdownIcon extends React.PureComponent {
 
                         return (
                             <>
-                                {option.icon && <Icon style={{ marginRight: '8px', verticalAlign: 'bottom' }} iconName={option.icon} />}
+                                {option.icon && <Icon style={{ marginRight: '8px', verticalAlign: 'bottom' }} iconName={option.icon} styles={{ root: { color: this.getIconColor(option.icon) } }} />}
                                 <span>{option.text}</span>
                             </>
                         )

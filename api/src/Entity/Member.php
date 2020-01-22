@@ -197,6 +197,16 @@ class Member
     private $amount_payed_other;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_license_renewal = false;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $payment_notes;
+
+    /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
     private $is_check_gest_hand = false;
@@ -696,6 +706,30 @@ class Member
     public function setAmountPayedOther(?int $amount_payed_other): self
     {
         $this->amount_payed_other = $amount_payed_other;
+
+        return $this;
+    }
+
+    public function getIsLicenseRenewal(): ?bool
+    {
+        return $this->is_license_renewal;
+    }
+
+    public function setIsLicenseRenewal(bool $is_license_renewal): self
+    {
+        $this->is_license_renewal = $is_license_renewal;
+
+        return $this;
+    }
+
+    public function getPaymentNotes(): ?string
+    {
+        return $this->payment_notes;
+    }
+
+    public function setPaymentNotes(?string $payment_notes): self
+    {
+        $this->payment_notes = $payment_notes;
 
         return $this;
     }

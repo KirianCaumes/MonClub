@@ -12,7 +12,7 @@
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
-/ressources/document/*
+/resources/document/*
 /src/Migrations/*
 
 /public/app/*
