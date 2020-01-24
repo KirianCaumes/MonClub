@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     SET_URL,
     SET_MESSAGEBAR,
@@ -22,7 +23,8 @@ const initialState = {
         show: false,
         title: '',
         subTitle: '',
-        callback: () => null
+        callback: () => null,
+        content: <></>
     }
 }
 

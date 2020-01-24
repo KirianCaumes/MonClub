@@ -60,11 +60,6 @@ class Document
     {
         $this->document = new EmbeddedFile();
     }
-    
-    public static function getCategories()
-    {
-        return ['fiction', 'non-fiction'];
-    }
 
     public function getId(): ?int
     {

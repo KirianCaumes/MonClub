@@ -94,10 +94,9 @@ class MemberController extends FOSRestController
      */
     public function getMyPreviousMembers(ParamService $paramService)
     {
-        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getPreviousSeason()]);
-        foreach ($members as $member) {
-            $member->setId(null);
-        }
+        $membersOld = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getPreviousSeason()]);
+        $members = [];
+        foreach ($membersOld as $member) array_push($members, clone $member);
         return $this->handleView($this->view($members));
     }
 
@@ -139,7 +138,7 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND)); //Return empty member if none exists
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
-        
+
         return $this->handleView($this->view([
             'member' => $member,
             'workflow' => $workflowService->getWorkflow($member)

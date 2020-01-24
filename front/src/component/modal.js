@@ -6,11 +6,11 @@ import { connect } from 'react-redux'
 class _Modal extends React.PureComponent {
     render() {
         const { modal, setModal } = this.props
-        
+
         return (
             <Dialog
                 hidden={!modal.show}
-                onDismiss={() => setModal(false, modal.title, modal.subTitle, modal.callback)}
+                onDismiss={() => setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)}
                 dialogContentProps={{
                     type: DialogType.largeHeader,
                     title: modal.title,
@@ -22,15 +22,16 @@ class _Modal extends React.PureComponent {
                     dragOptions: false
                 }}
             >
+                {modal.content}
                 <DialogFooter>
                     <DefaultButton
-                        onClick={() => setModal(false, modal.title, modal.subTitle, modal.callback)}
+                        onClick={() => setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)}
                         text="Annuler"
                     />
                     <PrimaryButton
                         onClick={() => {
                             modal.callback()
-                            setModal(false, modal.title, modal.subTitle, modal.callback)
+                            setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)
                         }}
                         text="Oui"
                     />
@@ -42,7 +43,7 @@ class _Modal extends React.PureComponent {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setModal: (show, title, subTitle, callback) => dispatch(setModal(show, title, subTitle, callback)),
+        setModal: (show, title, subTitle, callback, content) => dispatch(setModal(show, title, subTitle, callback, content)),
     }
 }
 

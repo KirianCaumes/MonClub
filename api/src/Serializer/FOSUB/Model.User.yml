@@ -7,6 +7,8 @@ FOS\UserBundle\Model\User:
             exclude: true
         plainPassword:            
             exclude: true
+        plain_password:            
+            exclude: true
         password:
             exclude: true
         salt:

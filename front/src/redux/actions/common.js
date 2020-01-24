@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     SET_URL,
     SET_MESSAGEBAR,
@@ -40,6 +41,6 @@ export function setLoading(payload) {
     return { type: IS_LOADING, payload }
 }
 
-export function setModal(show = false, title = '', subTitle = '', callback = () => null) {
-    return { type: SET_MODAL, payload: { show, title, subTitle, callback } }
+export function setModal(show = false, title = '', subTitle = '', callback = () => null, content = <></>) {
+    return { type: SET_MODAL, payload: { show, title, subTitle, callback, content } }
 }

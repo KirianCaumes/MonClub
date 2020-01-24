@@ -320,8 +320,37 @@ class Member
     public function __construct()
     {
         // $this->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->documents = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->id = null;
+            $this->setIsAccepted(false);
+            $this->setIsTransferNeeded(false);
+            $this->setIsDocumentComplete(false);
+            $this->setIsPayed(false);
+            $this->setAmountPayed(null);
+            $this->setAmountPayedOther(null);
+            $this->setIsLicenseRenewal(false);
+            $this->setPaymentNotes(null);
+            $this->setIsCheckGestHand(false);
+            $this->setIsInscriptionDone(false);
+            $this->setGesthandIsPhoto(false);
+            $this->setGesthandIsPhotoId(false);
+            $this->setGesthandIsCertificate(false);
+            $this->setGesthandCertificateDate(null);
+            $this->setGesthandIsHealthQuestionnaire(false);
+            $this->setGesthandIsFfhbAuthorization(false);
+            $this->setGesthandQualificationDate(null);
+            $this->setCreationDatetime(new \DateTime());
+            $this->setNotes(null);
+            $this->setPaymentSolution(new ParamPaymentSolution);
+            $this->setTeams(new \Doctrine\Common\Collections\ArrayCollection([new Team]));
+            $this->setSeason(new ParamSeason);
+        }
+        return $this;
     }
 
     public function getId(): ?int

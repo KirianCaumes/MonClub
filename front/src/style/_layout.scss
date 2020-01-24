@@ -149,6 +149,11 @@ div#root {
         }
         min-height: 100%;
         // background-color: $light-grey;
+        > div:nth-child(2) {
+          .ms-MessageBar {
+            @include ms-depth-16;
+          }
+        }
         .ms-Breadcrumb {
           margin: 0 0 13px;
           ol {
