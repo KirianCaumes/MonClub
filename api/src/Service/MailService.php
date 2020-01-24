@@ -110,6 +110,22 @@ class MailService
     }
 
     /**
+     * Send an email to notice the user that his documents are invalid
+     */
+    public function sendDocumentInvalid(User $user, Member $member)
+    {
+        return $this->send(
+            $user->getEmail(),
+            'Votre inscription à été validée',
+            $this->twig->render('/mail/membersInscriptionDone.html.twig', [
+                'user' => $user,
+                'member' => $member,
+                'baseUrl' => $this->baseUrl
+            ])
+        );
+    }
+
+    /**
      * Send an email to remind unfinished member.
      */
     public function sendWarningEnableUser(User $user, $inactivityDate)

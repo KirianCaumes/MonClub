@@ -13,6 +13,7 @@ use App\Form\Member\MemberMinorAdminType;
 use App\Form\Member\MemberMinorType;
 use App\Service\DateService;
 use App\Service\MailService;
+use App\Service\Namer\FileService;
 use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
@@ -28,7 +29,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Vich\UploaderBundle\Mapping\PropertyMapping;
+use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
 
 /**
  * Member controller.
@@ -162,44 +167,40 @@ class MemberController extends FOSRestController
 
         $data = json_decode($request->getContent(), true);
 
-        //Check if birthdate is valid date
-        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
-            //Create form by age of member
-            if ($dateService->isMajor($data['birthdate'])) {
-                $form = $this->createForm(MemberMajorAdminType::class, $member);
-            } else {
-                $data['is_reduced_price'] = false;
-                $data['is_non_competitive'] = false;
-                $form = $this->createForm(MemberMinorAdminType::class, $member);
-            }
-            $form->submit($data);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
-                if (!$dateService->isMajor($data['birthdate'])) {
-                    $member->setIsReducedPrice(false);
-                    $member->setIsNonCompetitive(false);
-                } else {
-                    $member->setParentOneFirstname(null);
-                    $member->setParentOneLastname(null);
-                    $member->setParentOnePhoneNumber(null);
-                    $member->setParentOneEmail(null);
-                    $member->setParentOneProfession(null);
-                    $member->setParentTwoFirstname(null);
-                    $member->setParentTwoLastname(null);
-                    $member->setParentTwoPhoneNumber(null);
-                    $member->setParentTwoEmail(null);
-                    $member->setParentTwoProfession(null);
-                    $member->setIsReturnHomeAllow(false);
-                }
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($member);
-                $em->flush();
-                return $this->handleView($this->view($member, Response::HTTP_CREATED));
-            }
-            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        //Check if birthdate is valid date and Create form by age of member        
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate']) && !$dateService->isMajor($data['birthdate'])) {
+            $data['is_reduced_price'] = false;
+            $data['is_non_competitive'] = false;
+            $form = $this->createForm(MemberMinorAdminType::class, $member);
+        } else {
+            $form = $this->createForm(MemberMajorAdminType::class, $member);
         }
-        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            if (!$dateService->isMajor($data['birthdate'])) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
+            } else {
+                $member->setParentOneFirstname(null);
+                $member->setParentOneLastname(null);
+                $member->setParentOnePhoneNumber(null);
+                $member->setParentOneEmail(null);
+                $member->setParentOneProfession(null);
+                $member->setParentTwoFirstname(null);
+                $member->setParentTwoLastname(null);
+                $member->setParentTwoPhoneNumber(null);
+                $member->setParentTwoEmail(null);
+                $member->setParentTwoProfession(null);
+                $member->setIsReturnHomeAllow(false);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($member);
+            $em->flush();
+            return $this->handleView($this->view($member, Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 
     /**
@@ -213,7 +214,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamService $paramService)
+    public function postMember(Request $request, DateService $dateService, TranslatorInterface $translator, ParamService $paramService, PropertyMappingFactory $propertyMappingFactory)
     {
         //Disabled new member by deadline, null if not
         if ($paramService->getParam('new_member_deadline') && !(new \DateTime($paramService->getParam('new_member_deadline')) > new \DateTime())) {
@@ -240,46 +241,68 @@ class MemberController extends FOSRestController
 
         $data = json_decode($request->getContent(), true);
 
-        //Check if birthdate is valid date
-        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
-            //Create form by age of member
-            if ($dateService->isMajor($data['birthdate'])) {
-                $form = $this->createForm(MemberMajorType::class, $member);
-            } else {
-                $data['is_reduced_price'] = false;
-                $data['is_non_competitive'] = false;
-                $form = $this->createForm(MemberMinorType::class, $member);
-            }
-            $form->submit($data);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $member->setUser($this->getUser());
-                $member->setSeason($paramService->getCurrentSeason());
-                $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
-                if (!$dateService->isMajor($data['birthdate'])) {
-                    $member->setIsReducedPrice(false);
-                    $member->setIsNonCompetitive(false);
-                } else {
-                    $member->setParentOneFirstname(null);
-                    $member->setParentOneLastname(null);
-                    $member->setParentOnePhoneNumber(null);
-                    $member->setParentOneEmail(null);
-                    $member->setParentOneProfession(null);
-                    $member->setParentTwoFirstname(null);
-                    $member->setParentTwoLastname(null);
-                    $member->setParentTwoPhoneNumber(null);
-                    $member->setParentTwoEmail(null);
-                    $member->setParentTwoProfession(null);
-                    $member->setIsReturnHomeAllow(false);
-                }
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($member);
-                $em->flush();
-                return $this->handleView($this->view($member, Response::HTTP_CREATED));
-            }
-            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        //Check if birthdate is valid date and Create form by age of member        
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate']) && !$dateService->isMajor($data['birthdate'])) {
+            $data['is_reduced_price'] = false;
+            $data['is_non_competitive'] = false;
+            $form = $this->createForm(MemberMinorType::class, $member);
+        } else {
+            $form = $this->createForm(MemberMajorType::class, $member);
         }
-        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $member->setUser($this->getUser());
+            $member->setSeason($paramService->getCurrentSeason());
+            $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            if (!$dateService->isMajor($data['birthdate'])) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
+            } else {
+                $member->setParentOneFirstname(null);
+                $member->setParentOneLastname(null);
+                $member->setParentOnePhoneNumber(null);
+                $member->setParentOneEmail(null);
+                $member->setParentOneProfession(null);
+                $member->setParentTwoFirstname(null);
+                $member->setParentTwoLastname(null);
+                $member->setParentTwoPhoneNumber(null);
+                $member->setParentTwoEmail(null);
+                $member->setParentTwoProfession(null);
+                $member->setIsReturnHomeAllow(false);
+            }
+            $em = $this->getDoctrine()->getManager();
+
+            //Check to copy file from member from previous season
+            if (array_key_exists('documents', $data)) {
+                $files = new \Doctrine\Common\Collections\ArrayCollection();
+                foreach ($data['documents'] as $doc) {
+                    if (array_key_exists('id', $doc)) {
+                        $fileEntity = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
+                        if ($fileEntity) {
+                            $newFile = clone $fileEntity;
+                            $baseFile = $propertyMappingFactory->fromField($newFile, 'documentFile');
+                            $realFile = new File($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($newFile) . '/' . $baseFile->getFileName($newFile));
+                            $newFile->setDocumentFile($realFile);
+                            // return $this->handleView($this->view($newFile->getDocument()->getOriginalName(), Response::HTTP_CREATED));
+                            // $newFile->setMember($member);
+                            // array_push($files, $newFile);
+                            $em->persist($newFile);
+                            $files->add($newFile);
+                            // $em->persist($newFile);
+                            // $em->flush();
+                        }
+                    }
+                }
+                $member->setDocuments($files);
+            }
+
+            $em->persist($member);
+            $em->flush();
+
+            return $this->handleView($this->view($member, Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 
     /**
@@ -304,54 +327,50 @@ class MemberController extends FOSRestController
 
         $data = json_decode($request->getContent(), true);
 
-        //Check if birthdate is valid date
-        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
-            //Create form by age of member
-            if ($dateService->isMajor($data['birthdate'])) {
-                $form = $this->createForm(MemberMajorAdminType::class, $member);
-            } else {
-                $form = $this->createForm(MemberMinorAdminType::class, $member);
-            }
-
-            //Check to know if have to send email for inscription done
-            $emailInscriptionDone = ($data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
-            //Check to know if have to send email for invalid document
-            $emailDocumentInvalid = ($data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
-
-            $form->submit($data, true);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                if (!$dateService->isMajor($data['birthdate'])) {
-                    $member->setIsReducedPrice(false);
-                    $member->setIsNonCompetitive(false);
-                } else {
-                    $member->setParentOneFirstname(null);
-                    $member->setParentOneLastname(null);
-                    $member->setParentOnePhoneNumber(null);
-                    $member->setParentOneEmail(null);
-                    $member->setParentOneProfession(null);
-                    $member->setParentTwoFirstname(null);
-                    $member->setParentTwoLastname(null);
-                    $member->setParentTwoPhoneNumber(null);
-                    $member->setParentTwoEmail(null);
-                    $member->setParentTwoProfession(null);
-                    $member->setIsReturnHomeAllow(false);
-                }
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($member);
-                $em->flush();
-
-                if ($emailInscriptionDone) $mailService->sendInscriptionDone($member->getUser(), $member);
-                if ($emailDocumentInvalid) $mailService->sendDocumentInvalid($member->getUser(), $member);
-
-                return $this->handleView($this->view([
-                    'member' => $member,
-                    'workflow' => $workflowService->getWorkflow($member)
-                ]));
-            }
-            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        //Check if birthdate is valid date and Create form by age of member        
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate']) && !$dateService->isMajor($data['birthdate'])) {
+            $form = $this->createForm(MemberMinorAdminType::class, $member);
+        } else {
+            $form = $this->createForm(MemberMajorAdminType::class, $member);
         }
-        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+
+        //Check to know if have to send email for inscription done
+        $emailInscriptionDone = ($data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
+        //Check to know if have to send email for invalid document
+        $emailDocumentInvalid = ($data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
+
+        $form->submit($data, true);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$dateService->isMajor($data['birthdate'])) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
+            } else {
+                $member->setParentOneFirstname(null);
+                $member->setParentOneLastname(null);
+                $member->setParentOnePhoneNumber(null);
+                $member->setParentOneEmail(null);
+                $member->setParentOneProfession(null);
+                $member->setParentTwoFirstname(null);
+                $member->setParentTwoLastname(null);
+                $member->setParentTwoPhoneNumber(null);
+                $member->setParentTwoEmail(null);
+                $member->setParentTwoProfession(null);
+                $member->setIsReturnHomeAllow(false);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($member);
+            $em->flush();
+
+            if ($emailInscriptionDone) $mailService->sendInscriptionDone($member->getUser(), $member);
+            if ($emailDocumentInvalid) $mailService->sendDocumentInvalid($member->getUser(), $member);
+
+            return $this->handleView($this->view([
+                'member' => $member,
+                'workflow' => $workflowService->getWorkflow($member)
+            ]));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 
     /**
@@ -396,41 +415,37 @@ class MemberController extends FOSRestController
 
         $data = json_decode($request->getContent(), true);
 
-        //Check if birthdate is valid date
-        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate'])) {
-            //Create form by age of member
-            if ($dateService->isMajor($data['birthdate'])) {
-                $form = $this->createForm(MemberMajorType::class, $member);
-            } else {
-                $form = $this->createForm(MemberMinorType::class, $member);
-            }
-            $form->submit($data, true);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                if (!$dateService->isMajor($data['birthdate'])) {
-                    $member->setIsReducedPrice(false);
-                    $member->setIsNonCompetitive(false);
-                } else {
-                    $member->setParentOneFirstname(null);
-                    $member->setParentOneLastname(null);
-                    $member->setParentOnePhoneNumber(null);
-                    $member->setParentOneEmail(null);
-                    $member->setParentOneProfession(null);
-                    $member->setParentTwoFirstname(null);
-                    $member->setParentTwoLastname(null);
-                    $member->setParentTwoPhoneNumber(null);
-                    $member->setParentTwoEmail(null);
-                    $member->setParentTwoProfession(null);
-                    $member->setIsReturnHomeAllow(false);
-                }
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($member);
-                $em->flush();
-                return $this->handleView($this->view($member, Response::HTTP_OK));
-            }
-            return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+        //Check if birthdate is valid date and Create form by age of member            
+        if (array_key_exists('birthdate', $data) && $dateService->isDate($data['birthdate']) && !$dateService->isMajor($data['birthdate'])) {
+            $form = $this->createForm(MemberMinorType::class, $member);
+        } else {
+            $form = $this->createForm(MemberMajorType::class, $member);
         }
-        return $this->handleView($this->view(['form' => ['children' => ['birthdate' => ['errors' => [$translator->trans('invalid_date')]]]]], Response::HTTP_BAD_REQUEST));
+        $form->submit($data, true);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$dateService->isMajor($data['birthdate'])) {
+                $member->setIsReducedPrice(false);
+                $member->setIsNonCompetitive(false);
+            } else {
+                $member->setParentOneFirstname(null);
+                $member->setParentOneLastname(null);
+                $member->setParentOnePhoneNumber(null);
+                $member->setParentOneEmail(null);
+                $member->setParentOneProfession(null);
+                $member->setParentTwoFirstname(null);
+                $member->setParentTwoLastname(null);
+                $member->setParentTwoPhoneNumber(null);
+                $member->setParentTwoEmail(null);
+                $member->setParentTwoProfession(null);
+                $member->setIsReturnHomeAllow(false);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($member);
+            $em->flush();
+            return $this->handleView($this->view($member, Response::HTTP_OK));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
 
     /**

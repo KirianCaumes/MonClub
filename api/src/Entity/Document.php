@@ -61,6 +61,15 @@ class Document
         $this->document = new EmbeddedFile();
     }
 
+    public function __clone()
+    {
+        if ($this->id) {
+            $this->id = null;
+            $this->documentFile = null;
+        }
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

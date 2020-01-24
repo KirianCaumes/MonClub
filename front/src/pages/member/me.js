@@ -71,7 +71,7 @@ class _MembersMe extends React.PureComponent {
                         'Supprimer le membre',
                         'Êtes-vous certains de vouloir supprimer le membre ? Cette action est définitive.',
                         () => {
-                            this.props.setCommand([])
+                            // this.props.setCommand([])
                             let id = this.props.members?.[this.state.currentPivot]?.id
                             if (id) { //If current pivot member has id
                                 this.setState({ isLoading: true }, () => {

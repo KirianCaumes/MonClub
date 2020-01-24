@@ -34,6 +34,7 @@ class FileService implements NamerInterface
         $info = pathinfo($mapping->getFile($media)->getClientOriginalName());
         return
             $this->transliterator->transliterate(
+                $media->getMember()->getSeason()->getLabel() . '_' . 
                 $media->getMember()->getLastname() . '-' . $media->getMember()->getFirstname()
             ) .
             '_' .

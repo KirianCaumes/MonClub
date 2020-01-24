@@ -5,6 +5,7 @@ namespace App\Security;
 use App\Constants;
 use App\Entity\Member;
 use App\Entity\User;
+use App\Service\ParamService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -16,12 +17,14 @@ use Symfony\Component\Security\Core\Security;
 class MemberVoter extends Voter
 {
     private $security;
+    private $paramService;
     private $em;
 
-    public function __construct(Security $security, EntityManagerInterface $em)
+    public function __construct(Security $security, EntityManagerInterface $em, ParamService $paramService)
     {
         $this->security = $security;
         $this->em = $em;
+        $this->paramService = $paramService;
     }
 
     protected function supports($attribute, $member)
@@ -57,7 +60,7 @@ class MemberVoter extends Voter
 
     private function canCreate(Member $member, User $user)
     {
-        if (sizeof($this->em->getRepository(Member::class)->findBy(['user' => $user])) >= 4) return false;
+        if (sizeof($this->em->getRepository(Member::class)->findBy(['user' => $user, 'season' => $this->paramService->getCurrentSeason()])) >= 4) return false;
 
         return true;
     }
