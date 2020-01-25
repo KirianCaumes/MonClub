@@ -139,6 +139,7 @@ class _MembersMeDocuments extends React.PureComponent {
                     </Columns.Column>
                     {!member?.is_reduced_price && <Columns.Column className="is-hidden-touch"/>}
                 </Columns>
+                <span className="has-text-danger">Veillez à bien vous assurer de la validité des documents téléversés.</span>
             </section >
         )
     }
