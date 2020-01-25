@@ -66,6 +66,7 @@ class Document
         if ($this->id) {
             $this->id = null;
             $this->documentFile = null;
+            $this->document = new EmbeddedFile();
         }
         return $this;
     }

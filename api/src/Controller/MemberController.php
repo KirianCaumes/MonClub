@@ -7,6 +7,7 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamPaymentSolution;
+use App\Form\DocumentType;
 use App\Form\Member\MemberMajorAdminType;
 use App\Form\Member\MemberMajorType;
 use App\Form\Member\MemberMinorAdminType;
@@ -30,6 +31,7 @@ use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
@@ -272,25 +274,53 @@ class MemberController extends FOSRestController
                 $member->setIsReturnHomeAllow(false);
             }
             $em = $this->getDoctrine()->getManager();
+            $em->persist($member);
 
-            //Check to copy file from member from previous season
+            //Check to copy file from previous season member
             if (array_key_exists('documents', $data)) {
                 $files = new \Doctrine\Common\Collections\ArrayCollection();
+
                 foreach ($data['documents'] as $doc) {
                     if (array_key_exists('id', $doc)) {
-                        $fileEntity = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
-                        if ($fileEntity) {
-                            $newFile = clone $fileEntity;
-                            $baseFile = $propertyMappingFactory->fromField($newFile, 'documentFile');
-                            $realFile = new File($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($newFile) . '/' . $baseFile->getFileName($newFile));
-                            $newFile->setDocumentFile($realFile);
-                            // return $this->handleView($this->view($newFile->getDocument()->getOriginalName(), Response::HTTP_CREATED));
-                            // $newFile->setMember($member);
-                            // array_push($files, $newFile);
-                            $em->persist($newFile);
-                            $files->add($newFile);
-                            // $em->persist($newFile);
-                            // $em->flush();
+                        $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]); 
+                        if($oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
+
+                        if ($oldDocument) {
+                            $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
+                            $newDocument = clone $oldDocument;
+
+                            //Do not clone doc if needed anymore
+                            if (
+                                $newDocument->getCategory()->getId() === 1 ||
+                                ($newDocument->getCategory()->getId() === 2 && $member->getIsReducedPrice())
+                            ) {
+                                //Create temp file
+                                if (copy(
+                                    $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . $baseFile->getFileName($oldDocument),
+                                    $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp'
+                                )) {
+                                    $form = $this->createForm(DocumentType::class, $newDocument);
+                                    $form->submit([
+                                        'documentFile' => new UploadedFile(
+                                            $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
+                                            $oldDocument->getDocument()->getOriginalName(),
+                                            null,
+                                            null,
+                                            true
+                                        )
+                                    ]);
+
+                                    if ($form->isSubmitted() && $form->isValid()) {
+                                        $newDocument->setMember($member);
+                                        $em->persist($newDocument);
+                                        $em->flush();
+                                        $files->add($newDocument);
+                                    } else {
+                                        //If error, remove temp file
+                                        unlink($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp');
+                                    }
+                                }
+                            }
                         }
                     }
                 }
