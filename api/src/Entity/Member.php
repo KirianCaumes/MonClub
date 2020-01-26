@@ -7,6 +7,7 @@ use App\Entity\Param\ParamSeason;
 use App\Entity\Param\ParamSex;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
@@ -206,6 +207,7 @@ class Member
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"Admin"})
      */
     private $payment_notes;
 
@@ -220,21 +222,25 @@ class Member
     private $is_inscription_done = false;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="boolean")
      */
     private $gesthand_is_photo = false;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="boolean")
      */
     private $gesthand_is_photo_id = false;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="boolean")
      */
     private $gesthand_is_certificate = false;
 
     /**
+     * @Groups({"Admin"})
      * @Assert\Date(message = "invalid_date")
      * @Assert\GreaterThanOrEqual("01-01-1900")
      * @Assert\LessThan("now")
@@ -243,16 +249,19 @@ class Member
     private $gesthand_certificate_date;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="boolean")
      */
     private $gesthand_is_health_questionnaire = false;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="boolean")
      */
     private $gesthand_is_ffhb_authorization = false;
 
     /**
+     * @Groups({"Admin"})
      * @Assert\Date(message = "invalid_date")
      * @Assert\GreaterThanOrEqual("01-01-1900")
      * @Assert\LessThan("now")
@@ -261,11 +270,13 @@ class Member
     private $gesthand_qualification_date;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
      */
     private $creation_datetime;
 
     /**
+     * @Groups({"Admin"})
      * @ORM\Column(type="text", nullable=true)
      */
     private $notes;

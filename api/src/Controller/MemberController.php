@@ -18,6 +18,7 @@ use App\Service\Namer\FileService;
 use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
+use FOS\RestBundle\Context\Context;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -36,6 +37,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * Member controller.
@@ -57,7 +60,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getMembers(ParamFetcher $paramFetcher, ParamService $paramService)
+    public function getMembers(ParamFetcher $paramFetcher, ParamService $paramService, SerializerInterface $serializer)
     {
         if ($this->isGranted('ROLE_ADMIN')) {
             $members = $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
@@ -66,11 +69,15 @@ class MemberController extends FOSRestController
                 $paramFetcher->get('teamsId'),
                 $paramFetcher->get('seasonId')
             );
-            return $this->handleView($this->view($members));
+            return $this->handleView($this->view($members)->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         } else if ($this->isGranted('ROLE_COACH')) {
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
-            return  $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findByTeamsAndSeason($teams, $paramService->getCurrentSeason())));
+            return $this->handleView($this->view(
+                $this->getDoctrine()->getRepository(Member::class)
+                    ->findByTeamsAndSeason($teams, $paramService->getCurrentSeason())
+                    ->setContext((new Context())->setGroups([Constants::BASIC]))
+            ));
         }
     }
 
@@ -89,7 +96,7 @@ class MemberController extends FOSRestController
             $member->setSeason($paramService->getCurrentSeason());
             return $this->handleView($this->view([$member]));
         }
-        return $this->handleView($this->view($members));
+        return $this->handleView($this->view($members)->setContext((new Context())->setGroups([Constants::BASIC])));
     }
 
     /**
@@ -104,7 +111,7 @@ class MemberController extends FOSRestController
         $membersOld = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getPreviousSeason()]);
         $members = [];
         foreach ($membersOld as $member) array_push($members, clone $member);
-        return $this->handleView($this->view($members));
+        return $this->handleView($this->view($members)->setContext((new Context())->setGroups([Constants::BASIC])));
     }
 
     /**
@@ -121,7 +128,11 @@ class MemberController extends FOSRestController
     {
         $member = new Member();
         $member->setSeason($paramService->getCurrentSeason());
-        return $this->handleView($this->view(['member' => $member]));
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
+        } else {
+            return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC])));
+        }
     }
 
     /**
@@ -149,7 +160,7 @@ class MemberController extends FOSRestController
         return $this->handleView($this->view([
             'member' => $member,
             'workflow' => $workflowService->getWorkflow($member)
-        ]));
+        ])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
     }
 
     /**
@@ -200,7 +211,7 @@ class MemberController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
             $em->flush();
-            return $this->handleView($this->view($member, Response::HTTP_CREATED));
+            return $this->handleView($this->view($member, Response::HTTP_CREATED)->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
@@ -282,8 +293,8 @@ class MemberController extends FOSRestController
 
                 foreach ($data['documents'] as $doc) {
                     if (array_key_exists('id', $doc)) {
-                        $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]); 
-                        if($oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
+                        $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
+                        if ($oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
 
                         if ($oldDocument) {
                             $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
@@ -330,7 +341,7 @@ class MemberController extends FOSRestController
             $em->persist($member);
             $em->flush();
 
-            return $this->handleView($this->view($member, Response::HTTP_CREATED));
+            return $this->handleView($this->view($member, Response::HTTP_CREATED)->setContext((new Context())->setGroups([Constants::BASIC])));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
@@ -398,7 +409,7 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view([
                 'member' => $member,
                 'workflow' => $workflowService->getWorkflow($member)
-            ]));
+            ])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
@@ -473,7 +484,7 @@ class MemberController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
             $em->flush();
-            return $this->handleView($this->view($member, Response::HTTP_OK));
+            return $this->handleView($this->view($member)->setContext((new Context())->setGroups([Constants::BASIC])));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
@@ -608,7 +619,7 @@ class MemberController extends FOSRestController
         $em->persist($member);
         $em->flush();
 
-        return $this->handleView($this->view($member), Response::HTTP_OK);
+        return $this->handleView($this->view($member)->setContext((new Context())->setGroups([Constants::BASIC])));
     }
 
     /**
@@ -670,6 +681,8 @@ class MemberController extends FOSRestController
         }
         $em->flush();
 
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])), Response::HTTP_OK);
+        return $this->handleView($this->view(
+            $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])
+        )->setContext((new Context())->setGroups([Constants::BASIC])));
     }
 }

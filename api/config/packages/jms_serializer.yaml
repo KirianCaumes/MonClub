@@ -3,6 +3,7 @@ jms_serializer:
         xml_serialization:
             format_output: '%kernel.debug%'
     metadata:
+        auto_detection: true
         directories:
             FOSUB:
                 namespace_prefix: "FOS\\UserBundle"
