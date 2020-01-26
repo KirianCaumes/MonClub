@@ -95,6 +95,26 @@ class FileController extends FOSRestController
     }
 
     /**
+     * Generate and get excel 'calculhand v3'.
+     * @SWG\Response(response=200, description="Returns Xlsx", @SWG\Schema(type="file"))
+     * @IsGranted("ROLE_ADMIN")
+     * @Route("/excel/calculhand", methods={"GET"})
+     */
+    public function getExcelCalculHand(ExcelService $excelService)
+    {
+        $response = new StreamedResponse(
+            function () use ($excelService) {
+                $excelService->generateExcelCalculhand()->save('php://output');
+            }
+        );
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="excel_general.xls"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response;
+    }
+
+    /**
      * Generate and get document "attestation payment".
      * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
      * @Route("/{memberId}/attestation", methods={"GET"})

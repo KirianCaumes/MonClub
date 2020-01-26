@@ -469,6 +469,15 @@ export default {
 
         return getFetch(url, options)
     },
+    getExcelCalculhand: () => {
+        const url = ["document", "excel", "calculhand"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     deleteDocument: (memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
 

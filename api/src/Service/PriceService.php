@@ -15,12 +15,12 @@ class PriceService
 {
     private $em;
     private $dateService;
-    private $ParamService;
-    public function __construct(EntityManagerInterface $em, DateService $dateService, ParamService $ParamService)
+    private $paramService;
+    public function __construct(EntityManagerInterface $em, DateService $dateService, ParamService $paramService)
     {
         $this->em = $em;
         $this->dateService = $dateService;
-        $this->ParamService = $ParamService;
+        $this->paramService = $paramService;
     }
 
     /**
@@ -30,15 +30,15 @@ class PriceService
     {
         $birthYear = (int) $member->getBirthdate()->format('Y');
         $age = $this->dateService->getAge($birthYear);
-        $priceDeadline = $this->ParamService->getParam('price_deadline');
+        $priceDeadline = $this->paramService->getParam('price_deadline');
         $price = 0;
 
         //Get price license
         if ($member->getIsReducedPrice()) {
             if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                $price += $this->ParamService->getParam('reduced_price_before_deadline');
+                $price += $this->paramService->getParam('reduced_price_before_deadline');
             } else {
-                $price += $this->ParamService->getParam('reduced_price_after_deadline');
+                $price += $this->paramService->getParam('reduced_price_after_deadline');
             }
         } else { //Else : normal case
             $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval($birthYear);
@@ -55,7 +55,7 @@ class PriceService
         }
 
         //Check families reduction
-        $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser()]);
+        $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $this->paramService->getCurrentSeason()]);
         $position = 1;
         foreach ($members as $key => $mbr) {
             if ($mbr === $member) {

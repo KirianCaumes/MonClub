@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Param\ParamGlobal;
 use App\Entity\Param\ParamSeason;
 use Doctrine\ORM\EntityManagerInterface;
+use Pet;
 
 /**
  * Service to manipulate param
@@ -42,6 +43,6 @@ class ParamService
     {
         $season = $this->em->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]);
         if ($season && $season->getId() > 1) return $this->em->getRepository(ParamSeason::class)->findOneBy(['id' => $season->getId() - 1]);
-        return null;
+        return new ParamSeason();
     }
 }

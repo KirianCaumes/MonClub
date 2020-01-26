@@ -116,7 +116,8 @@ class ExcelService
     }
 
     // Generate Excel with tracking informations.
-    public function generateExcelSuivis() {
+    public function generateExcelSuivis()
+    {
         $sheet = $this->spreadsheet->getActiveSheet();
 
         $sheet->fromArray(['Année de naissance', 'Nom', 'Prénom', 'Photo', 'Certificat', 'date certificat', 'identité PHOTO / CI', 'attestation quest santé', 'autorisation FFHB', 'date FINALISATION/valid/qualif', 'e-mail', 'père', 'mère', 'validation @ mail'], null, 'A1');
@@ -168,6 +169,78 @@ class ExcelService
 
         //Freeze first row
         $sheet->freezePane('C2');
+
+        return new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->spreadsheet);
+    }
+
+    // Generate excel 'infos general'.
+    public function generateExcelCalculhand()
+    {
+        $sheet = $this->spreadsheet->getActiveSheet();
+
+        $sheet->fromArray(['Equipe', 'Année de Naissance', 'Nom', 'Prénom', 'N° de Licence / Famille', 'Renouvellement de Licence', 'Exception (Loisir/Chômeur/Etudiant)', 'Date d\'inscription', 'Montant Licence', 'Sponsoring Super U', 'Montant frais de mutation', 'Montant Total de la licence', 'Encaissement', 'Commentaires'], null, 'A1');
+
+        $members = $this->em->getRepository(Member::class)->findBy(['season' => $this->paramService->getCurrentSeason()]);
+        $row = 2;
+        foreach ($members as $key => $member) {
+            $sheet->setCellValue('A' . $row, (function () use ($member) {
+                $teams = [];
+                foreach ($member->getTeams() as $team) array_push($teams, $team->getLabel());
+                return implode(' / ', $teams);
+            })());
+            $sheet->setCellValue('B' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('Y') : ''));
+            $sheet->setCellValue('C' . $row, ($member->getLastname()));
+            $sheet->setCellValue('D' . $row, ($member->getFirstname()));
+            $sheet->setCellValue('E' . $row, (function () use ($member) {
+                $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $this->paramService->getCurrentSeason()]);
+                $position = 1;
+                foreach ($members as $key => $mbr) {
+                    if ($mbr === $member) {
+                        $position = $key + 1;
+                        break;
+                    }
+                }
+                return $position;
+            })());
+            $sheet->setCellValue('F' . $row, ($member->getIsLicenseRenewal() ? 'OUI' : 'NON'));
+            $sheet->setCellValue('G' . $row, ($member->getIsReducedPrice() || $member->getIsNonCompetitive()  ? 'OUI' : 'NON'));
+            $sheet->setCellValue('H' . $row, ($member->getCreationDatetime() ? $member->getCreationDatetime()->format('d/m/Y') : ''));
+            $sheet->setCellValue('I' . $row, ($member->getAmountPayed() ? $member->getAmountPayed() : ''));
+            $sheet->setCellValue('J' . $row, ($member->getAmountPayedOther() ? $member->getAmountPayedOther() : ''));
+            $sheet->setCellValue('K' . $row, null);
+            $sheet->setCellValue('L' . $row, (function () use ($member) {
+                $total = ($member->getAmountPayed() ? $member->getAmountPayed() : 0) - ($member->getAmountPayedOther() ? $member->getAmountPayedOther() : 0);
+                return $total > 0 ? $total : '';
+            })());
+            $sheet->setCellValue('M' . $row, null);
+            $sheet->setCellValue('N' . $row, ($member->getPaymentNotes() ? $member->getPaymentNotes() : ''));
+
+            // $sheet->getStyle('A' . $row . ':O' . $row)->getFill()
+            //     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            //     ->getStartColor()->setARGB((function () use ($member) {
+            //         if ($member->getIsDocumentComplete() && !$member->getIsPayed() && !$member->getIsCheckGestHand() && !$member->getIsInscriptionDone()) {
+            //             return Constants::COLORS[1];
+            //         } else if ($member->getIsDocumentComplete() && $member->getIsPayed() && !$member->getIsCheckGestHand() && !$member->getIsInscriptionDone()) {
+            //             return Constants::COLORS[2];
+            //         } else if ($member->getIsDocumentComplete() && $member->getIsPayed() && $member->getIsCheckGestHand() &&  !$member->getIsInscriptionDone()) {
+            //             return Constants::COLORS[3];
+            //         } else if ($member->getIsDocumentComplete() && $member->getIsPayed() && $member->getIsCheckGestHand() && $member->getIsInscriptionDone()) {
+            //             return Constants::COLORS[4];
+            //         } else {
+            //             return Constants::COLORS[0];
+            //         }
+            //     })());
+            $row++;
+        }
+
+        //Add legends
+        // $sheet = $this->addLegend($sheet, $row);
+
+        //Set styles
+        $sheet = $this->setGeneralStyle($sheet, $row);
+
+        //Freeze first row
+        $sheet->freezePane('A2');
 
         return new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->spreadsheet);
     }

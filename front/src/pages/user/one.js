@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, Dropdown, Text, Icon, VirtualizedComboBox } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Dropdown, Text, Icon, VirtualizedComboBox, Separator, DetailsList, SelectionMode } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -87,126 +87,192 @@ class _UserOne extends React.PureComponent {
                     <Divider />
                     <Columns>
                         <Columns.Column>
-                            <Label disabled={!readOnly} htmlFor="username">Nom</Label>
-                            <TextField
-                                id="username"
-                                placeholder="Nom"
-                                value={data?.username ?? ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
-                        </Columns.Column>
-                        <Columns.Column size="one-third">
-                            <Label htmlFor="roles">Roles</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="roles"
-                                        placeholder="Roles"
-                                        defaultValue={data?.roles?.join(', ')}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.roles?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="roles"
-                                        multiSelect
-                                        selectedKeys={data?.roles}
-                                        options={[...this.props.param?.roles]?.map((x, i) => { return { key: x, text: x } })}
-                                        errorMessage={this.state.errorField?.roles?.errors?.[0]}
-                                        onChange={(ev, item) => {
-                                            const newSelectedItems = [...data.roles]
-                                            if (item.selected) {
-                                                newSelectedItems.push(item.key)
-                                            } else {
-                                                const currIndex = newSelectedItems.findIndex(x => (x === item.key))
-                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                            }
-                                            this.setState({ data: { ...this.state.data, roles: newSelectedItems } })
-                                        }}
-                                    />
-                            }
-                        </Columns.Column>
-                        <Columns.Column>
-                            <Label htmlFor="enabled">Activé</Label>
-                            {
-                                readOnly ?
-                                    <TextField
-                                        id="enabled"
-                                        defaultValue={param?.choices.find(x => x.key === data?.enabled?.toString()).text ?? ''}
-                                        borderless={true}
-                                        readOnly={true}
-                                        errorMessage={this.state.errorField?.enabled?.errors?.[0]}
-                                    />
-                                    :
-                                    <Dropdown
-                                        id="enabled"
-                                        defaultSelectedKey={data?.enabled?.toString() ?? 'false'}
-                                        options={param?.choices}
-                                        errorMessage={this.state.errorField?.enabled?.errors?.[0]}
-                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, enabled: JSON.parse(item.key) } })}
-                                    />
-                            }
-                        </Columns.Column>
-                    </Columns>
-                    <Columns>
-                        {
-                            data?.roles.includes(ROLE_COACH) &&
-                            <Columns.Column size="one-third">
-                                <Label htmlFor="teams">Équipe(s)</Label>
-                                {
-                                    readOnly ?
-                                        <TextField
-                                            id="teams"
-                                            placeholder="Équipe(s)"
-                                            defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
-                                            borderless={true}
-                                            readOnly={true}
-                                            errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                        />
-                                        :
-                                        <VirtualizedComboBox
-                                            id="teams"
-                                            multiSelect
-                                            selectedKey={data?.teams?.map(x => x.id ?? x.key)}
-                                            options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
-                                            errorMessage={this.state.errorField?.teams?.errors?.[0]}
-                                            useComboBoxAsMenuWidth={true}
-                                            onChange={(ev, item) => {
-                                                const newSelectedItems = [...data.teams]
-                                                if (item.selected) {
-                                                    newSelectedItems.push(item)
-                                                } else {
-                                                    const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
-                                                    if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
-                                                }
-                                                this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
-                                            }}
 
-                                        />
-                                }
-                            </Columns.Column>
-                        }
-                        <Columns.Column>
-                            <Label disabled={!readOnly} htmlFor="creation_datetime">Date de création</Label>
-                            <TextField
-                                id="creation_datetime"
-                                value={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
+                            <Columns>
+                                <Columns.Column>
+                                    <Label disabled={!readOnly} htmlFor="username">Nom</Label>
+                                    <TextField
+                                        id="username"
+                                        placeholder="Nom"
+                                        value={data?.username ?? ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                    />
+                                </Columns.Column>
+                                <Columns.Column size="half">
+                                    <Label htmlFor="roles">Roles</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                id="roles"
+                                                placeholder="Roles"
+                                                defaultValue={data?.roles?.join(', ')}
+                                                borderless={true}
+                                                readOnly={true}
+                                                errorMessage={this.state.errorField?.roles?.errors?.[0]}
+                                            />
+                                            :
+                                            <Dropdown
+                                                id="roles"
+                                                multiSelect
+                                                selectedKeys={data?.roles}
+                                                options={[...this.props.param?.roles]?.map((x, i) => { return { key: x, text: x } })}
+                                                errorMessage={this.state.errorField?.roles?.errors?.[0]}
+                                                onChange={(ev, item) => {
+                                                    const newSelectedItems = [...data.roles]
+                                                    if (item.selected) {
+                                                        newSelectedItems.push(item.key)
+                                                    } else {
+                                                        const currIndex = newSelectedItems.findIndex(x => (x === item.key))
+                                                        if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                    }
+                                                    this.setState({ data: { ...this.state.data, roles: newSelectedItems } })
+                                                }}
+                                            />
+                                    }
+                                </Columns.Column>
+                            </Columns>
+                            <Columns>
+                                <Columns.Column>
+                                    <Label disabled={!readOnly} htmlFor="creation_datetime">Date de création</Label>
+                                    <TextField
+                                        id="creation_datetime"
+                                        value={data?.creation_datetime ? (new Date(data.creation_datetime)).toLocaleString('fr-FR') : ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                    />
+                                </Columns.Column>
+                                <Columns.Column>
+                                    <Label disabled={!readOnly} htmlFor="last_login">Dernière connexion</Label>
+                                    <TextField
+                                        id="last_login"
+                                        value={data?.last_login ? (new Date(data.last_login)).toLocaleString('fr-FR') : ''}
+                                        borderless={true}
+                                        readOnly={true}
+                                    />
+                                </Columns.Column>
+                            </Columns>
+                            <Columns>
+                                <Columns.Column>
+                                    <Label htmlFor="enabled">Activé</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                id="enabled"
+                                                defaultValue={param?.choices.find(x => x.key === data?.enabled?.toString()).text ?? ''}
+                                                borderless={true}
+                                                readOnly={true}
+                                                errorMessage={this.state.errorField?.enabled?.errors?.[0]}
+                                            />
+                                            :
+                                            <Dropdown
+                                                id="enabled"
+                                                defaultSelectedKey={data?.enabled?.toString() ?? 'false'}
+                                                options={param?.choices}
+                                                errorMessage={this.state.errorField?.enabled?.errors?.[0]}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, enabled: JSON.parse(item.key) } })}
+                                            />
+                                    }
+                                </Columns.Column>
+                                <Columns.Column size="half">
+                                    {
+                                        data?.roles.includes(ROLE_COACH) &&
+                                        <>
+                                            <Label htmlFor="teams">Équipe(s)</Label>
+                                            {
+                                                readOnly ?
+                                                    <TextField
+                                                        id="teams"
+                                                        placeholder="Équipe(s)"
+                                                        defaultValue={data?.teams?.map(team => team.label)?.join(', ')}
+                                                        borderless={true}
+                                                        readOnly={true}
+                                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                                    />
+                                                    :
+                                                    <VirtualizedComboBox
+                                                        id="teams"
+                                                        multiSelect
+                                                        selectedKey={data?.teams?.map(x => x.id ?? x.key)}
+                                                        options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                                        errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                                        useComboBoxAsMenuWidth={true}
+                                                        onChange={(ev, item) => {
+                                                            const newSelectedItems = [...data.teams]
+                                                            if (item.selected) {
+                                                                newSelectedItems.push(item)
+                                                            } else {
+                                                                const currIndex = newSelectedItems.findIndex(x => ((x.key === item.key) || (x.key === item.id) || (x.id === item.key)))
+                                                                if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                            }
+                                                            this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
+                                                        }}
+
+                                                    />
+                                            }
+                                        </>
+                                    }
+                                </Columns.Column>
+                            </Columns>
                         </Columns.Column>
+                        <Separator vertical className="is-hidden-mobile" />
                         <Columns.Column>
-                            <Label disabled={!readOnly} htmlFor="last_login">Dernière connexion</Label>
-                            <TextField
-                                id="last_login"
-                                value={data?.last_login ? (new Date(data.last_login)).toLocaleString('fr-FR') : ''}
-                                borderless={true}
-                                readOnly={true}
-                            />
+                            <Columns>
+                                <Columns.Column size="half">
+                                    <Label required htmlFor="season">Saison</Label>
+                                    {
+                                        readOnly ?
+                                            <TextField
+                                                id="season"
+                                                placeholder="Saison"
+                                                defaultValue={this.props.param?.season.find(x => x.is_current)?.label}
+                                                borderless={true}
+                                                readOnly={true}
+                                            />
+                                            :
+                                            <Dropdown
+                                                id="season"
+                                                placeholder="Saison"
+                                                selectedKey={this.props.param?.season?.find(x => x.is_current)?.id}
+                                                options={[...this.props.param?.season]?.filter(x => x.is_active)?.map(x => { return { ...x, key: x.id, text: x.label } })}
+                                                errorMessage={this.state.errorField?.season?.errors?.[0]}
+                                                useComboBoxAsMenuWidth={true}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, season: item } })}
+                                            />
+                                    }
+                                </Columns.Column>
+                                <Columns.Column className="is-hidden-touch" />
+                            </Columns>
+                            <Label>Membre(s) associé(s)</Label>
+                            {data?.members?.length
+                                ?
+                                <DetailsList
+                                    items={data?.members ?? []}
+                                    onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
+                                    columns={[
+                                        {
+                                            key: 'lastname',
+                                            name: 'Nom',
+                                            fieldName: 'lastname',
+                                            minWidth: 70,
+                                            maxWidth: 200,
+                                            isResizable: true,
+                                        },
+                                        {
+                                            key: 'firstname',
+                                            name: 'Prénom',
+                                            fieldName: 'firstname',
+                                            minWidth: 70,
+                                            maxWidth: 200,
+                                            isResizable: true,
+                                        }
+                                    ]}
+                                    selectionMode={SelectionMode.none}
+                                />
+                                :
+                                <TextField defaultValue="Aucun résultat" borderless={true} readOnly={true} />
+                            }
                         </Columns.Column>
-                        {!data?.roles.includes(ROLE_COACH) && <Columns.Column className="is-hidden-touch"/>}
                     </Columns>
                 </div>
             </section >

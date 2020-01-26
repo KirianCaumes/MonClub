@@ -921,7 +921,7 @@ class _MemberOne extends React.PureComponent {
                                             iconProps={{ iconName: 'Accept' }}
                                             title="Tout valider"
                                             primary
-                                            onClick={() => this.setState({ data: { ...this.state.data, gesthand_is_photo: true, gesthand_is_certificate: true, gesthand_is_health_questionnaire: true, gesthand_is_ffhb_authorization: true } })}
+                                            onClick={() => this.setState({ data: { ...this.state.data, gesthand_is_photo: true, gesthand_is_photo_id: true, gesthand_is_certificate: true, gesthand_is_health_questionnaire: true, gesthand_is_ffhb_authorization: true } })}
                                         />
                                     </TooltipHost>
                                 </>

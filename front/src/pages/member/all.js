@@ -111,8 +111,9 @@ class _MembersAll extends ParentPage {
                             key: 'getExcelCalculHand',
                             text: 'Excel calcul hand',
                             iconProps: { iconName: 'ExcelDocument' },
-                            onClick: () => null,
-                            disabled: true
+                            onClick: () => request.getExcelCalculhand()
+                                .then(file => dlBlob(file, `export_excel_calculhand-${stringToCleanString(new Date())}.xlsx`))
+                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                         },
                     ]
                 }
