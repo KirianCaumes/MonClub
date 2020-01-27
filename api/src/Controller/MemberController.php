@@ -54,6 +54,7 @@ class MemberController extends FOSRestController
      * @QueryParam(name="stepsId", nullable=true, description="Steps ids to filter (ex: '1,2,3,')")
      * @QueryParam(name="teamsId", nullable=true, description="Teams ids to filter (ex: '1,2,3,')")
      * @QueryParam(name="seasonId", nullable=true, description="Seasons ids to filter (ex: '1,2,3,')")
+     * @QueryParam(name="userId", nullable=true, description="User ids to filter")
      * @SWG\Response(response=200, description="Returns members", @SWG\Schema(type="array", @Model(type=Member::class)))
      * @IsGranted("ROLE_COACH")
      * @Rest\Get("")
@@ -67,7 +68,8 @@ class MemberController extends FOSRestController
                 $paramFetcher->get('name'),
                 $paramFetcher->get('stepsId'),
                 $paramFetcher->get('teamsId'),
-                $paramFetcher->get('seasonId')
+                $paramFetcher->get('seasonId'),
+                $paramFetcher->get('userId')
             );
             return $this->handleView($this->view($members)->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         } else if ($this->isGranted('ROLE_COACH')) {

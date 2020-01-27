@@ -1,5 +1,5 @@
 //Dependencies
-@import '~office-ui-fabric-react/dist/sass/Fabric.scss';
+@import "~office-ui-fabric-react/dist/sass/Fabric.scss";
 @import "~bulma/bulma.sass";
 @import "~bulma-extensions/dist/css/bulma-extensions.min.css";
 
@@ -38,7 +38,6 @@
 @import "./component/divider.scss";
 @import "./component/loader.scss";
 
-
 html {
   min-height: 100%;
   height: 100%;
@@ -63,8 +62,8 @@ html {
       user-select: none;
       outline: none;
     }
-    label:not(.ms-ChoiceField-field) {
-        color: $dark-blue!important;
+    label:not(.ms-ChoiceField-field):not(.ms-Checkbox-label) {
+      color: $dark-blue !important;
     }
   }
 }

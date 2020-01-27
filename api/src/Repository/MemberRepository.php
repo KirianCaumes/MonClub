@@ -23,14 +23,16 @@ class MemberRepository extends ServiceEntityRepository
     /**
      * Search members
      */
-    public function findMembersByFields(string $name, string $stepsId, string $teamsId, string $seasonId)
+    public function findMembersByFields(string $name, string $stepsId, string $teamsId, string $seasonId, string $userId)
     {
         $query = $this->createQueryBuilder('m');
         if ($teamsId) $query->join('m.teams', 'c');
         if ($seasonId) $query->join('m.season', 'd');
+        if ($userId) $query->join('m.user', 'e');
         $query->where('m.firstname LIKE :name OR m.lastname LIKE :name');
         if ($teamsId) $query->andWhere('c.id IN(:teamsId)');
         if ($seasonId) $query->andWhere('d.id = :seasonId');
+        if ($userId) $query->andWhere('e.id = :userId');
 
         if ($stepsId) {
             $search = '';
@@ -45,6 +47,7 @@ class MemberRepository extends ServiceEntityRepository
         $query->setParameter('name', '%' . $name . '%');
         if ($teamsId) $query->setParameter('teamsId', $teamsId);
         if ($seasonId) $query->setParameter('seasonId', $seasonId);
+        if ($userId) $query->setParameter('userId', $userId);
         $query->orderBy('m.lastname', 'ASC');
 
         return $query->getQuery()->getResult();

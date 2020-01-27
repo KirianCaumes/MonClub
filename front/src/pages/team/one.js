@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Separator, Text, Icon } from 'office-ui-fabric-react'
+import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Text, Icon } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -127,71 +127,79 @@ class _TeamOne extends React.PureComponent {
                     <div className="head">
                         <h1><Icon iconName='Teamwork' /> Toutes les informations sur l'équipe: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.label ?? '') : 'Nouveau'}</span></h1>
                     </div>
-                    <Text variant="large" block><Icon iconName='BulletedList'/> Informations générales</Text>
+                    <Text variant="large" block><Icon iconName='BulletedList' /> Informations générales</Text>
                     <Divider />
                     <Columns>
                         <Columns.Column>
-                            <Columns>
-                                <Columns.Column>
-                                    <Label required htmlFor="label">Label</Label>
-                                    <TextField
-                                        id="label"
-                                        placeholder="Label"
-                                        value={data?.label ?? ''}
-                                        onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
-                                        borderless={readOnly}
-                                        readOnly={readOnly}
-                                        errorMessage={this.state.errorField?.label?.errors?.[0]}
-                                    />
-                                </Columns.Column>
-                                <Columns.Column>
-                                    <Label required htmlFor="label_google_contact">Label Google Contact</Label>
-                                    <TextField
-                                        id="label_google_contact"
-                                        placeholder="Label Google Contact"
-                                        value={data?.label_google_contact ?? ''}
-                                        onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
-                                        borderless={readOnly}
-                                        readOnly={readOnly}
-                                        errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
-                                    />
-                                </Columns.Column>
-                            </Columns>
-
+                            <Label required htmlFor="label">Label</Label>
+                            <TextField
+                                id="label"
+                                placeholder="Label"
+                                value={data?.label ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, label: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.label?.errors?.[0]}
+                            />
                         </Columns.Column>
-                        <Separator vertical className="is-hidden-mobile" />
                         <Columns.Column>
-                            <Label>Membre(s) associé(s)</Label>
-                            {data?.members?.length
-                                ?
-                                <DetailsList
-                                    items={data?.members ?? []}
-                                    onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
-                                    columns={[
-                                        {
-                                            key: 'lastname',
-                                            name: 'Nom',
-                                            fieldName: 'lastname',
-                                            minWidth: 70,
-                                            maxWidth: 200,
-                                            isResizable: true,
-                                        },
-                                        {
-                                            key: 'firstname',
-                                            name: 'Prénom',
-                                            fieldName: 'firstname',
-                                            minWidth: 70,
-                                            maxWidth: 200,
-                                            isResizable: true,
-                                        }
-                                    ]}
-                                    selectionMode={SelectionMode.none}
-                                />
-                                :
-                                <TextField defaultValue="Aucun résultat" borderless={true} readOnly={true} />
-                            }
+                            <Label required htmlFor="label_google_contact">Label Google Contact</Label>
+                            <TextField
+                                id="label_google_contact"
+                                placeholder="Label Google Contact"
+                                value={data?.label_google_contact ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, label_google_contact: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
+                            />
                         </Columns.Column>
+                        <Columns.Column/>
+                        <Columns.Column/>
                     </Columns>
+                </div>
+                <br/>
+                <div className="card" >
+                    <Text variant="large" block><Icon iconName='RecruitmentManagement' /> Les membres</Text>
+                    <Divider />
+                    <Label>Membre(s) associé(s)</Label>
+                    {data?.members?.length
+                        ?
+                        <DetailsList
+                            items={data?.members ?? []}
+                            onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
+                            columns={[
+                                {
+                                    key: 'lastname',
+                                    name: 'Nom',
+                                    fieldName: 'lastname',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                },
+                                {
+                                    key: 'firstname',
+                                    name: 'Prénom',
+                                    fieldName: 'firstname',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                },
+                                {
+                                    key: 'season',
+                                    name: 'Saison',
+                                    fieldName: 'season',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                    onRender: member => <span className="is-capitalized">{member?.season?.label}</span>
+                                }
+                            ]}
+                            selectionMode={SelectionMode.none}
+                        />
+                        :
+                        <TextField defaultValue="Aucun résultat" borderless={true} readOnly={true} />
+                    }
                 </div>
             </section >
         )

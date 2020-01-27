@@ -115,7 +115,9 @@ class UserController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('user_not_found')]));
         }
 
-        return $this->handleView($this->view($user));
+        $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $user]);
+
+        return $this->handleView($this->view(['user' => $user, 'members' => $members]));
     }
 
     /**

@@ -28,7 +28,8 @@ class _MemberOne extends React.PureComponent {
             nonObjection: {
                 club: '',
                 address: ''
-            }
+            },
+            priceLoading: false
         }
     }
 
@@ -541,21 +542,43 @@ class _MemberOne extends React.PureComponent {
                         <Columns>
                             <Columns.Column>
                                 <Label htmlFor="amount_payed">Montant payé</Label>
-                                <TextField
-                                    id="amount_payed"
-                                    placeholder="Montant payé"
-                                    defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
-                                    errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
-                                    suffix="€"
-                                    onKeyPress={ev => {
-                                        ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
-                                            ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
-                                            ev.preventDefault()
-                                    }}
-                                />
+                                <div className="flex-row">
+                                    <TextField
+                                        id="amount_payed"
+                                        placeholder="Montant payé"
+                                        // defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
+                                        value={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
+                                        onChange={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
+                                        borderless={readOnly}
+                                        readOnly={readOnly}
+                                        errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
+                                        suffix="€"
+                                        onKeyPress={ev => {
+                                            ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
+                                                ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
+                                                ev.preventDefault()
+                                        }}
+                                        styles={{ root: { width: '100%' } }}
+                                    />
+                                    {
+                                        !readOnly &&
+                                        <TooltipHost
+                                            content="Recalculer le prix à payé."
+                                            directionalHint={DirectionalHint.bottomCenter}
+                                            delay={TooltipDelay.zero}
+                                        >
+                                            <IconButton
+                                                iconProps={{ iconName: 'Refresh' }}
+                                                disabled={this.state.priceLoading}
+                                                onClick={() => this.setState({ priceLoading: true }, () => request.getMemberPrice(this.props.match?.params?.id)
+                                                    .then(res => this.setState({ data: { ...this.state.data, amount_payed: res.price } }))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.'))
+                                                    .finally(() => this.setState({ priceLoading: false }))
+                                                )}
+                                            />
+                                        </TooltipHost>
+                                    }
+                                </div>
                             </Columns.Column>
                             <Columns.Column>
 
@@ -801,7 +824,6 @@ class _MemberOne extends React.PureComponent {
                                     >
                                         <IconButton
                                             iconProps={{ iconName: 'Accept' }}
-                                            title="Tout valider"
                                             onClick={() => this.setState({ data: { ...this.state.data, is_evacuation_allow: true, is_transport_allow: true, is_image_allow: true, is_accepted: true, is_newsletter_allow: true, is_return_home_allow: !isMajor(data?.birthdate) } })}
                                         />
                                     </TooltipHost>
@@ -919,8 +941,6 @@ class _MemberOne extends React.PureComponent {
                                     >
                                         <IconButton
                                             iconProps={{ iconName: 'Accept' }}
-                                            title="Tout valider"
-                                            primary
                                             onClick={() => this.setState({ data: { ...this.state.data, gesthand_is_photo: true, gesthand_is_photo_id: true, gesthand_is_certificate: true, gesthand_is_health_questionnaire: true, gesthand_is_ffhb_authorization: true } })}
                                         />
                                     </TooltipHost>

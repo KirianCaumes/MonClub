@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Icon, ShimmeredDetailsList, MessageBarType, SelectionMode, Separator, TextField, DefaultButton, Label, Dropdown, Text } from 'office-ui-fabric-react'
+import { Icon, ShimmeredDetailsList, MessageBarType, SelectionMode, Separator, TextField, DefaultButton, Label, Dropdown, Text, VirtualizedComboBox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -21,7 +21,8 @@ class _MembersAll extends ParentPage {
                 name: '',
                 stepsId: [],
                 teamsId: [],
-                seasonId: props.param?.season?.find(x => x.is_current)?.id
+                seasonId: props.param?.season?.find(x => x.is_current)?.id,
+                userId: '',
             },
             columns: [
                 {
@@ -54,11 +55,19 @@ class _MembersAll extends ParentPage {
                 },
                 {
                     key: 'team',
-                    name: 'Équipe',
+                    name: 'Équipe(s)',
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
                     onRender: member => <span className="is-capitalized">{member.teams?.map(team => team.label)?.join(', ')}</span>
+                },
+                {
+                    key: 'user',
+                    name: 'Utilisateur',
+                    minWidth: 70,
+                    maxWidth: 200,
+                    isResizable: true,
+                    onRender: member => <span className="is-capitalized">{member.user?.username}</span>
                 }
             ]
         }
@@ -148,17 +157,19 @@ class _MembersAll extends ParentPage {
                         <>
                             <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
                                 <Columns className="search-inputs">
-                                    <Columns.Column size="one-fifth">
+                                    <Columns.Column >
                                         <TextField
                                             label="Nom/Prénom"
+                                            placeholder="Nom/Prénom"
                                             disabled={isLoading}
                                             value={this.state.searchParms.name}
                                             onChange={ev => this.setState({ searchParms: { ...this.state.searchParms, name: ev.target.value } })}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-fifth">
+                                    <Columns.Column >
                                         <Dropdown
                                             label="Étape"
+                                            placeholder="Étape"
                                             disabled={isLoading}
                                             multiSelect
                                             options={[...this.props.param?.workflowStep]?.map(x => { return { key: x.id, text: x.label } })}
@@ -175,9 +186,10 @@ class _MembersAll extends ParentPage {
                                             }}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-fifth">
+                                    <Columns.Column >
                                         <Dropdown
                                             label="Équipe"
+                                            placeholder="Équipe"
                                             disabled={isLoading}
                                             multiSelect
                                             options={[...this.props.param?.teams]?.map(x => { return { key: x.id, text: x.label } })}
@@ -190,20 +202,32 @@ class _MembersAll extends ParentPage {
                                                     const currIndex = newSelectedItems.indexOf(item.key)
                                                     if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
                                                 }
-
+                                                this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
                                             }}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-fifth">
+                                    <Columns.Column >
+                                        <VirtualizedComboBox
+                                            label="Utilisateur"
+                                            placeholder="Utilisateur"
+                                            disabled={isLoading}
+                                            options={[...this.props.param?.users]?.map(x => { return { key: x.id, text: x.username } })}
+                                            selectedKey={this.state.searchParms.userId}
+                                            onChange={(ev, item) => this.setState({ searchParms: { ...this.state.searchParms, userId: item.key } })}
+                                            useComboBoxAsMenuWidth={true}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column >
                                         <Dropdown
                                             label="Saison"
+                                            placeholder="Saison"
                                             disabled={isLoading}
                                             options={[...this.props.param?.season]?.filter(x => x.is_active)?.map(x => { return { key: x.id, text: x.label } })}
                                             selectedKey={this.state.searchParms.seasonId}
                                             onChange={(ev, item) => this.setState({ searchParms: { ...this.state.searchParms, seasonId: item.key } })}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column size="one-fifth">
+                                    <Columns.Column >
                                         <Label>&#8203;</Label>
                                         <DefaultButton
                                             text="Rechercher"
@@ -223,7 +247,8 @@ class _MembersAll extends ParentPage {
                                                                     name: '',
                                                                     stepsId: [],
                                                                     teamsId: [],
-                                                                    seasonId: ''
+                                                                    seasonId: this.props.param?.season?.find(x => x.is_current)?.id,
+                                                                    userId: ''
                                                                 }
                                                             }, () => this.searchMembers())
                                                         }
@@ -244,7 +269,7 @@ class _MembersAll extends ParentPage {
                     <ShimmeredDetailsList
                         items={this.state.items}
                         onActiveItemChanged={item => history.push(`/membre/${item.id}`)}
-                        onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['step', 'team'] })}
+                        onColumnHeaderClick={this._onColumnClick.bind(this, { colName: "columns", dataName: ['items'], source: "state", action: "", exclude: ['step', 'team', 'user'] })}
                         columns={this.state.columns}
                         selectionMode={SelectionMode.none}
                         enableShimmer={this.state.isLoading}

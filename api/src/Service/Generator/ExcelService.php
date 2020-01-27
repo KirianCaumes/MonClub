@@ -4,7 +4,9 @@ namespace App\Service\Generator;
 
 use App\Constants;
 use App\Entity\Member;
+use App\Entity\Param\ParamPriceTransfer;
 use App\Entity\Team;
+use App\Service\DateService;
 use App\Service\ParamService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,11 +17,13 @@ class ExcelService
 {
     private $em;
     private $spreadsheet;
+    private $dateService;
     private $paramService;
 
-    public function __construct(EntityManagerInterface $em, ParamService $paramService)
+    public function __construct(EntityManagerInterface $em, ParamService $paramService, DateService $dateService)
     {
         $this->em = $em;
+        $this->dateService = $dateService;
         $this->paramService = $paramService;
         $this->spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     }
@@ -69,8 +73,8 @@ class ExcelService
 
             $row = 2;
             foreach ($members as $member) {
-                $sheet->setCellValue('A' . $row, ($member->getLastname()));
-                $sheet->setCellValue('B' . $row, ($member->getFirstname()));
+                $sheet->setCellValue('A' . $row, ucwords($member->getLastname()));
+                $sheet->setCellValue('B' . $row, ucwords($member->getFirstName()));
                 $sheet->setCellValue('C' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('d/m/Y') : ''));
                 $sheet->setCellValue('D' . $row, ($member->getEmail() ? $member->getEmail() : ''));
                 $sheet->setCellValue('E' . $row, ($member->getParentOneEmail() ? $member->getParentOneEmail() : ''));
@@ -126,8 +130,8 @@ class ExcelService
         $row = 2;
         foreach ($members as $key => $member) {
             $sheet->setCellValue('A' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('Y') : ''));
-            $sheet->setCellValue('B' . $row, ($member->getLastname()));
-            $sheet->setCellValue('C' . $row, ($member->getFirstname()));
+            $sheet->setCellValue('B' . $row, ucwords($member->getLastname()));
+            $sheet->setCellValue('C' . $row, ucwords($member->getFirstName()));
             $sheet->setCellValue('D' . $row, ($member->getGesthandIsPhoto() ? 'Ok' : ''));
             $sheet->setCellValue('E' . $row, ($member->getGesthandIsCertificate() ? 'Ok' : ''));
             $sheet->setCellValue('F' . $row, ($member->getGesthandCertificateDate() ? $member->getGesthandCertificateDate()->format('d/m/Y') : ''));
@@ -189,9 +193,10 @@ class ExcelService
                 return implode(' / ', $teams);
             })());
             $sheet->setCellValue('B' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('Y') : ''));
-            $sheet->setCellValue('C' . $row, ($member->getLastname()));
-            $sheet->setCellValue('D' . $row, ($member->getFirstname()));
+            $sheet->setCellValue('C' . $row, ucwords($member->getLastname()));
+            $sheet->setCellValue('D' . $row, ucwords($member->getFirstName()));
             $sheet->setCellValue('E' . $row, (function () use ($member) {
+                if (!$member->getUser()) return '';
                 $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $this->paramService->getCurrentSeason()]);
                 $position = 1;
                 foreach ($members as $key => $mbr) {
@@ -207,7 +212,14 @@ class ExcelService
             $sheet->setCellValue('H' . $row, ($member->getCreationDatetime() ? $member->getCreationDatetime()->format('d/m/Y') : ''));
             $sheet->setCellValue('I' . $row, ($member->getAmountPayed() ? $member->getAmountPayed() : ''));
             $sheet->setCellValue('J' . $row, ($member->getAmountPayedOther() ? $member->getAmountPayedOther() : ''));
-            $sheet->setCellValue('K' . $row, null);
+            $sheet->setCellValue('K' . $row, (function () use ($member) {
+                if (!$member->getIsTransferNeeded()) return '';
+                return $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval(
+                    $this->dateService->getAge(
+                        (int) $member->getBirthdate()->format('Y')
+                    )
+                )->getPrice();
+            })());
             $sheet->setCellValue('L' . $row, (function () use ($member) {
                 $total = ($member->getAmountPayed() ? $member->getAmountPayed() : 0) - ($member->getAmountPayedOther() ? $member->getAmountPayedOther() : 0);
                 return $total > 0 ? $total : '';
