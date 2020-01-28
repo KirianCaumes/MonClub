@@ -1,12 +1,12 @@
 import React from 'react'
-import { Columns } from 'react-bulma-components'
+import { Columns, Table } from 'react-bulma-components'
 import { Label, TextField, MessageBarType, Text, MaskedTextField, Dropdown, Link, VirtualizedComboBox, TooltipHost, DirectionalHint, TooltipDelay, Icon, IconButton, DefaultButton, Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
 import request from 'helper/request'
 import Workflow from 'component/workflow'
-import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimeString } from 'helper/date'
+import { stringToCleanString, stringToDate, isMajor, dateToCleanDateTimeString, getAge, dateToCleanDateString, getYear } from 'helper/date'
 import Loader from 'component/loader'
 import FileInput from 'component/fileInput'
 import { dlBlob, openBlob } from 'helper/blob'
@@ -29,6 +29,7 @@ class _MemberOne extends React.PureComponent {
                 club: '',
                 address: ''
             },
+            newPriceLoading: false,
             priceLoading: false
         }
     }
@@ -67,7 +68,7 @@ class _MemberOne extends React.PureComponent {
                         this.props.setCommand([])
                         if (!!this.props.match?.params?.id) {
                             request.editMemberAdmin(this.props.match?.params?.id, { ...this.state.data })
-                                .then(res => this.setState({ data: res.member, workflow: res.workflow, errorField: {} }, () => {
+                                .then(res => this.setState({ data: res.member, initData: res.member, workflow: res.workflow, errorField: {} }, () => {
                                     this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été modifiée.')
                                     this.props.setBreadcrumb([
@@ -138,7 +139,7 @@ class _MemberOne extends React.PureComponent {
     }
 
     render() {
-        const { readOnly, data, isLoading, workflow, nonObjection } = this.state
+        const { readOnly, data, initData, isLoading, workflow, nonObjection } = this.state
         const { param } = this.props
 
         if (isLoading) return <Loader />
@@ -470,7 +471,30 @@ class _MemberOne extends React.PureComponent {
                     </div>
                     <br />
                     <div className="card" >
-                        <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
+                        <div className="flex-row flex-start ">
+                            <Text variant="large" block><Icon iconName='NumberedList' /> Informations tarifaires</Text>
+                            &nbsp;
+                            <TooltipHost
+                                content={"Voir le détail tarifaire"}
+                                directionalHint={DirectionalHint.topCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <IconButton
+                                    iconProps={{ iconName: 'RedEye' }}
+                                    disabled={this.state.priceLoading}
+                                    onClick={() => this.setState({ priceLoading: true },
+                                        () => request.getMemberPrice(data?.id)
+                                            .then(res => this.showModalDetailPrice(res.position, res.price))
+                                            .catch(err => {
+                                                this.setState({ price: 'Erreur' })
+                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
+                                            })
+                                            .finally(() => this.setState({ priceLoading: false }))
+                                    )
+                                    }
+                                />
+                            </TooltipHost>
+                        </div>
                         <Divider />
 
 
@@ -482,14 +506,13 @@ class _MemberOne extends React.PureComponent {
                                         <Label required htmlFor="is_non_competitive">Loisir</Label>
                                         <DropdownIcon
                                             id="is_non_competitive"
-                                            readOnly={readOnly}
+                                            readOnly={readOnly || data?.is_reduced_price}
                                             icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
                                             selectedKey={data?.is_non_competitive?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_non_competitive?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_non_competitive: JSON.parse(item.key) } })}
-                                            disabled={data?.is_reduced_price}
                                         />
                                     </Columns.Column>
 
@@ -497,14 +520,13 @@ class _MemberOne extends React.PureComponent {
                                         <Label required htmlFor="is_reduced_price">Demande réduction</Label>
                                         <DropdownIcon
                                             id="is_reduced_price"
-                                            readOnly={readOnly}
+                                            readOnly={readOnly || data?.is_non_competitive}
                                             icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
                                             selectedKey={data?.is_reduced_price?.toString() ?? 'false'}
                                             options={param?.choices}
                                             error={this.state.errorField?.is_reduced_price?.errors?.[0]}
                                             onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_reduced_price: JSON.parse(item.key) } })}
-                                            disabled={data?.is_non_competitive}
                                         />
                                     </Columns.Column>
                                 </>
@@ -541,7 +563,19 @@ class _MemberOne extends React.PureComponent {
 
                         <Columns>
                             <Columns.Column>
-                                <Label htmlFor="amount_payed">Montant payé</Label>
+                                <div className="flex-row flex-start">
+                                    <Label htmlFor="amount_payed">Montant payé</Label>
+                                    {
+                                        !readOnly && (data?.is_payed || initData?.is_payed) &&
+                                        <TooltipHost
+                                            content="Les champs concernant les montants et le moyen du paiement sont désactivés si le membre est déjà payé."
+                                            directionalHint={DirectionalHint.bottomCenter}
+                                            delay={TooltipDelay.zero}
+                                        >
+                                            <Icon iconName="Info" className="icon-info-label is-not-required" />
+                                        </TooltipHost>
+                                    }
+                                </div>
                                 <div className="flex-row">
                                     <TextField
                                         id="amount_payed"
@@ -549,8 +583,8 @@ class _MemberOne extends React.PureComponent {
                                         // defaultValue={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
                                         value={!isNaN(data?.amount_payed) ? (data?.amount_payed ?? '') : ''}
                                         onChange={ev => this.setState({ data: { ...this.state.data, amount_payed: parseFloat(ev.target.value?.replace(',', '.')) } })}
-                                        borderless={readOnly}
-                                        readOnly={readOnly}
+                                        borderless={readOnly || (data?.is_payed ? true : initData?.is_payed)}
+                                        readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
                                         errorMessage={this.state.errorField?.amount_payed?.errors?.[0]}
                                         suffix="€"
                                         onKeyPress={ev => {
@@ -561,7 +595,7 @@ class _MemberOne extends React.PureComponent {
                                         styles={{ root: { width: '100%' } }}
                                     />
                                     {
-                                        !readOnly &&
+                                        !readOnly && !(data?.is_payed ? true : initData?.is_payed) &&
                                         <TooltipHost
                                             content="Recalculer le prix à payé."
                                             directionalHint={DirectionalHint.bottomCenter}
@@ -569,11 +603,11 @@ class _MemberOne extends React.PureComponent {
                                         >
                                             <IconButton
                                                 iconProps={{ iconName: 'Refresh' }}
-                                                disabled={this.state.priceLoading}
-                                                onClick={() => this.setState({ priceLoading: true }, () => request.getMemberPrice(this.props.match?.params?.id)
+                                                disabled={this.state.newPriceLoading}
+                                                onClick={() => this.setState({ newPriceLoading: true }, () => request.getMemberPrice(this.props.match?.params?.id)
                                                     .then(res => this.setState({ data: { ...this.state.data, amount_payed: res.price } }))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.'))
-                                                    .finally(() => this.setState({ priceLoading: false }))
+                                                    .finally(() => this.setState({ newPriceLoading: false }))
                                                 )}
                                             />
                                         </TooltipHost>
@@ -581,7 +615,6 @@ class _MemberOne extends React.PureComponent {
                                 </div>
                             </Columns.Column>
                             <Columns.Column>
-
                                 <div className="flex-row flex-start">
                                     <Label htmlFor="amount_payed_other">Montant autre payé</Label>
                                     <TooltipHost
@@ -597,8 +630,8 @@ class _MemberOne extends React.PureComponent {
                                     placeholder="Montant autre payé"
                                     defaultValue={!isNaN(data?.amount_payed_other) ? (data?.amount_payed_other ?? '') : ''}
                                     onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed_other: parseFloat(ev.target.value?.replace(',', '.')) } })}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
+                                    borderless={readOnly || (data?.is_payed ? true : initData?.is_payed)}
+                                    readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
                                     errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
                                     suffix="€"
                                     onKeyPress={ev => {
@@ -625,7 +658,7 @@ class _MemberOne extends React.PureComponent {
                                 <DropdownIcon
                                     id="payment_solution"
                                     placeholder="Moyen de paiement"
-                                    readOnly={readOnly}
+                                    readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
                                     icon={data?.payment_solution?.icon}
                                     valueDisplay={data?.payment_solution?.label}
                                     selectedKey={data?.payment_solution?.id}
@@ -1271,6 +1304,140 @@ class _MemberOne extends React.PureComponent {
             </>
         )
     }
+
+    showModalDetailPrice(position, price) {
+        let deadlineDate = new Date(this.props.param?.global?.find(x => x.label === 'price_deadline')?.value)
+        let deadlineDateAfter = (new Date(deadlineDate.getTime()))
+        deadlineDateAfter.setDate(deadlineDate.getDate() + 1)
+
+        this.props.setModal(
+            true,
+            'Détail du tarif',
+            `Ensemble des informations tarifaires pour la saison actuelle (${this.props.param?.season?.find(x => x.is_current)?.label})`,
+            undefined,
+            <>
+                <Text variant="large" block><Icon iconName='NumberedList' /> Tarifs</Text>
+                <Divider />
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Année de naissance</th>
+                            {
+                                deadlineDate >= new Date()
+                                    ?
+                                    <>
+                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
+                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
+                                    </>
+                                    :
+                                    <>
+                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
+                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
+                                    </>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.param?.price?.license?.map((el, i) => {
+                            let currInterval = !this.state.data?.is_reduced_price && el.min_year <= getYear(this.state.data?.birthdate) && el.max_year >= getYear(this.state.data?.birthdate)
+                            return (
+                                <tr key={i} >
+                                    <td className={currInterval ? 'is-selected' : ''} >{el.label}</td>
+                                    {
+                                        deadlineDate >= new Date()
+                                            ?
+                                            <>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
+                                            </>
+                                            :
+                                            <>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
+                                            </>
+                                    }
+                                </tr>
+                            )
+                        })}
+                        <tr>
+                            <td className={this.state.data?.is_reduced_price ? 'is-selected' : ''} >
+                                Loisirs - Etudiants - Chômeurs
+                            </td>
+                            {
+                                deadlineDate >= new Date()
+                                    ?
+                                    <>
+                                        <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                        </td>
+                                        <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                        </td>
+                                    </>
+                                    :
+                                    <>
+                                        <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                        </td>
+                                        <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                        </td>
+                                    </>
+                            }
+                        </tr>
+                    </tbody>
+                </Table>
+                <br />
+                <Text variant="large" block className={!this.state.data?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList' /> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
+                <Divider />
+                <Table className={!this.state.data?.is_transfer_needed ? 'is-line-through' : ''}>
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.param?.price?.transfer?.map((el, i) => {
+                            let currInterval = this.state.data?.is_transfer_needed && el.min_age <= getAge(this.state.data?.birthdate) && el.max_age >= getAge(this.state.data?.birthdate)
+                            return (
+                                <tr key={i} className={currInterval ? 'is-selected' : ''} >
+                                    <td>{el.label}</td>
+                                    <td>{el.price} €</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+                <br />
+                <Text variant="large" block ><Icon iconName='NumberedList' /> Hand en famille</Text>
+                <Divider />
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Licence</th>
+                            <th>Réduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.param?.price?.discount?.map((el, i) => {
+                            let currInterval = i === position
+                            return (
+                                <tr key={i} className={currInterval ? 'is-selected' : ''} >
+                                    <td>{el.number}<sup>è</sup> license</td>
+                                    <td>-{el.discount} €</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
+                <br />
+                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{price} €</b></Text>
+                <Divider />
+                <br />
+            </>
+        )
+    }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -1278,7 +1445,7 @@ const mapDispatchToProps = dispatch => {
         setBreadcrumb: data => dispatch(setBreadcrumb(data)),
         setCommand: data => dispatch(setCommand(data)),
         setMessageBar: (isDisplayed, type, message) => dispatch(setMessageBar(isDisplayed, type, message)),
-        setModal: (show, title, subTitle, callback) => dispatch(setModal(show, title, subTitle, callback)),
+        setModal: (show, title, subTitle, callback, content) => dispatch(setModal(show, title, subTitle, callback, content)),
     }
 }
 

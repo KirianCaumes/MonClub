@@ -16,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -83,7 +85,7 @@ class MemberMinorAdminType extends AbstractType
                         'value' => 1000
                     ])
                 ],
-            ])            
+            ])
             ->add('amount_payed_other', NumberType::class, [
                 'scale' => 2,
                 'constraints' => [
@@ -97,7 +99,7 @@ class MemberMinorAdminType extends AbstractType
                         'value' => 1000
                     ])
                 ],
-            ]) 
+            ])
             ->add('is_license_renewal')
             ->add('payment_notes')
             ->add('is_check_gest_hand')
@@ -135,15 +137,20 @@ class MemberMinorAdminType extends AbstractType
             ->add('teams', EntityType::class, [
                 'class' => Team::class,
                 'multiple' => true
-            ])            
+            ])
             ->add('season', EntityType::class, [
                 'class' => ParamSeason::class,
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
             ])
-            ->add('save', SubmitType::class);
+            ->add('save', SubmitType::class)
+            ->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                [$this, 'onPreSetData']
+            );
     }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -151,6 +158,27 @@ class MemberMinorAdminType extends AbstractType
             'csrf_protection' => false,
             'allow_extra_fields' => true
         ]);
+    }
+
+    //Disable some fields if its payed
+    public function onPreSetData(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if ($data->getIsPayed()) {
+            $form
+                ->add('amount_payed', NumberType::class, [
+                    'disabled' => true,
+                ])
+                ->add('amount_payed_other', NumberType::class, [
+                    'disabled' => true,
+                ])
+                ->add('payment_solution', EntityType::class, [
+                    'class' => ParamPaymentSolution::class,
+                    'disabled' => true,
+                ]);
+        }
     }
 
     public static function checkIsInscriptionDone($is_inscription_done, ExecutionContextInterface $context, $payload)

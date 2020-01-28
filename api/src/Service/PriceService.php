@@ -55,20 +55,26 @@ class PriceService
         }
 
         //Check families reduction
-        $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $this->paramService->getCurrentSeason()]);
-        $position = 1;
-        foreach ($members as $key => $mbr) {
-            if ($mbr === $member) {
-                $position = $key + 1;
-                break;
-            }
-        }
-        $reducFamily = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => $position]);
+        $reducFamily = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1)]);
         if ($reducFamily) {
             $price -= $reducFamily->getDiscount();
         }
 
         return $price;
+    }
+
+    /**
+     * Get position from member 
+     */
+    public function getPosition(Member $member)
+    {
+        $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $member->getSeason()], ['id' => 'ASC']);
+        foreach ($members as $key => $mbr) {
+            if ($mbr === $member) {
+                return $key;
+            }
+        }
+        return null;
     }
 
     /**

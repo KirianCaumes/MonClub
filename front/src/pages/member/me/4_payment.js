@@ -14,7 +14,7 @@ class _MembersMePayment extends React.PureComponent {
         this.state = {
             summary: {},
             isLoading: true,
-            paymentKey: 3
+            paymentKey: null
         }
     }
 
@@ -55,7 +55,7 @@ class _MembersMePayment extends React.PureComponent {
                     <MessageBar messageBarType={MessageBarType.warning} isMultiline={true} >
                         Attention, veuillez vérifier que tous les membres de votre famille ont bien été ajoutées et leurs documents sont complétés.<br />
                         Pour ajouter un nouveau membre, cliquez sur le bouton "Ajouter un membre" en haut de l'écran. Pour revenir en arrière, appuyant sur le bouton "Retour" en bas de l'écran.
-                </MessageBar>
+                    </MessageBar>
                     <br />
                     <Text variant="large" block><Icon iconName='NumberedList' /> Détails du paiement (des membres non payés)</Text>
                     <Divider />
@@ -101,7 +101,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     directionalHint={DirectionalHint.bottomCenter}
                                                     delay={TooltipDelay.zero}
                                                 >
-                                                    <Icon iconName="Info" style={{ margin: '5px 0 0 5px' }} />
+                                                    <Icon iconName="Info" style={{ margin: '5px 0 0 5px' }}  className="icon-info-label" />
                                                 </TooltipHost>
                                             </td>
                                         }

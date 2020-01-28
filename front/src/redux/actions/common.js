@@ -41,6 +41,6 @@ export function setLoading(payload) {
     return { type: IS_LOADING, payload }
 }
 
-export function setModal(show = false, title = '', subTitle = '', callback = () => null, content = <></>) {
+export function setModal(show = false, title = '', subTitle = '', callback = undefined, content = <></>) {
     return { type: SET_MODAL, payload: { show, title, subTitle, callback, content } }
 }

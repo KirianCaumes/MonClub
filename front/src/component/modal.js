@@ -18,9 +18,9 @@ class _Modal extends React.PureComponent {
                 }}
                 modalProps={{
                     isBlocking: true,
-                    styles: { main: { maxWidth: 450 } },
                     dragOptions: false
                 }}
+                maxWidth={"555px"}
             >
                 {modal.content}
                 <DialogFooter>
@@ -28,13 +28,15 @@ class _Modal extends React.PureComponent {
                         onClick={() => setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)}
                         text="Annuler"
                     />
-                    <PrimaryButton
-                        onClick={() => {
-                            modal.callback()
-                            setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)
-                        }}
-                        text="Oui"
-                    />
+                    {modal.callback && typeof modal.callback === "function" &&
+                        <PrimaryButton
+                            onClick={() => {
+                                modal.callback()
+                                setModal(false, modal.title, modal.subTitle, modal.callback, modal.content)
+                            }}
+                            text="Oui"
+                        />
+                    }
                 </DialogFooter>
             </Dialog>
         )

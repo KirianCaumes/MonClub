@@ -559,7 +559,10 @@ class MemberController extends FOSRestController
         }
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
-        return $this->handleView($this->view(['price' => $priceService->getPrice($member)]));
+        return $this->handleView($this->view([
+            'price' => $priceService->getPrice($member),
+            'position' => $priceService->getPosition($member)
+        ]));
     }
 
     /**
