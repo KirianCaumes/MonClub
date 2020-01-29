@@ -1,6 +1,7 @@
 import store from 'redux/store/index.js'
 import { signout } from 'redux/actions/user.js'
 import { dateToString } from './date.js';
+import { setMessageBar } from 'redux/actions/common.js';
 
 const
     GET = "GET",
@@ -9,6 +10,8 @@ const
     DELETE = "DELETE"
 
 var getFetch = (path, options = {}) => {
+    store.dispatch(setMessageBar(false))
+
     const baseUrl = "/api"
 
     options["mode"] = "cors"

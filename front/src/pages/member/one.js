@@ -74,7 +74,7 @@ class _MemberOne extends React.PureComponent {
                                     this.props.setBreadcrumb([
                                         { text: 'Membres', key: 'members' },
                                         { text: 'Tous les membres', key: 'all-members', onClick: () => history.push('/membres') },
-                                        { text: `${this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}`, key: 'member', isCurrentItem: true },
+                                        { text: <span className="is-capitalized">{this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</span>, key: 'member', isCurrentItem: true },
                                     ])
                                 }))
                                 .catch(err => {
@@ -1313,7 +1313,7 @@ class _MemberOne extends React.PureComponent {
         this.props.setModal(
             true,
             'Détail du tarif',
-            `Ensemble des informations tarifaires pour la saison actuelle (${this.props.param?.season?.find(x => x.is_current)?.label})`,
+            <>Ensemble des informations tarifaires pour la saison actuelle <span className="is-underline">({this.props.param?.season?.find(x => x.is_current)?.label})</span></>,
             undefined,
             <>
                 <Text variant="large" block><Icon iconName='NumberedList' /> Tarifs</Text>

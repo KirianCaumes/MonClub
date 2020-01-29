@@ -99,9 +99,7 @@ class MemberMajorType extends AbstractType
             ->add('amount_payed_other', NumberType::class, [
                 'disabled' => true,
             ]) 
-            ->add('is_license_renewal', CheckboxType::class, [
-                'disabled' => true,
-            ])
+            ->add('is_license_renewal')
             ->add('payment_notes', TextType::class, [
                 'disabled' => true,
             ])

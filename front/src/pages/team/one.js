@@ -1,12 +1,13 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Text, Icon } from 'office-ui-fabric-react'
+import { Label, TextField, DetailsList, SelectionMode, MessageBarType, Text, Icon, MaskedTextField } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import { history } from 'helper/history'
 import request from 'helper/request'
 import Loader from 'component/loader'
 import Divider from 'component/divider'
+import getWf from 'helper/getStepWf'
 
 class _TeamOne extends React.PureComponent {
     constructor(props) {
@@ -120,7 +121,7 @@ class _TeamOne extends React.PureComponent {
         const { readOnly, data, isLoading } = this.state
 
         if (isLoading) return <Loader />
-
+        
         return (
             <section id="team-one">
                 <div className="card" >
@@ -154,11 +155,72 @@ class _TeamOne extends React.PureComponent {
                                 errorMessage={this.state.errorField?.label_google_contact?.errors?.[0]}
                             />
                         </Columns.Column>
-                        <Columns.Column/>
-                        <Columns.Column/>
+                        <Columns.Column>
+                            <Label htmlFor="max_number_members">Nombre max. de membres</Label>
+                            <MaskedTextField
+                                id="max_number_members"
+                                value={data?.max_number_members?.toString() ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, max_number_members: isNaN(parseInt(ev.target.value)) ? null : parseInt(ev.target.value) } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.max_number_members?.errors?.[0]}
+                                mask="99"
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label htmlFor="member_years">Années de naissance des membres</Label>
+                            <TextField
+                                id="member_years"
+                                placeholder="Année de naissance des membres"
+                                value={data?.member_years ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, member_years: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.member_years?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                    </Columns>
+                    <Columns>
+                        <Columns.Column>
+                            <Label htmlFor="coaches">Coachs</Label>
+                            <TextField
+                                id="coaches"
+                                placeholder="Coachs"
+                                value={data?.coaches ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, coaches: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.coaches?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label htmlFor="trainers">Entraineurs</Label>
+                            <TextField
+                                id="trainers"
+                                placeholder="Entraineurs"
+                                value={data?.trainers ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, trainers: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.trainers?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column>
+                            <Label htmlFor="referent_parent">Parent(s) référent(s)</Label>
+                            <TextField
+                                id="referent_parent"
+                                placeholder="Parent(s) référent(s)"
+                                value={data?.referent_parent ?? ''}
+                                onChange={ev => this.setState({ data: { ...this.state.data, referent_parent: ev.target.value } })}
+                                borderless={readOnly}
+                                readOnly={readOnly}
+                                errorMessage={this.state.errorField?.referent_parent?.errors?.[0]}
+                            />
+                        </Columns.Column>
+                        <Columns.Column className="is-hidden-mobile" />
                     </Columns>
                 </div>
-                <br/>
+                <br />
                 <div className="card" >
                     <Text variant="large" block><Icon iconName='RecruitmentManagement' /> Les membres</Text>
                     <Divider />
@@ -193,6 +255,22 @@ class _TeamOne extends React.PureComponent {
                                     maxWidth: 200,
                                     isResizable: true,
                                     onRender: member => <span className="is-capitalized">{member?.season?.label}</span>
+                                },
+                                {
+                                    key: 'step',
+                                    name: 'Étape',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                    onRender: member => <span className="is-capitalized">{getWf(member)}</span>
+                                },
+                                {
+                                    key: 'user',
+                                    name: 'Utilisateur',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                    onRender: member => <span className="is-capitalized">{member.user?.username}</span>
                                 }
                             ]}
                             selectionMode={SelectionMode.none}

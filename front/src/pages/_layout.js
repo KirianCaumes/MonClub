@@ -160,7 +160,16 @@ class _Layout extends React.PureComponent {
                                 link: { padding: isBurgerOpen ? '0px 20px 0px 27px' : '0px 1.1em 0 0.9em' },
                                 linkText: { overflow: isBurgerOpen ? 'hidden' : 'visible' }
                             }}
-                            selectedKey={selectedKeyURL}
+                            selectedKey={(() => {
+                                if (selectedKeyURL.match(/\/membre\/.*/g)) {
+                                    return '/membres'
+                                } else if (selectedKeyURL.match(/\/equipe\/.*/g)) {
+                                    return '/equipes'
+                                } else if (selectedKeyURL.match(/\/utilisateur\/.*/g)) {
+                                    return '/utilisateurs'
+                                }
+                                return selectedKeyURL
+                            })()}
                             groups={this.filterMenu(menu)}
                         />
                     </aside>

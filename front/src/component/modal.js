@@ -4,6 +4,12 @@ import { setModal } from 'redux/actions/common'
 import { connect } from 'react-redux'
 
 class _Modal extends React.PureComponent {
+    componentDidUpdate(prevProps) {
+        if (prevProps.modal?.show !== this.props.modal?.show && this.props.modal?.show === true) {
+            setTimeout(() => document.querySelector('.ms-Modal-scrollableContent').scrollTop = 0, 50)
+        }
+    }
+
     render() {
         const { modal, setModal } = this.props
 

@@ -344,7 +344,7 @@ class Member
             $this->setIsPayed(false);
             $this->setAmountPayed(null);
             $this->setAmountPayedOther(null);
-            $this->setIsLicenseRenewal(false);
+            $this->setIsLicenseRenewal(true);
             $this->setPaymentNotes(null);
             $this->setIsCheckGestHand(false);
             $this->setIsInscriptionDone(false);

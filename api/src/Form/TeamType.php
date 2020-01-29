@@ -26,6 +26,11 @@ class TeamType extends AbstractType
                     new NotBlank(['message' => 'not_blank']),
                 ]
             ])
+            ->add('max_number_members')
+            ->add('member_years')
+            ->add('referent_parent')
+            ->add('coaches')
+            ->add('trainers')
             ->add('save', SubmitType::class);
     }
     public function configureOptions(OptionsResolver $resolver)

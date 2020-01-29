@@ -112,7 +112,7 @@ class UserController extends FOSRestController
         //Find user by id
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $id]);
         if (!$user) {
-            return $this->handleView($this->view(["message" => $translator->trans('user_not_found')]));
+            return $this->handleView($this->view(["message" => $translator->trans('user_not_found')], Response::HTTP_NOT_FOUND));
         }
 
         $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $user]);

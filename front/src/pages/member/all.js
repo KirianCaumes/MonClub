@@ -102,7 +102,7 @@ class _MembersAll extends ParentPage {
                         },
                         {
                             key: 'getExcelTracking',
-                            text: 'Excel suivis membres',
+                            text: 'Récapitulatif GestHand',
                             iconProps: { iconName: 'ExcelDocument' },
                             onClick: () => request.getExcelTracking()
                                 .then(file => dlBlob(file, `export_excel_suivis-${stringToCleanString(new Date())}.xlsx`))
@@ -110,7 +110,7 @@ class _MembersAll extends ParentPage {
                         },
                         {
                             key: 'getExcelGeneral',
-                            text: 'Excel infos générales',
+                            text: 'Récapitulatif des équipes',
                             iconProps: { iconName: 'ExcelDocument' },
                             onClick: () => request.getExcelGeneral()
                                 .then(file => dlBlob(file, `export_excel_informations_generales-${stringToCleanString(new Date())}.xlsx`))
@@ -118,7 +118,7 @@ class _MembersAll extends ParentPage {
                         },
                         {
                             key: 'getExcelCalculHand',
-                            text: 'Excel calcul hand',
+                            text: 'Récapitulatif des paiements',
                             iconProps: { iconName: 'ExcelDocument' },
                             onClick: () => request.getExcelCalculhand()
                                 .then(file => dlBlob(file, `export_excel_calculhand-${stringToCleanString(new Date())}.xlsx`))

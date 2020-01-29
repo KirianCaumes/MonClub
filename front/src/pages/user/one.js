@@ -8,6 +8,7 @@ import request from 'helper/request'
 import Loader from 'component/loader'
 import { ROLE_COACH } from 'helper/constants'
 import Divider from 'component/divider'
+import getWf from 'helper/getStepWf'
 
 class _UserOne extends React.PureComponent {
     constructor(props) {
@@ -17,7 +18,7 @@ class _UserOne extends React.PureComponent {
             isLoading: false,
             data: { ...props?.data?.user ?? {} },
             members: [...props?.data?.members ?? []],
-            initData: { ...props?.data ?? {} },
+            initData: { ...props?.data?.user ?? {} },
             errorField: {}
         }
     }
@@ -135,7 +136,7 @@ class _UserOne extends React.PureComponent {
                                 readOnly ?
                                     <TextField
                                         id="enabled"
-                                        defaultValue={param?.choices.find(x => x.key === data?.enabled?.toString()).text ?? ''}
+                                        defaultValue={param?.choices?.find(x => x.key === data?.enabled?.toString())?.text ?? ''}
                                         borderless={true}
                                         readOnly={true}
                                         errorMessage={this.state.errorField?.enabled?.errors?.[0]}
@@ -248,6 +249,22 @@ class _UserOne extends React.PureComponent {
                                     maxWidth: 200,
                                     isResizable: true,
                                     onRender: member => <span className="is-capitalized">{member?.season?.label}</span>
+                                },
+                                {
+                                    key: 'step',
+                                    name: 'Étape',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                    onRender: member => <span className="is-capitalized">{getWf(member)}</span>
+                                },
+                                {
+                                    key: 'team',
+                                    name: 'Équipe(s)',
+                                    minWidth: 70,
+                                    maxWidth: 200,
+                                    isResizable: true,
+                                    onRender: member => <span className="is-capitalized">{member.teams?.map(team => team.label)?.join(', ')}</span>
                                 }
                             ]}
                             selectionMode={SelectionMode.none}

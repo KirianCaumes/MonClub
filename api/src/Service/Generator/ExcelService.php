@@ -6,6 +6,7 @@ use App\Constants;
 use App\Entity\Member;
 use App\Entity\Param\ParamPriceTransfer;
 use App\Entity\Team;
+use App\Entity\User;
 use App\Service\DateService;
 use App\Service\ParamService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,28 +68,39 @@ class ExcelService
             $sheet = $this->spreadsheet->getActiveSheet();
             $sheet->setTitle($team->getLabel());
 
-            $sheet->fromArray(['Nom', 'Prenom', 'Date naissance', 'Email', 'Email Parent 1', 'Email Parent 2', 'Adresse', 'Ville', 'Code postal', 'Tel', 'Tel Parent 1', 'Tel Parent 2', 'Prof. Parent 1', 'Prof. Parent 2'], null, 'A1');
+            $sheet->fromArray(['', 'Saison ' . $this->paramService->getCurrentSeason()->getLabel(), 'MAX ' . $team->getMaxNumberMembers(), 'Coachs : ' . $team->getCoaches(), 'Entraineurs : ' . $team->getTrainers()], null, 'A1');
+            $sheet->fromArray(['', 'Effectif ' . $team->getLabel(), $team->getMemberYears(), 'Parent référent : ' . $team->getReferentParent()], null, 'A2');
+            $sheet->getStyle('D2')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('F1C232');
+
+            $sheet->fromArray(['', 'Nom', 'Prenom', 'Date naissance', 'Email', 'Email Parent 1', 'Email Parent 2', 'Adresse', 'Ville', 'Code postal', 'Tel', 'Tel Parent 1', 'Tel Parent 2', 'Prof. Parent 1', 'Prof. Parent 2', 'Evacuation', 'Transport', 'Image', 'Retour maison', 'Newsletter'], null, 'A4');
+            $sheet->getStyle('A4:U4')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('E5B8B7');
 
             $members = $this->em->getRepository(Member::class)->findByTeamsAndSeason([$team], $this->paramService->getCurrentSeason());
 
-            $row = 2;
-            foreach ($members as $member) {
-                $sheet->setCellValue('A' . $row, ucwords($member->getLastname()));
-                $sheet->setCellValue('B' . $row, ucwords($member->getFirstName()));
-                $sheet->setCellValue('C' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('d/m/Y') : ''));
-                $sheet->setCellValue('D' . $row, ($member->getEmail() ? $member->getEmail() : ''));
-                $sheet->setCellValue('E' . $row, ($member->getParentOneEmail() ? $member->getParentOneEmail() : ''));
-                $sheet->setCellValue('F' . $row, ($member->getParentTwoEmail() ? $member->getParentTwoEmail() : ''));
-                $sheet->setCellValue('G' . $row, ($member->getStreet() ? $member->getStreet() : ''));
-                $sheet->setCellValue('H' . $row, ($member->getCity() ? $member->getCity() : ''));
-                $sheet->setCellValue('I' . $row, ($member->getPostalCode() ? $member->getPostalCode() : ''));
-                $sheet->setCellValue('J' . $row, ($member->getPhoneNumber() ? $member->getPhoneNumber() : ''));
-                $sheet->setCellValue('K' . $row, ($member->getParentOnePhoneNumber() ? $member->getParentOnePhoneNumber() : ''));
-                $sheet->setCellValue('L' . $row, ($member->getParentTwoPhoneNumber() ? $member->getParentTwoPhoneNumber() : ''));
-                $sheet->setCellValue('M' . $row, ($member->getParentOneProfession() ? $member->getParentOneProfession() : ''));
-                $sheet->setCellValue('N' . $row, ($member->getParentTwoProfession() ? $member->getParentTwoProfession() : ''));
+            $row = 5;
+            foreach ($members as $index => $member) {
+                $sheet->setCellValue('A' . $row, $index);
+                $sheet->setCellValue('B' . $row, ucwords($member->getLastname()));
+                $sheet->setCellValue('C' . $row, ucwords($member->getFirstName()));
+                $sheet->setCellValue('D' . $row, ($member->getBirthdate() ? $member->getBirthdate()->format('d/m/Y') : ''));
+                $sheet->setCellValue('E' . $row, ($member->getEmail() ? $member->getEmail() : ''));
+                $sheet->setCellValue('F' . $row, ($member->getParentOneEmail() ? $member->getParentOneEmail() : ''));
+                $sheet->setCellValue('G' . $row, ($member->getParentTwoEmail() ? $member->getParentTwoEmail() : ''));
+                $sheet->setCellValue('H' . $row, ($member->getStreet() ? $member->getStreet() : ''));
+                $sheet->setCellValue('I' . $row, ($member->getCity() ? $member->getCity() : ''));
+                $sheet->setCellValue('J' . $row, ($member->getPostalCode() ? $member->getPostalCode() : ''));
+                $sheet->setCellValue('K' . $row, ($member->getPhoneNumber() ? $member->getPhoneNumber() : ''));
+                $sheet->setCellValue('L' . $row, ($member->getParentOnePhoneNumber() ? $member->getParentOnePhoneNumber() : ''));
+                $sheet->setCellValue('M' . $row, ($member->getParentTwoPhoneNumber() ? $member->getParentTwoPhoneNumber() : ''));
+                $sheet->setCellValue('N' . $row, ($member->getParentOneProfession() ? $member->getParentOneProfession() : ''));
+                $sheet->setCellValue('O' . $row, ($member->getParentTwoProfession() ? $member->getParentTwoProfession() : ''));
+                $sheet->setCellValue('P' . $row, ($member->getIsEvacuationAllow() ? 'Oui' : 'Non'));
+                $sheet->setCellValue('R' . $row, ($member->getIsTransportAllow() ? 'Oui' : 'Non'));
+                $sheet->setCellValue('S' . $row, ($member->getIsImageAllow() ? 'Oui' : 'Non'));
+                $sheet->setCellValue('T' . $row, ($member->getIsReturnHomeAllow() ? 'Oui' : 'Non'));
+                $sheet->setCellValue('U' . $row, ($member->getIsNewsLetterAllow() ? 'Oui' : 'Non'));
 
-                $sheet->getStyle('A' . $row . ':N' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':U' . $row)->getFill()
                     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                     ->getStartColor()->setARGB((function () use ($member) {
                         if ($member->getIsDocumentComplete() && !$member->getIsPayed() && !$member->getIsCheckGestHand() && !$member->getIsInscriptionDone()) {
@@ -113,7 +125,7 @@ class ExcelService
             $sheet = $this->setGeneralStyle($sheet, $row);
 
             //Freeze first row
-            $sheet->freezePane('A2');
+            $sheet->freezePane('A5');
         }
 
         return new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->spreadsheet);
@@ -177,7 +189,7 @@ class ExcelService
         return new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($this->spreadsheet);
     }
 
-    // Generate excel 'infos general'.
+    // Generate excel 'CalculHand'.
     public function generateExcelCalculhand()
     {
         $sheet = $this->spreadsheet->getActiveSheet();
