@@ -23,6 +23,11 @@ div#root {
       }
     }
     .navbar-menu {
+      @include until($tablet) {
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
       .navbar-start {
         // background-color: $grey;
         i {
@@ -108,7 +113,10 @@ div#root {
         background-color: rgba($grey, 0.9);
         .ms-OverflowSet-overflowButton {
           > button {
-            background: $grey;
+            background: transparent;
+            i {
+              color: $dark-blue;
+            }
           }
         }
         .ms-OverflowSet-item {
@@ -145,10 +153,11 @@ div#root {
       div.content {
         padding: 10px 35px;
         @include until($tablet) {
-          padding: 10px 0;
+          padding: 10px 15px;
         }
         min-height: 100%;
-        // background-color: $light-grey;
+        max-width: 1350px;
+        margin: 0 auto;
         > div:nth-child(2) {
           .ms-MessageBar {
             @include ms-depth-16;
@@ -175,7 +184,7 @@ div#root {
             &:last-child {
               span,
               button {
-                text-shadow: 0px 0px 2px rgba(255,255,255, 0.2);
+                text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.4);
                 color: $darker-blue;
               }
             }

@@ -213,10 +213,10 @@ class _MembersMe extends React.PureComponent {
             <section id="members-me">
                 <div className="card" >
                     <div className="head">
-                        <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label}</h1>
+                        <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label} </h1>
                     </div>
-                    <Text variant="large" block className="has-text-centered"><b>Inscription saison {param?.season?.find(x => x.is_current)?.label}</b></Text>
-                    <br />
+                    <Text variant="large" block className="has-text-centered"><b> Inscription saison {param?.season?.find(x => x.is_current)?.label}</b> <span role="img" aria-label="handball">🤾</span></Text>
+                    <br  className="is-hidden-mobile"/>
 
                     <Workflow
                         className="is-hidden-mobile"
@@ -262,8 +262,7 @@ class _MembersMe extends React.PureComponent {
                 <br />
                 {isLoading ? <Loader /> :
                     <>
-                        {/* <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres créés</Text>
-                            <Divider /> */}
+                        {/* <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres créés</Text> */}
                         {
                             page <= 3
                                 ?

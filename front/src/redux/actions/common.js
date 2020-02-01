@@ -14,7 +14,12 @@ export function setMessageBar(isDisplayed, type = null, message = null) {
     switch (type) {
         case MessageBarType.error:
             if (message?.error?.code === 403) type = MessageBarType.blocked
-            message = message.message ?? message.error?.exception?.[0]?.message ?? message.error?.message ?? 'Une erreur est survenue.'
+            message =
+                message?.message ??
+                message?.error?.exception?.[0]?.message ??
+                message?.error?.message ??
+                (message?.form?.children && Object.keys(message?.form?.children)?.length > 0 ? 'Un ou plusieurs champs ne sont pas correctement remplis.' : undefined) ??
+                'Une erreur est survenue.'
             break
         case MessageBarType.success:
             message = message ? message : "L'opération s'est correctement déroulée."

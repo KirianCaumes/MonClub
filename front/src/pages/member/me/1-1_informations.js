@@ -6,6 +6,7 @@ import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { stringToCleanString, stringToDate, isMajor } from 'helper/date'
 import { editMember } from 'redux/actions/member'
 import Divider from 'component/divider'
+import Emoji from 'component/emoji'
 
 class _MembersMeInformations extends React.PureComponent {
     constructor(props) {
@@ -94,9 +95,15 @@ class _MembersMeInformations extends React.PureComponent {
                             }
                         </Columns.Column>
                         <Separator vertical className="is-hidden-mobile" />
-                        <Columns.Column>
-                            cc
-                    </Columns.Column>
+                        <Separator className=" is-hidden-desktop " />
+                        <Columns.Column className="has-text-justified">
+                            <Text>
+                                Pourquoi nous indiquer qui vos informations ? <Emoji symbol="🤔" label="thinking" /><br /><br />
+                                Vous êtes unique, et c’est pour cela que le  <b className="is-italic">THBC</b> souhaite savoir ces quelques informations de base pour vous identifier parmi les tous les membres du club. <Emoji symbol="🏅" label="medal" /><br /><br />
+                                Grâce à votre date de naissance et votre sexe, le  <b className="is-italic">THBC</b> sera en mesure de vous attribuer à une équipe où vous serez capable de vous épanouir, progresser et surtout, de vous amuser ! <Emoji symbol="🤾‍♀️" label="handball" /><br /><br />
+                                Vos données sont soumises aux lois du RGPD (protection et droit des données), ainsi toutes informations sont sécurisées, privées et vous pouvez faire une demande d’anonymisation à tout moment. <Emoji symbol="🛡️" label="shield" />
+                            </Text>
+                        </Columns.Column>
                     </Columns>
                 </div>
                 <br />
@@ -150,7 +157,13 @@ class _MembersMeInformations extends React.PureComponent {
                             />
                         </Columns.Column>
                         <Separator vertical className="is-hidden-mobile" />
-                        <Columns.Column>
+                        <Separator className=" is-hidden-desktop " />
+                        <Columns.Column className="has-text-justified">
+                            <Text>
+                                Que ce soit pour vous communiquer des informations relatives au club, de vous joindre en cas d’urgence ou de simplement échanger, le  <b className="is-italic">THBC</b> souhaite connaître votre e-mail et votre numéro de téléphone. <Emoji symbol="📇" label="contact" /><br /><br />
+                                Ces informations sont bien évidemment confidentielles et ne seront pas utilisées à d’autres fins que celles du club. <Emoji symbol="🔐" label="locker" /><br /><br />
+                                Renseigner votre profession (facultatif) permet au club de mieux vous connaître et de, pourquoi pas, vous solliciter sur des compétences que vous possédez, si vous désirez participer ponctuellement au bon fonctionnement du club. <Emoji symbol="🤾" label="handball" />
+                            </Text>
                         </Columns.Column>
                     </Columns>
                 </div>
@@ -197,7 +210,14 @@ class _MembersMeInformations extends React.PureComponent {
                             />
                         </Columns.Column>
                         <Separator vertical className="is-hidden-mobile" />
-                        <Columns.Column>
+                        <Separator className=" is-hidden-desktop " />
+                        <Columns.Column className="has-text-justified">
+                            <Text>
+                                Dans certains cas exceptionnels, le <b className="is-italic">THBC</b> peut-être amené à vous envoyer un courrier. <Emoji symbol="✉️" label="envelope" /><br /><br />
+                                Veuillez donc renseigner une adresse postale valide à laquelle le membre peut être joint.<Emoji symbol="🤾‍♂️" label="handball" /><br /><br />
+                                Ces informations sont également confidentielles et ne seront pas utilisées à d’autres fins que celles du club. <Emoji symbol="🔐" label="locker" />
+
+                            </Text>
                         </Columns.Column>
                     </Columns>
                 </div>
@@ -334,7 +354,7 @@ class _MembersMeInformations extends React.PureComponent {
                 }
                 <div className="card">
 
-                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Élément complémentaires</Text>
+                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Éléments complémentaires</Text>
                     <Divider />
                     <Checkbox
                         label="Demande de transfert de club (cocher si oui)"
@@ -342,10 +362,10 @@ class _MembersMeInformations extends React.PureComponent {
                         onChange={(ev, isChecked) => this.props.editMember({ is_transfer_needed: isChecked }, memberIndex)}
                         disabled={readOnly}
                     />
-                    <br />
                     {
                         isMajor(member?.birthdate) &&
                         <>
+                            <br />
                             <Checkbox
                                 label="Demande de réduction chomeur ou étudiant (cocher si oui)"
                                 defaultChecked={member?.is_reduced_price}
@@ -353,11 +373,6 @@ class _MembersMeInformations extends React.PureComponent {
                                 disabled={readOnly || member?.is_non_competitive}
                             />
                             <br />
-                        </>
-                    }
-                    {
-                        isMajor(member?.birthdate) &&
-                        <>
                             <Checkbox
                                 label="Je souhaite jouer uniquement en loisirs et ainsi bénéficier d'une réduction (cocher si oui)"
                                 defaultChecked={member?.is_non_competitive}
