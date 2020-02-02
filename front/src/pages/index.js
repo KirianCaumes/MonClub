@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from 'redux/actions/common'
 import { Bar } from 'react-chartjs-2'
 import { stringToShortCleanString } from 'helper/date'
+import { history } from 'helper/history'
+import Divider from 'component/divider'
 
 class _Index extends React.PureComponent {
     constructor(props) {
@@ -26,13 +28,14 @@ class _Index extends React.PureComponent {
                         <Container className="flex-row">
                             <img src={require('asset/img/logo.png')} alt="THBC" className="is-hidden-touch" />
                             <Heading className="is-capitalized flex-col">
-                                Bienvenue : {this.props.me?.username?.split('@')?.[0]}
+                                Bienvenue : {this.props.me?.username}
                             </Heading>
                         </Container>
                     </Hero.Body>
                 </Hero>
                 <br />
-                <Columns className="is-vcentered is-desktop">
+                <br />
+                <Columns className="is-vcentered is-desktop infos">
                     <Columns.Column>
                         <div className="card has-text-centered">
                             <div className="flex-col">
@@ -43,63 +46,88 @@ class _Index extends React.PureComponent {
                         </div>
                     </Columns.Column>
                     <Columns.Column>
-                        <Columns>
-                            {this.props.data?.infos?.users &&
-                                <Columns.Column>
-                                    <div className="card has-text-centered">
-                                        <div className="flex-col">
-                                            <Text variant="xxLarge" nowrap block>
-                                                <Icon iconName='ContactList' />&nbsp;{this.props.data?.infos?.users}
-                                            </Text>
-                                            <Text variant="large" nowrap block>
-                                                Utilisateurs
-                                            </Text>
-                                        </div>
-                                    </div>
-                                </Columns.Column>
-                            }
+                        <Columns className="is-vcentered" >
                             <Columns.Column>
-                                <div className="card has-text-centered">
+                                <div className="card" onClick={() => history.push(`/membres/moi`)}>
                                     <div className="flex-col">
-                                        <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='RecruitmentManagement' />&nbsp;{this.props.data?.infos?.members}
-                                        </Text>
+                                        <img src={require('asset/img/bg2.jpg')} alt="THBC" />
+                                        <div style={{ height: '12.5px' }} />
                                         <Text variant="large" nowrap block>
-                                            Membres
+                                            Mes membres
                                         </Text>
-                                    </div>
-                                </div>
-                            </Columns.Column>
-                        </Columns>
-                        <Columns>
-                            <Columns.Column>
-                                <div className="card has-text-centered">
-                                    <div className="flex-col">
-                                        <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='UserFollowed' />&nbsp;{this.props.data?.infos?.membersOk}
-                                        </Text>
-                                        <Text variant="large" block>
-                                            Membres validés
-                                        </Text>
+                                        <Divider style={{ marginBottom: 0 }} />
                                     </div>
                                 </div>
                             </Columns.Column>
                             <Columns.Column>
-
-                                <div className="card has-text-centered">
+                                <div className="card" onClick={() => null} style={{ cursor: 'not-allowed' }}>
                                     <div className="flex-col">
-                                        <Text variant="xxLarge" nowrap block>
-                                            <Icon iconName='UserOptional' />&nbsp;{this.props.data?.infos?.membersPending}
+                                        <img src={require('asset/img/bg2.jpg')} alt="THBC" />
+                                        <div style={{ height: '12.5px' }} />
+                                        <Text variant="large" nowrap block>
+                                            La boutique
                                         </Text>
-                                        <Text variant="large" block>
-                                            Membre en attente
-                                        </Text>
+                                        <Divider style={{ marginBottom: 0 }} />
                                     </div>
                                 </div>
                             </Columns.Column>
                         </Columns>
                     </Columns.Column>
                 </Columns>
+
+                <Columns className="is-vcentered kpi">
+                    {this.props.data?.infos?.users &&
+                        <Columns.Column>
+                            <div className="card has-text-centered">
+                                <div className="flex-col">
+                                    <Text variant="xxLarge" nowrap block>
+                                        <Icon iconName='ContactList' />&nbsp;{this.props.data?.infos?.users}
+                                    </Text>
+                                    <Text variant="large" nowrap block>
+                                        Utilisateurs inscris
+                                        </Text>
+                                </div>
+                            </div>
+                        </Columns.Column>
+                    }
+                    <Columns.Column>
+                        <div className="card has-text-centered">
+                            <div className="flex-col">
+                                <Text variant="xxLarge" nowrap block>
+                                    <Icon iconName='RecruitmentManagement' />&nbsp;{this.props.data?.infos?.members}
+                                </Text>
+                                <Text variant="large" nowrap block>
+                                    Membres créés
+                                </Text>
+                            </div>
+                        </div>
+                    </Columns.Column>
+                    <Columns.Column>
+                        <div className="card has-text-centered">
+                            <div className="flex-col">
+                                <Text variant="xxLarge" nowrap block>
+                                    <Icon iconName='UserFollowed' />&nbsp;{this.props.data?.infos?.membersOk}
+                                </Text>
+                                <Text variant="large" nowrap block>
+                                    Membres validés
+                                        </Text>
+                            </div>
+                        </div>
+                    </Columns.Column>
+                    <Columns.Column>
+                        <div className="card has-text-centered">
+                            <div className="flex-col">
+                                <Text variant="xxLarge" nowrap block>
+                                    <Icon iconName='UserOptional' />&nbsp;{this.props.data?.infos?.membersPending}
+                                </Text>
+                                <Text variant="large" nowrap block>
+                                    Membre en attente
+                                        </Text>
+                            </div>
+                        </div>
+                    </Columns.Column>
+                </Columns>
+
                 {this.props?.data?.activity_historic?.length > 0 &&
                     <>
                         <div className="card graph">
@@ -134,8 +162,9 @@ class _Index extends React.PureComponent {
                         <br />
                     </>
                 }
+                <br />
 
-                <div className="card has-text-centered">
+                <div className="card has-text-centered contact">
                     <p>En cas de soucis, veuillez contacter le club : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></p>
                 </div>
             </section>

@@ -657,8 +657,11 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('payment_solution_not_found')], Response::HTTP_NOT_FOUND));
         }
 
-        //Set amount other pay if solution 3
-        if ($paymentSolution->getId() === 3) {
+
+        if ($paymentSolution->getId() === 1) { //If paypal
+            //TODO
+            $member->setAmountPayed(null);
+        } else if ($paymentSolution->getId() === 3) { //Set amount other pay if solution 3 "cheque & coupons"
             foreach ($data['each'] as $el) {
                 foreach ($members as $member) {
                     if ($member->getId() === $el['id']) {
@@ -672,15 +675,13 @@ class MemberController extends FOSRestController
             }
         } else {
             foreach ($members as $member) {
-                $member->setAmountPayedOther(null);
+                $member->setAmountPayed($priceService->getPrice($member));
             }
         }
 
-        //TODO : connect return api payment 
         $em = $this->getDoctrine()->getManager();
         foreach ($members as $member) {
             $member->setIsPayed(true);
-            $member->setAmountPayed($priceService->getPrice($member));
             $member->setPaymentSolution($paymentSolution);
             $em->persist($member);
         }

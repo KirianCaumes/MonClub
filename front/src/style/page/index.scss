@@ -1,6 +1,6 @@
 #index {
   .hero {
-    background: linear-gradient(to left bottom, #2b6ca3 0%, #2b6ca3 20%, #0f3375);
+    background: linear-gradient(to left top, rgba($blue, 0.9) 20%, rgba($dark-blue, 0.9));
     // background: linear-gradient(to right, #2b6ca3 0%, #2b6ca3 75%, #0f3375);
     border-radius: 3px;
     @include ms-depth-16;
@@ -23,28 +23,31 @@
     }
   }
   > .columns {
-    .card {
-      height: 150px;
-      i {
-        color: $dark-blue;
+    &.infos {
+      .columns {
+        .card {
+          cursor: pointer;
+        }
       }
     }
-    > .column:first-child {
+    &.kpi {
       .card {
-        @include from($tablet) {
-          min-height: 324px;
-        }
-        height: auto;
-        > div {
-          text-align: justify;
-          overflow: hidden;
+        i {
+          color: $dark-blue;
         }
       }
     }
   }
+
   .graph {
+    // background: linear-gradient(to left top, rgba($blue, 0.5) 20%, rgba($dark-blue,0.9));
+    // background: linear-gradient(to left top, rgba(white, 0.9) 20%, white);
     > div {
       height: 250px;
     }
+  }
+
+  .contact {
+    background: linear-gradient(to left top, rgba($blue, 1), rgba(white, 1) 25%, rgba(white, 1));
   }
 }

@@ -7,6 +7,7 @@ import request from 'helper/request'
 import { Table } from 'react-bulma-components'
 import Loader from 'component/loader'
 import Divider from 'component/divider'
+import { PayPalButton } from "react-paypal-button-v2"
 
 class _MembersMePayment extends React.PureComponent {
     constructor(props) {
@@ -14,7 +15,7 @@ class _MembersMePayment extends React.PureComponent {
         this.state = {
             summary: {},
             isLoading: true,
-            paymentKey: null
+            paymentKey: 1
         }
     }
 
@@ -28,8 +29,12 @@ class _MembersMePayment extends React.PureComponent {
             .finally(() => this.setState({ isLoading: false }))
     }
 
-    pay() {
-        request.pay({ payment_solution: this.state.paymentKey, each: this.state.summary?.each })
+    pay(paypalInfos = null) {
+        request.pay({
+            payment_solution: this.state.paymentKey,
+            each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
+            paypalInfos                                  //Use for paymentKey 1 "paypal"   
+        })
             .then(res => {
                 this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
                 this.props.setMembers(res)
@@ -101,7 +106,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     directionalHint={DirectionalHint.bottomCenter}
                                                     delay={TooltipDelay.zero}
                                                 >
-                                                    <Icon iconName="Info" style={{ margin: '5px 0 0 5px' }}  className="icon-info-label" />
+                                                    <Icon iconName="Info" style={{ margin: '5px 0 0 5px' }} className="icon-info-label" />
                                                 </TooltipHost>
                                             </td>
                                         }
@@ -155,13 +160,36 @@ class _MembersMePayment extends React.PureComponent {
                                                 </Text>
                                                     <br />
                                                     <br />
-                                                    <PrimaryButton
+                                                    {/* <PrimaryButton
                                                         text="Paypal"
                                                         iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
                                                         styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                         onClick={() => this.pay()}
                                                         disabled={true}
-                                                    />
+                                                    /> */}
+                                                    <div style={{ width: '300px' }}>
+                                                        <PayPalButton
+                                                            style={{
+                                                                layout: 'vertical',
+                                                                color: 'white',
+                                                                shape: 'rect',
+                                                                label: 'pay',
+                                                                // tagline: 'false'
+                                                            }}
+                                                            options={{
+                                                                clientId: "AdsT-hu8QLr0cOBxKYnFhbYnriqnwf8v58eSNZoTrbs0Tn1w2dbEUZBGJ_IWdyJjm5PmbOQVbzigVZIr",
+                                                                currency: "EUR"
+                                                            }}
+                                                            amount={summary?.total ?? 0}
+                                                            shippingPreference="NO_SHIPPING"
+                                                            onSuccess={(details, data) => {
+                                                                console.log(JSON.stringify(details), JSON.stringify(data))
+                                                                return this.pay({ details, data })
+                                                            }}
+                                                            catchError={err => this.props.setMessageBar(true, MessageBarType.error, err)}
+                                                            onError={err => this.props.setMessageBar(true, MessageBarType.error, err)}
+                                                        />
+                                                    </div>
                                                 </>
                                             )
                                         case 2:
