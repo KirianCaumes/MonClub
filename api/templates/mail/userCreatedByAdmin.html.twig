@@ -1,0 +1,19 @@
+{% extends "mail/_base.html.twig" %}
+
+{% block preheader %}{% endblock %}
+
+{% block textOne %}
+	Un administrateur vous a créé un compte sur la plateforme Mon Club.
+{% endblock %}
+
+{% block textTwo %}
+	Veuillez réinitialiser votre mot de passe pour y accéder en cliquant sur le bouton ci-dessous, puis suivez les instructions.
+{% endblock %}
+
+{% block url %}
+	{{baseUrl}}/motdepasse-oublie/{{token}}
+{% endblock %}
+
+{% block urlText %}
+	Réinitialiser votre mot de passe
+{% endblock %}
