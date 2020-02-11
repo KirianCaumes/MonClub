@@ -77,7 +77,7 @@ class _Login extends React.PureComponent {
                     </div>
                     <br />
                     <Text>
-                        Pas encore inscrit ? Créer votre compte <Link to="/register" className="is-underline">ici</Link>
+                        Pas encore inscrit ? Créer votre compte <Link to="/inscrire" className="is-underline">ici</Link>
                     </Text>
                     <br />
                     <Text>

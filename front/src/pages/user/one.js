@@ -53,18 +53,33 @@ class _UserOne extends React.PureComponent {
                 iconProps: { iconName: 'Save' },
                 onClick: () => {
                     this.setState({ isLoading: true, readOnly: true }, () => {
-                        this.props.setCommand([])
-                        request.editUser(this.props.match?.params?.id, { ...this.state.data })
-                            .then(res => this.setState({ data: res, errorField: {} }, () => {
-                                this.props.setCommand(commandRead)
-                                this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été modifiée.')
-                            }))
-                            .catch(err => {
-                                this.props.setCommand(commandEdit)
-                                this.setState({ readOnly: false, errorField: err?.form?.children })
-                                this.props.setMessageBar(true, MessageBarType.error, err)
-                            })
-                            .finally(() => this.setState({ isLoading: false }))
+                        if (!!this.props.match?.params?.id) {
+                            this.props.setCommand([])
+                            request.editUser(this.props.match?.params?.id, { ...this.state.data })
+                                .then(res => this.setState({ data: res, errorField: {} }, () => {
+                                    this.props.setCommand(commandRead)
+                                    this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été modifiée.')
+                                }))
+                                .catch(err => {
+                                    this.props.setCommand(commandEdit)
+                                    this.setState({ readOnly: false, errorField: err?.form?.children })
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
+                                })
+                                .finally(() => this.setState({ isLoading: false }))
+                        } else {
+                            this.props.setCommand([])
+                            request.createUser({ ...this.state.data })
+                                .then(res => {
+                                    this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été créé.')
+                                    history.push(`/utilisateur/${res?.id}`)
+                                })
+                                .catch(err => {
+                                    this.props.setCommand(commandEdit)
+                                    this.setState({ isLoading: false, readOnly: false, errorField: err?.form?.children })
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
+                                })
+
+                        }
                     })
                 }
             },
@@ -89,13 +104,15 @@ class _UserOne extends React.PureComponent {
                     <Divider />
                     <Columns>
                         <Columns.Column>
-                            <Label disabled={!readOnly} htmlFor="username">Nom</Label>
+                            <Label disabled={!readOnly} required htmlFor="username">Email</Label>
                             <TextField
                                 id="username"
                                 placeholder="Nom"
-                                value={data?.username ?? ''}
-                                borderless={true}
-                                readOnly={true}
+                                defaultValue={data?.username ?? ''}
+                                onBlur={ev => this.setState({ data: { ...this.state.data, username: ev.target.value } })}
+                                borderless={readOnly ? true : this.props.match?.params?.id}
+                                readOnly={readOnly ? true : this.props.match?.params?.id}
+                                errorMessage={this.state.errorField?.username?.errors?.[0]}
                             />
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
@@ -118,7 +135,7 @@ class _UserOne extends React.PureComponent {
                                         options={[...this.props.param?.roles]?.map((x, i) => { return { key: x, text: x } })}
                                         errorMessage={this.state.errorField?.roles?.errors?.[0]}
                                         onChange={(ev, item) => {
-                                            const newSelectedItems = [...data.roles]
+                                            const newSelectedItems = [...data?.roles]
                                             if (item.selected) {
                                                 newSelectedItems.push(item.key)
                                             } else {
@@ -153,7 +170,7 @@ class _UserOne extends React.PureComponent {
                         </Columns.Column>
                         <Columns.Column size="one-quarter">
                             {
-                                data?.roles.includes(ROLE_COACH) &&
+                                data?.roles?.includes(ROLE_COACH) &&
                                 <>
                                     <Label htmlFor="teams">Équipe(s)</Label>
                                     {

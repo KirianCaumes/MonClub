@@ -499,11 +499,30 @@ export default {
 
         return getFetch(url, options)
     },
+    getNewUser: (id) => {
+        const url = ["user", "new"]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
     getOneUser: (id) => {
         const url = ["user", id]
 
         var options = {
             method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    createUser: (body) => {
+        const url = ["user"]
+
+        var options = {
+            method: POST,
+            body: JSON.stringify(body)
         }
 
         return getFetch(url, options)

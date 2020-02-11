@@ -52,7 +52,15 @@ class _UsersAll extends ParentPage {
             { text: 'Les comptes', key: 'users', isCurrentItem: true },
         ])
 
-        this.props.setCommand([])
+
+        this.props.setCommand([
+            {
+                key: 'newItem',
+                text: 'Nouveau',
+                iconProps: { iconName: 'Add' },
+                onClick: () => history.push('/utilisateur/nouveau')
+            },
+        ])
 
         this.setState({ isLoading: true }, () => {
             request.getAllUsers()

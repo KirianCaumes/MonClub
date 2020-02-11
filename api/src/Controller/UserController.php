@@ -10,8 +10,11 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use App\Entity\User;
+use App\Form\User\UserAdminNewType;
 use App\Form\User\UserAdminType;
+use App\Service\MailService;
 use App\Service\ParamService;
+use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +57,7 @@ class UserController extends FOSRestController
             $datesIntval = [];
             for ($i = 0; $i < 30; $i++) array_push($datesIntval, date('Y-m-d', strtotime('today - ' . $i . ' days')));
             $datesIntval = array_reverse($datesIntval);
-    
+
             $datesDb = $this->getDoctrine()->getRepository(ActivityHistory::class)->findCountByDate(); //Get dates historic from db
             //Bind res from db to each days
             foreach ($datesIntval as $date) {
@@ -99,6 +102,21 @@ class UserController extends FOSRestController
     }
 
     /**
+     * Get one empty User.
+     * @SWG\Response(response=200, description="Returns new User", @SWG\Schema(@Model(type=User::class)))
+     * @IsGranted("ROLE_ADMIN")
+     * @Rest\Get("/new")
+     *
+     * @return Response
+     */
+    public function getNewUser()
+    {
+        $user = new User();
+        $user->setEnabled(true);
+        return $this->handleView($this->view(['user' => $user, 'members' => []]));
+    }
+
+    /**
      * Get one user.
      * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=404, description="User not found")
@@ -121,10 +139,46 @@ class UserController extends FOSRestController
     }
 
     /**
+     * Create User.
+     * @SWG\Parameter(name="user",in="body", description="New user", format="application/json", @SWG\Schema(@Model(type=User::class)))
+     * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
+     * @SWG\Response(response=400, description="Error in data")
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @Rest\Post("")
+     *
+     * @return Response
+     */
+    public function postUser(Request $request, MailService $mailService)
+    {
+        $user = new User();
+        $user->setPlainPassword(substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=+?"), 0, 10) . '=+?'); //Temp random password
+
+        $data = json_decode($request->getContent(), true);
+        
+        $form = $this->createForm(UserAdminNewType::class, $user);
+
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setRoles($data['roles']);
+            $user->setConfirmationToken((new TokenGenerator())->generateToken());
+            $user->setPasswordRequestedAt(new \DateTime());
+            $mailService->sendUserCreatedByAdmin($user);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $this->handleView($this->view($user, Response::HTTP_OK));
+        }
+        return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
      * Edit User.
      * @SWG\Parameter(name="user",in="body", description="New user", format="application/json", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
-     * @SWG\Response(response=404, description="USer not found")
+     * @SWG\Response(response=400, description="Error in data")
+     * @SWG\Response(response=404, description="User not found")
      * @IsGranted("ROLE_SUPER_ADMIN")
      * @Rest\Put("/{id}")
      *

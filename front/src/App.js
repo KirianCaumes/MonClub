@@ -129,6 +129,7 @@ class _App extends React.PureComponent {
                             <PrivateRoute path="/membre/:id" component={withData(MemberOne, (props) => request.getOneMember(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/utilisateurs" component={UsersAll} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute exact path="/utilisateur/nouveau" component={withData(UserOne, () => request.getNewUser())} isAuthenticated={isAuthenticated} isInit={isInit} />
                             <PrivateRoute path="/utilisateur/:id" component={withData(UserOne, (props) => request.getOneUser(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute exact path="/equipes" component={TeamsAll} isAuthenticated={isAuthenticated} isInit={isInit} />

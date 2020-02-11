@@ -126,7 +126,7 @@ class MailService
     }
 
     /**
-     * Send an email to remind unfinished member.
+     * Send an email to warn user to be disabled.
      */
     public function sendWarningEnableUser(User $user, $inactivityDate)
     {
@@ -137,6 +137,22 @@ class MailService
                 'user' => $user,
                 'baseUrl' => $this->baseUrl,
                 'inactivityDate' =>  $inactivityDate,
+            ])
+        );
+    }    
+
+    /**
+     * Send an email to reset password.
+     */
+    public function sendUserCreatedByAdmin(User $user)
+    {
+        return $this->send(
+            $user->getEmail(),
+            'Création de votre compte',
+            $this->twig->render('/mail/userCreatedByAdmin.html.twig', [
+                'token' => $user->getConfirmationToken(),
+                'user' => $user,
+                'baseUrl' => $this->baseUrl,
             ])
         );
     }
