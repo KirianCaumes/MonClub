@@ -8,6 +8,7 @@ import { Table } from 'react-bulma-components'
 import Loader from 'component/loader'
 import Divider from 'component/divider'
 import { PayPalButton } from "react-paypal-button-v2"
+import Emoji from 'component/emoji'
 
 class _MembersMePayment extends React.PureComponent {
     constructor(props) {
@@ -15,7 +16,7 @@ class _MembersMePayment extends React.PureComponent {
         this.state = {
             summary: {},
             isLoading: true,
-            paymentKey: 1
+            paymentKey: null
         }
     }
 
@@ -139,7 +140,7 @@ class _MembersMePayment extends React.PureComponent {
                         selectedKey={paymentKey}
                         onChange={(ev, option) => this.setState({ paymentKey: option.key })}
                     />
-                    {paymentKey === 3 && <span className="has-text-danger">Veuillez préciser les montant des bons attribués à chaque membre dans le tableau ci dessus.</span>}
+                    {paymentKey === 3 && <Text className="has-text-danger">Veuillez préciser les montant des bons attribués à chaque membre dans le tableau ci dessus.</Text>}
                     {
                         paymentKey &&
                         <>
@@ -157,7 +158,7 @@ class _MembersMePayment extends React.PureComponent {
                                                         En appuyant sur le bouton suivant, je reconnais la véracité des informations saisie et m'engage à déposer mon paiement dans les plus bref délais.<br />
                                                         Attention, après le payement vous ne pourrez plus modifier les informations saisis !<br />
                                                         L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
-                                                </Text>
+                                                    </Text>
                                                     <br />
                                                     <br />
                                                     {/* <PrimaryButton
@@ -167,6 +168,12 @@ class _MembersMePayment extends React.PureComponent {
                                                         onClick={() => this.pay()}
                                                         disabled={true}
                                                     /> */}
+                                                    <Text className="has-text-danger">
+                                                        <Emoji symbol="⚠️" label="warning" />
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                    </Text>
+                                                    <br />
+                                                    <br />
                                                     <div style={{ width: '300px' }}>
                                                         <PayPalButton
                                                             style={{
@@ -211,6 +218,12 @@ class _MembersMePayment extends React.PureComponent {
                                                 </Text>
                                                     <br />
                                                     <br />
+                                                    <Text className="has-text-danger">
+                                                        <Emoji symbol="⚠️" label="warning" />
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                    </Text>
+                                                    <br />
+                                                    <br />
                                                     <PrimaryButton
                                                         text="Je valide"
                                                         iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
@@ -235,7 +248,13 @@ class _MembersMePayment extends React.PureComponent {
                                                         En appuyant sur le bouton suivant, je reconnais la véracité des informations saisie et m'engage à déposer mon paiement dans les plus bref délais.<br />
                                                         Attention, après le payement vous ne pourrez plus modifier les informations saisis !<br />
                                                         L'inscription ne sera <b>pas considérée comme valide tant que le paiement n'aura pas été validé</b>, et <b>il ne sera pas possible pour le licencié de participer aux entraînements et aux matchs</b>.
-                                                </Text>
+                                                    </Text>
+                                                    <br />
+                                                    <br />
+                                                    <Text className="has-text-danger">
+                                                        <Emoji symbol="⚠️" label="warning" />
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                    </Text>
                                                     <br />
                                                     <br />
                                                     <PrimaryButton
@@ -243,6 +262,7 @@ class _MembersMePayment extends React.PureComponent {
                                                         iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
                                                         styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                         onClick={() => this.pay()}
+                                                        disabled={!summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b)}
                                                     />
                                                 </>
                                             )

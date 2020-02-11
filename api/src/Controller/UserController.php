@@ -91,7 +91,7 @@ class UserController extends FOSRestController
     /**
      * Lists all users.
      * @SWG\Response(response=200, description="Returns Users", @SWG\Schema(type="array", @Model(type=User::class)))
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("")
      *
      * @return Response
@@ -120,7 +120,7 @@ class UserController extends FOSRestController
      * Get one user.
      * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=404, description="User not found")
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("/{id}")
      *
      * @return Response
@@ -143,7 +143,7 @@ class UserController extends FOSRestController
      * @SWG\Parameter(name="user",in="body", description="New user", format="application/json", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=400, description="Error in data")
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("")
      *
      * @return Response
@@ -179,7 +179,7 @@ class UserController extends FOSRestController
      * @SWG\Response(response=200, description="Returns User", @SWG\Schema(@Model(type=User::class)))
      * @SWG\Response(response=400, description="Error in data")
      * @SWG\Response(response=404, description="User not found")
-     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Put("/{id}")
      *
      * @return Response

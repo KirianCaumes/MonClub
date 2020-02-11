@@ -1,6 +1,6 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, Dropdown, Text, Icon, VirtualizedComboBox, DetailsList, SelectionMode } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, Dropdown, Text, Icon, VirtualizedComboBox, DetailsList, SelectionMode, CommandBarButton, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setLoading } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -27,7 +27,7 @@ class _UserOne extends React.PureComponent {
         this.props.setBreadcrumb([
             { text: 'Administration', key: 'administration' },
             { text: 'Les comptes', key: 'users', onClick: () => history.push('/utilisateurs') },
-            { text: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.username ?? '') : ''}</span>, key: 'userOne', isCurrentItem: true },
+            { text: <span className="is-capitalized">{this.props.match?.params?.id ? (this.state.data?.username ?? '') : 'Nouveau'}</span>, key: 'userOne', isCurrentItem: true },
         ])
 
         const commandRead = [
@@ -81,7 +81,24 @@ class _UserOne extends React.PureComponent {
 
                         }
                     })
-                }
+                },
+                commandBarButtonAs: (props) => {
+                    if (!this.props.match?.params?.id) {
+                        return (
+                            <TooltipHost
+                                content={"Un mail sera automatiquement envoyé au nouvel utilisateur pour qu'il puisse réinitialiser son mot de passe et se connecter à l'application"}
+                                directionalHint={DirectionalHint.topCenter}
+                                delay={TooltipDelay.zero}
+                            >
+                                <CommandBarButton {...props} />
+                            </TooltipHost>
+                        )
+                    } else {
+                        return (
+                            <CommandBarButton {...props} />
+                        )
+                    }
+                },
             },
         ]
 

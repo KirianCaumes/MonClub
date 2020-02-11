@@ -1,42 +1,27 @@
 import React from 'react'
-import { Breadcrumb, MessageBar, CommandBar, Icon, Nav } from 'office-ui-fabric-react'
+import { Breadcrumb, MessageBar, CommandBar, Icon } from 'office-ui-fabric-react'
 import Header from 'component/layout/header';
 import { setUrl, setMessageBar } from 'redux/actions/common'
 import { connect } from "react-redux"
 import { history } from 'helper/history'
-import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants';
+import { ROLE_COACH, ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
+import Menu from 'component/layout/menu';
 
 class _Layout extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
             menu: [],
-            posNav: 0,
             isBurgerOpen: true
         }
     }
 
     componentDidMount() {
         this.props.setUrl(history.location.pathname)
-        // window.addEventListener('scroll', this.listenScroll)
     }
 
-    componentWillUnmount() {
-        // window.removeEventListener('scroll', this.listenScroll)
-    }
-
-    listenScroll = () => {
-        // if (this.scroll) clearTimeout(this.scroll)
-        // this.scroll = setTimeout(() => this.setState({ posNav: window.scrollY > 95 ? window.scrollY - 95 : 0 }), 50)
-    }
 
     componentDidUpdate(prevProps) {
-        // if (prevProps.selectedKeyURL !== this.props.selectedKeyURL) {
-        //     if (this.scroll) clearTimeout(this.scroll)
-        //     this.setState({ posNav: 0 })
-        //     window.scrollTo(0, 0)
-        // }
-
         //Re render menu if user when info user change 
         if (prevProps.me !== this.props.me) {
             this.setState({
@@ -48,7 +33,7 @@ class _Layout extends React.PureComponent {
                         links: [
                             {
                                 key: '/',
-                                name: <><Icon iconName='Home' /> {this.state.isBurgerOpen ? 'Accueil' : ''}</>,
+                                name: <><Icon iconName='Home' /> Accueil</>,
                                 title: 'Accueil',
                                 onClick: () => history.push('/'),
                                 isDisplay: true
@@ -56,26 +41,26 @@ class _Layout extends React.PureComponent {
                         ]
                     },
                     {
-                        name: this.state.isBurgerOpen ? 'Membres' : '',
+                        name: 'Membres',
                         isDisplay: true,
                         links: [
                             {
                                 key: '/membres/moi',
-                                name: <><Icon iconName='AccountManagement' /> {this.state.isBurgerOpen ? 'Mes membres' : ''}</>,
+                                name: <><Icon iconName='AccountManagement' /> Mes membres</>,
                                 title: 'Mes membres',
                                 onClick: () => history.push('/membres/moi'),
                                 isDisplay: true
                             },
                             {
                                 key: '/membres',
-                                name: <><Icon iconName='RecruitmentManagement' /> {this.state.isBurgerOpen ? 'Les membres' : ''}</>,
+                                name: <><Icon iconName='RecruitmentManagement' /> Les membres</>,
                                 title: 'Les membres',
                                 onClick: () => history.push('/membres'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_COACH) || this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                             {
                                 key: '/equipes',
-                                name: <><Icon iconName='Teamwork' /> {this.state.isBurgerOpen ? 'Les équipes' : ''}</>,
+                                name: <><Icon iconName='Teamwork' /> Les équipes</>,
                                 title: 'Les équipes',
                                 onClick: () => history.push('/equipes'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
@@ -83,26 +68,26 @@ class _Layout extends React.PureComponent {
                         ]
                     },
                     {
-                        name: this.state.isBurgerOpen ? 'Administration' : '',
-                        isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN),
+                        name: 'Administration',
+                        isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN),
                         links: [
                             {
                                 key: '/utilisateurs',
-                                name: <><Icon iconName='ContactList' /> {this.state.isBurgerOpen ? 'Les comptes' : ''}</>,
+                                name: <><Icon iconName='ContactList' /> Les comptes</>,
                                 title: 'Tous les comptes',
                                 onClick: () => history.push('/utilisateurs'),
-                                isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
+                                isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                             {
                                 key: '/constantes',
-                                name: <><Icon iconName='OfflineStorage' /> {this.state.isBurgerOpen ? 'Les constantes' : ''}</>,
+                                name: <><Icon iconName='OfflineStorage' /> Les constantes</>,
                                 title: 'Les constants',
                                 onClick: () => history.push('/constantes'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                             {
                                 key: '/parametres',
-                                name: <><Icon iconName='DataManagementSettings' /> {this.state.isBurgerOpen ? 'Les paramètres' : ''}</>,
+                                name: <><Icon iconName='DataManagementSettings' /> Les paramètres</>,
                                 title: 'Les paramètres',
                                 onClick: () => history.push('/parametres'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
@@ -110,12 +95,12 @@ class _Layout extends React.PureComponent {
                         ]
                     },
                     {
-                        name: this.state.isBurgerOpen ? 'Autre' : '',
+                        name: 'Autre',
                         isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN),
                         links: [
                             {
                                 key: '/stockage',
-                                name: <><Icon iconName='Cloud' /> {this.state.isBurgerOpen ? 'Platforme de stockage' : ''}</>,
+                                name: <><Icon iconName='Cloud' /> Platforme de stockage</>,
                                 title: 'Platforme de stockage',
                                 onClick: () => window.open(process.env.NODE_ENV !== 'production' ? process.env.REACT_APP_DRIVE_DEV : process.env.REACT_APP_DRIVE_PROD, "_blank"),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
@@ -140,7 +125,7 @@ class _Layout extends React.PureComponent {
 
     render() {
         const { selectedKeyURL, breadcrumb, command, messageBar, me } = this.props
-        const { menu, posNav, isBurgerOpen } = this.state
+        const { menu } = this.state
 
         if (!this.props.isDisplay) return this.props.children
 
@@ -152,27 +137,12 @@ class _Layout extends React.PureComponent {
                     refresh={() => this.props.refresh()}
                 />
                 <div className="layout" >
-                    <aside className="is-hidden-touch" >
-                        <Nav
-                            styles={{
-                                root: { width: isBurgerOpen ? 240 : 50, overflowY: 'auto', marginTop: posNav, transition: '.5s' },
-                                chevronButton: { borderColor: "transparent" },
-                                link: { padding: isBurgerOpen ? '0px 20px 0px 27px' : '0px 1.1em 0 0.9em' },
-                                linkText: { overflow: isBurgerOpen ? 'hidden' : 'visible' }
-                            }}
-                            selectedKey={(() => {
-                                if (selectedKeyURL.match(/\/membre\/.*/g)) {
-                                    return '/membres'
-                                } else if (selectedKeyURL.match(/\/equipe\/.*/g)) {
-                                    return '/equipes'
-                                } else if (selectedKeyURL.match(/\/utilisateur\/.*/g)) {
-                                    return '/utilisateurs'
-                                }
-                                return selectedKeyURL
-                            })()}
-                            groups={this.filterMenu(menu)}
+                    <div className="menu is-hidden-touch">
+                        <Menu
+                            menu={this.filterMenu(menu)}
+                            selectedKeyURL={selectedKeyURL}
                         />
-                    </aside>
+                    </div>
                     <div className="main">
                         <CommandBar
                             items={command}

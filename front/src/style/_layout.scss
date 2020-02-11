@@ -64,42 +64,29 @@ div#root {
     min-height: 100%;
     min-height: calc(100vh - 52px); //52px is navbar height
     overflow: hidden;
-    aside {
+    div.menu {
       background-color: rgba($grey, 0.9);
-      > div {
+      width: 300px;
+      aside {
+        padding: 1em;
         border-top: 1px solid $light-grey;
         padding-top: 15px;
         margin-top: 44px;
-        div.ms-Nav-compositeLink {
-          // width: 95%;
-          // border-radius: 1px;
-          &.is-selected {
-            > button {
-              background: rgba($blue, 0.3);
+        p.menu-label {
+          margin-top: 3em;
+        }
+        ul.menu-list {
+          li {
+            a {
+              margin-bottom: 0.5em;
               &:hover {
-                background: rgba($blue, 0.3);
+                background: linear-gradient(to right, rgba(whitesmoke, 0.9) 55%, rgba(white, 0));
               }
-              span {
-                color: $blue;
-                font-weight: bold;
-                i {
-                  color: $blue !important;
-                }
+              &.is-active {
+                background: linear-gradient(to right, rgba($dark-blue, 0.9), rgba($blue, 0.9) 55%, rgba(white, 0));
               }
-            }
-          }
-          > button {
-            font-weight: normal !important;
-            color: unset !important;
-            &:hover {
-              background: rgba($dark-grey, 0.1);
-            }
-            div {
-              display: flex;
               i {
-                margin-right: 10px;
-                color: $blue !important;
-                font-size: 16px !important;
+                vertical-align: bottom;
               }
             }
           }
@@ -112,7 +99,7 @@ div#root {
       div.ms-CommandBar {
         background-color: rgba($grey, 0.9);
         .ms-OverflowSet-overflowButton {
-          > button {
+          button {
             background: transparent;
             i {
               color: $dark-blue;
@@ -121,7 +108,11 @@ div#root {
         }
         .ms-OverflowSet-item {
           @include flex-col();
-          > button.ms-Button {
+          > .ms-TooltipHost {
+            @include flex-col();
+            height: 100%;
+          }
+          button.ms-Button {
             height: 75%;
             border-radius: 1px;
             background-color: transparent;
