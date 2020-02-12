@@ -134,7 +134,7 @@ class _MembersMe extends React.PureComponent {
         //Check if none member to find member from previous year
         request.getMePreviousMember()
             .then(res => {
-                this.props.setMessageBar(false)
+                // this.props.setMessageBar(false)
                 this.setState({ prevMembers: res, prevMembersSelected: res },
                     () => {
                         if (!this.props.data?.map(x => x.id).filter(x => x).length && res.length) this.showModalPrevMembers()

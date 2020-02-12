@@ -1,7 +1,7 @@
 import store from 'redux/store/index.js'
 import { signout } from 'redux/actions/user.js'
 import { dateToString } from './date.js';
-import { setMessageBar } from 'redux/actions/common.js';
+// import { setMessageBar } from 'redux/actions/common.js';
 
 const
     GET = "GET",
@@ -10,7 +10,7 @@ const
     DELETE = "DELETE"
 
 var getFetch = (path, options = {}) => {
-    store.dispatch(setMessageBar(false))
+    // store.dispatch(setMessageBar(false))
 
     const baseUrl = "/api"
 
@@ -490,11 +490,12 @@ export default {
 
         return getFetch(url, options)
     },
-    getAllUsers: () => {
+    getAllUsers: (params) => {
         const url = ["user"]
 
         var options = {
-            method: GET
+            method: GET,
+            params
         }
 
         return getFetch(url, options)

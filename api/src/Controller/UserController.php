@@ -14,12 +14,14 @@ use App\Form\User\UserAdminNewType;
 use App\Form\User\UserAdminType;
 use App\Service\MailService;
 use App\Service\ParamService;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 use Swagger\Annotations as SWG;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Nelmio\ApiDocBundle\Annotation\Model;
 
 /**
@@ -90,15 +92,36 @@ class UserController extends FOSRestController
 
     /**
      * Lists all users.
+     * @QueryParam(name="name", nullable=true, description="String of username to filter")
+     * @QueryParam(name="isEnabled", nullable=true, description="Is User enabled")
+     * @QueryParam(name="roles", nullable=true, description="Roles to filter (ex: 'ROLE_ADMIN,ROLE_SUPER_ADMIN')")
      * @SWG\Response(response=200, description="Returns Users", @SWG\Schema(type="array", @Model(type=User::class)))
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Get("")
      *
      * @return Response
      */
-    public function getUsers()
+    public function getUsers(ParamFetcher $paramFetcher)
     {
-        return $this->handleView($this->view($this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC'])));
+        $users = $this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC']);
+
+        $name = $paramFetcher->get('name');
+        $isEnabled = filter_var($paramFetcher->get('isEnabled'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $roles = explode(",", $paramFetcher->get('roles'));
+
+        $usersFinal = [];
+
+        foreach ($users as $key => $user) {
+            if (
+                ($name === '' || $name === null || strpos($user->getUserName(), $name) !== false) && //If username match
+                ($paramFetcher->get('isEnabled') === '' || $paramFetcher->get('isEnabled') === null || $isEnabled === null || $user->isEnabled() === $isEnabled) && //If enabled match
+                (!array_filter($roles) || count(array_intersect($roles, $user->getRoles())) == count($roles)) //If roles match
+            ) {
+                array_push($usersFinal, $user);
+            }
+        }
+
+        return $this->handleView($this->view($usersFinal));
     }
 
     /**
@@ -154,7 +177,7 @@ class UserController extends FOSRestController
         $user->setPlainPassword(substr(str_shuffle("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=+?"), 0, 10) . '=+?'); //Temp random password
 
         $data = json_decode($request->getContent(), true);
-        
+
         $form = $this->createForm(UserAdminNewType::class, $user);
 
         $form->submit($data);

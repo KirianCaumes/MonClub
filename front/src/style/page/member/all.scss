@@ -7,7 +7,15 @@
       }
     }
     > *:last-child {
+      @include until($tablet) {
+        label {
+          display: none;
+        }
+      }
       > div {
+        @include until($tablet) {
+          padding: 0.75rem 0 0;
+        }
         width: 100%;
         > span {
           width: 100%;

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Menu as BulmaMenu } from 'react-bulma-components'
+import { Text } from 'office-ui-fabric-react'
 
 class Menu extends React.PureComponent {
     constructor(props) {
@@ -37,7 +38,7 @@ class Menu extends React.PureComponent {
                                                     onClick={() => y.onClick()}
                                                     className={y.key === selectedKey ? 'is-active' : ''}
                                                 >
-                                                    {y.name}
+                                                    <Text variant="medium">{y.name}</Text> 
                                                 </BulmaMenu.List.Item>
                                             ))
                                         }
