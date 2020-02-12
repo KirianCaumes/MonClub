@@ -42,7 +42,7 @@ INSERT INTO `mc_dev_param_workflow` (`id`, `label`, `description`, `message`)
 VALUES 
     (1, 'Créé', 'L''utilisateur est créé.', null), 
     (2, 'Documents', 'L''utilisateur à fournis les documents nécessaires.', 'Passer cet élément de "Oui" à "Non" réactivera l''édition du membre pour l''utilisateur propriétaire et lui enverras un mail lui signalant que ces documents sont invalides.'), 
-    (3, 'Payé','L''utilisateur à payé.', null), 
+    (3, 'Payé','L''utilisateur à payé.', 'Lorsque cette étape est validée, l''ensemble des champs relatif au paiement sont désactivés.'), 
     (4, 'Gest''hand', 'L''utilisateur est bien inscris sur Gest''hand.', null), 
     (5, 'Qualifié', 'L''inscription est finalisée.', 'Passer cet élément de "Non" à "Oui" enverra un mail à l''utilisateur lui signalant que l''inscription de membre est validée.
 ');

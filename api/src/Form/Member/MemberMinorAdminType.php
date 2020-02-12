@@ -168,6 +168,18 @@ class MemberMinorAdminType extends AbstractType
 
         if ($data->getIsPayed()) {
             $form
+                ->add('birthdate', DateTimeType::class, [
+                    'disabled' => true,
+                ])
+                ->add('is_reduced_price', CheckboxType::class, [
+                    'disabled' => true,
+                ])
+                ->add('is_non_competitive', CheckboxType::class, [
+                    'disabled' => true,
+                ])
+                ->add('is_transfer_needed', CheckboxType::class, [
+                    'disabled' => true,
+                ])
                 ->add('amount_payed', NumberType::class, [
                     'disabled' => true,
                 ])

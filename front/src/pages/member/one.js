@@ -142,6 +142,8 @@ class _MemberOne extends React.PureComponent {
         const { readOnly, data, initData, isLoading, workflow, nonObjection } = this.state
         const { param } = this.props
 
+        console.log(workflow)
+
         if (isLoading) return <Loader />
 
         return (
@@ -151,60 +153,56 @@ class _MemberOne extends React.PureComponent {
                         <div className="head">
                             <h1><Icon iconName='Contact' /> Toutes les informations sur le membre: <span className="is-capitalized">{this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</span></h1>
                         </div>
-                        {
-                            this.props.match?.params?.id &&
-                            <>
-                                <Text variant="large" block><Icon iconName='WorkFlow' /> Workflow d'avancement de l'inscription</Text>
-                                <Divider />
-                                <Workflow data={workflow} />
-                                {
-                                    !readOnly &&
-                                    <Columns>
-                                        <Columns.Column className="is-hidden-mobile" />
-                                        <Columns.Column>
-                                            <DropdownIcon
-                                                icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
-                                                valueDisplay={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.text ?? ''}
-                                                selectedKey={data?.is_document_complete?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                error={this.state.errorField?.is_document_complete?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_document_complete: JSON.parse(item.key) } })}
-                                            />
-                                        </Columns.Column>
 
-                                        <Columns.Column>
-                                            <DropdownIcon
-                                                icon={param?.choices.find(x => x.key === data?.is_payed?.toString())?.icon ?? ''}
-                                                valueDisplay={param?.choices.find(x => x.key === data?.is_payed?.toString())?.text ?? ''}
-                                                selectedKey={data?.is_payed?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                error={this.state.errorField?.is_payed?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_payed: JSON.parse(item.key) } })}
-                                            />
-                                        </Columns.Column>
-                                        <Columns.Column>
-                                            <DropdownIcon
-                                                icon={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.icon ?? ''}
-                                                valueDisplay={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.text ?? ''}
-                                                selectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                error={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_check_gest_hand: JSON.parse(item.key) } })}
-                                            />
-                                        </Columns.Column>
-                                        <Columns.Column>
-                                            <DropdownIcon
-                                                icon={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.icon ?? ''}
-                                                valueDisplay={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.text ?? ''}
-                                                selectedKey={data?.is_inscription_done?.toString() ?? 'false'}
-                                                options={param?.choices}
-                                                error={this.state.errorField?.is_inscription_done?.errors?.[0]}
-                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_inscription_done: JSON.parse(item.key) } })}
-                                            />
-                                        </Columns.Column>
-                                    </Columns>
-                                }
-                            </>
+                        <Text variant="large" block><Icon iconName='WorkFlow' /> Workflow d'avancement de l'inscription</Text>
+                        <Divider />
+                        <Workflow data={workflow} />
+                        {
+                            this.props.match?.params?.id && !readOnly &&
+                            <Columns>
+                                <Columns.Column className="is-hidden-mobile" />
+                                <Columns.Column>
+                                    <DropdownIcon
+                                        icon={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_document_complete?.toString())?.text ?? ''}
+                                        selectedKey={data?.is_document_complete?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_document_complete?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_document_complete: JSON.parse(item.key) } })}
+                                    />
+                                </Columns.Column>
+
+                                <Columns.Column>
+                                    <DropdownIcon
+                                        icon={param?.choices.find(x => x.key === data?.is_payed?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_payed?.toString())?.text ?? ''}
+                                        selectedKey={data?.is_payed?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_payed?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_payed: JSON.parse(item.key) } })}
+                                    />
+                                </Columns.Column>
+                                <Columns.Column>
+                                    <DropdownIcon
+                                        icon={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_check_gest_hand?.toString())?.text ?? ''}
+                                        selectedKey={data?.is_check_gest_hand?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_check_gest_hand?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_check_gest_hand: JSON.parse(item.key) } })}
+                                    />
+                                </Columns.Column>
+                                <Columns.Column>
+                                    <DropdownIcon
+                                        icon={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.icon ?? ''}
+                                        valueDisplay={param?.choices.find(x => x.key === data?.is_inscription_done?.toString())?.text ?? ''}
+                                        selectedKey={data?.is_inscription_done?.toString() ?? 'false'}
+                                        options={param?.choices}
+                                        error={this.state.errorField?.is_inscription_done?.errors?.[0]}
+                                        onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_inscription_done: JSON.parse(item.key) } })}
+                                    />
+                                </Columns.Column>
+                            </Columns>
                         }
                     </div>
                     <br />
@@ -253,8 +251,8 @@ class _MemberOne extends React.PureComponent {
                                     id="birthdate"
                                     value={stringToCleanString(data?.birthdate)}
                                     mask={"99/99/9999"}
-                                    borderless={readOnly}
-                                    readOnly={readOnly}
+                                    borderless={readOnly || (data?.is_payed ? true : initData?.is_payed)}
+                                    readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
                                     onBlur={ev => this.setState({ data: { ...this.state.data, birthdate: stringToDate(ev.target.value) } })}
                                     errorMessage={this.state.errorField?.birthdate?.errors?.[0]}
                                 />
@@ -506,7 +504,7 @@ class _MemberOne extends React.PureComponent {
                                         <Label required htmlFor="is_non_competitive">Loisir</Label>
                                         <DropdownIcon
                                             id="is_non_competitive"
-                                            readOnly={readOnly || data?.is_reduced_price}
+                                            readOnly={readOnly || data?.is_reduced_price || (data?.is_payed ? true : initData?.is_payed)}
                                             icon={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_non_competitive?.toString())?.text ?? ''}
                                             selectedKey={data?.is_non_competitive?.toString() ?? 'false'}
@@ -520,7 +518,7 @@ class _MemberOne extends React.PureComponent {
                                         <Label required htmlFor="is_reduced_price">Demande réduction</Label>
                                         <DropdownIcon
                                             id="is_reduced_price"
-                                            readOnly={readOnly || data?.is_non_competitive}
+                                            readOnly={readOnly || data?.is_non_competitive || (data?.is_payed ? true : initData?.is_payed)}
                                             icon={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.icon ?? ''}
                                             valueDisplay={param?.choices.find(x => x.key === data?.is_reduced_price?.toString())?.text ?? ''}
                                             selectedKey={data?.is_reduced_price?.toString() ?? 'false'}
@@ -536,7 +534,7 @@ class _MemberOne extends React.PureComponent {
                                 <Label required htmlFor="is_transfer_needed">Demande transfert</Label>
                                 <DropdownIcon
                                     id="is_transfer_needed"
-                                    readOnly={readOnly}
+                                    readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
                                     icon={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.icon ?? ''}
                                     valueDisplay={param?.choices.find(x => x.key === data?.is_transfer_needed?.toString())?.text ?? ''}
                                     selectedKey={data?.is_transfer_needed?.toString() ?? 'false'}
@@ -603,7 +601,7 @@ class _MemberOne extends React.PureComponent {
                                         >
                                             <IconButton
                                                 iconProps={{ iconName: 'Refresh' }}
-                                                disabled={this.state.newPriceLoading}
+                                                disabled={this.state.newPriceLoading || !data?.id}
                                                 onClick={() => this.setState({ newPriceLoading: true }, () => request.getMemberPrice(this.props.match?.params?.id)
                                                     .then(res => this.setState({ data: { ...this.state.data, amount_payed: res.price } }))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.'))
@@ -614,44 +612,49 @@ class _MemberOne extends React.PureComponent {
                                     }
                                 </div>
                             </Columns.Column>
-                            <Columns.Column>
-                                <div className="flex-row flex-start">
-                                    <Label htmlFor="amount_payed_other">Montant autre payé</Label>
-                                    <TooltipHost
-                                        content="Corresponds au prix payé en coupons."
-                                        directionalHint={DirectionalHint.bottomCenter}
-                                        delay={TooltipDelay.zero}
-                                    >
-                                        <Icon iconName="Info" className="icon-info-label is-not-required" />
-                                    </TooltipHost>
-                                </div>
-                                <TextField
-                                    id="amount_payed_other"
-                                    placeholder="Montant autre payé"
-                                    defaultValue={!isNaN(data?.amount_payed_other) ? (data?.amount_payed_other ?? '') : ''}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed_other: parseFloat(ev.target.value?.replace(',', '.')) } })}
-                                    borderless={readOnly || (data?.is_payed ? true : initData?.is_payed)}
-                                    readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
-                                    errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
-                                    suffix="€"
-                                    onKeyPress={ev => {
-                                        ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
-                                            ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
-                                            ev.preventDefault()
-                                    }}
-                                />
-                            </Columns.Column>
-                            <Columns.Column>
-                                <Label htmlFor="amount_real_payed">Montant réel payé</Label>
-                                <TextField
-                                    id="amount_real_payed"
-                                    placeholder="Montant réel payé"
-                                    value={!isNaN(data?.amount_payed_other) && !isNaN(data?.amount_payed) ? (data?.amount_payed - data?.amount_payed_other) : (isNaN(data?.amount_payed_other) ? data?.amount_payed : 0)}
-                                    borderless={true}
-                                    readOnly={true}
-                                    suffix="€"
-                                />
-                            </Columns.Column>
+                            {
+                                data?.payment_solution?.id === 3 &&
+                                <>
+                                    <Columns.Column>
+                                        <div className="flex-row flex-start">
+                                            <Label htmlFor="amount_payed_other">Montant autre payé</Label>
+                                            <TooltipHost
+                                                content="Corresponds au prix payé en coupons."
+                                                directionalHint={DirectionalHint.bottomCenter}
+                                                delay={TooltipDelay.zero}
+                                            >
+                                                <Icon iconName="Info" className="icon-info-label is-not-required" />
+                                            </TooltipHost>
+                                        </div>
+                                        <TextField
+                                            id="amount_payed_other"
+                                            placeholder="Montant autre payé"
+                                            defaultValue={!isNaN(data?.amount_payed_other) ? (data?.amount_payed_other ?? '') : ''}
+                                            onBlur={ev => this.setState({ data: { ...this.state.data, amount_payed_other: parseFloat(ev.target.value?.replace(',', '.')) } })}
+                                            borderless={readOnly || (data?.is_payed ? true : initData?.is_payed)}
+                                            readOnly={readOnly || (data?.is_payed ? true : initData?.is_payed)}
+                                            errorMessage={this.state.errorField?.amount_payed_other?.errors?.[0]}
+                                            suffix="€"
+                                            onKeyPress={ev => {
+                                                ((ev.key.length === 1 && !('0123456789.,'.indexOf(ev.key) > -1)) ||
+                                                    ((ev.key === '.' || ev.key === ',') && ((ev.target.value.indexOf('.') > -1) || (ev.target.value.indexOf(',') > -1)))) &&
+                                                    ev.preventDefault()
+                                            }}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column>
+                                        <Label htmlFor="amount_real_payed">Montant réel payé</Label>
+                                        <TextField
+                                            id="amount_real_payed"
+                                            placeholder="Montant réel payé"
+                                            value={!isNaN(data?.amount_payed_other) && !isNaN(data?.amount_payed) ? (data?.amount_payed - data?.amount_payed_other) : (isNaN(data?.amount_payed_other) ? data?.amount_payed : 0)}
+                                            borderless={true}
+                                            readOnly={true}
+                                            suffix="€"
+                                        />
+                                    </Columns.Column>
+                                </>
+                            }
 
                             <Columns.Column>
                                 <Label htmlFor="payment_solution">Moyen de paiement</Label>
@@ -667,6 +670,13 @@ class _MemberOne extends React.PureComponent {
                                     onChange={(ev, item) => this.setState({ data: { ...this.state.data, payment_solution: item } })}
                                 />
                             </Columns.Column>
+                            {
+                                data?.payment_solution?.id !== 3 &&
+                                <>
+                                    <Columns.Column className="is-hidden-touch" />
+                                    <Columns.Column className="is-hidden-touch" />
+                                </>
+                            }
                         </Columns>
 
                         <Columns>

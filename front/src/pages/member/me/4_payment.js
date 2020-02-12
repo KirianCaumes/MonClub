@@ -18,6 +18,8 @@ class _MembersMePayment extends React.PureComponent {
             isLoading: true,
             paymentKey: null
         }
+
+        this.paypalFee = 5
     }
 
     componentDidMount() {
@@ -31,20 +33,22 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     pay(paypalInfos = null) {
-        request.pay({
-            payment_solution: this.state.paymentKey,
-            each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
-            paypalInfos                                  //Use for paymentKey 1 "paypal"   
-        })
-            .then(res => {
-                this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
-                this.props.setMembers(res)
-                this.props.goNext()
+        this.setState({ isLoading: true }, () =>
+            request.pay({
+                payment_solution: this.state.paymentKey,
+                each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
+                paypalInfos                                  //Use for paymentKey 1 "paypal"   
             })
-            .catch(err => {
-                this.setState({ isLoading: false, errorField: err?.form?.children })
-                this.props.setMessageBar(true, MessageBarType.error, err)
-            })
+                .then(res => {
+                    this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
+                    this.props.setMembers(res)
+                    this.props.goNext()
+                })
+                .catch(err => {
+                    this.setState({ isLoading: false, errorField: err?.form?.children })
+                    this.props.setMessageBar(true, MessageBarType.error, err)
+                })
+        )
     }
 
     render() {
@@ -127,7 +131,7 @@ class _MembersMePayment extends React.PureComponent {
                         <tfoot>
                             <tr>
                                 <th>TOTAL</th>
-                                <th>{summary.total} €</th>
+                                <th>{paymentKey === 1 ? (summary.total + this.paypalFee) : summary.total} €</th>
                                 {paymentKey === 3 && <th>{summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0} €</th>}
                             </tr>
                         </tfoot>
@@ -135,7 +139,7 @@ class _MembersMePayment extends React.PureComponent {
                             <tfoot>
                                 <tr>
                                     <th>Frais PayPal</th>
-                                    <th>5 €</th>
+                                    <th>{this.paypalFee} €</th>
                                 </tr>
                             </tfoot>
                         }
@@ -146,19 +150,7 @@ class _MembersMePayment extends React.PureComponent {
                     <ChoiceGroup
                         options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
                         selectedKey={paymentKey}
-                        onChange={(ev, option) => {
-                            this.setState({ paymentKey: option.key }, () => {
-                                console.log(this.state.paymentKey)
-                                switch (this.state.paymentKey) {
-                                    case 1:
-                                        console.log("cc")
-                                        this.setState({ summary: { ...this.state.summary, total: this.state?.summary?.total + 5 } })
-                                        break
-                                    default:
-                                        break
-                                }
-                            })
-                        }}
+                        onChange={(ev, option) => this.setState({ paymentKey: option.key })}
                     />
                     {paymentKey === 3 && <Text className="has-text-danger">Veuillez préciser les montant des bons attribués à chaque membre dans le tableau ci dessus.</Text>}
                     {
@@ -207,7 +199,7 @@ class _MembersMePayment extends React.PureComponent {
                                                                 clientId: "AdsT-hu8QLr0cOBxKYnFhbYnriqnwf8v58eSNZoTrbs0Tn1w2dbEUZBGJ_IWdyJjm5PmbOQVbzigVZIr",
                                                                 currency: "EUR"
                                                             }}
-                                                            amount={summary?.total ?? 0}
+                                                            amount={(summary?.total ?? 0) + this.paypalFee}
                                                             shippingPreference="NO_SHIPPING"
                                                             onSuccess={(details, data) => {
                                                                 console.log(JSON.stringify(details), JSON.stringify(data))

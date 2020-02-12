@@ -126,12 +126,16 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getNewMember(ParamService $paramService)
+    public function getNewMember(ParamService $paramService, WorkflowService $workflowService)
     {
         $member = new Member();
         $member->setSeason($paramService->getCurrentSeason());
         if ($this->isGranted('ROLE_ADMIN')) {
-            return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
+            return $this->handleView($this->view([
+                'member' => $member,
+                'workflow' => $workflowService->getWorkflow($member)
+            ])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
+            // return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         } else {
             return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC])));
         }
@@ -210,6 +214,9 @@ class MemberController extends FOSRestController
                 $member->setParentTwoProfession(null);
                 $member->setIsReturnHomeAllow(false);
             }
+
+            if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 3) $member->setAmountPayedOther(null);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
             $em->flush();
@@ -401,6 +408,8 @@ class MemberController extends FOSRestController
                 $member->setParentTwoProfession(null);
                 $member->setIsReturnHomeAllow(false);
             }
+            if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 3) $member->setAmountPayedOther(null);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
             $em->flush();
@@ -660,7 +669,10 @@ class MemberController extends FOSRestController
 
         if ($paymentSolution->getId() === 1) { //If paypal
             //TODO
-            $member->setAmountPayed(null);
+            // $member->setAmountPayed(null);
+            foreach ($members as $member) {
+                $member->setAmountPayed($priceService->getPrice($member) + 5);
+            }
         } else if ($paymentSolution->getId() === 3) { //Set amount other pay if solution 3 "cheque & coupons"
             foreach ($data['each'] as $el) {
                 foreach ($members as $member) {
@@ -678,6 +690,8 @@ class MemberController extends FOSRestController
                 $member->setAmountPayed($priceService->getPrice($member));
             }
         }
+
+        //TODO Send mail recap with facture
 
         $em = $this->getDoctrine()->getManager();
         foreach ($members as $member) {
