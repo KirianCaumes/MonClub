@@ -131,6 +131,14 @@ class _MembersMePayment extends React.PureComponent {
                                 {paymentKey === 3 && <th>{summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0} €</th>}
                             </tr>
                         </tfoot>
+                        {paymentKey === 1 &&
+                            <tfoot>
+                                <tr>
+                                    <th>Frais PayPal</th>
+                                    <th>5 €</th>
+                                </tr>
+                            </tfoot>
+                        }
                     </Table>
                     <br />
                     <Text variant="large" block><Icon iconName='CheckMark' /> Choisissez votre mode de paiement</Text>
@@ -138,7 +146,19 @@ class _MembersMePayment extends React.PureComponent {
                     <ChoiceGroup
                         options={param?.price?.payment_solution.map(x => { return { key: x.id, text: x.label, iconProps: { iconName: x.icon } } })}
                         selectedKey={paymentKey}
-                        onChange={(ev, option) => this.setState({ paymentKey: option.key })}
+                        onChange={(ev, option) => {
+                            this.setState({ paymentKey: option.key }, () => {
+                                console.log(this.state.paymentKey)
+                                switch (this.state.paymentKey) {
+                                    case 1:
+                                        console.log("cc")
+                                        this.setState({ summary: { ...this.state.summary, total: this.state?.summary?.total + 5 } })
+                                        break
+                                    default:
+                                        break
+                                }
+                            })
+                        }}
                     />
                     {paymentKey === 3 && <Text className="has-text-danger">Veuillez préciser les montant des bons attribués à chaque membre dans le tableau ci dessus.</Text>}
                     {
@@ -170,7 +190,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     /> */}
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />
@@ -220,7 +240,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />
@@ -253,7 +273,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué. exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />
