@@ -672,37 +672,41 @@ class MemberController extends FOSRestController
 
         $em = $this->getDoctrine()->getManager();
 
-        if ($paymentSolution->getId() === 1) { //If paypal
-            $paypalInfo = new PaypalInformation();
-            $form = $this->createForm(PaypalInformationType::class, $paypalInfo);
-            $form->submit($data['paypalInfos'], true);
+        switch ($paymentSolution->getId()) {
+            case 1: //If paypal
+                $paypalInfo = new PaypalInformation();
+                $form = $this->createForm(PaypalInformationType::class, $paypalInfo);
+                $form->submit($data['paypalInfos'], true);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($paypalInfo);
-                $em->flush();
-                foreach ($members as $member) {
-                    $member->setPaypalInformation($paypalInfo);
-                    $member->setAmountPayed($priceService->getPrice($member) + 5);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em->persist($paypalInfo);
+                    $em->flush();
+                    foreach ($members as $member) {
+                        $member->setPaypalInformation($paypalInfo);
+                        $member->setAmountPayed($priceService->getPrice($member) + intval($paramService->getParam('paypal_fee')));
+                    }
+                } else {
+                    return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));
                 }
-            } else {
-                return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));
-            }
-        } else if ($paymentSolution->getId() === 3) { //Set amount other pay if solution 3 "cheque & coupons"
-            foreach ($data['each'] as $el) {
-                foreach ($members as $member) {
-                    if ($member->getId() === $el['id']) {
-                        $member->setAmountPayedOther($el['price_other']);
-                        $validation = $validator->validate($member);
-                        if (count($validation) > 0) {
-                            return $this->handleView($this->view(['form' => ['children' => [$validation[0]->getPropertyPath() => ['errors' => [$validation[0]->getMessage()]]]]], Response::HTTP_BAD_REQUEST));
+                break;
+            case 3: //Set amount other pay if solution 3 "cheque & coupons"
+                foreach ($data['each'] as $el) {
+                    foreach ($members as $member) {
+                        if ($member->getId() === $el['id']) {
+                            $member->setAmountPayedOther($el['price_other']);
+                            $validation = $validator->validate($member);
+                            if (count($validation) > 0) {
+                                return $this->handleView($this->view(['form' => ['children' => [$validation[0]->getPropertyPath() => ['errors' => [$validation[0]->getMessage()]]]]], Response::HTTP_BAD_REQUEST));
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            foreach ($members as $member) {
-                $member->setAmountPayed($priceService->getPrice($member));
-            }
+                break;
+            default:
+                foreach ($members as $member) {
+                    $member->setAmountPayed($priceService->getPrice($member));
+                }
+                break;
         }
 
         //TODO Send mail recap with facture

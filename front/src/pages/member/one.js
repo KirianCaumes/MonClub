@@ -1448,7 +1448,7 @@ class _MemberOne extends React.PureComponent {
                     this.state.data?.payment_solution?.id === 1 &&
                     <>
                         <br />
-                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>5 €</b></Text>
+                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>{parseFloat(this.props.param?.global?.find(x => x.label === 'paypal_fee')?.value)} €</b></Text>
                         <Divider />
                         <Columns>
                             <Columns.Column>

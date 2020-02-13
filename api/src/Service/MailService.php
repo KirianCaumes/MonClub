@@ -6,7 +6,6 @@ use App\Entity\Member;
 use App\Entity\User;
 use App\Service\Generator\PdfService;
 use Swift_Attachment;
-use Swift_ByteStream_ArrayByteStream;
 use Twig\Environment;
 
 /**
@@ -41,19 +40,20 @@ class MailService
     /**
      * Handle sending email
      */
-    private function send(string $to, string $subject, string $body, $attachment = null)
+    private function send(string $to, string $subject, string $body, Swift_Attachment $attachment = null)
     {
         //Use smtp google if localhost
         if ($_ENV['APP_ENV'] === 'dev') {
-            return $this->swiftMailer->send(
-                (new \Swift_Message())
-                    ->setContentType('text/html')
-                    ->setFrom('inscription@thouarehbc.fr')
-                    ->setSubject($subject . ' - MonClub THBC')
-                    ->setTo($to)
-                    ->setBody($body)
-                    ->attach($attachment)
-            );
+            $swiftMessage = (new \Swift_Message())
+                ->setContentType('text/html')
+                ->setFrom('inscription@thouarehbc.fr')
+                ->setSubject($subject . ' - MonClub THBC')
+                ->setTo($to)
+                ->setBody($body);
+                
+            if ($attachment) $swiftMessage->attach($attachment);
+
+            return $this->swiftMailer->send($swiftMessage);
         }
 
         return mail(
@@ -161,7 +161,6 @@ class MailService
             ])
         );
     }
-    
 
     /**
      * Send an to notice payment done
@@ -171,7 +170,7 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Réinitialisation de votre mot de passe',
-            $this->twig->render('/mail/resetPassword.html.twig', [
+            $this->twig->render('/mail/facture.html.twig', [
                 'user' => $user,
                 'baseUrl' => $this->baseUrl
             ]),
@@ -182,19 +181,14 @@ class MailService
     /**
      * Send an email to remind user to renew the gesthand certificat.
      */
-    public function sendWarningGesthandCertificat(Member $member,$gesthandCertifDate)
+    public function sendMailRenewCertificate(User $user)
     {
-        return $this->mailer->send(
-            (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom($this->from)
-                ->setSubject('Renouvellement de votre certificat Gesthand - MonClub THBC')
-                ->setTo($member->getEmail())
-                ->setBody($this->twig->render('/mail/renouvellementCertif.html.twig', [
-                    'user' => $member,
-                    'baseUrl' => $this->baseUrl,
-                    'gesthandCertifDate' =>  $gesthandCertifDate,
-                ]))
+        return $this->send(
+            $user->getEmail(),
+            'Avez-vous pensé à renouveler votre certificat médical ?',
+            $this->twig->render('/mail/renewCertificate.html.twig', [
+                'baseUrl' => $this->baseUrl,
+            ])
         );
     }
 }

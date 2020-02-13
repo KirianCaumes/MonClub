@@ -31,7 +31,9 @@ VALUES
     (9, 'new_member_deadline', ''),
     (10, 'is_create_new_member_able', 'true'),
     (11, 'secretary_firstname', 'carole'), 
-    (12, 'secretary_lastname', 'blanchard');
+    (12, 'secretary_lastname', 'blanchard'),
+    (13, 'data_mail_renew_certif', '01-05'),
+    (14, 'paypal_fee', '5');
 
 INSERT INTO `mc_dev_param_document_category` (`id`, `label`) 
 VALUES 

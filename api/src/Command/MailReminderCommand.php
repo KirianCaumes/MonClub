@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Generate mail to remind member who have action to do
  */
-class MailCommand extends Command
+class MailReminderCommand extends Command
 {
     private $em;
     private $paramService;
@@ -33,7 +33,7 @@ class MailCommand extends Command
     {
         //php bin\console app:mail
         $this
-            ->setName('app:mail')
+            ->setName('app:mail-reminder')
             ->setDescription("Generate mail to remind member who have action to do");
     }
 

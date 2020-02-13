@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Generate mail to warn user enable account
  */
-class ClearUsers extends Command
+class ClearUsersCommmand extends Command
 {
     private $em;
     private $paramService;
@@ -33,7 +33,7 @@ class ClearUsers extends Command
     {
         //php bin\console app:userWarning
         $this
-            ->setName('app:userWarning')
+            ->setName('app:user-warning')
             ->setDescription("Generate mail to warn user enable account");
     }
 
