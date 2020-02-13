@@ -9,6 +9,7 @@ import Loader from 'component/loader'
 import Divider from 'component/divider'
 import { PayPalButton } from "react-paypal-button-v2"
 import Emoji from 'component/emoji'
+import { datetimeToString } from 'helper/date'
 
 class _MembersMePayment extends React.PureComponent {
     constructor(props) {
@@ -33,11 +34,23 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     pay(paypalInfos = null) {
+        let serializedPaypalInfos = { //Simply serialize data to be handled easly in PHP
+            id_payment: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.id,
+            creation_datetime: datetimeToString(paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.update_time),
+            amount: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.amount?.value,
+            currency: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.amount?.currency_code,
+            email: paypalInfos?.details?.payer?.email_address,
+            country: paypalInfos?.details?.payer?.address?.country_code,
+            firstname: paypalInfos?.details?.payer?.name?.given_name,
+            lastname: paypalInfos?.details?.payer?.name?.surname,
+            data: JSON.stringify(paypalInfos)
+        }
+
         this.setState({ isLoading: true }, () =>
             request.pay({
                 payment_solution: this.state.paymentKey,
                 each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
-                paypalInfos                                  //Use for paymentKey 1 "paypal"   
+                paypalInfos: serializedPaypalInfos           //Use for paymentKey 1 "paypal"   
             })
                 .then(res => {
                     this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
@@ -173,13 +186,6 @@ class _MembersMePayment extends React.PureComponent {
                                                     </Text>
                                                     <br />
                                                     <br />
-                                                    {/* <PrimaryButton
-                                                        text="Paypal"
-                                                        iconProps={{ iconName: param?.price?.payment_solution.find(x => x.id === paymentKey)?.icon }}
-                                                        styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                                                        onClick={() => this.pay()}
-                                                        disabled={true}
-                                                    /> */}
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
                                                         Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
@@ -202,11 +208,11 @@ class _MembersMePayment extends React.PureComponent {
                                                             amount={(summary?.total ?? 0) + this.paypalFee}
                                                             shippingPreference="NO_SHIPPING"
                                                             onSuccess={(details, data) => {
-                                                                console.log(JSON.stringify(details), JSON.stringify(data))
                                                                 return this.pay({ details, data })
                                                             }}
-                                                            catchError={err => this.props.setMessageBar(true, MessageBarType.error, err)}
-                                                            onError={err => this.props.setMessageBar(true, MessageBarType.error, err)}
+                                                            onButtonReady={() => console.log("PayPal button ready")}
+                                                            catchError={err => this.props.setMessageBar(true, MessageBarType.error, 'Une erreur est survenue.')}
+                                                            onError={err => this.props.setMessageBar(true, MessageBarType.error, 'Une erreur est survenue.')}
                                                         />
                                                     </div>
                                                 </>

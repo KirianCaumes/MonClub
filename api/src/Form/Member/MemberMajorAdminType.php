@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\Param\ParamSeason;
 use App\Entity\Param\ParamSex;
+use App\Entity\PaypalInformation;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -167,6 +168,10 @@ class MemberMajorAdminType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'not_blank']),
                 ]
+            ])
+            ->add('paypal_information', EntityType::class, [
+                'class' => PaypalInformation::class,
+                'disabled' => true,
             ])
             ->add('save', SubmitType::class)
             ->addEventListener(

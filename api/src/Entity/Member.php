@@ -300,10 +300,7 @@ class Member
      */
     private $user;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="Team")
-     * @ORM\JoinTable(name="member_team")
-     * 
+    /** 
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="members")
      * @ORM\JoinTable(
      *  name="member_teams",
@@ -327,6 +324,12 @@ class Member
      * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
      */
     private $season;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PaypalInformation")
+     * @ORM\JoinColumn(name="id_paypal_information", referencedColumnName="id")
+     */
+    private $paypal_information;
 
     public function __construct()
     {
@@ -360,6 +363,7 @@ class Member
             $this->setPaymentSolution(new ParamPaymentSolution);
             $this->setTeams(new \Doctrine\Common\Collections\ArrayCollection([new Team]));
             $this->setSeason(new ParamSeason);
+            $this->setPaypalInformation(new PaypalInformation);
         }
         return $this;
     }
@@ -977,6 +981,18 @@ class Member
     public function setSeason(ParamSeason $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getPaypalInformation(): ?PaypalInformation
+    {
+        return $this->paypal_information;
+    }
+
+    public function setPaypalInformation(?PaypalInformation $paypal_information): self
+    {
+        $this->paypal_information = $paypal_information;
 
         return $this;
     }

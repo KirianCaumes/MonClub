@@ -89,4 +89,17 @@ class PdfService
             ["Attachment" => true]
         );
     }
+
+    // Generate document "facture".
+    public function generateFacture()
+    {
+        $this->file->loadHtml(
+            $this->twig->render('pdf/facture.html.twig', [
+            ])
+        );
+
+        $this->file->render();
+        
+        return $this->file->output();
+    }
 }

@@ -7,11 +7,13 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\PaypalInformation;
 use App\Form\DocumentType;
 use App\Form\Member\MemberMajorAdminType;
 use App\Form\Member\MemberMajorType;
 use App\Form\Member\MemberMinorAdminType;
 use App\Form\Member\MemberMinorType;
+use App\Form\PaypalInformationType;
 use App\Service\DateService;
 use App\Service\MailService;
 use App\Service\Namer\FileService;
@@ -216,6 +218,7 @@ class MemberController extends FOSRestController
             }
 
             if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 3) $member->setAmountPayedOther(null);
+            if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 1) $member->setPaypalInformation(null);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
@@ -409,6 +412,7 @@ class MemberController extends FOSRestController
                 $member->setIsReturnHomeAllow(false);
             }
             if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 3) $member->setAmountPayedOther(null);
+            if ($member->getPaymentSolution() && $member->getPaymentSolution()->getId() !== 1) $member->setPaypalInformation(null);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($member);
@@ -666,12 +670,22 @@ class MemberController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('payment_solution_not_found')], Response::HTTP_NOT_FOUND));
         }
 
+        $em = $this->getDoctrine()->getManager();
 
         if ($paymentSolution->getId() === 1) { //If paypal
-            //TODO
-            // $member->setAmountPayed(null);
-            foreach ($members as $member) {
-                $member->setAmountPayed($priceService->getPrice($member) + 5);
+            $paypalInfo = new PaypalInformation();
+            $form = $this->createForm(PaypalInformationType::class, $paypalInfo);
+            $form->submit($data['paypalInfos'], true);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($paypalInfo);
+                $em->flush();
+                foreach ($members as $member) {
+                    $member->setPaypalInformation($paypalInfo);
+                    $member->setAmountPayed($priceService->getPrice($member) + 5);
+                }
+            } else {
+                return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));
             }
         } else if ($paymentSolution->getId() === 3) { //Set amount other pay if solution 3 "cheque & coupons"
             foreach ($data['each'] as $el) {
@@ -693,7 +707,6 @@ class MemberController extends FOSRestController
 
         //TODO Send mail recap with facture
 
-        $em = $this->getDoctrine()->getManager();
         foreach ($members as $member) {
             $member->setIsPayed(true);
             $member->setPaymentSolution($paymentSolution);

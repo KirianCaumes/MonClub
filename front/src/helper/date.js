@@ -21,6 +21,12 @@ export function dateToString(date) {
     return date ? (new Date(date)).toISOString().slice(0, 10) : ''
 }
 
+//Convert datetime (string) to string (format needed by api) : "YYYY-MM-DD HH:MM:SS"
+export function datetimeToString(date) {
+    let dt = (new Date(date)).toISOString()
+    return dt ? `${dt.slice(0, 10)} ${dt.slice(11, 19)}` : ''
+}
+
 //Check if major by birthdate (string) : boolean
 export function isMajor(birthdate) {
     return Math.abs(new Date(Date.now() - (new Date(birthdate)).getTime()).getUTCFullYear() - 1970) >= 18

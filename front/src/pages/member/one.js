@@ -142,8 +142,6 @@ class _MemberOne extends React.PureComponent {
         const { readOnly, data, initData, isLoading, workflow, nonObjection } = this.state
         const { param } = this.props
 
-        console.log(workflow)
-
         if (isLoading) return <Loader />
 
         return (
@@ -1323,7 +1321,7 @@ class _MemberOne extends React.PureComponent {
         this.props.setModal(
             true,
             'Détail du tarif',
-            <>Ensemble des informations tarifaires pour la saison actuelle <span className="is-underline">({this.props.param?.season?.find(x => x.is_current)?.label})</span></>,
+            <>Ensemble des informations tarifaires, <span className="is-underline">uniquement valable</span> pour la saison actuelle <span className="is-underline">({this.props.param?.season?.find(x => x.is_current)?.label})</span></>,
             undefined,
             <>
                 <Text variant="large" block><Icon iconName='NumberedList' /> Tarifs</Text>
@@ -1397,28 +1395,33 @@ class _MemberOne extends React.PureComponent {
                         </tr>
                     </tbody>
                 </Table>
-                <br />
-                <Text variant="large" block className={!this.state.data?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList' /> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
-                <Divider />
-                <Table className={!this.state.data?.is_transfer_needed ? 'is-line-through' : ''}>
-                    <thead>
-                        <tr>
-                            <th>Age</th>
-                            <th>Prix</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.props.param?.price?.transfer?.map((el, i) => {
-                            let currInterval = this.state.data?.is_transfer_needed && el.min_age <= getAge(this.state.data?.birthdate) && el.max_age >= getAge(this.state.data?.birthdate)
-                            return (
-                                <tr key={i} className={currInterval ? 'is-selected' : ''} >
-                                    <td>{el.label}</td>
-                                    <td>{el.price} €</td>
+                {
+                    this.state.data?.is_transfer_needed &&
+                    <>
+                        <br />
+                        <Text variant="large" block ><Icon iconName='NumberedList' /> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
+                        <Divider />
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Age</th>
+                                    <th>Prix</th>
                                 </tr>
-                            )
-                        })}
-                    </tbody>
-                </Table>
+                            </thead>
+                            <tbody>
+                                {this.props.param?.price?.transfer?.map((el, i) => {
+                                    let currInterval = this.state.data?.is_transfer_needed && el.min_age <= getAge(this.state.data?.birthdate) && el.max_age >= getAge(this.state.data?.birthdate)
+                                    return (
+                                        <tr key={i} className={currInterval ? 'is-selected' : ''} >
+                                            <td>{el.label}</td>
+                                            <td>{el.price} €</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
+                    </>
+                }
                 <br />
                 <Text variant="large" block ><Icon iconName='NumberedList' /> Hand en famille</Text>
                 <Divider />
@@ -1441,8 +1444,83 @@ class _MemberOne extends React.PureComponent {
                         })}
                     </tbody>
                 </Table>
+                {
+                    this.state.data?.payment_solution?.id === 1 &&
+                    <>
+                        <br />
+                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>5 €</b></Text>
+                        <Divider />
+                        <Columns>
+                            <Columns.Column>
+                                <TextField
+                                    label="Numéro du paiement"
+                                    placeholder="Numéro du paiement"
+                                    defaultValue={this.state.data?.paypal_information?.id_payment}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                            <Columns.Column>
+                                <TextField
+                                    label="Date"
+                                    placeholder="Date"
+                                    defaultValue={dateToCleanDateTimeString(new Date(this.state.data?.paypal_information?.creation_datetime))}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                        </Columns>
+                        <Columns>
+                            <Columns.Column>
+                                <TextField
+                                    label="Montant"
+                                    placeholder="Montant"
+                                    defaultValue={this.state.data?.paypal_information?.amount}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                            <Columns.Column>
+                                <TextField
+                                    label="Devise"
+                                    placeholder="Devise"
+                                    defaultValue={this.state.data?.paypal_information?.currency}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                        </Columns>
+                        <Columns>
+                            <Columns.Column>
+                                <TextField
+                                    label="Prénom"
+                                    placeholder="Prénom"
+                                    defaultValue={this.state.data?.paypal_information?.firstname}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                            <Columns.Column>
+                                <TextField
+                                    label="Nom"
+                                    placeholder="Nom"
+                                    defaultValue={this.state.data?.paypal_information?.lastname}
+                                    borderless={true}
+                                    readOnly={true}
+                                />
+                            </Columns.Column>
+                        </Columns>
+                        <TextField
+                            label="Email"
+                            placeholder="Email"
+                            defaultValue={this.state.data?.paypal_information?.email}
+                            borderless={true}
+                            readOnly={true}
+                        />
+                    </>
+                }
                 <br />
-                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{price} €</b></Text>
+                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{this.state.data?.payment_solution?.id === 1 ? (price + 5) : price} €</b></Text>
                 <Divider />
                 <br />
             </>

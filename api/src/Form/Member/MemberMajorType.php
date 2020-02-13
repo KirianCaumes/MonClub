@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\Param\ParamSeason;
 use App\Entity\Param\ParamSex;
+use App\Entity\PaypalInformation;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -154,6 +155,10 @@ class MemberMajorType extends AbstractType
             ])            
             ->add('season', EntityType::class, [
                 'class' => ParamSeason::class,
+                'disabled' => true,
+            ])
+            ->add('paypal_information', EntityType::class, [
+                'class' => PaypalInformation::class,
                 'disabled' => true,
             ])
             ->add('save', SubmitType::class);

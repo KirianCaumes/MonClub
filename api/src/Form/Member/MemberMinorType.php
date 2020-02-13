@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\Param\ParamSeason;
 use App\Entity\Param\ParamSex;
+use App\Entity\PaypalInformation;
 use App\Entity\Team;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -74,7 +75,7 @@ class MemberMinorType extends AbstractType
             ])
             ->add('amount_payed_other', NumberType::class, [
                 'disabled' => true,
-            ]) 
+            ])
             ->add('is_license_renewal')
             ->add('payment_notes', TextType::class, [
                 'disabled' => true,
@@ -84,7 +85,7 @@ class MemberMinorType extends AbstractType
             ])
             ->add('is_inscription_done', CheckboxType::class, [
                 'disabled' => true,
-            ])      
+            ])
             ->add('gesthand_is_photo', CheckboxType::class, [
                 'disabled' => true,
             ])
@@ -105,13 +106,13 @@ class MemberMinorType extends AbstractType
             ])
             ->add('gesthand_qualification_date', DateTimeType::class, [
                 'disabled' => true,
-            ])   
+            ])
             ->add('creation_datetime', DateTimeType::class, [
                 'disabled' => true,
             ])
             ->add('notes', TextType::class, [
                 'disabled' => true,
-            ])      
+            ])
             ->add('sex', EntityType::class, [
                 'class' => ParamSex::class
             ])
@@ -127,9 +128,13 @@ class MemberMinorType extends AbstractType
                 'class' => Team::class,
                 'multiple' => true,
                 'disabled' => true,
-            ])          
+            ])
             ->add('season', EntityType::class, [
                 'class' => ParamSeason::class,
+                'disabled' => true,
+            ])
+            ->add('paypal_information', EntityType::class, [
+                'class' => PaypalInformation::class,
                 'disabled' => true,
             ])
             ->add('save', SubmitType::class);

@@ -4,6 +4,9 @@ namespace App\Service;
 
 use App\Entity\Member;
 use App\Entity\User;
+use App\Service\Generator\PdfService;
+use Swift_Attachment;
+use Swift_ByteStream_ArrayByteStream;
 use Twig\Environment;
 
 /**
@@ -12,12 +15,13 @@ use Twig\Environment;
 class MailService
 {
     protected $swiftMailer;
-    protected $mailer;
+    protected $pdfService;
 
-    public function __construct(\Swift_Mailer $swiftMailer, Environment $twig)
+    public function __construct(\Swift_Mailer $swiftMailer, Environment $twig, PdfService $pdfService)
     {
         $this->swiftMailer = $swiftMailer;
         $this->twig = $twig;
+        $this->pdfService = $pdfService;
         $this->baseUrl = "";
         switch ($_ENV['APP_ENV']) {
             case 'dev':
@@ -37,7 +41,7 @@ class MailService
     /**
      * Handle sending email
      */
-    private function send(string $to, string $subject, string $body)
+    private function send(string $to, string $subject, string $body, $attachment = null)
     {
         //Use smtp google if localhost
         if ($_ENV['APP_ENV'] === 'dev') {
@@ -48,6 +52,7 @@ class MailService
                     ->setSubject($subject . ' - MonClub THBC')
                     ->setTo($to)
                     ->setBody($body)
+                    ->attach($attachment)
             );
         }
 
@@ -139,10 +144,10 @@ class MailService
                 'inactivityDate' =>  $inactivityDate,
             ])
         );
-    }    
+    }
 
     /**
-     * Send an email to reset password.
+     * Send an email to let user know accout created by admin.
      */
     public function sendUserCreatedByAdmin(User $user)
     {
@@ -154,6 +159,23 @@ class MailService
                 'user' => $user,
                 'baseUrl' => $this->baseUrl,
             ])
+        );
+    }
+    
+
+    /**
+     * Send an to notice payment done
+     */
+    public function sendFacture(User $user)
+    {
+        return $this->send(
+            $user->getEmail(),
+            'Réinitialisation de votre mot de passe',
+            $this->twig->render('/mail/resetPassword.html.twig', [
+                'user' => $user,
+                'baseUrl' => $this->baseUrl
+            ]),
+            new Swift_Attachment($this->pdfService->generateFacture(), 'facture.pdf', 'application/pdf')
         );
     }
 }
