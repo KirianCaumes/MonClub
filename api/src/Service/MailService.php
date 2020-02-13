@@ -110,4 +110,23 @@ class MailService
                 ]))
         );
     }
+
+    /**
+     * Send an email to remind user to renew the gesthand certificat.
+     */
+    public function sendWarningGesthandCertificat(Member $member,$gesthandCertifDate)
+    {
+        return $this->mailer->send(
+            (new \Swift_Message())
+                ->setContentType('text/html')
+                ->setFrom($this->from)
+                ->setSubject('Renouvellement de votre certificat Gesthand - MonClub THBC')
+                ->setTo($member->getEmail())
+                ->setBody($this->twig->render('/mail/renouvellementCertif.html.twig', [
+                    'user' => $member,
+                    'baseUrl' => $this->baseUrl,
+                    'gesthandCertifDate' =>  $gesthandCertifDate,
+                ]))
+        );
+    }
 }
