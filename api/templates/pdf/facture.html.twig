@@ -1,20 +1,128 @@
 {% extends "pdf/_base.html.twig" %}
 
+{% if members|length > 0 and members[0].data.paymentsolution is not null %}
+	{% set paymentsolution = members[0].data.paymentsolution %}
+{% endif %}
+
+
 {% block style %}
-    <!-- <link href="../../public/css/attestation.css" rel="stylesheet" />-->
-    <link href="css/attestation.css" rel="stylesheet" />
+	<link href="css/facture.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
-    <!-- <img src="../../public/img/logo.png" class="logo"> -->
-    <img src="./img/logo.png" class="logo">
-    <p>
-        Thouaré Handball Club<br />
-        Route de la Barre<br />
-        44470 Thouaré sur Loire<br />
-        <a href="https://thouarehbc.fr">https://thouarehbc.fr</a><br />
-        <br /><br />
-        SIRET : 529 434 102 00032
-    </p>
-    <br /><br />
+	<img src="./img/logo.png" class="logo">
+	<p>
+		Thouaré Handball Club<br/>
+		Route de la Barre<br/>
+		44470 Thouaré sur Loire<br/>
+		<a href="https://thouarehbc.fr">https://thouarehbc.fr</a><br/>
+	</p>
+
+	<p class="has-text-right">
+		Récapitulatif généré le
+		{{"now"|date("d/m/Y", "Europe/Paris")}}
+		à
+		{{"now"|date("H:i:s", "Europe/Paris")}}<br/>
+		Pour l'utilisateur
+		<u>{{user.username}}</u>, n°<u>{{user.id}}</u><br/>
+	</p>
+	<br/>
+	<p>
+		Bonjour,<br/><br/>
+		Retrouvez le récapitulatif du paiement que vous venez d'effectuer sur la plateforme MonClub - THBC pour votre inscription.<br/><br/>
+		Moyen de paiement utilisé :
+		<b>{{paymentsolution.label}}</b>
+		{% if paymentsolution.id is same as(1) %}
+			<br/><br/>
+			Numéro de facture PayPal associée :
+			{% if members|length > 0 and members[0].data.paypalinformation is not null %}
+				<b>{{members[0].data.paypalinformation.idpayment}}</b>
+			{% endif %}
+		{% endif %}
+		{% if paymentsolution.id is same as(2) or paymentsolution.id is same as(3) %}
+			<br/><br/>
+			Veuillez déposer votre chèque à l'ordre du THBC et le(s) coupon(s) dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br/>
+			<b>
+				Parc des Sports<br/>
+				Route de la Barre<br/>
+				Thouaré-sur-Loire 44470<br/>
+			</b>
+		{% endif %}
+	</p>
+
+	<br/>
+
+	<table class="table is-bordered is-fullwidth">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Prix de base</th>
+				<th>Réduction chômeur/étudiant/loisir</th>
+				<th>Demande de transfert</th>
+				<th>Réduction famille</th>
+				{% if paymentsolution.id is same as(1) %}
+					<th>Frais PayPal</th>
+				{% endif %}
+				{% if paymentsolution.id is same as(3) %}
+					<th>Montant en coupons</th>
+				{% endif %}
+				<th>Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for member in members %}
+				<tr>
+					<th>
+						<span class="is-capitalized">{{member.data.firstname}}</span>
+						<span class="is-uppercase">{{member.data.lastname}}</span>
+						-
+						{{member.age}}
+						ans
+					</th>
+					<td>{{member.basePrice|format_currency('EUR', locale='fr')}}</td>
+					<td>
+						{% if member.data.isreducedprice == true or member.data.isnoncompetitive == true %}
+							Oui
+						{% else %}
+							Non
+						{% endif %}
+					</td>
+					<td>
+						{% if member.data.istransferneeded == true %}
+							{{member.transferPrice|format_currency('EUR', locale='fr')}}
+						{% else %}
+							Non
+						{% endif %}
+					</td>
+					<td>-
+						{{member.familyReduc|format_currency('EUR', locale='fr')}}</td>
+
+					{% if paymentsolution.id is same as(1) %}
+						<td>{{ paypalFee|format_currency('EUR', locale='fr') }}</td>
+					{% endif %}
+					{% if paymentsolution.id is same as(3)  %}
+						<td>{{ member.data.amountpayedother|format_currency('EUR', locale='fr') }}</td>
+					{% endif %}
+
+					<td>{{ member.data.amountpayed|format_currency('EUR', locale='fr') }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>TOTAL</th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				{% if paymentsolution.id is same as(1) %}
+					<th></th>
+				{% endif %}
+				{% if paymentsolution.id is same as(3)  %}
+					<th>{{ totalOther|format_currency('EUR', locale='fr') }}</th>
+				{% endif %}
+				<th>{{ total|format_currency('EUR', locale='fr') }}</th>
+			</tr>
+		</tfoot>
+	</table>
 {% endblock %}

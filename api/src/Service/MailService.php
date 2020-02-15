@@ -5,22 +5,23 @@ namespace App\Service;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Service\Generator\PdfService;
-use Swift_Attachment;
-use Twig\Environment;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * Service to handle mail
  */
 class MailService
 {
-    protected $swiftMailer;
     protected $pdfService;
+    protected $mailer;
 
-    public function __construct(\Swift_Mailer $swiftMailer, Environment $twig, PdfService $pdfService)
+    public function __construct(PdfService $pdfService, MailerInterface $mailer)
     {
-        $this->swiftMailer = $swiftMailer;
-        $this->twig = $twig;
+        $this->mailer = $mailer;
         $this->pdfService = $pdfService;
+
         $this->baseUrl = "";
         switch ($_ENV['APP_ENV']) {
             case 'dev':
@@ -40,31 +41,22 @@ class MailService
     /**
      * Handle sending email
      */
-    private function send(string $to, string $subject, string $body, Swift_Attachment $attachment = null)
-    {
-        //Use smtp google if localhost
-        if ($_ENV['APP_ENV'] === 'dev') {
-            $swiftMessage = (new \Swift_Message())
-                ->setContentType('text/html')
-                ->setFrom('inscription@thouarehbc.fr')
-                ->setSubject($subject . ' - MonClub THBC')
-                ->setTo($to)
-                ->setBody($body);
-                
-            if ($attachment) $swiftMessage->attach($attachment);
+    private function send(
+        string $to = "mail@mail.com",
+        string $subject  = null,
+        array $body = ['template' => '_base.html.twig', 'context' => []],
+        array $attachment = ['file' => null, 'name' => null, 'type' => null]
+    ) {
+        $email = (new TemplatedEmail())
+            ->from('inscription@thouarehbc.fr')
+            ->to($to)
+            ->subject($subject . ' - MonClub THBC')
+            ->htmlTemplate('/mail/' . $body['template'])
+            ->context($body['context']);
 
-            return $this->swiftMailer->send($swiftMessage);
-        }
+        if ($attachment['file']) $email->attach($attachment['file'], $attachment['name'], $attachment['type']);
 
-        return mail(
-            $to,
-            $subject . ' - MonClub THBC',
-            $body,
-            "From: Mon Club - THBC <inscription@thouarehbc.fr>\r\n" .
-                "Reply-To: inscription@thouarehbc.fr" . "\r\n" .
-                "Content-Type: text/html; charset=UTF-8" . "\r\n" .
-                "X-Mailer: PHP/" . phpversion()
-        );
+        return $this->mailer->send($email);
     }
 
     /**
@@ -75,11 +67,14 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Réinitialisation de votre mot de passe',
-            $this->twig->render('/mail/resetPassword.html.twig', [
-                'token' => $user->getConfirmationToken(),
-                'user' => $user,
-                'baseUrl' => $this->baseUrl
-            ])
+            [
+                'template' => 'resetPassword.html.twig',
+                'context' => [
+                    'token' => $user->getConfirmationToken(),
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl
+                ]
+            ]
         );
     }
 
@@ -91,10 +86,13 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Vous avez des membres en attente',
-            $this->twig->render('/mail/membersReminder.html.twig', [
-                'user' => $user,
-                'baseUrl' => $this->baseUrl
-            ])
+            [
+                'template' => 'membersReminder.html.twig',
+                'context' => [
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl
+                ]
+            ]
         );
     }
 
@@ -106,11 +104,14 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Votre inscription à été validée',
-            $this->twig->render('/mail/membersInscriptionDone.html.twig', [
-                'user' => $user,
-                'member' => $member,
-                'baseUrl' => $this->baseUrl
-            ])
+            [
+                'template' => 'membersInscriptionDone.html.twig',
+                'context' => [
+                    'user' => $user,
+                    'member' => $member,
+                    'baseUrl' => $this->baseUrl
+                ]
+            ]
         );
     }
 
@@ -121,12 +122,15 @@ class MailService
     {
         return $this->send(
             $user->getEmail(),
-            'Votre inscription à été validée',
-            $this->twig->render('/mail/membersInscriptionDone.html.twig', [
-                'user' => $user,
-                'member' => $member,
-                'baseUrl' => $this->baseUrl
-            ])
+            'Certains documents ne sont pas valides',
+            [
+                'template' => 'membersDocumentInvalid.html.twig',
+                'context' => [
+                    'user' => $user,
+                    'member' => $member,
+                    'baseUrl' => $this->baseUrl
+                ]
+            ]
         );
     }
 
@@ -138,11 +142,14 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Votre compte risque d\'être désactivé',
-            $this->twig->render('/mail/warningEnableUser.html.twig', [
-                'user' => $user,
-                'baseUrl' => $this->baseUrl,
-                'inactivityDate' =>  $inactivityDate,
-            ])
+            [
+                'template' => 'warningEnableUser.html.twig',
+                'context' => [
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl,
+                    'inactivityDate' =>  $inactivityDate,
+                ]
+            ]
         );
     }
 
@@ -154,27 +161,33 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Création de votre compte',
-            $this->twig->render('/mail/userCreatedByAdmin.html.twig', [
-                'token' => $user->getConfirmationToken(),
-                'user' => $user,
-                'baseUrl' => $this->baseUrl,
-            ])
+            [
+                'template' => 'userCreatedByAdmin.html.twig',
+                'context' => [
+                    'token' => $user->getConfirmationToken(),
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl,
+                ]
+            ]
         );
     }
 
     /**
      * Send an to notice payment done
      */
-    public function sendFacture(User $user)
+    public function sendFacture(User $user, array $members)
     {
         return $this->send(
             $user->getEmail(),
-            'Réinitialisation de votre mot de passe',
-            $this->twig->render('/mail/facture.html.twig', [
-                'user' => $user,
-                'baseUrl' => $this->baseUrl
-            ]),
-            new Swift_Attachment($this->pdfService->generateFacture(), 'facture.pdf', 'application/pdf')
+            'Récapitulatif de votre inscription',
+            [
+                'template' => 'facture.html.twig',
+                'context' => [
+                    'user' => $user,
+                    'baseUrl' => $this->baseUrl,
+                ]
+            ],
+            ['file' => $this->pdfService->generateFacture($members), 'name' => 'récapitulatif.pdf', 'type' => 'application/pdf']
         );
     }
 
@@ -186,9 +199,12 @@ class MailService
         return $this->send(
             $user->getEmail(),
             'Avez-vous pensé à renouveler votre certificat médical ?',
-            $this->twig->render('/mail/renewCertificate.html.twig', [
-                'baseUrl' => $this->baseUrl,
-            ])
+            [
+                'template' => 'renewCertificate.html.twig',
+                'context' => [
+                    'baseUrl' => $this->baseUrl,
+                ]
+            ]
         );
     }
 }

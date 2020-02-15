@@ -34,7 +34,7 @@ class _MembersMePayment extends React.PureComponent {
     pay(paypalInfos = null) {
         let serializedPaypalInfos = { //Simply serialize data to be handled easly in PHP
             id_payment: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.id,
-            creation_datetime: datetimeToString(paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.update_time),
+            creation_datetime: paypalInfos && datetimeToString(paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.update_time),
             amount: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.amount?.value,
             currency: paypalInfos?.details?.purchase_units?.[0].payments?.captures?.[0]?.amount?.currency_code,
             email: paypalInfos?.details?.payer?.email_address,

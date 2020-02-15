@@ -8,6 +8,7 @@ use App\Entity\Member;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\PaypalInformation;
+use App\Entity\User;
 use App\Form\DocumentType;
 use App\Form\Member\MemberMajorAdminType;
 use App\Form\Member\MemberMajorType;
@@ -650,7 +651,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService, ParamService $paramService, ValidatorInterface $validator)
+    public function postPay(Request $request, TranslatorInterface $translator, PriceService $priceService, ParamService $paramService, ValidatorInterface $validator, MailService $mailService)
     {
         $data = json_decode($request->getContent(), true);
 
@@ -709,14 +710,17 @@ class MemberController extends FOSRestController
                 break;
         }
 
-        //TODO Send mail recap with facture
-
         foreach ($members as $member) {
             $member->setIsPayed(true);
             $member->setPaymentSolution($paymentSolution);
+            if ($member->getPaymentSolution()->getId() !== 3) $member->setAmountPayedOther(null);
+            if ($member->getPaymentSolution()->getId() !== 1) $member->setPaypalInformation(null);
             $em->persist($member);
         }
         $em->flush();
+        
+        //Send mail recap with facture
+        $mailService->sendFacture($members[0]->getUser(), $members);
 
         return $this->handleView($this->view(
             $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])

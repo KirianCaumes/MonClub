@@ -26,39 +26,24 @@ class PriceService
     /**
      * Calcul price for a given member
      */
-    public function getPrice(Member $member)
+    public function getPrice(Member $member, bool $useCreationDt = false)
     {
-        $birthYear = (int) $member->getBirthdate()->format('Y');
-        $age = $this->dateService->getAge($birthYear);
-        $priceDeadline = $this->paramService->getParam('price_deadline');
         $price = 0;
 
         //Get price license
         if ($member->getIsReducedPrice()) {
-            if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                $price += $this->paramService->getParam('reduced_price_before_deadline');
-            } else {
-                $price += $this->paramService->getParam('reduced_price_after_deadline');
-            }
+            $price += $this->getPriceReduced($member, $useCreationDt);
         } else { //Else : normal case
-            $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval($birthYear);
-            if ((new \DateTime() <= (new \DateTime($priceDeadline)))) {
-                if ($paramPriceLicense) $price += $paramPriceLicense->getPriceBeforeDeadline();
-            } else {
-                if ($paramPriceLicense) $price += $paramPriceLicense->getPriceAfterDeadline();
-            }
+            $price += $this->getPriceBase($member, $useCreationDt);
         }
 
         //Check if transfer needed
         if ($member->getIsTransferNeeded()) {
-            $price += $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval($age)->getPrice();
+            $price += $this->getPriceTransferNeeded($member);
         }
 
         //Check families reduction
-        $reducFamily = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1)]);
-        if ($reducFamily) {
-            $price -= $reducFamily->getDiscount();
-        }
+        $price -= $this->getFamilyReduction($member);
 
         return $price;
     }
@@ -66,7 +51,7 @@ class PriceService
     /**
      * Get position from member 
      */
-    public function getPosition(Member $member)
+    public function getPosition(Member $member): int
     {
         $members = $this->em->getRepository(Member::class)->findBy(['user' => $member->getUser(), 'season' => $member->getSeason()], ['id' => 'ASC']);
         foreach ($members as $key => $mbr) {
@@ -75,6 +60,51 @@ class PriceService
             }
         }
         return null;
+    }
+
+    /**
+     * Get price for a price reduced member 
+     */
+    public function getPriceReduced(Member $member, bool $useCreationDt = false): int
+    {
+        if ((($useCreationDt ? $member->getCreationDatetime() : new \DateTime()) <= (new \DateTime($this->paramService->getParam('price_deadline'))))) {
+            return $this->paramService->getParam('reduced_price_before_deadline');
+        } else {
+            return $this->paramService->getParam('reduced_price_after_deadline');
+        }
+    }
+
+    /**
+     * Get price for a price reduced member 
+     */
+    public function getPriceBase(Member $member, bool $useCreationDt = false): int
+    {
+        $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval((int) $member->getBirthdate()->format('Y'));
+        if ((($useCreationDt ? $member->getCreationDatetime() : new \DateTime()) <= (new \DateTime($this->paramService->getParam('price_deadline'))))) {
+            return $paramPriceLicense->getPriceBeforeDeadline();
+        } else {
+            return $paramPriceLicense->getPriceAfterDeadline();
+        }
+    }
+
+    /**
+     * Get price for a transfer needed member 
+     */
+    public function getPriceTransferNeeded(Member $member): int
+    {
+        $val = $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval($this->dateService->getAge((int) $member->getBirthdate()->format('Y')));
+        if ($val) return $val->getPrice();
+        return 0;
+    }
+
+    /**
+     * Get price for a transfer needed member 
+     */
+    public function getFamilyReduction(Member $member): int
+    {
+        $val = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1)]);
+        if ($val) return $val->getDiscount();
+        return 0;
     }
 
     /**

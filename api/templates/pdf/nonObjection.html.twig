@@ -1,12 +1,10 @@
 {% extends "pdf/_base.html.twig" %}
 
 {% block style %}
-    <!-- <link href="../../public/css/nonObjection.css" rel="stylesheet" />-->
     <link href="css/nonObjection.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
-    <!-- <img src="../../public/img/logo.png" class="logo"> -->
     <img src="./img/logo.png" class="logo">
     <p>
         Thouaré Handball Club<br />
@@ -25,14 +23,13 @@
     </p>
     <br /><br />
 
-    <h1>OBJET : lettre de non-opposition mutation hors période</h1>
+    <h1 class="title">OBJET : lettre de non-opposition mutation hors période</h1>
     <br /><br />
     <p>
         Madame, Monsieur,<br/>
         Conformément à l’article 57.1.1 des règlements généraux de la FFHB, le Thouaré Handball Club informe le Club <span class="is-uppercase">{{club}}</span> qu’il ne s’oppose pas à la mutation de {{civility}} <span class="is-capitalized">{{member.firstname}}</span> <span class="is-uppercase">{{member.lastname}}</span>.
     </p>
     <br />
-    <!-- <img src="../../public/img/singature_club.jpg" class="signature"> -->
     <img src="./img/singature_club.jpg" class="signature">
     <p class="has-text-right signature">
         P/o Le président du THBC<br />
