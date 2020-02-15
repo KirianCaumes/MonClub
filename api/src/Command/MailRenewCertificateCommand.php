@@ -39,7 +39,7 @@ class MailRenewCertificateCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        if ((new \DateTime())->format('d-m') === $this->paramService->getParam('data_mail_renew_certif')) { //01-05
+        if ((new \DateTime())->format('d-m') === $this->paramService->getParam('date_mail_renew_certif')) { //01-05
             $members = $this->em->getRepository(Member::class)->findBy(['season' => $this->paramService->getCurrentSeason()]);
             $usersToSend = [];
 
@@ -53,7 +53,7 @@ class MailRenewCertificateCommand extends Command
 
             $output->writeln(sizeof($usersToSend) . ' email(s) were sent.');
         } else {
-            $output->writeln('Emails will be send on: ' . $this->paramService->getParam('data_mail_renew_certif'));
+            $output->writeln('Emails will be send on: ' . $this->paramService->getParam('date_mail_renew_certif'));
         }
     }
 }

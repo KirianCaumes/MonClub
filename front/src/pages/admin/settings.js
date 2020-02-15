@@ -15,7 +15,7 @@ class _Settings extends React.PureComponent {
             president_lastname: props.param?.global?.find(x => x.label === 'president_lastname')?.value,
             secretary_firstname: props.param?.global?.find(x => x.label === 'secretary_firstname')?.value,
             secretary_lastname: props.param?.global?.find(x => x.label === 'secretary_lastname')?.value,
-            price_deadline: props.param?.global?.find(x => x.label === 'price_deadline')?.value,
+            // price_deadline: props.param?.global?.find(x => x.label === 'price_deadline')?.value,
             new_member_deadline: props.param?.global?.find(x => x.label === 'new_member_deadline')?.value,
             is_create_new_user_able: props.param?.global?.find(x => x.label === 'is_create_new_user_able')?.value,
             is_create_new_member_able: props.param?.global?.find(x => x.label === 'is_create_new_member_able')?.value,
@@ -117,7 +117,7 @@ class _Settings extends React.PureComponent {
                     </Columns>
                     <Columns>
                         <Columns.Column>
-                            <Label required htmlFor="price_deadline">Deadline prix inscription</Label>
+                            {/* <Label required htmlFor="price_deadline">Deadline prix inscription</Label>
                             <div className="flex-row">
                                 <MaskedTextField
                                     id="price_deadline"
@@ -133,7 +133,7 @@ class _Settings extends React.PureComponent {
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                     }
                                 />
-                            </div>
+                            </div> */}
                         </Columns.Column>
                         <Columns.Column>
                             <Label required htmlFor="new_member_deadline">Deadline insc./modif. membres</Label>

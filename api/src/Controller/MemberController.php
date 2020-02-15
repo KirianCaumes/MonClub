@@ -7,6 +7,7 @@ use App\Entity\Document;
 use App\Entity\Member;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\PaypalInformation;
 use App\Entity\User;
 use App\Form\DocumentType;
@@ -684,7 +685,7 @@ class MemberController extends FOSRestController
                     $em->flush();
                     foreach ($members as $member) {
                         $member->setPaypalInformation($paypalInfo);
-                        $member->setAmountPayed($priceService->getPrice($member) + intval($paramService->getParam('paypal_fee')));
+                        $member->setAmountPayed($this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()])->getPaypalFee());
                     }
                 } else {
                     return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));

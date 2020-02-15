@@ -47,6 +47,12 @@ class ParamPriceLicense
      * @ORM\Column(type="integer")
      */
     private $max_year;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSeason")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
+     */
+    private $season;
 
     public function getId(): ?int
     {
@@ -109,6 +115,18 @@ class ParamPriceLicense
     public function setMaxYear(int $max_year): self
     {
         $this->max_year = $max_year;
+
+        return $this;
+    }
+
+    public function getSeason(): ?ParamSeason
+    {
+        return $this->season;
+    }
+
+    public function setSeason(ParamSeason $season): self
+    {
+        $this->season = $season;
 
         return $this;
     }

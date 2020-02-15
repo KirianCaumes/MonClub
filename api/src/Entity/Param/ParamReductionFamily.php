@@ -29,6 +29,12 @@ class ParamReductionFamily
      * @ORM\Column(type="integer")
      */
     private $discount;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSeason")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
+     */
+    private $season;
 
     public function getId(): ?int
     {
@@ -55,6 +61,18 @@ class ParamReductionFamily
     public function setDiscount(int $discount): self
     {
         $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getSeason(): ?ParamSeason
+    {
+        return $this->season;
+    }
+
+    public function setSeason(ParamSeason $season): self
+    {
+        $this->season = $season;
 
         return $this;
     }

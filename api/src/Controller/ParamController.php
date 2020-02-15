@@ -6,6 +6,7 @@ use App\Entity\ActivityHistory;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamGlobal;
 use App\Entity\Param\ParamPaymentSolution;
+use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\Param\ParamPriceLicense;
 use App\Entity\Param\ParamPriceTransfer;
 use App\Entity\Param\ParamReductionFamily;
@@ -15,6 +16,7 @@ use App\Entity\Param\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\ActivityHistoricType;
+use App\Service\ParamService;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -41,7 +43,7 @@ class ParamController extends FOSRestController
      *
      * @return Response
      */
-    public function getParam()
+    public function getParam(ParamService $paramService)
     {
         //Create new historic entry
         $activityHistoric = new ActivityHistory();
@@ -54,6 +56,8 @@ class ParamController extends FOSRestController
             $em->flush();
         }
 
+        $currentSeason = $paramService->getCurrentSeason();
+
         return $this->handleView($this->view([
             'teams' => $this->getDoctrine()->getRepository(Team::class)->findall(),
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),
@@ -63,9 +67,10 @@ class ParamController extends FOSRestController
             'choices' => [['key' => 'true', 'text' => 'Oui', 'icon' => 'Accept'], ['key' => 'false', 'text' => 'Non', 'icon' => 'Cancel']],
             'sexes' => $this->getDoctrine()->getRepository(ParamSex::class)->findall(),
             'price' => [
-                'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findall(),
-                'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findall(),
-                'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findall(),
+                'global' => $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $currentSeason]),
+                'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findBy(['season' => $currentSeason]),
+                'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findBy(['season' => $currentSeason]),
+                'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findBy(['season' => $currentSeason]),
                 'payment_solution' => $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findall(),
             ],
             'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findAll(),

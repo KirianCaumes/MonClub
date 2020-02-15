@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Member;
+use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\User;
 use App\Service\DateService;
 use App\Service\ParamService;
@@ -36,7 +37,7 @@ class MainController extends AbstractController
         return $this->render('pdf/facture.html.twig', [
             'user' => $user,
             'members' => $membersWithDetails,
-            'paypalFee' => intval($paramService->getParam('paypal_fee')),
+            'paypalFee' => $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()])->getPaypalFee(),
             'total' => (function () use ($members) {
                 return array_sum(array_map(function ($member) {
                     return $member->getAmountPayed();

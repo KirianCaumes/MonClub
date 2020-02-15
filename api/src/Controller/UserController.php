@@ -71,20 +71,22 @@ class UserController extends FOSRestController
             }
         }
 
+        $currentSeason = $paramService->getCurrentSeason();
+
         return $this->handleView($this->view([
             'text' => $security->isGranted('ROLE_ADMIN') ? $paramService->getParam('text_infos_admin') : $paramService->getParam('text_infos_user'),
             'activity_historic' => $dateRes,
             'infos' => [
                 'users' => $security->isGranted('ROLE_ADMIN') ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
                 'members' => $security->isGranted('ROLE_ADMIN') ?
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['season' => $paramService->getCurrentSeason()])) :
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])),
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['season' => $currentSeason])) :
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $currentSeason])),
                 'membersOk' => $security->isGranted('ROLE_ADMIN') ?
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => true, 'season' => $paramService->getCurrentSeason()])) :
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => true, 'season' => $paramService->getCurrentSeason()])),
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => true, 'season' => $currentSeason])) :
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => true, 'season' => $currentSeason])),
                 'membersPending' => $security->isGranted('ROLE_ADMIN') ?
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => false, 'season' => $paramService->getCurrentSeason()])) :
-                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => false, 'season' => $paramService->getCurrentSeason()])),
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => false, 'season' => $currentSeason])) :
+                    sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => false, 'season' => $currentSeason])),
             ]
         ], Response::HTTP_OK));
     }

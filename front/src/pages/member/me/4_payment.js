@@ -143,7 +143,7 @@ class _MembersMePayment extends React.PureComponent {
                         <tfoot>
                             <tr>
                                 <th>TOTAL</th>
-                                <th>{paymentKey === 1 ? (summary.total + parseFloat(param?.global?.find(x => x.label === 'paypal_fee')?.value)) : summary.total} €</th>
+                                <th>{paymentKey === 1 ? (summary.total + param?.price?.global?.paypal_fee) : summary.total} €</th>
                                 {paymentKey === 3 && <th>{summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0} €</th>}
                             </tr>
                         </tfoot>
@@ -151,7 +151,7 @@ class _MembersMePayment extends React.PureComponent {
                             <tfoot>
                                 <tr>
                                     <th>Frais PayPal</th>
-                                    <th>{parseFloat(param?.global?.find(x => x.label === 'paypal_fee')?.value)} €</th>
+                                    <th>{param?.price?.global?.paypal_fee} €</th>
                                 </tr>
                             </tfoot>
                         }
@@ -205,7 +205,7 @@ class _MembersMePayment extends React.PureComponent {
                                                                 clientId: "AdsT-hu8QLr0cOBxKYnFhbYnriqnwf8v58eSNZoTrbs0Tn1w2dbEUZBGJ_IWdyJjm5PmbOQVbzigVZIr",
                                                                 currency: "EUR"
                                                             }}
-                                                            amount={(summary?.total ?? 0) + parseFloat(param?.global?.find(x => x.label === 'paypal_fee')?.value)}
+                                                            amount={(summary?.total ?? 0) + param?.price?.global?.paypal_fee}
                                                             shippingPreference="NO_SHIPPING"
                                                             onSuccess={(details, data) => {
                                                                 return this.pay({ details, data })

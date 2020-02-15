@@ -41,6 +41,12 @@ class ParamPriceTransfer
      * @ORM\Column(type="integer")
      */
     private $max_age;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSeason")
+     * @ORM\JoinColumn(name="id_season", referencedColumnName="id")
+     */
+    private $season;
 
     public function getId(): ?int
     {
@@ -91,6 +97,18 @@ class ParamPriceTransfer
     public function setMaxage(int $max_age): self
     {
         $this->max_age = $max_age;
+
+        return $this;
+    }
+
+    public function getSeason(): ?ParamSeason
+    {
+        return $this->season;
+    }
+
+    public function setSeason(ParamSeason $season): self
+    {
+        $this->season = $season;
 
         return $this;
     }

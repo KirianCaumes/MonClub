@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Member;
+use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\Param\ParamPriceLicense;
 use App\Entity\Param\ParamPriceTransfer;
 use App\Entity\Param\ParamReductionFamily;
@@ -21,6 +22,7 @@ class PriceService
         $this->em = $em;
         $this->dateService = $dateService;
         $this->paramService = $paramService;
+        $this->currentParamGlobalPrice = $this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()]);
     }
 
     /**
@@ -67,10 +69,14 @@ class PriceService
      */
     public function getPriceReduced(Member $member, bool $useCreationDt = false): int
     {
-        if ((($useCreationDt ? $member->getCreationDatetime() : new \DateTime()) <= (new \DateTime($this->paramService->getParam('price_deadline'))))) {
-            return $this->paramService->getParam('reduced_price_before_deadline');
+        if (
+            ($useCreationDt ? $member->getCreationDatetime() : new \DateTime())
+            <=
+            $this->currentParamGlobalPrice->getDeadlineDate()
+        ) {
+            return $this->currentParamGlobalPrice->getReducedPriceBeforeDeadline();
         } else {
-            return $this->paramService->getParam('reduced_price_after_deadline');
+            return $this->currentParamGlobalPrice->getReducedPriceAfterDeadline();
         }
     }
 
@@ -79,8 +85,15 @@ class PriceService
      */
     public function getPriceBase(Member $member, bool $useCreationDt = false): int
     {
-        $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval((int) $member->getBirthdate()->format('Y'));
-        if ((($useCreationDt ? $member->getCreationDatetime() : new \DateTime()) <= (new \DateTime($this->paramService->getParam('price_deadline'))))) {
+        $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval(
+            (int) $member->getBirthdate()->format('Y'),
+            $this->paramService->getCurrentSeason()
+        );
+        if (
+            ($useCreationDt ? $member->getCreationDatetime() : new \DateTime())
+            <=
+            $this->currentParamGlobalPrice->getDeadlineDate()
+        ) {
             return $paramPriceLicense->getPriceBeforeDeadline();
         } else {
             return $paramPriceLicense->getPriceAfterDeadline();
@@ -92,7 +105,10 @@ class PriceService
      */
     public function getPriceTransferNeeded(Member $member): int
     {
-        $val = $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval($this->dateService->getAge((int) $member->getBirthdate()->format('Y')));
+        $val = $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval(
+            $this->dateService->getAge((int) $member->getBirthdate()->format('Y')),
+            $this->paramService->getCurrentSeason()
+        );
         if ($val) return $val->getPrice();
         return 0;
     }
@@ -102,7 +118,7 @@ class PriceService
      */
     public function getFamilyReduction(Member $member): int
     {
-        $val = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1)]);
+        $val = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1), 'season' => $this->paramService->getCurrentSeason()]);
         if ($val) return $val->getDiscount();
         return 0;
     }
@@ -125,7 +141,7 @@ class PriceService
             $total += $this->getPrice($member);
         }
 
-        $total -= $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => sizeof($members)])->getDiscount();
+        $total -= $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => sizeof($members), 'season' => $this->paramService->getCurrentSeason()])->getDiscount();
 
         return ['each' => $prices, 'total' => $total];
     }

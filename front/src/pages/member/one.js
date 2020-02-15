@@ -1314,7 +1314,7 @@ class _MemberOne extends React.PureComponent {
     }
 
     showModalDetailPrice(position, price) {
-        let deadlineDate = new Date(this.props.param?.global?.find(x => x.label === 'price_deadline')?.value)
+        let deadlineDate = new Date(this.props.param?.price?.global?.deadline_date)
         let deadlineDateAfter = (new Date(deadlineDate.getTime()))
         deadlineDateAfter.setDate(deadlineDate.getDate() + 1)
 
@@ -1376,19 +1376,19 @@ class _MemberOne extends React.PureComponent {
                                     ?
                                     <>
                                         <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                            {this.props.param?.price?.global?.reduced_price_before_deadline} €
                                         </td>
                                         <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                            {this.props.param?.price?.global?.reduced_price_after_deadline} €
                                         </td>
                                     </>
                                     :
                                     <>
                                         <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                            {this.props.param?.price?.global?.reduced_price_after_deadline} €
                                         </td>
                                         <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                            {this.props.param?.price?.global?.reduced_price_before_deadline} €
                                         </td>
                                     </>
                             }
@@ -1448,7 +1448,7 @@ class _MemberOne extends React.PureComponent {
                     this.state.data?.payment_solution?.id === 1 &&
                     <>
                         <br />
-                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>{parseFloat(this.props.param?.global?.find(x => x.label === 'paypal_fee')?.value)} €</b></Text>
+                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>{this.props.param?.price?.global?.paypal_fee} €</b></Text>
                         <Divider />
                         <Columns>
                             <Columns.Column>

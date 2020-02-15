@@ -30,7 +30,7 @@ class _MembersMeSummary extends React.PureComponent {
         const { memberIndex, param } = this.props
         const member = this.props.members[memberIndex]
 
-        let deadlineDate = new Date(param?.global?.find(x => x.label === 'price_deadline')?.value)
+        let deadlineDate = new Date(param?.price?.global?.deadline_date)
         let deadlineDateAfter = (new Date(deadlineDate.getTime()))
         deadlineDateAfter.setDate(deadlineDate.getDate() + 1)
 
@@ -92,19 +92,19 @@ class _MembersMeSummary extends React.PureComponent {
                                     ?
                                     <>
                                         <td className={deadlineDate >= new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                            {param?.price?.global?.reduced_price_before_deadline} €
                                         </td>
                                         <td className={deadlineDate < new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                            {param?.price?.global?.reduced_price_after_deadline} €
                                         </td>
                                     </>
                                     :
                                     <>
                                         <td className={deadlineDate < new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.global?.find(x => x.label === 'reduced_price_after_deadline')?.value} €
+                                            {param?.price?.global?.reduced_price_after_deadline} €
                                         </td>
                                         <td className={deadlineDate >= new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.global?.find(x => x.label === 'reduced_price_before_deadline')?.value} €
+                                            {param?.price?.global?.reduced_price_before_deadline} €
                                         </td>
                                     </>
                             }

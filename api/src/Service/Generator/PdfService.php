@@ -4,6 +4,7 @@ namespace App\Service\Generator;
 
 use App\Constants;
 use App\Entity\Member;
+use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Service\DateService;
@@ -117,7 +118,7 @@ class PdfService
             $this->twig->render('pdf/facture.html.twig', [
                 'user' => $members[0]->getUser(),
                 'members' => $membersWithDetails,
-                'paypalFee' => intval($this->paramService->getParam('paypal_fee')),
+                'paypalFee' => $this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()])->getPaypalFee(),
                 'total' => (function () use ($members) {
                     return array_sum(array_map(function ($member) {
                         return $member->getAmountPayed();

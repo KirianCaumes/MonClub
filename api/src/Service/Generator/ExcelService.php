@@ -227,9 +227,8 @@ class ExcelService
             $sheet->setCellValue('K' . $row, (function () use ($member) {
                 if (!$member->getIsTransferNeeded()) return '';
                 return $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval(
-                    $this->dateService->getAge(
-                        (int) $member->getBirthdate()->format('Y')
-                    )
+                    $this->dateService->getAge((int) $member->getBirthdate()->format('Y')),
+                    $this->paramService->getCurrentSeason()
                 )->getPrice();
             })());
             $sheet->setCellValue('L' . $row, (function () use ($member) {

@@ -1,39 +1,36 @@
-INSERT INTO `mc_dev_param_price_license` (`id`, `label`, `price_before_deadline`, `price_after_deadline`, `min_year`, `max_year`) 
-VALUES 
-    (1, '2014 à 2011 inclus', '100', '120', '2011', '2014'), 
-    (2, '2010 à 2008 inclus', '135', '155', '2008', '2010'), 
-    (3, '2007 à 2002 inclus', '145', '165', '2002', '2007'),
-    (4, '2001 et avant', '160', '180', '1900', '2001');
+INSERT INTO `mc_dev_param_price_license` (`id`, `label`, `price_before_deadline`, `price_after_deadline`, `min_year`, `max_year`, `id_season`) 
+VALUES
+    (1, '2014 à 2011 inclus', 100, 120, 2011, 2014, 2),
+    (2, '2010 à 2008 inclus', 135, 155, 2008, 2010, 2),
+    (3, '2007 à 2002 inclus', 145, 165, 2002, 2007, 2),
+    (4, '2001 et avant', 160, 180, 1900, 2001, 2);
 
-INSERT INTO `mc_dev_param_price_transfer` (`id`, `label`, `price`, `min_age`, `max_age`) 
-VALUES 
-    (1, '+16 ans', '119', '16', '99'), 
-    (2, '12 à 16 ans inclus', '73', '12', '16'), 
-    (3, '-12 ans', '0', '0', '12');
+INSERT INTO `mc_dev_param_price_transfer` (`id`, `label`, `price`, `min_age`, `max_age`, `id_season`) 
+VALUES
+    (1, '+16 ans', 119, 16, 99, 2),
+    (2, '12 à 16 ans inclus', 73, 12, 16, 2),
+    (3, '-12 ans', 0, 0, 12, 2);
 
-INSERT INTO `mc_dev_param_reduction_family` (`id`, `number`, `discount`) 
-VALUES 
-    (1, '1', '0'), 
-    (2, '2', '10'), 
-    (3, '3', '20'), 
-    (4, '4', '30');
+
+INSERT INTO `mc_dev_param_reduction_family` (`id`, `number`, `discount`, `id_season`) 
+VALUES
+    (1, 1, 0, 2),
+    (2, 2, 10, 2),
+    (3, 3, 20, 2),
+    (4, 4, 30, 2);
 
 INSERT INTO `mc_dev_param_global` (`id`, `label`, `value`) 
 VALUES 
-    (1, 'reduced_price_before_deadline', '140'), 
-    (2, 'reduced_price_after_deadline', '160'), 
-    (3, 'price_deadline', '2019-07-13'),
-    (4, 'text_infos_admin', 'Text admin : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus libero lectus, quis fermentum elit suscipit gravida. Proin vitae ullamcorper dolor. <br />Nullam ultricies elit egestas dictum ultrices. Aliquam suscipit eu diam eu elementum. Fusce volutpat, sem in euismod eleifend, turpis ipsum convallis elit, eget interdum massa felis quis risus.<br />Morbi sed ligula maximus, fermentum nibh quis, interdum diam.'),
-    (5, 'text_infos_user', 'Text user : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus libero lectus, quis fermentum elit suscipit gravida. Proin vitae ullamcorper dolor. <br />Nullam ultricies elit egestas dictum ultrices. Aliquam suscipit eu diam eu elementum. Fusce volutpat, sem in euismod eleifend, turpis ipsum convallis elit, eget interdum massa felis quis risus.<br />Morbi sed ligula maximus, fermentum nibh quis, interdum diam.'),
-    (6, 'president_firstname', 'benjamin'), 
-    (7, 'president_lastname', 'paire'), 
-    (8, 'is_create_new_user_able', 'true'), 
-    (9, 'new_member_deadline', ''),
-    (10, 'is_create_new_member_able', 'true'),
-    (11, 'secretary_firstname', 'carole'), 
-    (12, 'secretary_lastname', 'blanchard'),
-    (13, 'data_mail_renew_certif', '01-05'),
-    (14, 'paypal_fee', '5');
+    (1, 'text_infos_admin', 'Text admin : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus libero lectus, quis fermentum elit suscipit gravida. Proin vitae ullamcorper dolor. <br />Nullam ultricies elit egestas dictum ultrices. Aliquam suscipit eu diam eu elementum. Fusce volutpat, sem in euismod eleifend, turpis ipsum convallis elit, eget interdum massa felis quis risus.<br />Morbi sed ligula maximus, fermentum nibh quis, interdum diam.'),
+    (2, 'text_infos_user', 'Text user : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus libero lectus, quis fermentum elit suscipit gravida. Proin vitae ullamcorper dolor. <br />Nullam ultricies elit egestas dictum ultrices. Aliquam suscipit eu diam eu elementum. Fusce volutpat, sem in euismod eleifend, turpis ipsum convallis elit, eget interdum massa felis quis risus.<br />Morbi sed ligula maximus, fermentum nibh quis, interdum diam.'),
+    (3, 'president_firstname', 'benjamin'), 
+    (4, 'president_lastname', 'paire'), 
+    (5, 'is_create_new_user_able', 'true'), 
+    (6, 'new_member_deadline', ''),
+    (7, 'is_create_new_member_able', 'true'),
+    (8, 'secretary_firstname', 'carole'), 
+    (9, 'secretary_lastname', 'blanchard'),
+    (10, 'date_mail_renew_certif', '01-05');
 
 INSERT INTO `mc_dev_param_document_category` (`id`, `label`) 
 VALUES 
@@ -63,3 +60,7 @@ INSERT INTO `mc_dev_param_sex` (`id`, `label`, `icon`, `civility`)
 VALUES
     (1, 'Homme', 'Man', 'Monsieur'),
     (2, 'Femme', 'Woman', 'Madame');
+
+INSERT INTO `mc_dev_param_price_global` (`id`, `id_season`, `reduced_price_before_deadline`, `reduced_price_after_deadline`, `deadline_date`, `paypal_fee`) 
+VALUES
+    (1, 2, 140, 160, '2019-07-12', 5);
