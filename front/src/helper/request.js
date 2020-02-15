@@ -445,6 +445,16 @@ export default {
 
         return getFetch(url, options)
     },
+    getFacture: (memberId, params) => {
+        const url = ["document", memberId, "facture"]
+
+        var options = {
+            method: GET,
+            params
+        }
+
+        return getFetch(url, options)
+    },
     getGoogleContact: () => {
         const url = ["document", "google", "contact"]
 

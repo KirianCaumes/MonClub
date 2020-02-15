@@ -431,7 +431,7 @@ class _MemberOne extends React.PureComponent {
                             <Columns.Column size="one-quarter">
                                 <Label required htmlFor="season">Saison</Label>
                                 {
-                                    readOnly ?
+                                    readOnly || (data?.is_payed ? true : initData?.is_payed) ?
                                         <TextField
                                             id="season"
                                             placeholder="Saison"
@@ -480,7 +480,7 @@ class _MemberOne extends React.PureComponent {
                                     disabled={this.state.priceLoading}
                                     onClick={() => this.setState({ priceLoading: true },
                                         () => request.getMemberPrice(data?.id)
-                                            .then(res => this.showModalDetailPrice(res.position, res.price))
+                                            .then(res => this.showModalDetailPrice(res.position, res.price, res.paramPrice))
                                             .catch(err => {
                                                 this.setState({ price: 'Erreur' })
                                                 this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
@@ -1199,7 +1199,11 @@ class _MemberOne extends React.PureComponent {
                                     />
                                 </Columns.Column>
                             }
-
+                            <Columns.Column />
+                            <Columns.Column />
+                            {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
+                        </Columns>
+                        <Columns>
                             <Columns.Column>
                                 <Label>Attestation</Label>
                                 <FileInput
@@ -1219,7 +1223,25 @@ class _MemberOne extends React.PureComponent {
                                     }}
                                 />
                             </Columns.Column>
-
+                            <Columns.Column>
+                                <Label>Récapitulatif paiement</Label>
+                                <FileInput
+                                    isRead={true}
+                                    isFile={!!readOnly}
+                                    isDisabled={!data.is_payed}
+                                    tooltipContent={!data.is_payed ? "Document téléchargeable une fois que le membre a été payé." : ''}
+                                    onDownload={() => {
+                                        return request.getFacture(this.props.match?.params?.id)
+                                            .then(file => dlBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
+                                    onOpen={() => {
+                                        return request.getFacture(this.props.match?.params?.id)
+                                            .then(file => openBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
+                                />
+                            </Columns.Column>
                             <Columns.Column>
                                 <Label>Lettre de non-opposition</Label>
                                 <DefaultButton
@@ -1229,7 +1251,7 @@ class _MemberOne extends React.PureComponent {
                                     onClick={() => this.setState({ isModalNonObjectionOpen: true })}
                                 />
                             </Columns.Column>
-                            {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
+                            <Columns.Column />
                         </Columns>
                     </div>
                     <br />
@@ -1313,15 +1335,20 @@ class _MemberOne extends React.PureComponent {
         )
     }
 
-    showModalDetailPrice(position, price) {
-        let deadlineDate = new Date(this.props.param?.price?.global?.deadline_date)
+    showModalDetailPrice(position, price, param) {
+        const { data } = this.state
+        const { } = this.props
+
+        if (!param) param = this.props.param?.price //Overide param if from an old season
+
+        let deadlineDate = new Date(param.global?.deadline_date)
         let deadlineDateAfter = (new Date(deadlineDate.getTime()))
         deadlineDateAfter.setDate(deadlineDate.getDate() + 1)
 
         this.props.setModal(
             true,
             'Détail du tarif',
-            <>Ensemble des informations tarifaires, <span className="is-underline">uniquement valable</span> pour la saison actuelle <span className="is-underline">({this.props.param?.season?.find(x => x.is_current)?.label})</span></>,
+            <>Ensemble des informations tarifaires pour la saison <span className="is-underline">{data.season?.label}</span></>,
             undefined,
             <>
                 <Text variant="large" block><Icon iconName='NumberedList' /> Tarifs</Text>
@@ -1346,8 +1373,8 @@ class _MemberOne extends React.PureComponent {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.param?.price?.license?.map((el, i) => {
-                            let currInterval = !this.state.data?.is_reduced_price && el.min_year <= getYear(this.state.data?.birthdate) && el.max_year >= getYear(this.state.data?.birthdate)
+                        {param.license?.map((el, i) => {
+                            let currInterval = !data?.is_reduced_price && el.min_year <= getYear(data?.birthdate) && el.max_year >= getYear(data?.birthdate)
                             return (
                                 <tr key={i} >
                                     <td className={currInterval ? 'is-selected' : ''} >{el.label}</td>
@@ -1368,27 +1395,27 @@ class _MemberOne extends React.PureComponent {
                             )
                         })}
                         <tr>
-                            <td className={this.state.data?.is_reduced_price ? 'is-selected' : ''} >
+                            <td className={data?.is_reduced_price ? 'is-selected' : ''} >
                                 Loisirs - Etudiants - Chômeurs
                             </td>
                             {
                                 deadlineDate >= new Date()
                                     ?
                                     <>
-                                        <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.price?.global?.reduced_price_before_deadline} €
+                                        <td className={deadlineDate >= new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {param.global?.reduced_price_before_deadline} €
                                         </td>
-                                        <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.price?.global?.reduced_price_after_deadline} €
+                                        <td className={deadlineDate < new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {param.global?.reduced_price_after_deadline} €
                                         </td>
                                     </>
                                     :
                                     <>
-                                        <td className={deadlineDate < new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.price?.global?.reduced_price_after_deadline} €
+                                        <td className={deadlineDate < new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {param.global?.reduced_price_after_deadline} €
                                         </td>
-                                        <td className={deadlineDate >= new Date() && this.state.data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {this.props.param?.price?.global?.reduced_price_before_deadline} €
+                                        <td className={deadlineDate >= new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
+                                            {param.global?.reduced_price_before_deadline} €
                                         </td>
                                     </>
                             }
@@ -1396,7 +1423,7 @@ class _MemberOne extends React.PureComponent {
                     </tbody>
                 </Table>
                 {
-                    this.state.data?.is_transfer_needed &&
+                    data?.is_transfer_needed &&
                     <>
                         <br />
                         <Text variant="large" block ><Icon iconName='NumberedList' /> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
@@ -1409,8 +1436,8 @@ class _MemberOne extends React.PureComponent {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.props.param?.price?.transfer?.map((el, i) => {
-                                    let currInterval = this.state.data?.is_transfer_needed && el.min_age <= getAge(this.state.data?.birthdate) && el.max_age >= getAge(this.state.data?.birthdate)
+                                {param.transfer?.map((el, i) => {
+                                    let currInterval = data?.is_transfer_needed && el.min_age <= getAge(data?.birthdate) && el.max_age >= getAge(data?.birthdate)
                                     return (
                                         <tr key={i} className={currInterval ? 'is-selected' : ''} >
                                             <td>{el.label}</td>
@@ -1433,7 +1460,7 @@ class _MemberOne extends React.PureComponent {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.props.param?.price?.discount?.map((el, i) => {
+                        {param.discount?.map((el, i) => {
                             let currInterval = i === position
                             return (
                                 <tr key={i} className={currInterval ? 'is-selected' : ''} >
@@ -1445,17 +1472,17 @@ class _MemberOne extends React.PureComponent {
                     </tbody>
                 </Table>
                 {
-                    this.state.data?.payment_solution?.id === 1 &&
+                    data?.payment_solution?.id === 1 &&
                     <>
                         <br />
-                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>{this.props.param?.price?.global?.paypal_fee} €</b></Text>
+                        <Text variant="large" block ><Icon iconName='PaymentCard' /> Frais PayPal: <b>{param.global?.paypal_fee} €</b></Text>
                         <Divider />
                         <Columns>
                             <Columns.Column>
                                 <TextField
                                     label="Numéro du paiement"
                                     placeholder="Numéro du paiement"
-                                    defaultValue={this.state.data?.paypal_information?.id_payment}
+                                    defaultValue={data?.paypal_information?.id_payment}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1464,7 +1491,7 @@ class _MemberOne extends React.PureComponent {
                                 <TextField
                                     label="Date"
                                     placeholder="Date"
-                                    defaultValue={dateToCleanDateTimeString(new Date(this.state.data?.paypal_information?.creation_datetime))}
+                                    defaultValue={dateToCleanDateTimeString(new Date(data?.paypal_information?.creation_datetime))}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1475,7 +1502,7 @@ class _MemberOne extends React.PureComponent {
                                 <TextField
                                     label="Montant"
                                     placeholder="Montant"
-                                    defaultValue={this.state.data?.paypal_information?.amount}
+                                    defaultValue={data?.paypal_information?.amount}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1484,7 +1511,7 @@ class _MemberOne extends React.PureComponent {
                                 <TextField
                                     label="Devise"
                                     placeholder="Devise"
-                                    defaultValue={this.state.data?.paypal_information?.currency}
+                                    defaultValue={data?.paypal_information?.currency}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1495,7 +1522,7 @@ class _MemberOne extends React.PureComponent {
                                 <TextField
                                     label="Prénom"
                                     placeholder="Prénom"
-                                    defaultValue={this.state.data?.paypal_information?.firstname}
+                                    defaultValue={data?.paypal_information?.firstname}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1504,7 +1531,7 @@ class _MemberOne extends React.PureComponent {
                                 <TextField
                                     label="Nom"
                                     placeholder="Nom"
-                                    defaultValue={this.state.data?.paypal_information?.lastname}
+                                    defaultValue={data?.paypal_information?.lastname}
                                     borderless={true}
                                     readOnly={true}
                                 />
@@ -1513,14 +1540,14 @@ class _MemberOne extends React.PureComponent {
                         <TextField
                             label="Email"
                             placeholder="Email"
-                            defaultValue={this.state.data?.paypal_information?.email}
+                            defaultValue={data?.paypal_information?.email}
                             borderless={true}
                             readOnly={true}
                         />
                     </>
                 }
                 <br />
-                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{this.state.data?.payment_solution?.id === 1 ? (price + 5) : price} €</b></Text>
+                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{data?.payment_solution?.id === 1 ? (price + 5) : price} €</b></Text>
                 <Divider />
                 <br />
             </>

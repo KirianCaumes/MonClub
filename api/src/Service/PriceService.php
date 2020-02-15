@@ -7,6 +7,7 @@ use App\Entity\Param\ParamPriceGlobal;
 use App\Entity\Param\ParamPriceLicense;
 use App\Entity\Param\ParamPriceTransfer;
 use App\Entity\Param\ParamReductionFamily;
+use App\Entity\Param\ParamSeason;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,13 +24,19 @@ class PriceService
         $this->dateService = $dateService;
         $this->paramService = $paramService;
         $this->currentParamGlobalPrice = $this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()]);
+        $this->currentSeason = $this->paramService->getCurrentSeason();
     }
 
     /**
      * Calcul price for a given member
      */
-    public function getPrice(Member $member, bool $useCreationDt = false)
+    public function getPrice(Member $member, ParamSeason $season = null, bool $useCreationDt = false)
     {
+        //Overide default season if provided
+        if ($season) {
+            $this->currentSeason = $season;
+            $this->currentParamGlobalPrice = $this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $season]);
+        }
         $price = 0;
 
         //Get price license
@@ -87,7 +94,7 @@ class PriceService
     {
         $paramPriceLicense = $this->em->getRepository(ParamPriceLicense::class)->findOneByYearInterval(
             (int) $member->getBirthdate()->format('Y'),
-            $this->paramService->getCurrentSeason()
+            $this->currentSeason
         );
         if (
             ($useCreationDt ? $member->getCreationDatetime() : new \DateTime())
@@ -107,7 +114,7 @@ class PriceService
     {
         $val = $this->em->getRepository(ParamPriceTransfer::class)->findOneByAgeInterval(
             $this->dateService->getAge((int) $member->getBirthdate()->format('Y')),
-            $this->paramService->getCurrentSeason()
+            $this->currentSeason
         );
         if ($val) return $val->getPrice();
         return 0;
@@ -118,7 +125,7 @@ class PriceService
      */
     public function getFamilyReduction(Member $member): int
     {
-        $val = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1), 'season' => $this->paramService->getCurrentSeason()]);
+        $val = $this->em->getRepository(ParamReductionFamily::class)->findOneBy(['number' => ($this->getPosition($member) + 1), 'season' => $this->currentSeason]);
         if ($val) return $val->getDiscount();
         return 0;
     }

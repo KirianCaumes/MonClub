@@ -48,7 +48,7 @@ class PdfService
     }
 
     // Generate document "attestation payment".
-    public function generateAttestation(Member $member)
+    public function generateAttestation(Member $member, bool $isStream = true)
     {
         $this->file->loadHtml(
             $this->twig->render('pdf/attestation.html.twig', [
@@ -63,14 +63,18 @@ class PdfService
 
         $this->file->render();
 
-        return $this->file->stream(
-            "Attestation_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $this->paramService->getCurrentSeason()->getLabel(),
-            ["Attachment" => true]
-        );
+        if ($isStream) {
+            return $this->file->stream(
+                "Attestation_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $this->paramService->getCurrentSeason()->getLabel(),
+                ["Attachment" => true]
+            );
+        } else {
+            return $this->file->output();
+        }
     }
 
     // Generate "lettre de non opposition".
-    public function generateNonObjection(Member $member, String $address, String $club)
+    public function generateNonObjection(Member $member, String $address, String $club, bool $isStream = true)
     {
         $this->file->loadHtml(
             $this->twig->render('pdf/nonObjection.html.twig', [
@@ -91,14 +95,18 @@ class PdfService
 
         $this->file->render();
 
-        return $this->file->stream(
-            "Lettre-de-non-objection_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $this->paramService->getCurrentSeason()->getLabel(),
-            ["Attachment" => true]
-        );
+        if ($isStream) {
+            return $this->file->stream(
+                "Lettre-de-non-objection_" . $member->getFirstname() . " " . $member->getLastname() . "_" . $this->paramService->getCurrentSeason()->getLabel(),
+                ["Attachment" => true]
+            );
+        } else {
+            return $this->file->output();
+        }
     }
 
     // Generate document "facture".
-    public function generateFacture(array $members)
+    public function generateFacture(array $members, bool $isStream = true)
     {
         // $this->twig->addExtension(new IntlExtension());
 
@@ -134,6 +142,13 @@ class PdfService
 
         $this->file->render();
 
-        return $this->file->output();
+        if ($isStream) {
+            return $this->file->stream(
+                "Recapitulatif_" . $this->paramService->getCurrentSeason()->getLabel(),
+                ["Attachment" => true]
+            );
+        } else {
+            return $this->file->output();
+        }
     }
 }

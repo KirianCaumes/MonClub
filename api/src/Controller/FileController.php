@@ -171,6 +171,28 @@ class FileController extends FOSRestController
     }
 
     /**
+     * Generate and get document "récapitulatif".
+     * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
+     * @Route("/{memberId}/facture", methods={"GET"})
+     */
+    public function getFacture(TranslatorInterface $translator, PdfService $pdfService, int $memberId)
+    {
+        //Find member by id
+        $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
+        if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+
+        $this->denyAccessUnlessGranted(Constants::READ, $member);
+
+        $response = new StreamedResponse(
+            function () use ($pdfService, $member) {
+                $pdfService->generateFacture([$member]);
+            }
+        );
+
+        return $response;
+    }
+
+    /**
      * Get document.
      * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
      * @Route("/{memberId}/{documentCategoryId}", methods={"GET"})

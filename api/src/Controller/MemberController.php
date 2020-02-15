@@ -8,6 +8,9 @@ use App\Entity\Member;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\Param\ParamPriceGlobal;
+use App\Entity\Param\ParamPriceLicense;
+use App\Entity\Param\ParamPriceTransfer;
+use App\Entity\Param\ParamReductionFamily;
 use App\Entity\PaypalInformation;
 use App\Entity\User;
 use App\Form\DocumentType;
@@ -565,7 +568,7 @@ class MemberController extends FOSRestController
      *
      * @return Response
      */
-    public function getPrice(TranslatorInterface $translator, PriceService $priceService, int $id)
+    public function getPrice(TranslatorInterface $translator, PriceService $priceService, ParamService $paramService, int $id)
     {
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $id]);
@@ -575,8 +578,17 @@ class MemberController extends FOSRestController
         $this->denyAccessUnlessGranted(Constants::READ, $member);
 
         return $this->handleView($this->view([
-            'price' => $priceService->getPrice($member),
-            'position' => $priceService->getPosition($member)
+            'price' => $priceService->getPrice($member, $member->getSeason()),
+            'position' => $priceService->getPosition($member),
+            'paramPrice' => $member->getSeason() !== $paramService->getCurrentSeason() ? //If calc from an old member, return params from the season
+                [
+                    'global' => $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $member->getSeason()]),
+                    'license' => $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findBy(['season' => $member->getSeason()]),
+                    'transfer' => $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findBy(['season' => $member->getSeason()]),
+                    'discount' => $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findBy(['season' => $member->getSeason()])
+                ]
+                :
+                null
         ]));
     }
 
@@ -719,7 +731,7 @@ class MemberController extends FOSRestController
             $em->persist($member);
         }
         $em->flush();
-        
+
         //Send mail recap with facture
         $mailService->sendFacture($members[0]->getUser(), $members);
 

@@ -187,7 +187,7 @@ class MailService
                     'baseUrl' => $this->baseUrl,
                 ]
             ],
-            ['file' => $this->pdfService->generateFacture($members), 'name' => 'récapitulatif.pdf', 'type' => 'application/pdf']
+            ['file' => $this->pdfService->generateFacture($members, false), 'name' => 'récapitulatif.pdf', 'type' => 'application/pdf']
         );
     }
 

@@ -215,6 +215,10 @@ class MemberMajorAdminType extends AbstractType
                 ->add('amount_payed_other', NumberType::class, [
                     'disabled' => true,
                 ])
+                ->add('season', EntityType::class, [
+                    'class' => ParamSeason::class,
+                    'disabled' => true,
+                ])
                 ->add('payment_solution', EntityType::class, [
                     'class' => ParamPaymentSolution::class,
                     'disabled' => true,
