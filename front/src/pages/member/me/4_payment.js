@@ -17,6 +17,7 @@ class _MembersMePayment extends React.PureComponent {
         this.state = {
             summary: {},
             isLoading: true,
+            isPaypalButtonLoading: true,
             paymentKey: null
         }
     }
@@ -63,7 +64,7 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     render() {
-        const { summary, isLoading, paymentKey } = this.state
+        const { summary, isLoading, paymentKey, isPaypalButtonLoading } = this.state
         const { param } = this.props
 
         if (isLoading) return <Loader />
@@ -191,6 +192,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <br />
                                                     <div style={{ width: '300px' }}>
+                                                        {isPaypalButtonLoading && <Loader color="#2B6CA3" />}
                                                         <PayPalButton
                                                             style={{
                                                                 layout: 'vertical',
@@ -208,7 +210,7 @@ class _MembersMePayment extends React.PureComponent {
                                                             onSuccess={(details, data) => {
                                                                 return this.pay({ details, data })
                                                             }}
-                                                            onButtonReady={() => console.log("PayPal button ready")}
+                                                            onButtonReady={() => this.setState({ isPaypalButtonLoading: false })}
                                                             catchError={err => this.props.setMessageBar(true, MessageBarType.error, 'Une erreur est survenue.')}
                                                             onError={err => this.props.setMessageBar(true, MessageBarType.error, 'Une erreur est survenue.')}
                                                         />

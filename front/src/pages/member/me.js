@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator, Text, Checkbox } from 'office-ui-fabric-react'
+import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator, Text, Checkbox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -99,9 +99,9 @@ class _MembersMe extends React.PureComponent {
                                             this.props.setMessageBar(true, MessageBarType.error, err)
                                         })
                                 })
-                            } else { 
+                            } else {
                                 //Delete client only
-                                let members = [...this.props.members] 
+                                let members = [...this.props.members]
                                 members.splice(this.state.currentPivot, 1)
                                 this.props.setMembers(members)
                                 if (members.length === 0) { //If no more member, get one empty
@@ -141,7 +141,7 @@ class _MembersMe extends React.PureComponent {
                     }
                 )
             })
-            // .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+        // .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -216,7 +216,7 @@ class _MembersMe extends React.PureComponent {
                         <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label} </h1>
                     </div>
                     <Text variant="large" block className="has-text-centered"><b> Inscription saison {param?.season?.find(x => x.is_current)?.label}</b> <span role="img" aria-label="handball">🤾</span></Text>
-                    <br  className="is-hidden-mobile"/>
+                    <br className="is-hidden-mobile" />
 
                     <Workflow
                         className="is-hidden-mobile"
@@ -401,13 +401,19 @@ class _MembersMe extends React.PureComponent {
                                                                             iconProps={{ iconName: 'Previous' }}
                                                                             onClick={() => this.setState({ page: this.state.page - 1 })}
                                                                         />
-                                                                        <PrimaryButton
-                                                                            text="Paiement"
-                                                                            iconProps={{ iconName: 'Next' }}
-                                                                            styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                                                                            onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
-                                                                            disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length}
-                                                                        />
+                                                                        <TooltipHost
+                                                                            content={members?.map(x => x.is_document_complete)?.filter(x => !x)?.length ? "Veuillez tout d'abord compléter les documents des membres créés." : ''}
+                                                                            directionalHint={DirectionalHint.leftTopEdge}
+                                                                            delay={TooltipDelay.zero}
+                                                                        >
+                                                                            <PrimaryButton
+                                                                                text="Paiement"
+                                                                                iconProps={{ iconName: 'Next' }}
+                                                                                styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                                                onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
+                                                                                disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length || members?.map(x => x.is_document_complete)?.filter(x => !x)?.length}
+                                                                            />
+                                                                        </TooltipHost>
                                                                     </div>
                                                                 </div>
                                                             </>
