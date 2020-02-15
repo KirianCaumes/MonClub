@@ -1,0 +1,23 @@
+section {
+    padding: 100px;
+}
+
+h1 {
+    font-weight: bold!important;
+    font-size: 22px!important;
+    margin-bottom: 0!important;
+}
+
+p {
+    text-align: justify;
+    font-size: 14px;
+}
+
+table * {
+    font-size: 12px;    
+}
+
+img.logo {
+    width: 75px;
+    margin-left: 40px;
+}
