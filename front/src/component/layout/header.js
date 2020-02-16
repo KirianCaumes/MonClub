@@ -47,10 +47,21 @@ class Header extends React.PureComponent {
                                         <Navbar.Dropdown>
                                             {
                                                 x?.links.map((y, j) => (
-                                                    <Navbar.Item key={i + "_" + j} onClick={() => this.setState({ active: false }, () => y.onClick())}>
-                                                        {y.name}
-                                                    </Navbar.Item>
-                                                ))
+                                                    <React.Fragment key={i + "_" + j} >
+                                                        <Navbar.Item onClick={() => this.setState({ active: false }, () => y.onClick())}>
+                                                            {y.name}
+                                                        </Navbar.Item>
+                                                        {
+                                                            y?.links?.length &&
+                                                            y?.links.map((z, k) => (
+                                                                <Navbar.Item key={i + "_" + j + "_" + k} onClick={() => this.setState({ active: false }, () => z.onClick())}>
+                                                                    {z.name}
+                                                                </Navbar.Item>
+                                                            ))
+                                                        }
+                                                    </React.Fragment>
+                                                )
+                                                )
                                             }
                                         </Navbar.Dropdown>
                                     </Navbar.Item>

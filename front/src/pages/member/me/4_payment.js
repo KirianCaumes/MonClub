@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar, Icon, MaskedTextField, Separator, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { Text, MessageBarType, DefaultButton, PrimaryButton, ChoiceGroup, MessageBar, Icon, MaskedTextField, Separator, TooltipHost, DirectionalHint, TooltipDelay, Label } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember, setMembers } from 'redux/actions/member'
@@ -84,17 +84,17 @@ class _MembersMePayment extends React.PureComponent {
                     <Table>
                         <thead>
                             <tr>
-                                <th>Licencié(s)</th>
-                                <th>À payer</th>
-                                {paymentKey === 3 && <th>Montant payé en bon</th>}
+                                <th><Label>Licencié(s)</Label></th>
+                                <th><Label>À payer</Label></th>
+                                {paymentKey === 3 && <th><Label>Montant payé en bon</Label></th>}
                             </tr>
                         </thead>
                         <tbody>
                             {summary?.each?.map((el, i) => {
                                 return (
                                     <tr key={i}>
-                                        <td>{el.name}</td>
-                                        <td>{el.price} €</td>
+                                        <td><Text>{el.name}</Text></td>
+                                        <td><Text>{el.price} €</Text></td>
                                         {
                                             paymentKey === 3 &&
                                             <td className="flex-row flex-start">
@@ -134,24 +134,24 @@ class _MembersMePayment extends React.PureComponent {
                         {paymentKey === 3 &&
                             <tfoot>
                                 <tr>
-                                    <th>RESTE A PAYER</th>
-                                    <th>{(summary.total - (summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0))} €</th>
+                                    <th><Label>RESTE A PAYER</Label></th>
+                                    <th><Label>{(summary.total - (summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0))} €</Label></th>
                                     <th></th>
                                 </tr>
                             </tfoot>
                         }
                         <tfoot>
                             <tr>
-                                <th>TOTAL</th>
-                                <th>{paymentKey === 1 ? (summary.total + param?.price?.global?.paypal_fee) : summary.total} €</th>
-                                {paymentKey === 3 && <th>{summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0} €</th>}
+                                <th><Label>TOTAL</Label></th>
+                                <th><Label>{paymentKey === 1 ? (summary.total + param?.price?.global?.paypal_fee) : summary.total} €</Label></th>
+                                {paymentKey === 3 && <th><Label>{summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0} €</Label></th>}
                             </tr>
                         </tfoot>
                         {paymentKey === 1 &&
                             <tfoot>
                                 <tr>
-                                    <th>Frais PayPal</th>
-                                    <th>{param?.price?.global?.paypal_fee} €</th>
+                                    <th><Label>Frais PayPal</Label></th>
+                                    <th><Label>{param?.price?.global?.paypal_fee} €</Label></th>
                                 </tr>
                             </tfoot>
                         }

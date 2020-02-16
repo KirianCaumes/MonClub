@@ -1,5 +1,11 @@
 #admin-settings {
-    .ms-TextField, .ms-Dropdown-container {
-        width: 100%;
+  .ms-TextField,
+  .ms-Dropdown-container {
+    width: 100%;
+  }
+  span {
+    > i {
+      vertical-align: bottom;
     }
+  }
 }

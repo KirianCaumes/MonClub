@@ -46,7 +46,7 @@ class ParamReductionFamily
         return $this->number;
     }
 
-    public function setNumber(int $number): self
+    public function setNumber(?int $number): self
     {
         $this->number = $number;
 
@@ -58,7 +58,7 @@ class ParamReductionFamily
         return $this->discount;
     }
 
-    public function setDiscount(int $discount): self
+    public function setDiscount(?int $discount): self
     {
         $this->discount = $discount;
 

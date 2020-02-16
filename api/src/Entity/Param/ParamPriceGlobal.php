@@ -34,6 +34,8 @@ class ParamPriceGlobal
 
     /**
      * @Assert\NotBlank(message = "not_blank")
+     * @Assert\GreaterThanOrEqual("-99 years")
+     * @Assert\LessThan("+99 years")
      * @ORM\Column(type="date")
      */
     private $deadline_date;
@@ -60,7 +62,7 @@ class ParamPriceGlobal
         return $this->reduced_price_before_deadline;
     }
 
-    public function setReducedPriceBeforeDeadline(int $reduced_price_before_deadline): self
+    public function setReducedPriceBeforeDeadline(?int $reduced_price_before_deadline): self
     {
         $this->reduced_price_before_deadline = $reduced_price_before_deadline;
 
@@ -72,7 +74,7 @@ class ParamPriceGlobal
         return $this->reduced_price_after_deadline;
     }
 
-    public function setReducedPriceAfterDeadline(int $reduced_price_after_deadline): self
+    public function setReducedPriceAfterDeadline(?int $reduced_price_after_deadline): self
     {
         $this->reduced_price_after_deadline = $reduced_price_after_deadline;
 
@@ -84,7 +86,7 @@ class ParamPriceGlobal
         return $this->deadline_date;
     }
 
-    public function setDeadlineDate(\DateTimeInterface $deadline_date): self
+    public function setDeadlineDate(?\DateTimeInterface $deadline_date): self
     {
         $this->deadline_date = $deadline_date;
 
@@ -96,7 +98,7 @@ class ParamPriceGlobal
         return $this->paypal_fee;
     }
 
-    public function setPaypalFee(int $paypal_fee): self
+    public function setPaypalFee(?int $paypal_fee): self
     {
         $this->paypal_fee = $paypal_fee;
 

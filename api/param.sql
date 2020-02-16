@@ -7,9 +7,9 @@ VALUES
 
 INSERT INTO `mc_dev_param_price_transfer` (`id`, `label`, `price`, `min_age`, `max_age`, `id_season`) 
 VALUES
-    (1, '+16 ans', 119, 16, 99, 2),
+    (1, '+16 ans', 119, 17, 99, 2),
     (2, '12 à 16 ans inclus', 73, 12, 16, 2),
-    (3, '-12 ans', 0, 0, 12, 2);
+    (3, '-12 ans', 0, 0, 11, 2);
 
 
 INSERT INTO `mc_dev_param_reduction_family` (`id`, `number`, `discount`, `id_season`) 

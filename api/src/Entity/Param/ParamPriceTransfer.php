@@ -70,7 +70,7 @@ class ParamPriceTransfer
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(?int $price): self
     {
         $this->price = $price;
 
@@ -82,7 +82,7 @@ class ParamPriceTransfer
         return $this->min_age;
     }
 
-    public function setMinage(int $min_age): self
+    public function setMinage(?int $min_age): self
     {
         $this->min_age = $min_age;
 
@@ -94,7 +94,7 @@ class ParamPriceTransfer
         return $this->max_age;
     }
 
-    public function setMaxage(int $max_age): self
+    public function setMaxage(?int $max_age): self
     {
         $this->max_age = $max_age;
 

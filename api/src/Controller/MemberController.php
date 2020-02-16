@@ -697,7 +697,9 @@ class MemberController extends FOSRestController
                     $em->flush();
                     foreach ($members as $member) {
                         $member->setPaypalInformation($paypalInfo);
-                        $member->setAmountPayed($this->em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $this->paramService->getCurrentSeason()])->getPaypalFee());
+                        $member->setAmountPayed(
+                            $priceService->getPrice($member) + $em->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $paramService->getCurrentSeason()])->getPaypalFee()
+                        );
                     }
                 } else {
                     return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));

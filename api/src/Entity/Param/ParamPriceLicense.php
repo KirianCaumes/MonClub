@@ -76,7 +76,7 @@ class ParamPriceLicense
         return $this->price_before_deadline;
     }
 
-    public function setPriceBeforeDeadline(int $price_before_deadline): self
+    public function setPriceBeforeDeadline(?int $price_before_deadline): self
     {
         $this->price_before_deadline = $price_before_deadline;
 
@@ -88,7 +88,7 @@ class ParamPriceLicense
         return $this->price_after_deadline;
     }
 
-    public function setPriceAfterDeadline(int $price_after_deadline): self
+    public function setPriceAfterDeadline(?int $price_after_deadline): self
     {
         $this->price_after_deadline = $price_after_deadline;
 
@@ -100,7 +100,7 @@ class ParamPriceLicense
         return $this->min_year;
     }
 
-    public function setMinYear(int $min_year): self
+    public function setMinYear(?int $min_year): self
     {
         $this->min_year = $min_year;
 
@@ -112,7 +112,7 @@ class ParamPriceLicense
         return $this->max_year;
     }
 
-    public function setMaxYear(int $max_year): self
+    public function setMaxYear(?int $max_year): self
     {
         $this->max_year = $max_year;
 

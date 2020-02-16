@@ -562,4 +562,23 @@ export default {
 
         return getFetch(url, options)
     },
+    getParamPriceBySeason: (id) => {
+        const url = ["param", "price", id]
+
+        var options = {
+            method: GET
+        }
+
+        return getFetch(url, options)
+    },
+    putParamPriceBySeason: (id, body) => {
+        const url = ["param", "price", id]
+
+        var options = {
+            method: PUT,
+            body: JSON.stringify(body)
+        }
+
+        return getFetch(url, options)
+    },
 }

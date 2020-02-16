@@ -16,6 +16,10 @@ use App\Entity\Param\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\ActivityHistoricType;
+use App\Form\ParamPriceGlobalType;
+use App\Form\ParamPriceLicenseType;
+use App\Form\ParamPriceTransferType;
+use App\Form\ParamReductionFamilyType;
 use App\Service\ParamService;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -25,8 +29,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Param controller.
@@ -86,32 +92,168 @@ class ParamController extends FOSRestController
     }
 
     /**
-     * Edit ParamGloball.
-     * @SWG\Parameter(name="paramglobal",in="body", description="ParamGlobal to edit", format="application/json", @SWG\Schema(@Model(type=ParamGlobal::class)))
-     * @SWG\Response(response=200, description="ParamGlobal edited", @SWG\Schema(@Model(type=ParamGlobal::class)))
-     * @SWG\Response(response=404, description="ParamGlobal not found")
+     * Get param price by season.
+     * @SWG\Response(response=200, description="Param edited")
+     * @SWG\Response(response=404, description="ParamSeason not found")
      * @IsGranted("ROLE_SUPER_ADMIN")
-     * @Rest\Put("/{label}")
+     * @Rest\Get("/price/{seasonId}")
      *
      * @return Response
      */
-    public function putParamGlobal(Request $request, TranslatorInterface $translator, string $label)
+    public function getPriceBySeason(Request $request, TranslatorInterface $translator, int $seasonId)
     {
-        //Find param by label
-        $param = $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => $label]);
-        if (!$param) {
+        //Find season by id
+        $season = $this->getDoctrine()->getRepository(ParamSeason::class)->findOneBy(['id' => $seasonId]);
+        if (!$season) {
             return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
         }
 
-        $data = json_decode($request->getContent(), true);
-        $param->setValue($data['value']);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($param);
-        $em->flush();
+        $global = $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $season]);
+        $license = $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findBy(['season' => $season]);
+        $transfer =  $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findBy(['season' => $season]);
+        $discount =  $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findBy(['season' => $season]);
 
-        return $this->handleView($this->view($param, Response::HTTP_OK));
+        return $this->handleView($this->view(
+            [
+                'global' => $global ? $global : [new ParamPriceGlobal()],
+                'license' => $license ? $license : [new ParamPriceLicense()],
+                'transfer' => $transfer ? $transfer : [new ParamPriceTransfer()],
+                'discount' => $discount ? $discount : [new ParamReductionFamily()]
+            ],
+            Response::HTTP_OK
+        ));
     }
 
+    /**
+     * Edit param price by season.
+     * @SWG\Response(response=200, description="Param edited")
+     * @SWG\Response(response=404, description="ParamSeason not found")
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @Rest\Put("/price/{seasonId}")
+     *
+     * @return Response
+     */
+    public function putPriceBySeason(Request $request, TranslatorInterface $translator, int $seasonId)
+    {
+        //Find season by id
+        $season = $this->getDoctrine()->getRepository(ParamSeason::class)->findOneBy(['id' => $seasonId]);
+        if (!$season) {
+            return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+        }
+
+        //Errors to be displayed
+        $errors = [
+            'global' => null,
+            'license' => null,
+            'transfer' => null,
+            'discount' => null
+        ];
+
+        $data = json_decode($request->getContent(), true);
+
+        //ParamPriceGlobal
+        if (array_key_exists('id', $data['global']) && $data['global']['id']) {
+            $paramPriceGlobal = $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['id' => $data['global']['id']]);
+        } else {
+            $paramPriceGlobal = new ParamPriceGlobal();
+            $paramPriceGlobal->setSeason($season);
+        }
+        $form = $this->createForm(ParamPriceGlobalType::class, $paramPriceGlobal);
+        $form->submit($data['global']);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $errors['global'] = $form->getErrors();
+        }
+
+        //ParamPriceLicense
+        $paramPriceLicenseArray = [];
+        foreach ($data['license'] as $key => $license) {
+            if (array_key_exists('id', $license) && $license['id']) {
+                $paramPriceLicense = $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findOneBy(['id' => $license['id']]);
+            } else {
+                $paramPriceLicense = new ParamPriceLicense();
+                $paramPriceLicense->setSeason($season);
+            }
+            $form = $this->createForm(ParamPriceLicenseType::class, $paramPriceLicense);
+            $form->submit($license);
+
+            if ($form->isSubmitted() && !$form->isValid()) {
+                $errors['license'] = $form->getErrors();
+                $paramPriceLicenseArray = [];
+                break;
+            }
+            array_push($paramPriceLicenseArray, $paramPriceLicense);
+        }
+
+        //ParamPriceTransfer        
+        $paramPriceTransferArray = [];
+        foreach ($data['transfer'] as $key => $transfer) {
+            if (array_key_exists('id', $transfer) && $transfer['id']) {
+                $paramPriceTransfer = $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findOneBy(['id' => $transfer['id']]);
+            } else {
+                $paramPriceTransfer = new ParamPriceTransfer();
+                $paramPriceTransfer->setSeason($season);
+            }
+            $form = $this->createForm(ParamPriceTransferType::class, $paramPriceTransfer);
+            $form->submit($transfer);
+
+            if ($form->isSubmitted() && !$form->isValid()) {
+                $errors['transfer'] = $form->getErrors();
+                $paramPriceTransferArray = [];
+                break;
+            }
+            array_push($paramPriceTransferArray, $paramPriceTransfer);
+        }
+
+        //ParamReductionFamily     
+        $paramReductionFamilyArray = [];
+        foreach ($data['discount'] as $key => $discount) {
+            if (array_key_exists('id', $discount) && $discount['id']) {
+                $paramReductionFamily = $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findOneBy(['id' => $discount['id']]);
+            } else {
+                $paramReductionFamily = new ParamReductionFamily();
+                $paramReductionFamily->setSeason($season);
+            }
+            $form = $this->createForm(ParamReductionFamilyType::class, $paramReductionFamily);
+            $form->submit($discount);
+
+            if ($form->isSubmitted() && !$form->isValid()) {
+                $errors['discount'] = $form->getErrors();
+                $paramReductionFamilyArray = [];
+                break;
+            }
+            array_push($paramReductionFamilyArray, $paramReductionFamily);
+        }
+
+        $paramReductionFamily =  $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findBy(['season' => $season]);
+
+        if ($errors['global'] !== null || $errors['license'] !== null  || $errors['transfer'] !== null || $errors['discount'] !== null) {
+            return $this->handleView($this->view($errors, Response::HTTP_BAD_REQUEST));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        
+        //Clear
+        foreach ($this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findBy(['season' => $season]) as $paramPriceGlobal) $em->remove($paramPriceGlobal);
+        foreach ($this->getDoctrine()->getRepository(ParamPriceLicense::class)->findBy(['season' => $season]) as $paramPriceLicense) $em->remove($paramPriceLicense);
+        foreach ($this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findBy(['season' => $season]) as $paramPriceTransfer) $em->remove($paramPriceTransfer);
+        foreach ($this->getDoctrine()->getRepository(ParamReductionFamily::class)->findBy(['season' => $season]) as $paramReductionFamily) $em->remove($paramReductionFamily);
+        $em->flush();
+
+        //Save
+        $em->persist($paramPriceGlobal);
+        foreach ($paramPriceLicenseArray as $paramPriceLicense) $em->persist($paramPriceLicense);
+        foreach ($paramPriceTransferArray as $paramPriceTransfer) $em->persist($paramPriceTransfer);
+        foreach ($paramReductionFamilyArray as $paramReductionFamily) $em->persist($paramReductionFamily);
+        $em->flush();
+
+        return $this->handleView($this->view([
+            'global' => $paramPriceGlobal,
+            'license' => $paramPriceLicenseArray,
+            'transfer' => $paramPriceTransferArray,
+            'discount' => $paramReductionFamilyArray
+        ], Response::HTTP_OK));
+    }
 
     /**
      * Edit current season.
@@ -147,5 +289,32 @@ class ParamController extends FOSRestController
         $em->flush();
 
         return $this->handleView($this->view($season, Response::HTTP_OK));
+    }
+
+    /**
+     * Edit ParamGlobal.
+     * @SWG\Parameter(name="paramglobal",in="body", description="ParamGlobal to edit", format="application/json", @SWG\Schema(@Model(type=ParamGlobal::class)))
+     * @SWG\Response(response=200, description="ParamGlobal edited", @SWG\Schema(@Model(type=ParamGlobal::class)))
+     * @SWG\Response(response=404, description="ParamGlobal not found")
+     * @IsGranted("ROLE_SUPER_ADMIN")
+     * @Rest\Put("/{label}")
+     *
+     * @return Response
+     */
+    public function putParamGlobal(Request $request, TranslatorInterface $translator, string $label)
+    {
+        //Find param by label
+        $param = $this->getDoctrine()->getRepository(ParamGlobal::class)->findOneBy(['label' => $label]);
+        if (!$param) {
+            return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $param->setValue($data['value']);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($param);
+        $em->flush();
+
+        return $this->handleView($this->view($param, Response::HTTP_OK));
     }
 }

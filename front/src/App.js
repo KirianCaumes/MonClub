@@ -26,7 +26,9 @@ import UsersAll from './pages/user/all'
 import UserOne from './pages/user/one'
 import Modal from './component/modal'
 import { registerIcons } from '@uifabric/styling'
-import Settings from 'pages/admin/settings'
+import SettingsPrice from 'pages/admin/settings/price'
+import SettingsIndex from 'pages/admin/settings/index'
+import SettingsGeneral from 'pages/admin/settings/general'
 
 //Add icons from fontawesome to Ms
 registerIcons({
@@ -137,7 +139,10 @@ class _App extends React.PureComponent {
                             <PrivateRoute path="/equipe/:id" component={withData(TeamOne, (props) => request.getOneTeam(props?.id))} isAuthenticated={isAuthenticated} isInit={isInit} />
 
                             <PrivateRoute path="/constantes" component={Constants} isAuthenticated={isAuthenticated} isInit={isInit} />
-                            <PrivateRoute path="/parametres" component={Settings} isAuthenticated={isAuthenticated} isInit={isInit} />
+
+                            <PrivateRoute exact path="/parametres" component={SettingsIndex} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/parametres/tarif" component={SettingsPrice} isAuthenticated={isAuthenticated} isInit={isInit} />
+                            <PrivateRoute path="/parametres/general" component={SettingsGeneral} isAuthenticated={isAuthenticated} isInit={isInit} />
                         </Switch>
                     </Layout>
                     <Switch>

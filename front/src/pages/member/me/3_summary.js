@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, MessageBarType, Icon } from 'office-ui-fabric-react'
+import { Text, MessageBarType, Icon, Label } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { editMember } from 'redux/actions/member'
@@ -36,27 +36,27 @@ class _MembersMeSummary extends React.PureComponent {
 
         return (
             <section id="members-me-summary">
-                <Text variant="large" block><Icon iconName='ClipboardList'/> Récapitulatif du montant</Text>
+                <Text variant="large" block><Icon iconName='ClipboardList' /> Récapitulatif du montant</Text>
                 <Divider />
                 <Text className="has-text-justified" block>Retrouvez le récapitulatif détaillé du montant qu'il vous sera demandé de payer <b>(sont surlignées en vert les informations vous correspondantes)</b>. Si le tarif proposé ne correspond pas, veuillez retourner en arrière pour modifier vos informations.</Text>
                 <br /><br />
-                <Text variant="large" block><Icon iconName='NumberedList'/> Tarifs</Text>
+                <Text variant="large" block><Icon iconName='NumberedList' /> Tarifs</Text>
                 <Divider />
                 <Table>
                     <thead>
                         <tr>
-                            <th>Année de naissance</th>
+                            <th><Label>Année de naissance</Label></th>
                             {
                                 deadlineDate >= new Date()
                                     ?
                                     <>
-                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
-                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
+                                        <th><Label>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</Label></th>
+                                        <th><Label>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</Label></th>
                                     </>
                                     :
                                     <>
-                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
-                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
+                                        <th><Label>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</Label></th>
+                                        <th><Label>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</Label></th>
                                     </>
                             }
                         </tr>
@@ -66,18 +66,18 @@ class _MembersMeSummary extends React.PureComponent {
                             let currInterval = !member?.is_reduced_price && el.min_year <= getYear(member?.birthdate) && el.max_year >= getYear(member?.birthdate)
                             return (
                                 <tr key={i} >
-                                    <td className={currInterval ? 'is-selected' : ''} >{el.label}</td>
+                                    <td className={currInterval ? 'is-selected' : ''} ><Text>{el.label}</Text></td>
                                     {
                                         deadlineDate >= new Date()
                                             ?
                                             <>
-                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
-                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_before_deadline} €</Text></td>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_after_deadline} €</Text></td>
                                             </>
                                             :
                                             <>
-                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
-                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_after_deadline} €</Text></td>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_before_deadline} €</Text></td>
                                             </>
                                     }
                                 </tr>
@@ -85,26 +85,26 @@ class _MembersMeSummary extends React.PureComponent {
                         })}
                         <tr>
                             <td className={member?.is_reduced_price ? 'is-selected' : ''} >
-                                Loisirs - Etudiants - Chômeurs
+                                <Text>Loisirs - Etudiants - Chômeurs</Text>
                             </td>
                             {
                                 deadlineDate >= new Date()
                                     ?
                                     <>
                                         <td className={deadlineDate >= new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.price?.global?.reduced_price_before_deadline} €
+                                            <Text>{param?.price?.global?.reduced_price_before_deadline} €</Text>
                                         </td>
                                         <td className={deadlineDate < new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.price?.global?.reduced_price_after_deadline} €
+                                            <Text>{param?.price?.global?.reduced_price_after_deadline} €</Text>
                                         </td>
                                     </>
                                     :
                                     <>
                                         <td className={deadlineDate < new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.price?.global?.reduced_price_after_deadline} €
+                                            <Text>{param?.price?.global?.reduced_price_after_deadline} €</Text>
                                         </td>
                                         <td className={deadlineDate >= new Date() && member?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param?.price?.global?.reduced_price_before_deadline} €
+                                            <Text>{param?.price?.global?.reduced_price_before_deadline} €</Text>
                                         </td>
                                     </>
                             }
@@ -112,13 +112,13 @@ class _MembersMeSummary extends React.PureComponent {
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block className={!member?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList'/> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
+                <Text variant="large" block className={!member?.is_transfer_needed ? 'is-line-through' : ''}><Icon iconName='NumberedList' /> Droits de mutation à la charge du nouveau licensié (coût ligue)</Text>
                 <Divider />
                 <Table className={!member?.is_transfer_needed ? 'is-line-through' : ''}>
                     <thead>
                         <tr>
-                            <th>Age</th>
-                            <th>Prix</th>
+                            <th><Label>Age</Label></th>
+                            <th><Label>Prix</Label></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -126,21 +126,21 @@ class _MembersMeSummary extends React.PureComponent {
                             let currInterval = member?.is_transfer_needed && el.min_age <= getAge(member?.birthdate) && el.max_age >= getAge(member?.birthdate)
                             return (
                                 <tr key={i} className={currInterval ? 'is-selected' : ''} >
-                                    <td>{el.label}</td>
-                                    <td>{el.price} €</td>
+                                    <td><Text>{el.label}</Text></td>
+                                    <td><Text>{el.price} €</Text></td>
                                 </tr>
                             )
                         })}
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block ><Icon iconName='NumberedList'/> Hand en famille (remise valable pour <b>les membres de la même famille</b>)</Text>
+                <Text variant="large" block ><Icon iconName='NumberedList' /> Hand en famille (remise valable pour <b>les membres de la même famille</b>)</Text>
                 <Divider />
                 <Table>
                     <thead>
                         <tr>
-                            <th>Licence</th>
-                            <th>Réduction</th>
+                            <th><Label>Licence</Label></th>
+                            <th><Label>Réduction</Label></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -148,15 +148,15 @@ class _MembersMeSummary extends React.PureComponent {
                             let currInterval = i === memberIndex
                             return (
                                 <tr key={i} className={currInterval ? 'is-selected' : ''} >
-                                    <td>{el.number}<sup>è</sup> license</td>
-                                    <td>-{el.discount} €</td>
+                                    <td><Text>{el.number}<sup>è</sup> license</Text></td>
+                                    <td><Text>-{el.discount} €</Text></td>
                                 </tr>
                             )
                         })}
                     </tbody>
                 </Table>
                 <br />
-                <Text variant="large" block ><Icon iconName='NumberSymbol'/> Total à payer pour ce membre: <b>{price} €</b></Text>
+                <Text variant="large" block ><Icon iconName='NumberSymbol' /> Total à payer pour ce membre: <b>{price} €</b></Text>
                 <br />
             </section >
         )

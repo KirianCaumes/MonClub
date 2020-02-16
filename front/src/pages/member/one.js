@@ -1337,7 +1337,6 @@ class _MemberOne extends React.PureComponent {
 
     showModalDetailPrice(position, price, param) {
         const { data } = this.state
-        const { } = this.props
 
         if (!param) param = this.props.param?.price //Overide param if from an old season
 
@@ -1356,18 +1355,18 @@ class _MemberOne extends React.PureComponent {
                 <Table>
                     <thead>
                         <tr>
-                            <th>Année de naissance</th>
+                            <th><Label>Année de naissance</Label></th>
                             {
                                 deadlineDate >= new Date()
                                     ?
                                     <>
-                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
-                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
+                                        <th><Label>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</Label></th>
+                                        <th><Label>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</Label></th>
                                     </>
                                     :
                                     <>
-                                        <th>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</th>
-                                        <th>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</th>
+                                        <th><Label>Tarifs à partir {dateToCleanDateString(deadlineDateAfter)}</Label></th>
+                                        <th><Label>Tarifs jusqu'au {dateToCleanDateString(deadlineDate)}</Label></th>
                                     </>
                             }
                         </tr>
@@ -1377,18 +1376,18 @@ class _MemberOne extends React.PureComponent {
                             let currInterval = !data?.is_reduced_price && el.min_year <= getYear(data?.birthdate) && el.max_year >= getYear(data?.birthdate)
                             return (
                                 <tr key={i} >
-                                    <td className={currInterval ? 'is-selected' : ''} >{el.label}</td>
+                                    <td className={currInterval ? 'is-selected' : ''} ><Text>{el.label}</Text></td>
                                     {
                                         deadlineDate >= new Date()
                                             ?
                                             <>
-                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
-                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_before_deadline} €</Text></td>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_after_deadline} €</Text></td>
                                             </>
                                             :
                                             <>
-                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}>{el.price_after_deadline} €</td>
-                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}>{el.price_before_deadline} €</td>
+                                                <td className={deadlineDate < new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_after_deadline} €</Text></td>
+                                                <td className={deadlineDate >= new Date() && currInterval ? 'is-selected' : ''}><Text>{el.price_before_deadline} €</Text></td>
                                             </>
                                     }
                                 </tr>
@@ -1396,26 +1395,26 @@ class _MemberOne extends React.PureComponent {
                         })}
                         <tr>
                             <td className={data?.is_reduced_price ? 'is-selected' : ''} >
-                                Loisirs - Etudiants - Chômeurs
+                                <Text>Loisirs - Etudiants - Chômeurs</Text>
                             </td>
                             {
                                 deadlineDate >= new Date()
                                     ?
                                     <>
                                         <td className={deadlineDate >= new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param.global?.reduced_price_before_deadline} €
+                                            <Text>{param.global?.reduced_price_before_deadline} €</Text>
                                         </td>
                                         <td className={deadlineDate < new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param.global?.reduced_price_after_deadline} €
+                                            <Text>{param.global?.reduced_price_after_deadline} €</Text>
                                         </td>
                                     </>
                                     :
                                     <>
                                         <td className={deadlineDate < new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param.global?.reduced_price_after_deadline} €
+                                            <Text>{param.global?.reduced_price_after_deadline} €</Text>
                                         </td>
                                         <td className={deadlineDate >= new Date() && data?.is_reduced_price ? 'is-selected' : ''}>
-                                            {param.global?.reduced_price_before_deadline} €
+                                            <Text>{param.global?.reduced_price_before_deadline} €</Text>
                                         </td>
                                     </>
                             }
@@ -1431,8 +1430,8 @@ class _MemberOne extends React.PureComponent {
                         <Table>
                             <thead>
                                 <tr>
-                                    <th>Age</th>
-                                    <th>Prix</th>
+                                    <th><Label>Age</Label></th>
+                                    <th><Label>Prix</Label></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1440,8 +1439,8 @@ class _MemberOne extends React.PureComponent {
                                     let currInterval = data?.is_transfer_needed && el.min_age <= getAge(data?.birthdate) && el.max_age >= getAge(data?.birthdate)
                                     return (
                                         <tr key={i} className={currInterval ? 'is-selected' : ''} >
-                                            <td>{el.label}</td>
-                                            <td>{el.price} €</td>
+                                            <td><Text>{el.label}</Text></td>
+                                            <td><Text>{el.price} €</Text></td>
                                         </tr>
                                     )
                                 })}
@@ -1455,8 +1454,8 @@ class _MemberOne extends React.PureComponent {
                 <Table>
                     <thead>
                         <tr>
-                            <th>Licence</th>
-                            <th>Réduction</th>
+                            <th><Label>Licence</Label></th>
+                            <th><Label>Réduction</Label></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1464,8 +1463,8 @@ class _MemberOne extends React.PureComponent {
                             let currInterval = i === position
                             return (
                                 <tr key={i} className={currInterval ? 'is-selected' : ''} >
-                                    <td>{el.number}<sup>è</sup> license</td>
-                                    <td>-{el.discount} €</td>
+                                    <td><Text>{el.number}<sup>è</sup> license</Text></td>
+                                    <td><Text>-{el.discount} €</Text></td>
                                 </tr>
                             )
                         })}

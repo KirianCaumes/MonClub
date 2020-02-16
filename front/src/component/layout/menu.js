@@ -32,15 +32,43 @@ class Menu extends React.PureComponent {
 
                                     <BulmaMenu.List title={x.name ? x.name : ''}>
                                         {
-                                            x?.links.map((y, j) => (
-                                                <BulmaMenu.List.Item
-                                                    key={i + "_" + j}
-                                                    onClick={() => y.onClick()}
-                                                    className={y.key === selectedKey ? 'is-active' : ''}
-                                                >
-                                                    <Text variant="medium">{y.name}</Text> 
-                                                </BulmaMenu.List.Item>
-                                            ))
+                                            x?.links.map((y, j) => {
+                                                if (y?.links?.length) {
+                                                    return (
+                                                        <BulmaMenu.List.Item
+                                                            key={i + "_" + j}
+                                                            onClick={() => y.onClick()}
+                                                            className={y.key === selectedKey ? 'is-active' : ''}
+                                                        >
+                                                            <BulmaMenu.List
+                                                                title={y.name ? <Text variant="medium" >{y.name}</Text> : ''}
+                                                            >
+                                                                {
+                                                                    y?.links.map((z, k) => (
+                                                                        <BulmaMenu.List.Item
+                                                                            key={i + "_" + j + "_" + k}
+                                                                            onClick={() => z.onClick()}
+                                                                            className={z.key === selectedKey ? 'is-active' : ''}
+                                                                        >
+                                                                            <Text variant="medium">{z.name}</Text>
+                                                                        </BulmaMenu.List.Item>
+                                                                    ))
+                                                                }
+                                                            </BulmaMenu.List>
+                                                        </BulmaMenu.List.Item>
+                                                    )
+                                                } else {
+                                                    return (
+                                                        <BulmaMenu.List.Item
+                                                            key={i + "_" + j}
+                                                            onClick={() => y.onClick()}
+                                                            className={y.key === selectedKey ? 'is-active' : ''}
+                                                        >
+                                                            <Text variant="medium">{y.name}</Text>
+                                                        </BulmaMenu.List.Item>
+                                                    )
+                                                }
+                                            })
                                         }
                                     </BulmaMenu.List>
                                 }

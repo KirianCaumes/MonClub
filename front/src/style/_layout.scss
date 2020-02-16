@@ -23,7 +23,7 @@ div#root {
       }
     }
     .navbar-menu {
-      @include until($tablet) {
+      @include until($desktop) {
         position: absolute;
         left: 0;
         right: 0;
@@ -89,6 +89,9 @@ div#root {
                 vertical-align: bottom;
               }
             }
+          }
+          ul {
+            border-left: 1px solid rgba($dark-blue, 0.5);
           }
         }
       }

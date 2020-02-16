@@ -28,8 +28,13 @@
 }
 
 *.flex-start {
-  justify-content: start !important;
+  justify-content: flex-start !important;
 }
+
+*.flex-end {
+  justify-content: flex-end !important;
+}
+
 
 *.flex-space-between {
   justify-content: space-between !important;

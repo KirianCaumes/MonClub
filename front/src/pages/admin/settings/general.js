@@ -1,13 +1,15 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { Label, TextField, MessageBarType, IconButton, MaskedTextField, Dropdown, Icon } from 'office-ui-fabric-react'
+import { Label, TextField, MessageBarType, IconButton, MaskedTextField, Dropdown, Icon, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import request from 'helper/request'
 import { dateToString, stringToCleanString, stringToDate } from 'helper/date'
 import DropdownIcon from 'component/dropdown'
+import Divider from 'component/divider'
+import { history } from 'helper/history'
 
-class _Settings extends React.PureComponent {
+class _SettingsGeneral extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
@@ -15,33 +17,32 @@ class _Settings extends React.PureComponent {
             president_lastname: props.param?.global?.find(x => x.label === 'president_lastname')?.value,
             secretary_firstname: props.param?.global?.find(x => x.label === 'secretary_firstname')?.value,
             secretary_lastname: props.param?.global?.find(x => x.label === 'secretary_lastname')?.value,
-            // price_deadline: props.param?.global?.find(x => x.label === 'price_deadline')?.value,
             new_member_deadline: props.param?.global?.find(x => x.label === 'new_member_deadline')?.value,
             is_create_new_user_able: props.param?.global?.find(x => x.label === 'is_create_new_user_able')?.value,
             is_create_new_member_able: props.param?.global?.find(x => x.label === 'is_create_new_member_able')?.value,
             current_season: props.param?.season?.find(x => x.is_current)?.id,
             text_infos_admin: props.param?.global?.find(x => x.label === 'text_infos_admin')?.value,
             text_infos_user: props.param?.global?.find(x => x.label === 'text_infos_user')?.value,
-
         }
     }
 
     componentDidMount() {
         this.props.setBreadcrumb([
             { text: 'Administration', key: 'administration' },
-            { text: 'Les paramètres', key: 'settings', isCurrentItem: true },
+            { text: 'Les paramètres', key: 'settings', onClick: () => history.push('/parametres') },
+            { text: 'Général', key: 'settings-general', isCurrentItem: true },
         ])
         this.props.setCommand([])
     }
 
     render() {
         const { param } = this.props
+
         return (
             <section id="admin-settings">
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='DataManagementSettings' /> Liste des paramètres</h1>
-                    </div>
+                    <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Général</Text>
+                    <Divider />
                     <Columns>
                         <Columns.Column>
                             <Label required htmlFor="president_firstname">Prénom du président</Label>
@@ -117,23 +118,22 @@ class _Settings extends React.PureComponent {
                     </Columns>
                     <Columns>
                         <Columns.Column>
-                            {/* <Label required htmlFor="price_deadline">Deadline prix inscription</Label>
+                            <Label required htmlFor="current_season">Saison en cours</Label>
                             <div className="flex-row">
-                                <MaskedTextField
-                                    id="price_deadline"
-                                    value={stringToCleanString(this.state.price_deadline)}
-                                    mask={"99/99/9999"}
-                                    onBlur={ev => this.setState({ price_deadline: stringToDate(ev.target.value) })}
+                                <Dropdown
+                                    options={[...param?.season]?.map(x => { return { key: x.id, text: x.label } })}
+                                    selectedKey={this.state.current_season}
+                                    onChange={(ev, item) => this.setState({ current_season: item.key })}
                                 />
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('price_deadline', dateToString(this.state.price_deadline))
+                                    onClick={() => request.editCurrentSeason(this.state.current_season)
                                         .then(() => this.props.setMessageBar(true, MessageBarType.success, "L'élément à bien été mise à jour."))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                     }
                                 />
-                            </div> */}
+                            </div>
                         </Columns.Column>
                         <Columns.Column>
                             <Label required htmlFor="new_member_deadline">Deadline insc./modif. membres</Label>
@@ -193,30 +193,6 @@ class _Settings extends React.PureComponent {
                             </div>
                         </Columns.Column>
 
-                    </Columns>
-
-                    <Columns>
-                        <Columns.Column>
-                            <Label required htmlFor="current_season">Saison en cours</Label>
-                            <div className="flex-row">
-                                <Dropdown
-                                    options={[...param?.season]?.map(x => { return { key: x.id, text: x.label } })}
-                                    selectedKey={this.state.current_season}
-                                    onChange={(ev, item) => this.setState({ current_season: item.key })}
-                                />
-                                <IconButton
-                                    iconProps={{ iconName: 'Save' }}
-                                    title="Enregistrer"
-                                    onClick={() => request.editCurrentSeason(this.state.current_season)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, "L'élément à bien été mise à jour."))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
-                                />
-                            </div>
-                        </Columns.Column>
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
-                        <Columns.Column className="is-hidden-touch"/>
                     </Columns>
                     <Columns>
                         <Columns.Column>
@@ -280,5 +256,5 @@ const mapStateToProps = state => {
         param: state.user.param
     }
 }
-const Settings = connect(mapStateToProps, mapDispatchToProps)(_Settings)
-export default Settings
+const SettingsGeneral = connect(mapStateToProps, mapDispatchToProps)(_SettingsGeneral)
+export default SettingsGeneral

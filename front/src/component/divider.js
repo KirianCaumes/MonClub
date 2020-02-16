@@ -8,8 +8,9 @@ export default class Divider extends React.PureComponent {
     }
 
     static defaultProps = {
-        isLoading: {},
+        style: {},
     }
+    
     render() {
         const { style } = this.props
         return (

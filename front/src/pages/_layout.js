@@ -79,17 +79,31 @@ class _Layout extends React.PureComponent {
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                             {
-                                key: '/constantes',
-                                name: <><Icon iconName='OfflineStorage' /> Les constantes</>,
-                                title: 'Les constants',
-                                onClick: () => history.push('/constantes'),
-                                isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
-                            },
-                            {
                                 key: '/parametres',
                                 name: <><Icon iconName='DataManagementSettings' /> Les paramètres</>,
                                 title: 'Les paramètres',
                                 onClick: () => history.push('/parametres'),
+                                isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN),
+                                links: [
+                                    {
+                                        key: '/parametres/tarif',
+                                        name: <><Icon iconName='Money' /> Tarifs</>,
+                                        title: 'Tous les comptes',
+                                        onClick: () => history.push('/parametres/tarif')
+                                    },
+                                    {
+                                        key: '/parametres/general',
+                                        name: <><Icon iconName='WebAppBuilderFragment' /> Général</>,
+                                        title: 'Les paramètres',
+                                        onClick: () => history.push('/parametres/general')
+                                    }
+                                ]
+                            },
+                            {
+                                key: '/constantes',
+                                name: <><Icon iconName='OfflineStorage' /> Les constantes</>,
+                                title: 'Les constants',
+                                onClick: () => history.push('/constantes'),
                                 isDisplay: this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)
                             },
                         ]
