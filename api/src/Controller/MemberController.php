@@ -70,7 +70,7 @@ class MemberController extends FOSRestController
      */
     public function getMembers(ParamFetcher $paramFetcher, ParamService $paramService, SerializerInterface $serializer)
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted(Constants::ROLE_ADMIN)) {
             $members = $this->getDoctrine()->getRepository(Member::class)->findMembersByFields(
                 $paramFetcher->get('name'),
                 $paramFetcher->get('stepsId'),
@@ -79,7 +79,7 @@ class MemberController extends FOSRestController
                 $paramFetcher->get('userId')
             );
             return $this->handleView($this->view($members)->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
-        } else if ($this->isGranted('ROLE_COACH')) {
+        } else if ($this->isGranted(Constants::ROLE_COACH)) {
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
             return $this->handleView($this->view(
@@ -137,7 +137,7 @@ class MemberController extends FOSRestController
     {
         $member = new Member();
         $member->setSeason($paramService->getCurrentSeason());
-        if ($this->isGranted('ROLE_ADMIN')) {
+        if ($this->isGranted(Constants::ROLE_ADMIN)) {
             return $this->handleView($this->view([
                 'member' => $member,
                 'workflow' => $workflowService->getWorkflow($member)

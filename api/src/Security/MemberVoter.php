@@ -72,10 +72,10 @@ class MemberVoter extends Voter
 
     private function canRead(Member $member, User $user)
     {
-        if ($this->security->isGranted('ROLE_ADMIN')) return true;
+        if ($this->security->isGranted(Constants::ROLE_ADMIN)) return true;
 
         //If user is a coach, check if the member is on a team he has access on
-        if($this->security->isGranted('ROLE_COACH')) {
+        if($this->security->isGranted(Constants::ROLE_COACH)) {
             foreach ($user->getTeams() as $userTeam) {
                 foreach ($member->getTeams() as $memberTeam) {
                     if ($userTeam === $memberTeam) return true;
@@ -90,7 +90,7 @@ class MemberVoter extends Voter
 
     private function canUpdate(Member $member, User $user)
     {
-        if ($this->security->isGranted('ROLE_ADMIN')) return true;
+        if ($this->security->isGranted(Constants::ROLE_ADMIN)) return true;
 
         if ($member->getUser() === $user) return true;
 

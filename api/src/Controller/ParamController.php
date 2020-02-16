@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\ActivityHistory;
 use App\Entity\Param\ParamDocumentCategory;
 use App\Entity\Param\ParamGlobal;
@@ -69,7 +70,7 @@ class ParamController extends FOSRestController
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
-            'roles' => ['ROLE_COACH', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
+            'roles' => [Constants::ROLE_COACH, Constants::ROLE_ADMIN, Constants::ROLE_SUPER_ADMIN],
             'choices' => [['key' => 'true', 'text' => 'Oui', 'icon' => 'Accept'], ['key' => 'false', 'text' => 'Non', 'icon' => 'Cancel']],
             'sexes' => $this->getDoctrine()->getRepository(ParamSex::class)->findall(),
             'price' => [
@@ -80,7 +81,7 @@ class ParamController extends FOSRestController
                 'payment_solution' => $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findall(),
             ],
             'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findAll(),
-            'users' => $this->isGranted('ROLE_ADMIN') ?
+            'users' => $this->isGranted(Constants::ROLE_ADMIN) ?
                 array_map(
                     function ($user) {
                         return ['id' => $user->getId(), 'username' => $user->getUsername()];

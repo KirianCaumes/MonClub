@@ -17,4 +17,10 @@ class Constants
     //ACCESS entity
     public const BASIC = "Default";
     public const ADMIN = "Admin";
+
+    //ROLES
+    public const ROLE_USER = "ROLE_USER";
+    public const ROLE_COACH = "ROLE_COACH";
+    public const ROLE_ADMIN = "ROLE_ADMIN";
+    public const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 }

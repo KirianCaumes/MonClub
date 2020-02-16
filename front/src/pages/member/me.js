@@ -20,7 +20,7 @@ class _MembersMe extends React.PureComponent {
             isLoading: false,
             readOnly: false,
             errorField: {},
-            page: 4,
+            page: 1,
             currentPivot: 0,
             prevMembers: [],
             prevMembersSelected: []

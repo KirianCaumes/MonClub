@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -57,7 +58,18 @@ class PublicController extends FOSRestController
             return $this->handleView($this->view(["message" => $translator->trans('username_password_not_match')], Response::HTTP_UNAUTHORIZED));
         }
 
-        return $this->handleView($this->view(["token" => $JWTManager->create($user)], Response::HTTP_OK));
+        return $this->handleView($this->view([
+            "token" => $JWTManager->create($user),
+            "redirectTo" => (function () use ($user) { //Custom redirection on login
+                if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
+                    return '/';
+                } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
+                    return '/membres';
+                } else {
+                    return '/';
+                }
+            })()
+        ], Response::HTTP_OK));
     }
 
     /**
@@ -102,7 +114,18 @@ class PublicController extends FOSRestController
                 ->setRoles(['ROLE_USER']);
             $userManager->updateUser($user, true);
 
-            return $this->handleView($this->view(["token" => $JWTManager->create($user)], Response::HTTP_CREATED));
+            return $this->handleView($this->view([
+                "token" => $JWTManager->create($user),
+                "redirectTo" => (function () use ($user) { //Custom redirection on login
+                    if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
+                        return '/';
+                    } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
+                        return '/membres';
+                    } else {
+                        return '/';
+                    }
+                })()
+            ], Response::HTTP_CREATED));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
     }
@@ -126,7 +149,7 @@ class PublicController extends FOSRestController
 
         if (!$user) {
             return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_BAD_REQUEST));
-        }       
+        }
 
         if (!$user->getConfirmationToken()) {
             $user->setConfirmationToken((new TokenGenerator())->generateToken());
@@ -159,7 +182,7 @@ class PublicController extends FOSRestController
 
         if (!$user) {
             return $this->handleView($this->view(['message' => $translator->trans('reset_token_invalid')], Response::HTTP_BAD_REQUEST));
-        }         
+        }
 
         if (!$user->isPasswordRequestNonExpired(intval($_ENV['JWT_TOKENTTL']))) {
             return $this->handleView($this->view(["message" => $translator->trans('reset_token_expired')], Response::HTTP_BAD_REQUEST));
@@ -206,7 +229,7 @@ class PublicController extends FOSRestController
         }
 
         //Check if admin or super admin
-        if (!in_array("ROLE_ADMIN", $user->getRoles()) && !in_array("ROLE_SUPER_ADMIN", $user->getRoles())) {
+        if (!in_array(Constants::ROLE_ADMIN, $user->getRoles()) && !in_array(Constants::ROLE_SUPER_ADMIN, $user->getRoles())) {
             return $this->handleView($this->view([], Response::HTTP_UNAUTHORIZED));
         }
 

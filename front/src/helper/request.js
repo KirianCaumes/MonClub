@@ -1,6 +1,6 @@
 import store from 'redux/store/index.js'
 import { signout } from 'redux/actions/user.js'
-import { dateToString } from './date.js';
+// import { dateToString } from './date.js';
 // import { setMessageBar } from 'redux/actions/common.js';
 
 const
@@ -211,32 +211,32 @@ export default {
 
         return getFetch(url, options)
     },
-    createMember: (body) => { //Unused
-        const url = ["member"]
-        body = {
-            ...body,
-            birthdate: dateToString(body?.birthdate)
-        }
+    // createMember: (body) => { //Unused
+    //     const url = ["member"]
+    //     body = {
+    //         ...body,
+    //         birthdate: dateToString(body?.birthdate)
+    //     }
 
-        var options = {
-            method: POST,
-            body: JSON.stringify(body)
-        }
+    //     var options = {
+    //         method: POST,
+    //         body: JSON.stringify(body)
+    //     }
 
-        return getFetch(url, options)
-    },
+    //     return getFetch(url, options)
+    // },
     createMemberAdmin: (body) => {
         const url = ["member", "admin"]
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate),
+            // birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
             sex: body?.sex?.id,
-            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
-            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
+            // gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            // gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {
@@ -246,24 +246,24 @@ export default {
 
         return getFetch(url, options)
     },
-    editMember: (id, body) => { //Unused
-        const url = ["member", id]
-        body = {
-            ...body,
-            birthdate: dateToString(body?.birthdate)
-        }
+    // editMember: (id, body) => { //Unused
+    //     const url = ["member", id]
+    //     body = {
+    //         ...body,
+    //         birthdate: dateToString(body?.birthdate)
+    //     }
 
-        var options = {
-            method: PUT,
-            body: JSON.stringify(body)
-        }
+    //     var options = {
+    //         method: PUT,
+    //         body: JSON.stringify(body)
+    //     }
 
-        return getFetch(url, options)
-    },
+    //     return getFetch(url, options)
+    // },
     editOrCreateMember: (id, body) => {
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate),
+            // birthdate: dateToString(body?.birthdate),
             sex: body?.sex?.id
         }
         let url = ["member"]
@@ -285,14 +285,14 @@ export default {
         const url = ["member", id, "admin"]
         body = {
             ...body,
-            birthdate: dateToString(body?.birthdate),
+            // birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
             sex: body?.sex?.id,
-            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
-            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
+            // gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            // gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {

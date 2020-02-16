@@ -2,6 +2,7 @@
 
 namespace App\Form\User;
 
+use App\Constants;
 use App\Entity\Team;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,9 +22,9 @@ class UserAdminNewType extends AbstractType
             ->add('username')
             ->add('roles', ChoiceType::class, [
                 'choices' => [
-                    'ROLE_COACH' => 'ROLE_COACH',
-                    'ROLE_ADMIN' => 'ROLE_ADMIN',
-                    'ROLE_SUPER_ADMIN' => 'ROLE_SUPER_ADMIN',
+                    'ROLE_COACH' => Constants::ROLE_COACH,
+                    'ROLE_ADMIN' => Constants::ROLE_ADMIN,
+                    'ROLE_SUPER_ADMIN' => Constants::ROLE_SUPER_ADMIN,
                 ],
                 'multiple' => true
             ])

@@ -29,7 +29,7 @@ class _Login extends React.PureComponent {
                 .then(res => {
                     this.props.signin(res.token)
                     this.props.setMessageBar(false)
-                    history.push('/')
+                    history.push(res.redirectTo ?? '/')
                 })
                 .catch(err => {
                     this.setState({ isLoading: false })

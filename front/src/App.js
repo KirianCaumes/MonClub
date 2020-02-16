@@ -97,6 +97,7 @@ class _App extends React.PureComponent {
     }
 
     init() {
+        this.props.setMessageBar(false)
         this.setState({ isInit: false }, () => {
             Promise.all([request.getMe(), request.getParam()])
                 .then(([me, param]) => {

@@ -11,8 +11,7 @@ class _Layout extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            menu: [],
-            isBurgerOpen: true
+            menu: []
         }
     }
 

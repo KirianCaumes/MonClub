@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\ActivityHistory;
 use App\Entity\Member;
 use App\Entity\Param\ParamGlobal;
@@ -54,7 +55,7 @@ class UserController extends FOSRestController
     public function getInfos(Security $security, ParamService $paramService)
     {
         $dateRes = [];
-        if ($security->isGranted('ROLE_ADMIN')) {
+        if ($security->isGranted(Constants::ROLE_ADMIN)) {
             //Generate 30 last days
             $datesIntval = [];
             for ($i = 0; $i < 30; $i++) array_push($datesIntval, date('Y-m-d', strtotime('today - ' . $i . ' days')));
@@ -74,17 +75,17 @@ class UserController extends FOSRestController
         $currentSeason = $paramService->getCurrentSeason();
 
         return $this->handleView($this->view([
-            'text' => $security->isGranted('ROLE_ADMIN') ? $paramService->getParam('text_infos_admin') : $paramService->getParam('text_infos_user'),
+            'text' => $security->isGranted(Constants::ROLE_ADMIN) ? $paramService->getParam('text_infos_admin') : $paramService->getParam('text_infos_user'),
             'activity_historic' => $dateRes,
             'infos' => [
-                'users' => $security->isGranted('ROLE_ADMIN') ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
-                'members' => $security->isGranted('ROLE_ADMIN') ?
+                'users' => $security->isGranted(Constants::ROLE_ADMIN) ? sizeof($this->getDoctrine()->getRepository(User::class)->findAll()) : null,
+                'members' => $security->isGranted(Constants::ROLE_ADMIN) ?
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['season' => $currentSeason])) :
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $currentSeason])),
-                'membersOk' => $security->isGranted('ROLE_ADMIN') ?
+                'membersOk' => $security->isGranted(Constants::ROLE_ADMIN) ?
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => true, 'season' => $currentSeason])) :
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => true, 'season' => $currentSeason])),
-                'membersPending' => $security->isGranted('ROLE_ADMIN') ?
+                'membersPending' => $security->isGranted(Constants::ROLE_ADMIN) ?
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => false, 'season' => $currentSeason])) :
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => false, 'season' => $currentSeason])),
             ]
