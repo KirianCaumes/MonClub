@@ -60,19 +60,5 @@ fos_user:
     firewall_name:  main
     user_class:     App\Entity\User
     from_email:
-        address: "no-reply@joeymasip.com"
-        sender_name: "Joey"
-    registration:
-#        form:
-#            type: AppBundle\Form\UserRegisterType
-        confirmation:
-            enabled: true
-            template:   FOSUserBundle:Registration:email.txt.twig
-            from_email:
-                address:        "no-reply@joeymasip.com"
-                sender_name:    "No Reply Registration"
-    service:
-        mailer: fos_user.mailer.twig_swift
-    resetting:
-        email:
-            template:   FOSUserBundle:Resetting:email.txt.twig
+        address: "no-reply@thouarehbc.com"
+        sender_name: "Kirian"
