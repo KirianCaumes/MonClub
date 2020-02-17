@@ -9,6 +9,10 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Service to handle mail
  */
@@ -47,16 +51,41 @@ class MailService
         array $body = ['template' => '_base.html.twig', 'context' => []],
         array $attachment = ['file' => null, 'name' => null, 'type' => null]
     ) {
-        $email = (new TemplatedEmail())
-            ->from('inscription@thouarehbc.fr')
-            ->to($to)
-            ->subject($subject . ' - MonClub THBC')
-            ->htmlTemplate('/mail/' . $body['template'])
-            ->context($body['context']);
+        $mail = new PHPMailer(true);
 
-        if ($attachment['file']) $email->attach($attachment['file'], $attachment['name'], $attachment['type']);
+        try {
+            //Recipients
+            $mail->setFrom('inscription@thouarehbc.fr', 'test', 0);
+            $mail->addAddress("kirian.caumes@gmail.com");
 
-        return $this->mailer->send($email);
+            // Attachments
+            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');
+            $mail->isMail();
+
+            // Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = $subject . ' - MonClub THBC';
+            $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+
+            $mail->send();
+            return 'Message has been sent';
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+
+
+
+        // $email = (new TemplatedEmail())
+        //     ->from('inscription@thouarehbc.fr')
+        //     ->to($to)
+        //     ->subject($subject . ' - MonClub THBC')
+        //     ->htmlTemplate('/mail/' . $body['template'])
+        //     ->context($body['context']);
+
+        // if ($attachment['file']) $email->attach($attachment['file'], $attachment['name'], $attachment['type']);
+
+        // return $this->mailer->send($email);
     }
 
     /**
