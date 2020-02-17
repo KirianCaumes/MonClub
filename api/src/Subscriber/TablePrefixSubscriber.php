@@ -14,20 +14,7 @@ class TablePrefixSubscriber implements EventSubscriber
 
     public function __construct()
     {
-        switch ($_ENV['APP_ENV']) {
-            case 'dev':
-                $this->prefix = $_ENV['DATABASE_PREFIX_DEV'];
-                break;
-            case 'staging':
-                $this->prefix = $_ENV['DATABASE_PREFIX_STAGING'];
-                break;
-            case 'prod':
-                $this->prefix = $_ENV['DATABASE_PREFIX_PROD'];
-                break;
-            default:
-                $this->prefix = "";
-                break;
-        }
+        $this->prefix = $_ENV['DATABASE_PREFIX'];
     }
 
     public function getSubscribedEvents()

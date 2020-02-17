@@ -423,8 +423,8 @@ class MemberController extends FOSRestController
             $em->persist($member);
             $em->flush();
 
-            if ($emailInscriptionDone) $mailService->sendInscriptionDone($member->getUser(), $member);
-            if ($emailDocumentInvalid) $mailService->sendDocumentInvalid($member->getUser(), $member);
+            if ($emailInscriptionDone && $member->getUser()) $mailService->sendInscriptionDone($member->getUser(), $member);
+            if ($emailDocumentInvalid && $member->getUser()) $mailService->sendDocumentInvalid($member->getUser(), $member);
 
             return $this->handleView($this->view([
                 'member' => $member,
@@ -735,7 +735,7 @@ class MemberController extends FOSRestController
         $em->flush();
 
         //Send mail recap with facture
-        $mailService->sendFacture($members[0]->getUser(), $members);
+        if (sizeof($members) > 0) $mailService->sendFacture($members[0]->getUser(), $members);
 
         return $this->handleView($this->view(
             $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $paramService->getCurrentSeason()])

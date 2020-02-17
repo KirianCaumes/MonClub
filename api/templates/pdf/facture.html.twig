@@ -2,6 +2,8 @@
 
 {% if members|length > 0 and members[0].data.paymentsolution is not null %}
 	{% set paymentsolution = members[0].data.paymentsolution %}
+{% else %}
+	{% set paymentsolution = {'label':'', 'id':0} %}
 {% endif %}
 
 

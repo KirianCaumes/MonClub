@@ -1,6 +1,6 @@
 import store from 'redux/store/index.js'
 import { signout } from 'redux/actions/user.js'
-// import { dateToString } from './date.js';
+import { dateToString } from './date.js';
 // import { setMessageBar } from 'redux/actions/common.js';
 
 const
@@ -285,7 +285,7 @@ export default {
         const url = ["member", id, "admin"]
         body = {
             ...body,
-            // birthdate: dateToString(body?.birthdate),
+            birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,

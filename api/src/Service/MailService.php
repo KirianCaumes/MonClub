@@ -5,9 +5,10 @@ namespace App\Service;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Service\Generator\PdfService;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Twig\Environment;
 
 /**
  * Service to handle mail
@@ -15,27 +16,16 @@ use Symfony\Component\Mime\Email;
 class MailService
 {
     protected $pdfService;
-    protected $mailer;
+    protected $twig;
+    protected $parameterBag;
+    private $logger;
 
-    public function __construct(PdfService $pdfService, MailerInterface $mailer)
+    public function __construct(PdfService $pdfService, Environment $twig, ParameterBagInterface $parameterBag, LoggerInterface $logger)
     {
-        $this->mailer = $mailer;
         $this->pdfService = $pdfService;
-
-        $this->baseUrl = "";
-        switch ($_ENV['APP_ENV']) {
-            case 'dev':
-                $this->baseUrl = $_ENV['FRONT_URL_DEV'];
-                break;
-            case 'staging':
-                $this->baseUrl = $_ENV['FRONT_URL_STAGING'];
-                break;
-            case 'prod':
-                $this->baseUrl = $_ENV['FRONT_URL_PROD'];
-                break;
-            default:
-                break;
-        }
+        $this->twig = $twig;
+        $this->parameterBag = $parameterBag;
+        $this->logger = $logger;
     }
 
     /**
@@ -47,16 +37,40 @@ class MailService
         array $body = ['template' => '_base.html.twig', 'context' => []],
         array $attachment = ['file' => null, 'name' => null, 'type' => null]
     ) {
-        $email = (new TemplatedEmail())
-            ->from('inscription@thouarehbc.fr')
-            ->to($to)
-            ->subject($subject . ' - MonClub THBC')
-            ->htmlTemplate('/mail/' . $body['template'])
-            ->context($body['context']);
+        $mail = new PHPMailer(true);
+        $mail->CharSet = 'UTF-8';
 
-        if ($attachment['file']) $email->attach($attachment['file'], $attachment['name'], $attachment['type']);
+        try {            
+            if ($_ENV['APP_ENV'] === 'dev') {
+                $mail->isSMTP();
+                //Use smtp Google for dev env
+                // $mail->SMTPDebug = 1;
+                $mail->SMTPAuth = true;
+                $mail->SMTPSecure = 'ssl';
+                $mail->Host = "smtp.gmail.com";
+                $mail->Port = 465;
+                $mail->Username = $_ENV['GMAIL_USERNAME'];
+                $mail->Password = $_ENV['GMAIL_PASSWORD'];
+            } else {
+                //Use Php's mail function for staging/prod
+                $mail->isMail();
+            }
 
-        return $this->mailer->send($email);
+            $mail->setFrom('monclub@thouarehbc.fr', 'Mon Club - THBC');
+            $mail->addAddress($to);
+
+            if ($attachment['file']) $mail->addStringAttachment($attachment['file'], $attachment['name'], 'base64', $attachment['type']);
+
+            $mail->AddEmbeddedImage($this->parameterBag->get('kernel.project_dir') . "/public/img/logo_mail.png", "logo_mail", "thbc.png");
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject . ' - MonClub THBC';
+            $mail->Body = $this->twig->render('/mail/' . $body['template'], array_merge($body['context'], ['baseUrl' => $_ENV['FRONT_URL']]));
+
+            return $mail->send();
+        } catch (\Exception $e) {
+            $this->logger->critical($e);
+        }
     }
 
     /**
@@ -71,8 +85,7 @@ class MailService
                 'template' => 'resetPassword.html.twig',
                 'context' => [
                     'token' => $user->getConfirmationToken(),
-                    'user' => $user,
-                    'baseUrl' => $this->baseUrl
+                    'user' => $user
                 ]
             ]
         );
@@ -89,8 +102,7 @@ class MailService
             [
                 'template' => 'membersReminder.html.twig',
                 'context' => [
-                    'user' => $user,
-                    'baseUrl' => $this->baseUrl
+                    'user' => $user
                 ]
             ]
         );
@@ -108,8 +120,7 @@ class MailService
                 'template' => 'membersInscriptionDone.html.twig',
                 'context' => [
                     'user' => $user,
-                    'member' => $member,
-                    'baseUrl' => $this->baseUrl
+                    'member' => $member
                 ]
             ]
         );
@@ -127,8 +138,7 @@ class MailService
                 'template' => 'membersDocumentInvalid.html.twig',
                 'context' => [
                     'user' => $user,
-                    'member' => $member,
-                    'baseUrl' => $this->baseUrl
+                    'member' => $member
                 ]
             ]
         );
@@ -146,7 +156,6 @@ class MailService
                 'template' => 'warningEnableUser.html.twig',
                 'context' => [
                     'user' => $user,
-                    'baseUrl' => $this->baseUrl,
                     'inactivityDate' =>  $inactivityDate,
                 ]
             ]
@@ -166,7 +175,6 @@ class MailService
                 'context' => [
                     'token' => $user->getConfirmationToken(),
                     'user' => $user,
-                    'baseUrl' => $this->baseUrl,
                 ]
             ]
         );
@@ -184,7 +192,6 @@ class MailService
                 'template' => 'facture.html.twig',
                 'context' => [
                     'user' => $user,
-                    'baseUrl' => $this->baseUrl,
                 ]
             ],
             ['file' => $this->pdfService->generateFacture($members, false), 'name' => 'récapitulatif.pdf', 'type' => 'application/pdf']
@@ -201,9 +208,7 @@ class MailService
             'Avez-vous pensé à renouveler votre certificat médical ?',
             [
                 'template' => 'renewCertificate.html.twig',
-                'context' => [
-                    'baseUrl' => $this->baseUrl,
-                ]
+                'context' => []
             ]
         );
     }
