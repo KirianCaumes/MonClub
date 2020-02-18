@@ -61,13 +61,12 @@ class PublicController extends FOSRestController
         return $this->handleView($this->view([
             "token" => $JWTManager->create($user),
             "redirectTo" => (function () use ($user) { //Custom redirection on login
-                if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
-                    return '/';
-                } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
-                    return '/membres';
-                } else {
-                    return '/';
-                }
+                // if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
+                //     return '/';
+                // } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
+                //     return '/membres/moi';
+                // }
+                return '/';
             })()
         ], Response::HTTP_OK));
     }
@@ -117,13 +116,12 @@ class PublicController extends FOSRestController
             return $this->handleView($this->view([
                 "token" => $JWTManager->create($user),
                 "redirectTo" => (function () use ($user) { //Custom redirection on login
-                    if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
-                        return '/';
-                    } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
-                        return '/membres';
-                    } else {
-                        return '/';
-                    }
+                    // if ($user->hasRole(Constants::ROLE_ADMIN) || $user->hasRole(Constants::ROLE_SUPER_ADMIN)) {
+                    //     return '/';
+                    // } else if ($user->hasRole(Constants::ROLE_COACH) || $user->hasRole(Constants::ROLE_USER)) {
+                    //     return '/membres/moi';
+                    // }
+                    return '/';
                 })()
             ], Response::HTTP_CREATED));
         }

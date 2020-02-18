@@ -11,7 +11,7 @@ class _PublicLayout extends React.PureComponent {
                 <Columns>
                     <Columns.Column className="is-hidden-touch" />
 
-                    <Columns.Column>
+                    <Columns.Column size="one-third">
                         <div className="flex-col">
                             <div className="card has-text-centered">
                                 <img src={require('asset/img/logo.png')} alt="THBC" />
@@ -24,7 +24,7 @@ class _PublicLayout extends React.PureComponent {
                                 {
                                     this.props.messageBar && this.props.messageBar.isDisplayed &&
                                     <>
-                                        <MessageBar messageBarType={this.props.messageBar.type} isMultiline={false} onDismiss={() => this.props.setMessageBar(false)}>
+                                        <MessageBar messageBarType={this.props.messageBar.type} isMultiline={true} onDismiss={() => this.props.setMessageBar(false)}>
                                             {this.props.messageBar.message}
                                         </MessageBar>
                                         <br />

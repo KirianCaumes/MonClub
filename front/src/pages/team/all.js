@@ -40,7 +40,7 @@ class _TeamsAll extends ParentPage {
 
     componentDidMount() {
         this.props.setBreadcrumb([
-            { text: 'Équipe', key: 'teams' },
+            { text: 'Membres', key: 'members' },
             { text: 'Toutes les équipes', key: 'all-teams', isCurrentItem: true },
         ])
 

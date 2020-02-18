@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Icon, Separator, Text, Checkbox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator, Text, Checkbox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -212,9 +212,6 @@ class _MembersMe extends React.PureComponent {
         return (
             <section id="members-me">
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='AccountManagement' /> Inscription saison {param?.season?.find(x => x.is_current)?.label} </h1>
-                    </div>
                     <Text variant="large" block className="has-text-centered"><b> Inscription saison {param?.season?.find(x => x.is_current)?.label}</b> <span role="img" aria-label="handball">🤾</span></Text>
                     <br className="is-hidden-mobile" />
 

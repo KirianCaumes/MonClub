@@ -12,7 +12,7 @@ class _MembersMeSummary extends React.PureComponent {
     constructor(props) {
         super(props)
         this.state = {
-            price: 0
+            price: '...'
         }
     }
 

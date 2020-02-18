@@ -1,12 +1,15 @@
 import React from 'react'
-import { Hero, Container, Heading, Columns } from 'react-bulma-components'
-import { Text, Icon, getTheme } from 'office-ui-fabric-react'
+import { Columns, Table } from 'react-bulma-components'
+import { Text, Icon, getTheme, Label, PrimaryButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from 'redux/actions/common'
-import { Bar } from 'react-chartjs-2'
+import { Line, Doughnut } from 'react-chartjs-2'
 import { stringToShortCleanString } from 'helper/date'
 import { history } from 'helper/history'
 import Divider from 'component/divider'
+import { dateToCleanDateTimeString } from 'helper/date'
+import getWf from 'helper/getStepWf'
+import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
 
 class _Index extends React.PureComponent {
     constructor(props) {
@@ -20,113 +23,127 @@ class _Index extends React.PureComponent {
         ])
         this.props.setCommand([])
     }
+
     render() {
+        const { data, param } = this.props
         return (
             <section id="index">
-                <Hero color="info">
-                    <Hero.Body>
-                        <Container className="flex-row">
-                            <img src={require('asset/img/logo.png')} alt="THBC" className="is-hidden-touch" />
-                            <Heading className="is-capitalized flex-col">
-                                Bienvenue : {this.props.me?.username}
-                            </Heading>
-                        </Container>
-                    </Hero.Body>
-                </Hero>
-                <br />
-                <br />
-                <Columns className="is-vcentered is-desktop infos">
-                    <Columns.Column>
-                        <div className="card has-text-centered">
-                            <div className="flex-col">
-                                <Text variant="large" block>
-                                    <Icon iconName='Contact' />&nbsp;<span dangerouslySetInnerHTML={{ __html: this.props.data?.text }}></span>
-                                </Text>
-                            </div>
+                <Columns>
+                    <Columns.Column size="two-thirds">
+                        <div className="card">
+                            <Text variant="large" block><Icon iconName='WavingHand' /> Bienvenu : {this.props.me?.username}</Text>
+                            <Divider />
+                            <Text as="p" block>
+                                <span dangerouslySetInnerHTML={{ __html: this.props.data?.text }} />
+                            </Text>
                         </div>
                     </Columns.Column>
-                    <Columns.Column>
-                        <Columns className="is-vcentered" >
-                            <Columns.Column>
-                                <div className="card" onClick={() => history.push(`/membres/moi`)}>
-                                    <div className="flex-col">
-                                        <img src={require('asset/img/bg2.jpg')} alt="THBC" />
-                                        <div style={{ height: '12.5px' }} />
-                                        <Text variant="large" nowrap block>
-                                            Mes membres
-                                        </Text>
-                                        <Divider style={{ marginBottom: 0 }} />
-                                    </div>
-                                </div>
-                            </Columns.Column>
-                            <Columns.Column>
-                                <div className="card" onClick={() => null} style={{ cursor: 'not-allowed' }}>
-                                    <div className="flex-col">
-                                        <img src={require('asset/img/bg2.jpg')} alt="THBC" />
-                                        <div style={{ height: '12.5px' }} />
-                                        <Text variant="large" nowrap block>
-                                            La boutique
-                                        </Text>
-                                        <Divider style={{ marginBottom: 0 }} />
-                                    </div>
-                                </div>
-                            </Columns.Column>
-                        </Columns>
+                    <Columns.Column size="one-third">
+                        <div className="card">
+                            <Text variant="large" block><Icon iconName='DonutChart' />&nbsp;
+                                {
+                                    (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) ?
+                                        `Status des membres ${param?.season?.find(x => x.is_current)?.label}`
+                                        :
+                                        'Status de mes membres'
+                                }
+
+                            </Text>
+                            <Divider />
+                            {
+                                data?.infos?.members > 0 ?
+                                    <Doughnut
+                                        data={{
+                                            labels: ['En attente', 'Validés', 'Créés'],
+                                            datasets: [
+                                                {
+                                                    data: [data?.infos?.membersPending, data?.infos?.membersOk, null],
+                                                    backgroundColor: ['#FFCD56', '#FF6384', '#36A2EB', '#4BC0C0'],
+                                                    borderWidth: 0.5
+                                                },
+                                                {
+                                                    data: [null, null, (data?.infos?.members ? data?.infos?.members : 1)],
+                                                    backgroundColor: ['#FFCD56', '#FF6384', '#36A2EB', '#4BC0C0'],
+                                                    borderWidth: 0.5
+                                                }
+                                            ]
+                                        }}
+                                        legend={{
+                                            position: 'right'
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            // maintainAspectRatio: false
+                                        }}
+                                    />
+                                    :
+                                    <>
+                                        <Text>Aucun membre associé à votre compte trouvé</Text>
+                                        <br /><br />
+                                        <PrimaryButton
+                                            text="Voir mes membres"
+                                            onClick={() => history.push('membres/moi')}
+                                            iconProps={{ iconName: 'AccountManagement' }}
+                                        />
+                                    </>
+                            }
+                        </div>
+                    </Columns.Column>
+                </Columns>
+                {/* <br/> */}
+
+                <Columns>
+                    <Columns.Column size="two-thirds">
+                        <div className="card">
+                            <Text variant="large" block><Icon iconName='AccountManagement' /> Mes membres</Text>
+                            <Divider />
+                            <Table className="table is-narrow">
+                                <thead>
+                                    <tr>
+                                        <th><Label>Nom</Label></th>
+                                        <th><Label>Prénom</Label></th>
+                                        <th><Label>Créé le</Label></th>
+                                        <th><Label>Étape en cours</Label></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        data?.members?.map((member, i) => (
+                                            <tr key={i}>
+                                                <td><Text className="is-capitalized">{member.lastname}</Text></td>
+                                                <td><Text className="is-capitalized">{member.firstname}</Text></td>
+                                                <td><Text>{dateToCleanDateTimeString(new Date(member.creation_datetime))}</Text></td>
+                                                <td><Text className="is-capitalized">{getWf(member)}</Text></td>
+                                            </tr>
+                                        ))
+                                    }
+                                    {
+                                        !data?.members?.length &&
+                                        <tr><td colSpan="4"><Text>Aucun membre associé à votre compte trouvé</Text></td></tr>
+                                    }
+                                </tbody>
+                            </Table>
+                            <PrimaryButton
+                                text="Voir mes membres"
+                                onClick={() => history.push('membres/moi')}
+                                iconProps={{ iconName: 'AccountManagement' }}
+                            />
+                        </div>
+                    </Columns.Column>
+                    <Columns.Column size="one-third">
+                        <div className="card">
+                            <Text variant="large" block><Icon iconName='Help' /> Un soucis</Text>
+                            <Divider />
+                            <div style={{ textAlign: 'center' }}>
+                                <Text>Contacter le thbc : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></Text>
+                                <br />
+                                <br />
+                                <img src={require('asset/img/logo.png')} alt="THBC" />
+                            </div>
+                        </div>
                     </Columns.Column>
                 </Columns>
 
-                <Columns className="is-vcentered kpi">
-                    {this.props.data?.infos?.users &&
-                        <Columns.Column>
-                            <div className="card has-text-centered">
-                                <div className="flex-col">
-                                    <Text variant="xxLarge" nowrap block>
-                                        <Icon iconName='ContactList' />&nbsp;{this.props.data?.infos?.users}
-                                    </Text>
-                                    <Text variant="large" nowrap block>
-                                        Utilisateurs inscris
-                                        </Text>
-                                </div>
-                            </div>
-                        </Columns.Column>
-                    }
-                    <Columns.Column>
-                        <div className="card has-text-centered">
-                            <div className="flex-col">
-                                <Text variant="xxLarge" nowrap block>
-                                    <Icon iconName='RecruitmentManagement' />&nbsp;{this.props.data?.infos?.members}
-                                </Text>
-                                <Text variant="large" nowrap block>
-                                    Membres créés
-                                </Text>
-                            </div>
-                        </div>
-                    </Columns.Column>
-                    <Columns.Column>
-                        <div className="card has-text-centered">
-                            <div className="flex-col">
-                                <Text variant="xxLarge" nowrap block>
-                                    <Icon iconName='UserFollowed' />&nbsp;{this.props.data?.infos?.membersOk}
-                                </Text>
-                                <Text variant="large" nowrap block>
-                                    Membres validés
-                                        </Text>
-                            </div>
-                        </div>
-                    </Columns.Column>
-                    <Columns.Column>
-                        <div className="card has-text-centered">
-                            <div className="flex-col">
-                                <Text variant="xxLarge" nowrap block>
-                                    <Icon iconName='UserOptional' />&nbsp;{this.props.data?.infos?.membersPending}
-                                </Text>
-                                <Text variant="large" nowrap block>
-                                    Membre en attente
-                                        </Text>
-                            </div>
-                        </div>
-                    </Columns.Column>
-                </Columns>
 
                 {this.props?.data?.activity_historic?.length > 0 &&
                     <>
@@ -134,7 +151,7 @@ class _Index extends React.PureComponent {
                             <Text variant="large" className="has-text-centered" block>Activité sur les 30 derniers jours</Text>
                             <br />
                             <div>
-                                <Bar
+                                <Line
                                     data={{
                                         labels: this.props?.data?.activity_historic.map(x => stringToShortCleanString(new Date(x.date))),
                                         datasets: [
@@ -144,7 +161,8 @@ class _Index extends React.PureComponent {
                                                 borderColor: getTheme().palette.themePrimary,
                                                 hoverBackgroundColor: getTheme().palette.themeTertiary,
                                                 hoverBorderColor: getTheme().palette.themePrimary,
-                                                borderWidth: 0.5
+                                                borderWidth: 0.5,
+                                                pointRadius: 0
                                             }
                                         ]
                                     }}
@@ -163,10 +181,6 @@ class _Index extends React.PureComponent {
                     </>
                 }
                 <br />
-
-                <div className="card has-text-centered contact">
-                    <p>En cas de soucis, veuillez contacter le club : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></p>
-                </div>
             </section>
         )
     }
@@ -181,7 +195,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        me: state.user.me
+        me: state.user.me,
+        param: state.user.param
     }
 }
 const Index = connect(mapStateToProps, mapDispatchToProps)(_Index)

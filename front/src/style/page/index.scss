@@ -1,53 +1,23 @@
 #index {
-  .hero {
-    background: linear-gradient(to left top, rgba($blue, 0.9) 20%, rgba($dark-blue, 0.9));
-    // background: linear-gradient(to right, #2b6ca3 0%, #2b6ca3 75%, #0f3375);
-    border-radius: 3px;
-    @include ms-depth-16;
-    .hero-body {
-      padding: 2rem 1.5rem;
-      > div {
-        justify-content: flex-start;
-        img {
-          flex: 1;
-          max-width: 60px;
-          height: auto;
-          max-height: 100px;
-        }
-        h1 {
-          flex: 2;
-          margin: 0 0 0 15px;
-          height: auto;
-        }
+  div.columns {
+    div.column {
+      display: flex;
+      > * {
+        width: 100%;
       }
-    }
-  }
-  > .columns {
-    &.infos {
-      .columns {
-        .card {
-          cursor: pointer;
-        }
+      p {
+        text-align: justify;
+        line-height: 1.5rem;
       }
-    }
-    &.kpi {
-      .card {
-        i {
-          color: $dark-blue;
-        }
+      i {
+        vertical-align: bottom;
       }
     }
   }
 
   .graph {
-    // background: linear-gradient(to left top, rgba($blue, 0.5) 20%, rgba($dark-blue,0.9));
-    // background: linear-gradient(to left top, rgba(white, 0.9) 20%, white);
     > div {
       height: 250px;
     }
-  }
-
-  .contact {
-    background: linear-gradient(to left top, rgba($blue, 1), rgba(white, 1) 25%, rgba(white, 1));
   }
 }

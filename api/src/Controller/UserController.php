@@ -88,7 +88,8 @@ class UserController extends FOSRestController
                 'membersPending' => $security->isGranted(Constants::ROLE_ADMIN) ?
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['is_inscription_done' => false, 'season' => $currentSeason])) :
                     sizeof($this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_inscription_done' => false, 'season' => $currentSeason])),
-            ]
+            ],
+            'members' => $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'season' => $currentSeason])
         ], Response::HTTP_OK));
     }
 
