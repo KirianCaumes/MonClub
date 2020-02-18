@@ -116,7 +116,7 @@ class ParamController extends FOSRestController
 
         return $this->handleView($this->view(
             [
-                'global' => $global ? $global : [new ParamPriceGlobal()],
+                'global' => $global ? $global : new ParamPriceGlobal(),
                 'license' => $license ? $license : [new ParamPriceLicense()],
                 'transfer' => $transfer ? $transfer : [new ParamPriceTransfer()],
                 'discount' => $discount ? $discount : [new ParamReductionFamily()]

@@ -229,14 +229,14 @@ export default {
         const url = ["member", "admin"]
         body = {
             ...body,
-            // birthdate: dateToString(body?.birthdate),
+            birthdate: dateToString(body?.birthdate),
             teams: body?.teams?.map(x => x.id),
             user: body?.user?.id,
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
             sex: body?.sex?.id,
-            // gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
-            // gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
+            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {
@@ -263,7 +263,7 @@ export default {
     editOrCreateMember: (id, body) => {
         body = {
             ...body,
-            // birthdate: dateToString(body?.birthdate),
+            birthdate: dateToString(body?.birthdate),
             sex: body?.sex?.id
         }
         let url = ["member"]
@@ -291,8 +291,8 @@ export default {
             season: body?.season?.id,
             payment_solution: body?.payment_solution?.id,
             sex: body?.sex?.id,
-            // gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
-            // gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
+            gesthand_certificate_date: dateToString(body?.gesthand_certificate_date),
+            gesthand_qualification_date: dateToString(body?.gesthand_qualification_date),
         }
 
         var options = {
@@ -573,6 +573,14 @@ export default {
     },
     putParamPriceBySeason: (id, body) => {
         const url = ["param", "price", id]
+
+        body = {
+            ...body,
+            global : {
+                ...body?.global,
+                deadline_date: dateToString(body?.global?.deadline_date)
+            }
+        }
 
         var options = {
             method: PUT,

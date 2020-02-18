@@ -29,7 +29,7 @@ if ('function' === typeof importScripts) {
 
         workbox.routing.registerRoute(
             /\/api\/param/,
-            new workbox.strategies.CacheFirst({
+            new workbox.strategies.StaleWhileRevalidate({
                 cacheName: "monclub-api-param",
                 plugins: [
                     new workbox.cacheableResponse.Plugin({
