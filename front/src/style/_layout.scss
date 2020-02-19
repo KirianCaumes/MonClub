@@ -147,7 +147,7 @@ div#root {
       div.content {
         padding: 10px 35px;
         @include until($tablet) {
-          padding: 10px 15px;
+          padding: 5px 10px;
         }
         min-height: 100%;
         max-width: 1350px;
@@ -185,6 +185,13 @@ div#root {
           }
           .ms-Breadcrumb-chevron {
             color: $white;
+          }
+          .ms-Breadcrumb-overflow {
+            > button {
+              &:active, &:hover, &.is-expanded {
+                background: rgba(234, 234, 234, 0.2)!important;
+              }
+            }
           }
         }
       }

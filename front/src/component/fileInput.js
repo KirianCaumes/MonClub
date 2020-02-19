@@ -71,6 +71,15 @@ export default class FileInput extends React.PureComponent {
                                 menuProps={{
                                     items: [
                                         {
+                                            key: 'download',
+                                            text: 'Télécharger',
+                                            iconProps: { iconName: 'Download' },
+                                            onClick: () => {
+                                                this.setState({ isDownloading: true })
+                                                this.props.onDownload().finally(() => this.setState({ isDownloading: false }))
+                                            }
+                                        },
+                                        {
                                             key: 'open',
                                             text: 'Visionner',
                                             disabled: isDisabled,

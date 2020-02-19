@@ -235,9 +235,16 @@ class _MembersAll extends ParentPage {
                                             split={true}
                                             disabled={isLoading}
                                             onClick={() => this.searchMembers()}
+                                            iconProps={{ iconName: 'Search' }}
                                             menuProps={
                                                 {
                                                     items: [
+                                                        {
+                                                            key: 'search',
+                                                            text: 'Rechercher',
+                                                            iconProps: { iconName: 'Search' },
+                                                            onClick: () => this.searchMembers()
+                                                        },
                                                         {
                                                             key: 'Clear',
                                                             text: 'Effacer les filtres',
