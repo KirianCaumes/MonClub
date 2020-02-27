@@ -43,7 +43,7 @@ class ClearUsersCommmand extends Command
         $usersToSend = [];
 
         foreach ($users as $user) {
-            switch ($user->getCreationDatetime()->diff(new \DateTime())->format('%a')) {
+            switch ($user->getLastLogin()->diff(new \DateTime())->format('%a')) {
                 case 90:
                     if (!in_array($user, $usersToSend)) array_push($usersToSend, $user);
                     break;
@@ -56,7 +56,7 @@ class ClearUsersCommmand extends Command
         }
 
         foreach ($usersToSend as $user) {
-            $inactivityDate = $user->getCreationDatetime()->diff(new \DateTime())->format('%a');
+            $inactivityDate = $user->getLastLogin()->diff(new \DateTime())->format('%a');
             $this->mailService->sendWarningEnableUser($user, $inactivityDate);
         }
 
