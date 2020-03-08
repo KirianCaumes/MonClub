@@ -228,7 +228,7 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('text_infos_admin', this.state.text_infos_admin)
+                                    onClick={() => request.editParam('text_infos_user', this.state.text_infos_user)
                                         .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                     }
