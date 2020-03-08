@@ -124,6 +124,8 @@ class FileController extends FOSRestController
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
+        
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         //Check if user is payed
         if (!$member->getIsPayed() || !$member->getIsInscriptionDone()) {
@@ -159,7 +161,7 @@ class FileController extends FOSRestController
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
 
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         $response = new StreamedResponse(
             function () use ($pdfService, $member, $paramFetcher) {
@@ -181,7 +183,7 @@ class FileController extends FOSRestController
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
 
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         $response = new StreamedResponse(
             function () use ($pdfService, $member) {
@@ -202,7 +204,8 @@ class FileController extends FOSRestController
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         //Find document categoru by id
         $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
@@ -228,7 +231,8 @@ class FileController extends FOSRestController
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         //Find document categoru by id
         $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
@@ -270,7 +274,8 @@ class FileController extends FOSRestController
         //Find member by id
         $member = $this->getDoctrine()->getRepository(Member::class)->findOneBy(['id' => $memberId]);
         if (!$member) return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        
+        $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
         //Find document categoru by id
         $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);

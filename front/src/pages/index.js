@@ -1,5 +1,5 @@
 import React from 'react'
-import { Columns, Table } from 'react-bulma-components'
+import { Columns, Table, Hero, Container, Heading } from 'react-bulma-components'
 import { Text, Icon, getTheme, Label, PrimaryButton } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand } from 'redux/actions/common'
@@ -10,6 +10,7 @@ import Divider from 'component/divider'
 import { dateToCleanDateTimeString } from 'helper/date'
 import getWf from 'helper/getStepWf'
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN } from 'helper/constants'
+import Emoji from 'component/emoji'
 
 class _Index extends React.PureComponent {
     constructor(props) {
@@ -28,10 +29,32 @@ class _Index extends React.PureComponent {
         const { data, param } = this.props
         return (
             <section id="index">
+                <Hero color="link" gradient className="card">
+                    <Hero.Body>
+                        <Container>
+                            <Heading>
+                                <Text as="p" block variant="xxLarge">Bienvenu sur Mon Club <Emoji symbol="🤾‍♀️" label="handball" /></Text>
+                            </Heading>
+                            <Heading subtitle>
+                                <Text as="p" block variant="mediumPlus">
+                                    {
+                                        (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) ?
+                                            `Retrouvez le status de l'inscription des membres du THBC`
+                                            :
+                                            `Retrouvez le status de l'inscription de vos membres au THBC`
+                                    }
+                                </Text>
+                            </Heading>
+                        </Container>
+                    </Hero.Body>
+                </Hero>
+
+                <br />
+
                 <Columns>
                     <Columns.Column size="two-thirds">
                         <div className="card">
-                            <Text variant="large" block><Icon iconName='WavingHand' /> Bienvenu : {this.props.me?.username}</Text>
+                            <Text variant="large" block><Icon iconName='WavingHand' /> Bonjour {this.props.me?.username}</Text>
                             <Divider />
                             <Text as="p" block>
                                 <span dangerouslySetInnerHTML={{ __html: this.props.data?.text }} />

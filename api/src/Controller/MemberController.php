@@ -83,10 +83,10 @@ class MemberController extends FOSRestController
             $teams = [];
             foreach ($this->getUser()->getTeams() as $team) array_push($teams, $team);
             return $this->handleView($this->view(
-                $this->getDoctrine()->getRepository(Member::class)
-                    ->findByTeamsAndSeason($teams, $paramService->getCurrentSeason())
-                    ->setContext((new Context())->setGroups([Constants::BASIC]))
-            ));
+                $this->getDoctrine()->getRepository(Member::class)->findByTeamsAndSeason($teams, $paramService->getCurrentSeason())
+            )
+                ->setContext((new Context())->setGroups([Constants::BASIC])
+                ));
         }
     }
 
@@ -381,7 +381,7 @@ class MemberController extends FOSRestController
         if (!$member) {
             return $this->handleView($this->view(["message" => $translator->trans('member_not_found')], Response::HTTP_NOT_FOUND));
         }
-        $this->denyAccessUnlessGranted(Constants::UPDATE, $member);
+        $this->denyAccessUnlessGranted(Constants::UPDATE_ADMIN, $member);
 
         $data = json_decode($request->getContent(), true);
 

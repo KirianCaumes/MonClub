@@ -29,7 +29,7 @@ class MemberVoter extends Voter
 
     protected function supports($attribute, $member)
     {
-        if (!in_array($attribute, [Constants::CREATE, Constants::CREATE_ADMIN, Constants::READ, Constants::UPDATE, Constants::DELETE])) return false;
+        if (!in_array($attribute, [Constants::CREATE, Constants::CREATE_ADMIN, Constants::READ, Constants::UPDATE, Constants::DELETE, Constants::READ_DOCUMENT, Constants::UPDATE_ADMIN])) return false;
 
         if (!$member instanceof Member) return false;
 
@@ -49,8 +49,12 @@ class MemberVoter extends Voter
                 return $this->canCreateAdmin($member, $user);
             case Constants::READ:
                 return $this->canRead($member, $user);
+            case Constants::READ_DOCUMENT:
+                return $this->canReadDocument($member, $user);
             case Constants::UPDATE:
                 return $this->canUpdate($member, $user);
+            case Constants::UPDATE_ADMIN:
+                return $this->canUpdateAdmin($member, $user);
             case Constants::DELETE:
                 return $this->canDelete($member, $user);
         }
@@ -75,7 +79,7 @@ class MemberVoter extends Voter
         if ($this->security->isGranted(Constants::ROLE_ADMIN)) return true;
 
         //If user is a coach, check if the member is on a team he has access on
-        if($this->security->isGranted(Constants::ROLE_COACH)) {
+        if ($this->security->isGranted(Constants::ROLE_COACH)) {
             foreach ($user->getTeams() as $userTeam) {
                 foreach ($member->getTeams() as $memberTeam) {
                     if ($userTeam === $memberTeam) return true;
@@ -88,13 +92,25 @@ class MemberVoter extends Voter
         return false;
     }
 
-    private function canUpdate(Member $member, User $user)
+    private function canReadDocument(Member $member, User $user)
     {
         if ($this->security->isGranted(Constants::ROLE_ADMIN)) return true;
 
         if ($member->getUser() === $user) return true;
 
         return false;
+    }
+
+    private function canUpdate(Member $member, User $user)
+    {
+        if ($member->getUser() === $user && (!$member->getIsPayed() || !$member->getIsDocumentComplete())) return true;
+
+        return false;
+    }
+
+    private function canUpdateAdmin(Member $member, User $user)
+    {
+        return true;
     }
 
     private function canDelete(Member $member, User $user)

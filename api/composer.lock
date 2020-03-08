@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53be3855178a4b6524e69fb51a89d35c",
+    "content-hash": "c5d2c31872a290dfa973187ff2a8a442",
     "packages": [
         {
             "name": "dfridrich/php-mime-type",
@@ -5672,16 +5672,16 @@
         },
         {
             "name": "symfony/intl",
-            "version": "v4.4.4",
+            "version": "v4.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/intl.git",
-                "reference": "ab482c70a9748abed5139a967b8182db15e4ffac"
+                "reference": "f675f139e20b9e0ff05bac662c081fe9ef7b2f88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/intl/zipball/ab482c70a9748abed5139a967b8182db15e4ffac",
-                "reference": "ab482c70a9748abed5139a967b8182db15e4ffac",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/f675f139e20b9e0ff05bac662c081fe9ef7b2f88",
+                "reference": "f675f139e20b9e0ff05bac662c081fe9ef7b2f88",
                 "shasum": ""
             },
             "require": {
@@ -5743,7 +5743,7 @@
                 "l10n",
                 "localization"
             ],
-            "time": "2020-01-30T15:14:06+00:00"
+            "time": "2020-02-04T09:32:40+00:00"
         },
         {
             "name": "symfony/mime",

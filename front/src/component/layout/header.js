@@ -21,7 +21,6 @@ class Header extends React.PureComponent {
                 <Navbar
                     active={this.state.active}
                     transparent={false}
-                    className="has-background-dark-blue"
                 >
                     <Navbar.Brand>
                         <Navbar.Item

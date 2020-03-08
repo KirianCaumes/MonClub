@@ -48,7 +48,7 @@ class _MembersMe extends React.PureComponent {
                                 let members = [...this.props.members]
                                 members.push(res?.member)
                                 this.props.setMembers(members)
-                                this.setState({ currentPivot: members.length - 1, errorField: [], page: 1 })
+                                this.setState({ currentPivot: members.length - 1, errorField: {}, page: 1 })
                             })
                             .catch(err => {
                                 this.setState({ errorField: err?.form?.children })
@@ -84,7 +84,7 @@ class _MembersMe extends React.PureComponent {
                                             if (members.length === 0) { //If no more member, get one empty
                                                 this.setState({ isLoading: true },
                                                     () => request.getNewMember()
-                                                        .then(res => this.setState({ currentPivot: 0, errorField: [], page: 1 }, () => this.props.setMembers([res])))
+                                                        .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
                                                         .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
                                                         .finally(() => this.setState({ isLoading: false }))
                                                 )
@@ -107,7 +107,7 @@ class _MembersMe extends React.PureComponent {
                                 if (members.length === 0) { //If no more member, get one empty
                                     this.setState({ isLoading: true },
                                         () => request.getNewMember()
-                                            .then(res => this.setState({ currentPivot: 0, errorField: [], page: 1 }, () => this.props.setMembers([res])))
+                                            .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
                                             .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
                                             .finally(() => this.setState({ isLoading: false }))
                                     )
@@ -147,27 +147,33 @@ class _MembersMe extends React.PureComponent {
     componentDidUpdate(prevProps, prevState) {
         if (
             prevState.currentPivot !== this.state.currentPivot ||
+            (prevState.page !== this.state.page && this.state.page !== 4) ||
             prevProps.members.length !== this.props.members.length ||
             prevState.prevMembers.length !== this.state.prevMembers.length ||
             JSON.stringify(prevProps.members) !== JSON.stringify(this.props.members)
         ) {
             this.props.setCommand([])
-            //Check if member can be deleted
-            if (prevState.currentPivot !== this.state.currentPivot) {
-                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+
+            if (prevState.currentPivot !== this.state.currentPivot || prevState.page !== this.state.page) {
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed //Check if member can be deleted
             }
-            //Check if need to disable new member
+
             if (prevProps.members.length !== this.props.members.length) {
-                this.commandRead[0].disabled = this.props.members?.length >= 4
-                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed
+                this.commandRead[0].disabled = this.props.members?.length >= 4  //Check if need to disable new member
+                this.commandRead[1].disabled = this.props.members?.[this.state.currentPivot]?.is_payed //Check if member can be deleted
             }
 
             if (prevState.prevMembers.length !== this.state.prevMembers.length || JSON.stringify(prevProps.members) !== JSON.stringify(this.props.members)) {
-                this.commandRead[2].disabled = !!this.props.members?.map(x => x.id).filter(x => x).length || !this.state.prevMembers?.length
+                this.commandRead[2].disabled = !!this.props.members?.map(x => x.id).filter(x => x).length || !this.state.prevMembers?.length //Check if old members
             }
 
             this.props.setCommand(this.commandRead)
             window.dispatchEvent(new Event('resize')) //Workaround to force commandbar to update
+        }
+
+        if (prevState.isLoading !== this.state.isLoading) { //Clear command bar when loading
+            if (this.state.isLoading) this.props.setCommand([])
+            if (!this.state.isLoading) this.props.setCommand(this.commandRead)
         }
     }
 
@@ -221,35 +227,35 @@ class _MembersMe extends React.PureComponent {
                             {
                                 label: "Informations",
                                 description: "",
-                                isCompleted: page >= 2 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
+                                isCompleted: page >= 2,
                                 isActive: page === 1,
-                                isError: false
+                                isError: page === 1 && errorField && Object.keys(errorField).length > 0
                             },
                             {
                                 label: "Document(s)",
                                 description: "",
-                                isCompleted: page >= 3 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
+                                isCompleted: page >= 3,
                                 isActive: page === 2,
-                                isError: false
+                                isError: page === 2 && errorField && Object.keys(errorField).length > 0
                             },
                             {
                                 label: "Récapitulatif",
                                 description: "",
-                                isCompleted: page >= 4 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
+                                isCompleted: page >= 4,
                                 isActive: page === 3,
                                 isError: false
                             },
                             {
                                 label: "Paiement",
                                 description: "",
-                                isCompleted: page >= 5 || !this.props.members?.map(x => x.is_payed)?.filter(x => !x)?.length,
+                                isCompleted: page >= 5,
                                 isActive: page === 4,
                                 isError: false
                             },
                             {
                                 label: "Finalisation",
                                 description: "",
-                                isCompleted: page >= 6 || !this.props.members?.map(x => x.is_inscription_done)?.filter(x => !x)?.length,
+                                isCompleted: page >= 6,
                                 isActive: page === 5,
                                 isError: false
                             }
@@ -431,6 +437,7 @@ class _MembersMe extends React.PureComponent {
                                                     <>
                                                         <MembersMePayment
                                                             readOnly={readOnly}
+                                                            command={this.commandRead}
                                                             goNext={() => this.setState({ page: this.state.page + 1 })}
                                                             goBack={() => this.setState({ page: 1 })}
                                                         />

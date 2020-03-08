@@ -8,7 +8,9 @@ class Constants
     public const CREATE = 'CREATE';
     public const CREATE_ADMIN = 'CREATE_ADMIN';
     public const READ = 'READ';
+    public const READ_DOCUMENT = 'READ_DOCUMENT';
     public const UPDATE = 'UPDATE';
+    public const UPDATE_ADMIN = 'UPDATE_ADMIN';
     public const DELETE = 'DELETE';
 
     //COLORS for Excel

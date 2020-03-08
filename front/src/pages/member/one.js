@@ -970,7 +970,7 @@ class _MemberOne extends React.PureComponent {
                     <br />
                     <div className="card" >
                         <div className="flex-row flex-start ">
-                            <Text variant="large" block><Icon iconName='News' /> GestHand</Text>
+                            <Text variant="large" block><Icon iconName='News' /> Gest'Hand</Text>
                             {
                                 !readOnly &&
                                 <>
@@ -1106,175 +1106,181 @@ class _MemberOne extends React.PureComponent {
                         </Columns>
 
                     </div>
-                    <br />
-                    <div className="card" >
-                        <Text variant="large" block><Icon iconName='FabricUserFolder' /> Document(s)</Text>
-                        <Divider />
-                        <Columns>
-                            <Columns.Column>
-                                <Label required>Certificat médical</Label>
-                                <FileInput
-                                    isRead={readOnly}
-                                    errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
-                                    isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
-                                    isDisabled={!this.props.match?.params?.id}
-                                    fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
-                                    onDownload={() => {
-                                        return request.getDocument(this.props.match?.params?.id, 1)
-                                            .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                    onOpen={() => {
-                                        return request.getDocument(this.props.match?.params?.id, 1)
-                                            .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                    onUpload={file => {
-                                        return request.uploadDocument(file, this.props.match?.params?.id, 1)
-                                            .then(doc => {
-                                                let documents = [...data.documents]
-                                                documents.push(doc)
-                                                this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                            })
-                                            .catch(err => {
-                                                this.props.setMessageBar(true, MessageBarType.error, err)
-                                                this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } })
-                                            })
-                                    }}
-                                    onDelete={() => {
-                                        return request.deleteDocument(this.props.match?.params?.id, 1)
-                                            .then(() => {
-                                                let documents = [...data.documents]
-                                                const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
-                                                if (currIndex > -1) documents.splice(currIndex, 1)
-                                                this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                            })
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                />
-                            </Columns.Column>
+                    {
+                        (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN))
+                        &&
+                        <>
+                            <br />
+                            <div className="card" >
+                                <Text variant="large" block><Icon iconName='FabricUserFolder' /> Document(s)</Text>
+                                <Divider />
+                                <Columns>
+                                    <Columns.Column>
+                                        <Label required>Certificat médical</Label>
+                                        <FileInput
+                                            isRead={readOnly}
+                                            errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
+                                            isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
+                                            isDisabled={!this.props.match?.params?.id}
+                                            fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
+                                            onDownload={() => {
+                                                return request.getDocument(this.props.match?.params?.id, 1)
+                                                    .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                            onOpen={() => {
+                                                return request.getDocument(this.props.match?.params?.id, 1)
+                                                    .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                            onUpload={file => {
+                                                return request.uploadDocument(file, this.props.match?.params?.id, 1)
+                                                    .then(doc => {
+                                                        let documents = [...data.documents]
+                                                        documents.push(doc)
+                                                        this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
+                                                    })
+                                                    .catch(err => {
+                                                        this.props.setMessageBar(true, MessageBarType.error, err)
+                                                        this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } })
+                                                    })
+                                            }}
+                                            onDelete={() => {
+                                                return request.deleteDocument(this.props.match?.params?.id, 1)
+                                                    .then(() => {
+                                                        let documents = [...data.documents]
+                                                        const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
+                                                        if (currIndex > -1) documents.splice(currIndex, 1)
+                                                        this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
+                                                    })
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                        />
+                                    </Columns.Column>
 
-                            {
-                                data?.is_reduced_price &&
-                                <Columns.Column>
-                                    <Label required>Jusitificatif étudiant/chomage</Label>
-                                    <FileInput
-                                        isRead={readOnly}
-                                        errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
-                                        isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
-                                        isDisabled={!this.props.match?.params?.id}
-                                        fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
-                                        onDownload={() => {
-                                            return request.getDocument(this.props.match?.params?.id, 2)
-                                                .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
-                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                        }}
-                                        onOpen={() => {
-                                            return request.getDocument(this.props.match?.params?.id, 2)
-                                                .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
-                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                        }}
-                                        onUpload={file => {
-                                            return request.uploadDocument(file, this.props.match?.params?.id, 2)
-                                                .then(doc => {
-                                                    let documents = [...data.documents]
-                                                    documents.push(doc)
-                                                    this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                })
-                                                .catch(err => {
-                                                    this.props.setMessageBar(true, MessageBarType.error, err)
-                                                    this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } })
-                                                })
-                                        }}
-                                        onDelete={() => {
-                                            return request.deleteDocument(this.props.match?.params?.id, 2)
-                                                .then(() => {
-                                                    let documents = [...data.documents]
-                                                    const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
-                                                    if (currIndex > -1) documents.splice(currIndex, 1)
-                                                    this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                })
-                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                        }}
-                                    />
-                                </Columns.Column>
-                            }
-                            <Columns.Column />
-                            <Columns.Column />
-                            {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
-                        </Columns>
-                        <Columns>
-                            <Columns.Column>
-                                <Label>Attestation</Label>
-                                <FileInput
-                                    isRead={true}
-                                    isFile={!!readOnly}
-                                    isDisabled={!data.is_payed || !data.is_inscription_done}
-                                    tooltipContent={!data.is_payed || !data.is_inscription_done ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
-                                    onDownload={() => {
-                                        return request.getAttestation(this.props.match?.params?.id)
-                                            .then(file => dlBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                    onOpen={() => {
-                                        return request.getAttestation(this.props.match?.params?.id)
-                                            .then(file => openBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                />
-                            </Columns.Column>
-                            <Columns.Column>
-                                <Label>Récapitulatif paiement</Label>
-                                <FileInput
-                                    isRead={true}
-                                    isFile={!!readOnly}
-                                    isDisabled={!data.is_payed}
-                                    tooltipContent={!data.is_payed ? "Document téléchargeable une fois que le membre a été payé." : ''}
-                                    onDownload={() => {
-                                        return request.getFacture(this.props.match?.params?.id)
-                                            .then(file => dlBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                    onOpen={() => {
-                                        return request.getFacture(this.props.match?.params?.id)
-                                            .then(file => openBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }}
-                                />
-                            </Columns.Column>
-                            <Columns.Column>
-                                <Label>Lettre de non-opposition</Label>
-                                <DefaultButton
-                                    text="Télécharger"
-                                    iconProps={{ iconName: 'Download' }}
-                                    disabled={!readOnly}
-                                    onClick={() => this.setState({ isModalNonObjectionOpen: true })}
-                                />
-                            </Columns.Column>
-                            <Columns.Column />
-                        </Columns>
-                    </div>
-                    <br />
-                    <div className="card" >
-                        <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Autre</Text>
-                        <Divider />
-                        <Columns>
-                            <Columns.Column>
-                                <Label htmlFor="notes">Notes</Label>
-                                <TextField
-                                    id="notes"
-                                    placeholder="Notes"
-                                    readOnly={readOnly}
-                                    borderless={readOnly}
-                                    multiline
-                                    autoAdjustHeight
-                                    defaultValue={data?.notes ?? ''}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, notes: ev.target.value } })}
-                                    errorMessage={this.state.errorField?.notes?.errors?.[0]}
-                                />
-                            </Columns.Column>
-                        </Columns>
-                    </div>
+                                    {
+                                        data?.is_reduced_price &&
+                                        <Columns.Column>
+                                            <Label required>Jusitificatif étudiant/chomage</Label>
+                                            <FileInput
+                                                isRead={readOnly}
+                                                errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
+                                                isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
+                                                isDisabled={!this.props.match?.params?.id}
+                                                fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
+                                                onDownload={() => {
+                                                    return request.getDocument(this.props.match?.params?.id, 2)
+                                                        .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
+                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                                }}
+                                                onOpen={() => {
+                                                    return request.getDocument(this.props.match?.params?.id, 2)
+                                                        .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
+                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                                }}
+                                                onUpload={file => {
+                                                    return request.uploadDocument(file, this.props.match?.params?.id, 2)
+                                                        .then(doc => {
+                                                            let documents = [...data.documents]
+                                                            documents.push(doc)
+                                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
+                                                        })
+                                                        .catch(err => {
+                                                            this.props.setMessageBar(true, MessageBarType.error, err)
+                                                            this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } })
+                                                        })
+                                                }}
+                                                onDelete={() => {
+                                                    return request.deleteDocument(this.props.match?.params?.id, 2)
+                                                        .then(() => {
+                                                            let documents = [...data.documents]
+                                                            const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
+                                                            if (currIndex > -1) documents.splice(currIndex, 1)
+                                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
+                                                        })
+                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                                }}
+                                            />
+                                        </Columns.Column>
+                                    }
+                                    <Columns.Column />
+                                    <Columns.Column />
+                                    {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
+                                </Columns>
+                                <Columns>
+                                    <Columns.Column>
+                                        <Label>Attestation</Label>
+                                        <FileInput
+                                            isRead={true}
+                                            isFile={!!readOnly}
+                                            isDisabled={!data.is_payed || !data.is_inscription_done}
+                                            tooltipContent={!data.is_payed || !data.is_inscription_done ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
+                                            onDownload={() => {
+                                                return request.getAttestation(this.props.match?.params?.id)
+                                                    .then(file => dlBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                            onOpen={() => {
+                                                return request.getAttestation(this.props.match?.params?.id)
+                                                    .then(file => openBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column>
+                                        <Label>Récapitulatif paiement</Label>
+                                        <FileInput
+                                            isRead={true}
+                                            isFile={!!readOnly}
+                                            isDisabled={!data.is_payed}
+                                            tooltipContent={!data.is_payed ? "Document téléchargeable une fois que le membre a été payé." : ''}
+                                            onDownload={() => {
+                                                return request.getFacture(this.props.match?.params?.id)
+                                                    .then(file => dlBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                            onOpen={() => {
+                                                return request.getFacture(this.props.match?.params?.id)
+                                                    .then(file => openBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
+                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                            }}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column>
+                                        <Label>Lettre de non-opposition</Label>
+                                        <DefaultButton
+                                            text="Télécharger"
+                                            iconProps={{ iconName: 'Download' }}
+                                            disabled={!readOnly}
+                                            onClick={() => this.setState({ isModalNonObjectionOpen: true })}
+                                        />
+                                    </Columns.Column>
+                                    <Columns.Column />
+                                </Columns>
+                            </div>
+                            <br />
+                            <div className="card" >
+                                <Text variant="large" block><Icon iconName='WebAppBuilderFragment' /> Autre</Text>
+                                <Divider />
+                                <Columns>
+                                    <Columns.Column>
+                                        <Label htmlFor="notes">Notes</Label>
+                                        <TextField
+                                            id="notes"
+                                            placeholder="Notes"
+                                            readOnly={readOnly}
+                                            borderless={readOnly}
+                                            multiline
+                                            autoAdjustHeight
+                                            defaultValue={data?.notes ?? ''}
+                                            onBlur={ev => this.setState({ data: { ...this.state.data, notes: ev.target.value } })}
+                                            errorMessage={this.state.errorField?.notes?.errors?.[0]}
+                                        />
+                                    </Columns.Column>
+                                </Columns>
+                            </div>
+                        </>
+                    }
                 </section >
                 <Dialog
                     hidden={!this.state.isModalNonObjectionOpen}

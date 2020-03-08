@@ -21,9 +21,25 @@ class _MembersMeInformations extends React.PureComponent {
         return (
             <section id="members-me-informations">
                 <div className="card">
-                    <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
-                        Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
-                    </MessageBar>
+                    {
+                        !member.is_payed && !member.is_inscription_done &&
+                        <MessageBar messageBarType={MessageBarType.warning} isMultiline={false} >
+                            Avant toute opérations sur MonClub, veuillez finaliser votre inscription Gest'Hand.
+                        </MessageBar>
+                    }
+                    {
+                        member.is_payed && !member.is_inscription_done &&
+                        <MessageBar messageBarType={MessageBarType.success} isMultiline={false} >
+                            Le paiement de ce membre à déjà été effectué et son inscription est en attente de validation par le club.
+                        </MessageBar>
+                    }
+                    {
+                        member.is_payed && member.is_inscription_done &&
+                        <MessageBar messageBarType={MessageBarType.success} isMultiline={false} >
+                            L'inscription de ce membre à été validée par le club.
+                        </MessageBar>
+                    }
+
                     <br />
                     <Text variant="large" block><Icon iconName='ContactCard' /> Vos informations</Text>
                     <Divider />

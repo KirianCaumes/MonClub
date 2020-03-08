@@ -102,7 +102,7 @@ class _MembersAll extends ParentPage {
                         },
                         {
                             key: 'getExcelTracking',
-                            text: 'Récapitulatif GestHand',
+                            text: 'Récapitulatif Gest\'Hand',
                             iconProps: { iconName: 'ExcelDocument' },
                             onClick: () => request.getExcelTracking()
                                 .then(file => dlBlob(file, `export_excel_suivis-${stringToCleanString(new Date())}.xlsx`))

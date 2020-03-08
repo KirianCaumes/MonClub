@@ -1,3 +1,5 @@
+$menuWith: 230px;
+
 div#root {
   .pageloader {
     background: linear-gradient(to right bottom, $blue 0%, $blue 75%, $dark-blue) !important;
@@ -66,7 +68,7 @@ div#root {
     overflow: hidden;
     div.menu {
       background-color: rgba($grey, 0.9);
-      min-width: 230px;
+      min-width: $menuWith;
       aside {
         padding: 1em;
         border-top: 1px solid $light-grey;
@@ -97,7 +99,10 @@ div#root {
       }
     }
     div.main {
-      width: 100%;
+      width: calc(100% - #{$menuWith});
+      @include until($desktop) {
+        width: 100%;
+      }
       min-height: 100%;
       div.ms-CommandBar {
         background-color: rgba($grey, 0.9);

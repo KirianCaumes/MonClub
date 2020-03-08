@@ -1,4 +1,9 @@
 .steps {
+  .step-item:not(.is-completed):not(.is-warning):not(.is-active) {
+    &:before {
+      background: linear-gradient(90deg, rgba($blue, 0.25) 0%, rgba($blue, 0.25) 100%);
+    }
+  }
   .step-marker {
     .ms-TooltipHost {
       width: 100%;

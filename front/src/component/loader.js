@@ -16,8 +16,8 @@ export default class Loader extends React.PureComponent {
         return (
             <div className="my-loader">
                 <div >
-                    <div style={{ border: `4px solid ${color}` }}></div>
-                    <div style={{ border: `4px solid ${color}` }}></div>
+                    <div style={{ borderColor: `${color}` }}></div>
+                    <div style={{ borderColor: `${color}` }}></div>
                 </div>
             </div>
         )

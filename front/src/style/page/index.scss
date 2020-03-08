@@ -1,4 +1,9 @@
 #index {
+  .hero {
+    .hero-body {
+      padding: 1.5rem 1rem !important;
+    }
+  }
   div.columns {
     div.column {
       display: flex;

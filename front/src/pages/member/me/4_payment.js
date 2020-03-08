@@ -23,13 +23,17 @@ class _MembersMePayment extends React.PureComponent {
     }
 
     componentDidMount() {
+        this.props.setCommand([])
         request.getMeMemberPrices()
             .then(res => this.setState({ summary: res.price }))
             .catch(err => {
                 this.props.goBack()
                 this.props.setMessageBar(true, MessageBarType.error, err)
             })
-            .finally(() => this.setState({ isLoading: false }))
+            .finally(() => {
+                this.setState({ isLoading: false })
+                this.props.setCommand(this.props.command) //Re set commandbar
+            })
     }
 
     pay(paypalInfos = null) {
@@ -45,6 +49,7 @@ class _MembersMePayment extends React.PureComponent {
             data: JSON.stringify(paypalInfos)
         }
 
+        this.props.setCommand([])
         this.setState({ isLoading: true }, () =>
             request.pay({
                 payment_solution: this.state.paymentKey,
@@ -59,6 +64,7 @@ class _MembersMePayment extends React.PureComponent {
                 .catch(err => {
                     this.setState({ isLoading: false, errorField: err?.form?.children })
                     this.props.setMessageBar(true, MessageBarType.error, err)
+                    this.props.setCommand(this.props.command) //Re set commandbar
                 })
         )
     }
