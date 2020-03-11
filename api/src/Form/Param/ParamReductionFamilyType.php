@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Param;
 
 use App\Entity\ActivityHistory;
 use App\Entity\Document;
