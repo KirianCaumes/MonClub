@@ -70,6 +70,7 @@ loadTheme({
 class _App extends React.PureComponent {
     constructor(props) {
         super(props)
+        console.log("totot")
         this.state = {
             isInit: false
         }
