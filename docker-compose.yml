@@ -1,0 +1,94 @@
+version: '3'
+services:
+  drive:
+    build:
+      context: ./drive
+      dockerfile: Dockerfile
+    container_name: drive-MonClubTHBC
+    ports:
+      - 5001:5001
+    restart: always    
+    volumes:
+      - ./drive:/app/drive
+      - '/app/drive/vendor'
+    networks:
+      - monclubthbc_net
+    command: >
+      bash -c "cd public
+      && php -S 0.0.0.0:5001"
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: api-MonClubTHBC
+    ports:
+      - 5000:5000
+    restart: always    
+    volumes:
+      - ./api:/app/api
+    networks:
+      - monclubthbc_net
+    depends_on:
+      - mysql
+    command: >
+      bash -c "composer update
+      && cd public
+      && php -S 0.0.0.0:5000"
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front-MonClubTHBC
+    restart: always    
+    # depends_on:
+    #   - api
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front:/app/front
+      # - /app/front/node_modules/
+    networks:
+      - monclubthbc_net
+    command: >
+      bash -c "npm install
+      && cd public
+      && npm start"
+
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0
+    container_name: mysql-MonClubTHBC
+    volumes:
+      - .docker/data/db:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      # MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: monclub
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    networks:
+      - monclubthbc_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-MonClubTHBC
+    ports:
+      - 3001:80    
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+    networks:
+      - monclubthbc_net
+
+networks:
+  monclubthbc_net:
+    driver: bridge

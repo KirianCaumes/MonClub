@@ -1,0 +1,64 @@
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+	"name": "db_comparison_engine_dev_container",
+
+	"context": "..",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "dev_container",
+
+	// Use 'settings' to set *default* container specific settings.json values on container create. 
+	// You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.linting.pylintPath": "/usr/local/bin/pylint",
+
+		"workbench.editor.showTabs": true,
+		"workbench.editor.enablePreview": false,
+		
+		"editor.rulers": [80],
+			"workbench.colorCustomizations": {
+			"editorRuler.foreground": "#ff4081"
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/*.pyc": {"when": "$(basename).py"}, 
+			"**/__pycache__": true
+		}
+	},
+
+	// Use 'appPort' to create a container with published ports. If the port isn't working, be sure
+	// your server accepts connections from all interfaces (0.0.0.0 or '*'), not just localhost.
+	//"appPort": ["3000:3000"],
+
+	"postCreateCommand": "pip3 install -r /app/app_back/requirements/dev.txt",
+
+	// The optional 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/app",
+
+	// Uncomment the next line to have VS Code connect as an existing non-root user in the container. See
+	// https://aka.ms/vscode-remote/containers/non-root for details on adding a non-root user if none exist.
+	// "remoteUser": "vscode",
+
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	// "runServices": [],
+
+	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
+
+	// Uncomment the next line to run commands after the container is created - for example installing git.
+	// "postCreateCommand": "apt-get update && apt-get install -y git",
+
+	// Add the IDs of extensions you want installed when the container is created in the array below.
+	"extensions": [
+		"ms-python.python",
+		"gruntfuggly.todo-tree"
+	]
+}

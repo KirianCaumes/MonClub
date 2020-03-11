@@ -3,7 +3,6 @@
 ## Run
 
 ```sh
-#Swagger will not work
 cd public
 php -S 0.0.0.0:5001
 ```

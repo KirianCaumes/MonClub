@@ -54,11 +54,3 @@ services:
         class: App\Service\Namer\FileService
         public: true
         
-# FOS user config
-fos_user:
-    db_driver:      orm # other valid values are 'mongodb', 'couchdb' and 'propel'
-    firewall_name:  main
-    user_class:     App\Entity\User
-    from_email:
-        address: "no-reply@thouarehbc.com"
-        sender_name: "Kirian"

@@ -1,0 +1,5 @@
+FROM php:7.4.3
+
+WORKDIR /app/drive
+
+EXPOSE 5001
