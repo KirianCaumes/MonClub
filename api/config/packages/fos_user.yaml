@@ -6,3 +6,5 @@ fos_user:
     from_email:
         address: "no-reply@thouarehbc.com"
         sender_name: "Kirian"
+    service:
+        mailer: fos_user.mailer.twig_swift

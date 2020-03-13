@@ -7,14 +7,14 @@ use App\Entity\ActivityHistory;
 use App\Entity\Member;
 use App\Entity\Param\ParamGlobal;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Form\User\UserAdminNewType;
 use App\Form\User\UserAdminType;
 use App\Service\MailService;
 use App\Service\ParamService;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Security\Core\Security;
@@ -31,7 +31,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
  * @SWG\Tag(name="User")
  * @Route("/api/user", name="api_")
  */
-class UserController extends FOSRestController
+class UserController extends AbstractFOSRestController
 {
     /**
      * Get User.

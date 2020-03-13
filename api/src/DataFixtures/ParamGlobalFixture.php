@@ -27,8 +27,9 @@ class ParamGlobalFixture extends Fixture
 
         foreach ($data as $el) {
             $paramGlobal = new ParamGlobal();
-            $paramGlobal->setLabel($el['label']);
-            $paramGlobal->setValue($el['value']);
+            $paramGlobal
+                ->setLabel($el['label'])
+                ->setValue($el['value']);
             $manager->persist($paramGlobal);
         }
 

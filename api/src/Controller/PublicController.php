@@ -5,16 +5,16 @@ namespace App\Controller;
 use App\Constants;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use App\Entity\User;
 use App\Form\User\UserNewPasswordType;
 use App\Form\User\UserType;
 use FOS\UserBundle\Util\TokenGenerator;
-use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\NativePasswordEncoder;
 use App\Service\MailService;
 use App\Service\ParamService;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,7 +26,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
  * @SWG\Tag(name="Public")
  * @Route("/api", name="api_")
  */
-class PublicController extends FOSRestController
+class PublicController extends AbstractFOSRestController
 {
     /**
      * Login User.
@@ -54,7 +54,7 @@ class PublicController extends FOSRestController
             return $this->handleView($this->view(['message' => $translator->trans('username_not_found')], Response::HTTP_NOT_FOUND));
         }
 
-        if (!(new BCryptPasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
+        if (!(new NativePasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
             return $this->handleView($this->view(["message" => $translator->trans('username_password_not_match')], Response::HTTP_UNAUTHORIZED));
         }
 
@@ -222,7 +222,7 @@ class PublicController extends FOSRestController
             return $this->handleView($this->view(["abc" => $data], Response::HTTP_UNAUTHORIZED));
         }
 
-        if (!(new BCryptPasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
+        if (!(new NativePasswordEncoder(4))->isPasswordValid($user->getPassword(), $data['plainPassword'], 4)) {
             return $this->handleView($this->view(["def" => null], Response::HTTP_UNAUTHORIZED));
         }
 

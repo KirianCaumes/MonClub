@@ -9,7 +9,7 @@
         "ext-iconv": "*",
         "dfridrich/php-mime-type": "^2.0",
         "dompdf/dompdf": "^0.8.3",
-        "friendsofsymfony/rest-bundle": "^2.6",
+        "friendsofsymfony/rest-bundle": "^2.7",
         "friendsofsymfony/user-bundle": "^2.1",
         "jms/serializer-bundle": "^3.4",
         "lexik/jwt-authentication-bundle": "^2.6",
@@ -36,7 +36,7 @@
         "symfony/yaml": "^4.4",
         "twig/cssinliner-extra": "^3.0",
         "twig/intl-extra": "^3.0",
-        "vich/uploader-bundle": "^1.12"
+        "vich/uploader-bundle": "^1.13"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.3",

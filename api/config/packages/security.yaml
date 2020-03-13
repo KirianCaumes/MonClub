@@ -31,6 +31,7 @@ security:
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/swagger, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/log, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
     firewalls:
@@ -57,6 +58,10 @@ security:
             anonymous: true        
         api_doc:
             pattern:  ^/api/swagger
+            stateless: true
+            anonymous: true  
+        api_log:
+            pattern:  ^/api/log
             stateless: true
             anonymous: true
         api:

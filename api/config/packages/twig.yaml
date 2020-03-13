@@ -3,4 +3,5 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     paths:
-        '%kernel.project_dir%/public/img': images
+        '%kernel.project_dir%/public/img': images        
+    exception_controller: null

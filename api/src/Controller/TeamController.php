@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Team;
 use App\Form\TeamType;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +20,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
  * @SWG\Tag(name="Team")
  * @Route("/api/team", name="api_")
  */
-class TeamController extends FOSRestController
+class TeamController extends AbstractFOSRestController
 {
     /**
      * Lists all Teams.

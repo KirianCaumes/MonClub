@@ -22,10 +22,10 @@ use App\Form\ParamPriceLicenseType;
 use App\Form\ParamPriceTransferType;
 use App\Form\ParamReductionFamilyType;
 use App\Service\ParamService;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @SWG\Tag(name="Param")
  * @Route("/api/param", name="api_")
  */
-class ParamController extends FOSRestController
+class ParamController extends AbstractFOSRestController
 {
     /**
      * Lists all Param Global.

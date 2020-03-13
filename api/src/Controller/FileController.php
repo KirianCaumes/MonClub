@@ -14,13 +14,13 @@ use App\Service\Generator\CsvService;
 use App\Service\Generator\ExcelService;
 use App\Service\Generator\PdfService;
 use App\Service\ParamService;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -35,7 +35,7 @@ use Nelmio\ApiDocBundle\Annotation\Security;
  * @SWG\Tag(name="File")
  * @Route("/api/document", name="api_")
  */
-class FileController extends FOSRestController
+class FileController extends AbstractFOSRestController
 {
     /**
      * Generate and get csv for GoogleContact.

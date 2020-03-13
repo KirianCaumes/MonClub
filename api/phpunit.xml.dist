@@ -14,7 +14,6 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="7.5" />        
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
-        <env name="BOOTSTRAP_EXECUTE_FIXTURE_ENV" value="test"/>
     </php>
 
     <testsuites>
@@ -28,8 +27,4 @@
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
-    </listeners>
 </phpunit>

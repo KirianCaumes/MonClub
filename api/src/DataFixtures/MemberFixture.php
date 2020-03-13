@@ -24,53 +24,50 @@ class MemberFixture extends Fixture
 
         for ($i = 0; $i < 10; $i++) {
             $member = new Member();
-            $member->setFirstname($faker->name());
-            $member->setLastname($faker->name());
-            $member->setBirthdate($faker->dateTime());
-            $member->setEmail($faker->email());
-            $member->setPhoneNumber($faker->phoneNumber());
-            $member->setPostalCode($faker->postcode());
-            $member->setStreet($faker->country());
-            $member->setCity($faker->city());
-            $member->setProfession($faker->jobTitle());
-            $member->setParentOneFirstname($faker->name());
-            $member->setParentOneLastname($faker->name());
-            $member->setParentOnePhoneNumber($faker->phoneNumber());
-            $member->setParentOneEmail($faker->email());
-            $member->setParentOneProfession($faker->jobTitle());
-            $member->setParentTwoFirstname($faker->name());
-            $member->setParentTwoLastname($faker->name());
-            $member->setParentTwoPhoneNumber($faker->phoneNumber());
-            $member->setParentTwoEmail($faker->email());
-            $member->setParentTwoProfession($faker->jobTitle());
-            $member->setIsEvacuationAllow($faker->boolean());
-            $member->setIsTransportAllow($faker->boolean());
-            $member->setIsImageAllow($faker->boolean());
-            $member->setIsReturnHomeAllow($faker->boolean());
-            $member->setIsNewsletterAllow($faker->boolean());
-            $member->setIsAccepted(true);
-            $member->setIsTransferNeeded(false);
-            $member->setIsDocumentComplete(false);
-            $member->setIsPayed(false);
-            $member->setAmountPayed(null);
-            $member->setAmountPayedOther(null);
-            $member->setIsLicenseRenewal(true);
-            $member->setPaymentNotes(null);
-            $member->setIsCheckGestHand(false);
-            $member->setIsInscriptionDone(false);
-            $member->setGesthandIsPhoto(false);
-            $member->setGesthandIsPhotoId(false);
-            $member->setGesthandIsCertificate(false);
-            $member->setGesthandCertificateDate(null);
-            $member->setGesthandIsHealthQuestionnaire(false);
-            $member->setGesthandIsFfhbAuthorization(false);
-            $member->setGesthandQualificationDate(null);
-            $member->setCreationDatetime(new \DateTime());
-            $member->setNotes(null);
-            // $member->setPaymentSolution(new ParamPaymentSolution);
-            // $member->setTeams(new \Doctrine\Common\Collections\ArrayCollection([new Team]));
-            // $member->setSeason(new ParamSeason);
-            // $member->setPaypalInformation(new PaypalInformation);
+            $member
+                ->setFirstname($faker->name())
+                ->setLastname($faker->name())
+                ->setBirthdate($faker->dateTime())
+                ->setEmail($faker->email())
+                ->setPhoneNumber($faker->phoneNumber())
+                ->setPostalCode($faker->postcode())
+                ->setStreet($faker->country())
+                ->setCity($faker->city())
+                ->setProfession($faker->jobTitle())
+                ->setParentOneFirstname($faker->name())
+                ->setParentOneLastname($faker->name())
+                ->setParentOnePhoneNumber($faker->phoneNumber())
+                ->setParentOneEmail($faker->email())
+                ->setParentOneProfession($faker->jobTitle())
+                ->setParentTwoFirstname($faker->name())
+                ->setParentTwoLastname($faker->name())
+                ->setParentTwoPhoneNumber($faker->phoneNumber())
+                ->setParentTwoEmail($faker->email())
+                ->setParentTwoProfession($faker->jobTitle())
+                ->setIsEvacuationAllow($faker->boolean())
+                ->setIsTransportAllow($faker->boolean())
+                ->setIsImageAllow($faker->boolean())
+                ->setIsReturnHomeAllow($faker->boolean())
+                ->setIsNewsletterAllow($faker->boolean())
+                ->setIsAccepted(true)
+                ->setIsTransferNeeded(false)
+                ->setIsDocumentComplete(false)
+                ->setIsPayed(false)
+                ->setAmountPayed(null)
+                ->setAmountPayedOther(null)
+                ->setIsLicenseRenewal(true)
+                ->setPaymentNotes(null)
+                ->setIsCheckGestHand(false)
+                ->setIsInscriptionDone(false)
+                ->setGesthandIsPhoto(false)
+                ->setGesthandIsPhotoId(false)
+                ->setGesthandIsCertificate(false)
+                ->setGesthandCertificateDate(null)
+                ->setGesthandIsHealthQuestionnaire(false)
+                ->setGesthandIsFfhbAuthorization(false)
+                ->setGesthandQualificationDate(null)
+                ->setCreationDatetime(new \DateTime())
+                ->setNotes(null);
             $manager->persist($member);
         }
 

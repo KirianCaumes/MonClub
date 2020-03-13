@@ -26,13 +26,13 @@ use App\Service\ParamService;
 use App\Service\PriceService;
 use App\Service\WorkflowService;
 use FOS\RestBundle\Context\Context;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Swagger\Annotations as SWG;
@@ -53,7 +53,7 @@ use JMS\Serializer\SerializerInterface;
  * @SWG\Tag(name="Member")
  * @Route("/api/member", name="api_")
  */
-class MemberController extends FOSRestController
+class MemberController extends AbstractFOSRestController
 {
     /**
      * Lists all member.
