@@ -46,11 +46,12 @@ services:
     #   - api
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     ports:
       - 3000:3000
     volumes:
       - ./front:/app/front
-      # - /app/front/node_modules/
+      - /app/front/node_modules
     networks:
       - monclubthbc_net
     command: >

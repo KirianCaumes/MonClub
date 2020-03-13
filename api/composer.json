@@ -39,7 +39,13 @@
         "vich/uploader-bundle": "^1.12"
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.14"
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "fzaninotto/faker": "^1.9",
+        "liip/test-fixtures-bundle": "1.0.0",
+        "symfony/browser-kit": "4.4.*",
+        "symfony/css-selector": "4.4.*",
+        "symfony/maker-bundle": "^1.14",
+        "symfony/phpunit-bridge": "^5.0"
     },
     "config": {
         "preferred-install": {

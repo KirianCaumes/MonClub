@@ -25,4 +25,9 @@ class Constants
     public const ROLE_COACH = "ROLE_COACH";
     public const ROLE_ADMIN = "ROLE_ADMIN";
     public const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
+
+    //HTTP
+    public const GET = "GET";
+    public const POST = "POST";
+    public const PUT = "PUT";
 }
