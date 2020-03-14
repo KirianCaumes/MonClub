@@ -4,11 +4,16 @@ namespace App\DataFixtures;
 
 use App\Entity\Param\ParamSeason;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
 
-class ParamSeasonFixture extends Fixture
+class ParamSeasonFixture extends Fixture implements OrderedFixtureInterface
 {
+    /**
+    * Load data fixtures with the passed EntityManager
+    * @param ObjectManager $manager
+    */
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create('fr_FR');
@@ -21,14 +26,24 @@ class ParamSeasonFixture extends Fixture
         ];
 
         foreach ($data as $el) {
-            $paramGlobal = new ParamSeason();
-            $paramGlobal
+            $paramSeason = new ParamSeason();
+            $paramSeason
                 ->setLabel($el['label'])
                 ->setIsActive($el['is_active'])
                 ->setIsCurrent($el['is_current']);
-            $manager->persist($paramGlobal);
+            if ($el['id'] === 2) $this->addReference('param-season', $paramSeason);
+            $manager->persist($paramSeason);
         }
 
         $manager->flush();
+    }
+
+    /**
+     * Get the order of this fixture
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 3;
     }
 }

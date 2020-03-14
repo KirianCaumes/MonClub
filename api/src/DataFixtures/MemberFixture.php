@@ -3,24 +3,22 @@
 namespace App\DataFixtures;
 
 use App\Entity\Member;
-use App\Entity\Param\ParamPaymentSolution;
-use App\Entity\Param\ParamSeason;
-use App\Entity\PaypalInformation;
-use App\Entity\Team;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class MemberFixture extends Fixture
+class MemberFixture extends Fixture implements OrderedFixtureInterface
 {
+    /**
+    * Load data fixtures with the passed EntityManager
+    * @param ObjectManager $manager
+    */
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create('fr_FR');
+        $user = $this->getReference('user');
+        $paramSeason = $this->getReference('param-season');
 
         for ($i = 0; $i < 10; $i++) {
             $member = new Member();
@@ -67,10 +65,21 @@ class MemberFixture extends Fixture
                 ->setGesthandIsFfhbAuthorization(false)
                 ->setGesthandQualificationDate(null)
                 ->setCreationDatetime(new \DateTime())
-                ->setNotes(null);
+                ->setNotes(null)
+                ->setSeason($paramSeason)
+                ->setUser($user);
             $manager->persist($member);
         }
 
         $manager->flush();
+    }
+    
+    /**
+     * Get the order of this fixture
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 4;
     }
 }

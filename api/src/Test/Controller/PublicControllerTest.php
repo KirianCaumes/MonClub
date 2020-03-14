@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Test;
+namespace App\Test\Controller;
 
 use App\Constants;
 use App\Entity\User;
@@ -12,7 +12,7 @@ use Faker;
  * Public controller test
  */
 
-class PublicTest extends WebTestCase
+class PublicControllerTest extends WebTestCase
 {
     use FixturesTrait;
     private $faker;
@@ -22,11 +22,7 @@ class PublicTest extends WebTestCase
     {
         parent::__construct();
         $this->faker = Faker\Factory::create('fr_FR');
-
-        $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        $this->entityManager = self::bootKernel()->getContainer()->get('doctrine')->getManager();
     }
 
     //Before all test
@@ -34,10 +30,10 @@ class PublicTest extends WebTestCase
     {
         parent::setup();
         $this->loadFixtures([
-            'App\DataFixtures\MemberFixture',
-            'App\DataFixtures\ParamGlobalFixture',
             'App\DataFixtures\UserFixture',
-            'App\DataFixtures\ParamSeasonFixture'
+            'App\DataFixtures\ParamGlobalFixture',
+            'App\DataFixtures\ParamSeasonFixture',
+            'App\DataFixtures\MemberFixture'
         ]);
     }
 

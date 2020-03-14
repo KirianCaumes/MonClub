@@ -187,7 +187,7 @@ class UserController extends AbstractFOSRestController
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles($data['roles']);
+            if (array_key_exists('roles', $data)) $user->setRoles($data['roles']);
             $user->setConfirmationToken((new TokenGenerator())->generateToken());
             $user->setPasswordRequestedAt(new \DateTime());
             $mailService->sendUserCreatedByAdmin($user);
@@ -225,7 +225,7 @@ class UserController extends AbstractFOSRestController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $user->setRoles($data['roles']);
+            if (array_key_exists('roles', $data)) $user->setRoles($data['roles']);
             $em->persist($user);
             $em->flush();
             return $this->handleView($this->view($user, Response::HTTP_OK));

@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Test;
+namespace App\Test\Controller;
 
 use App\Constants;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Faker;
+use App\Test\TraitTest;
 
 /**
- * Public controller test
+ * Member controller test
  */
 
-class UserTest extends WebTestCase
+class MemberControllerTest extends WebTestCase
 {
     use FixturesTrait;
+    use TraitTest;
     private $faker;
     private $entityManager;
 
@@ -22,11 +24,7 @@ class UserTest extends WebTestCase
     {
         parent::__construct();
         $this->faker = Faker\Factory::create('fr_FR');
-
-        $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        $this->entityManager = self::bootKernel()->getContainer()->get('doctrine')->getManager();
     }
 
     //Before all test
@@ -34,31 +32,13 @@ class UserTest extends WebTestCase
     {
         parent::setup();
         $this->loadFixtures([
-            'App\DataFixtures\MemberFixture',
-            'App\DataFixtures\ParamGlobalFixture',
             'App\DataFixtures\UserFixture',
-            'App\DataFixtures\ParamSeasonFixture'
+            'App\DataFixtures\ParamGlobalFixture',
+            'App\DataFixtures\ParamSeasonFixture',
+            'App\DataFixtures\MemberFixture'
         ]);
     }
-
-    /**
-     * Create a client with a default Authorization header.
-     *
-     * @param string $username
-     * @param string $password
-     *
-     * @return \Symfony\Bundle\FrameworkBundle\Client
-     */
-    protected function createAuthenticatedClient($username = 'user', $password = 'password')
-    {
-        $client = static::createClient();
-        $client->request(Constants::POST, '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['username' => $username, 'plainPassword' => $password]));
-        $data = json_decode($client->getResponse()->getContent(), true);
-        $client = static::createClient();
-        $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
-        return $client;
-    }
-
+    
     // public function testGetCommentsWithoutToken()
     // {
     //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');

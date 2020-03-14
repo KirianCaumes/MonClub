@@ -4,11 +4,16 @@ namespace App\DataFixtures;
 
 use App\Entity\Param\ParamGlobal;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
 
-class ParamGlobalFixture extends Fixture
+class ParamGlobalFixture extends Fixture implements OrderedFixtureInterface
 {
+    /**
+    * Load data fixtures with the passed EntityManager
+    * @param ObjectManager $manager
+    */
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create('fr_FR');
@@ -34,5 +39,14 @@ class ParamGlobalFixture extends Fixture
         }
 
         $manager->flush();
+    }
+
+    /**
+     * Get the order of this fixture
+     * @return integer
+     */
+    public function getOrder()
+    {
+        return 2;
     }
 }
