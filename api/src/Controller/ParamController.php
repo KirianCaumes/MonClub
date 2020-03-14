@@ -17,10 +17,10 @@ use App\Entity\Param\ParamWorkflow;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\ActivityHistoricType;
-use App\Form\ParamPriceGlobalType;
-use App\Form\ParamPriceLicenseType;
-use App\Form\ParamPriceTransferType;
-use App\Form\ParamReductionFamilyType;
+use App\Form\Param\ParamPriceGlobalType;
+use App\Form\Param\ParamPriceLicenseType;
+use App\Form\Param\ParamPriceTransferType;
+use App\Form\Param\ParamReductionFamilyType;
 use App\Service\ParamService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,14 +81,13 @@ class ParamController extends AbstractFOSRestController
                 'payment_solution' => $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findall(),
             ],
             'season' => $this->getDoctrine()->getRepository(ParamSeason::class)->findAll(),
-            'users' => $this->isGranted(Constants::ROLE_ADMIN) ?
-                array_map(
-                    function ($user) {
-                        return ['id' => $user->getId(), 'username' => $user->getUsername()];
-                    },
-                    $this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC'])
-                )
-                : []
+            'users' => (function () {
+                $usrs = [];
+                if ($this->isGranted(Constants::ROLE_ADMIN)) {
+                    foreach ($this->getDoctrine()->getRepository(User::class)->findBy([], ['username' => 'ASC']) as $user) array_push($usrs, ['id' => $user->getId(), 'username' => $user->getUsername()]);
+                }
+                return $usrs;
+            })()
         ]));
     }
 
@@ -155,6 +154,7 @@ class ParamController extends AbstractFOSRestController
         //ParamPriceGlobal
         if (array_key_exists('id', $data['global']) && $data['global']['id']) {
             $paramPriceGlobal = $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['id' => $data['global']['id']]);
+            $paramPriceGlobal->setSeason($season);
         } else {
             $paramPriceGlobal = new ParamPriceGlobal();
             $paramPriceGlobal->setSeason($season);
@@ -171,6 +171,7 @@ class ParamController extends AbstractFOSRestController
         foreach ($data['license'] as $key => $license) {
             if (array_key_exists('id', $license) && $license['id']) {
                 $paramPriceLicense = $this->getDoctrine()->getRepository(ParamPriceLicense::class)->findOneBy(['id' => $license['id']]);
+                $paramPriceLicense->setSeason($season);
             } else {
                 $paramPriceLicense = new ParamPriceLicense();
                 $paramPriceLicense->setSeason($season);
@@ -191,6 +192,7 @@ class ParamController extends AbstractFOSRestController
         foreach ($data['transfer'] as $key => $transfer) {
             if (array_key_exists('id', $transfer) && $transfer['id']) {
                 $paramPriceTransfer = $this->getDoctrine()->getRepository(ParamPriceTransfer::class)->findOneBy(['id' => $transfer['id']]);
+                $paramPriceTransfer->setSeason($season);
             } else {
                 $paramPriceTransfer = new ParamPriceTransfer();
                 $paramPriceTransfer->setSeason($season);
@@ -211,6 +213,7 @@ class ParamController extends AbstractFOSRestController
         foreach ($data['discount'] as $key => $discount) {
             if (array_key_exists('id', $discount) && $discount['id']) {
                 $paramReductionFamily = $this->getDoctrine()->getRepository(ParamReductionFamily::class)->findOneBy(['id' => $discount['id']]);
+                $paramReductionFamily->setSeason($season);
             } else {
                 $paramReductionFamily = new ParamReductionFamily();
                 $paramReductionFamily->setSeason($season);
@@ -233,7 +236,7 @@ class ParamController extends AbstractFOSRestController
         }
 
         $em = $this->getDoctrine()->getManager();
-        
+
         //Clear
         foreach ($this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findBy(['season' => $season]) as $paramPriceGlobal) $em->remove($paramPriceGlobal);
         foreach ($this->getDoctrine()->getRepository(ParamPriceLicense::class)->findBy(['season' => $season]) as $paramPriceLicense) $em->remove($paramPriceLicense);

@@ -333,7 +333,6 @@ class MemberController extends AbstractFOSRestController
                                             $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
                                             $oldDocument->getDocument()->getOriginalName(),
                                             null,
-                                            null,
                                             true
                                         )
                                     ]);

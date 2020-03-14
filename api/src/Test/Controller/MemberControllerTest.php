@@ -31,12 +31,7 @@ class MemberControllerTest extends WebTestCase
     public function setUp()
     {
         parent::setup();
-        $this->loadFixtures([
-            'App\DataFixtures\UserFixture',
-            'App\DataFixtures\ParamGlobalFixture',
-            'App\DataFixtures\ParamSeasonFixture',
-            'App\DataFixtures\MemberFixture'
-        ]);
+        $this->loadMyFixtures();
     }
     
     // public function testGetCommentsWithoutToken()

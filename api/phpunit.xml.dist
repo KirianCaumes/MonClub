@@ -18,7 +18,7 @@
 
     <testsuites>
         <testsuite name="Project">
-            <directory>tests</directory>
+            <directory>./src/Test/Controller</directory>
         </testsuite>
     </testsuites>
 

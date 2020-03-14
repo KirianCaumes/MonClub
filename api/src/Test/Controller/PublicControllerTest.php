@@ -3,7 +3,9 @@
 namespace App\Test\Controller;
 
 use App\Constants;
+use App\Entity\Param\ParamGlobal;
 use App\Entity\User;
+use App\Test\TraitTest;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Faker;
@@ -15,6 +17,7 @@ use Faker;
 class PublicControllerTest extends WebTestCase
 {
     use FixturesTrait;
+    use TraitTest;
     private $faker;
     private $entityManager;
 
@@ -29,12 +32,7 @@ class PublicControllerTest extends WebTestCase
     public function setUp()
     {
         parent::setup();
-        $this->loadFixtures([
-            'App\DataFixtures\UserFixture',
-            'App\DataFixtures\ParamGlobalFixture',
-            'App\DataFixtures\ParamSeasonFixture',
-            'App\DataFixtures\MemberFixture'
-        ]);
+        $this->loadMyFixtures();
     }
 
     /**
@@ -81,6 +79,21 @@ class PublicControllerTest extends WebTestCase
         $this->assertEquals(201, $client->getResponse()->getStatusCode());
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('token', $data);
+    }
+
+    public function testCannotCreateUserIfDisable()
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+
+        $param = $this->entityManager->getRepository(ParamGlobal::class)->findOneBy(['label' => 'is_create_new_user_able']);
+        $param->setValue('false');
+        $this->entityManager->persist($param);
+        $this->entityManager->flush();
+
+        $client->request(Constants::POST, '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['username' => $this->faker->email(), 'plainPassword' => ['first' => 'fd6fsadeaz62@+', 'second' => 'fd6fsadeaz62@+']]));
+
+        $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
 
     public function testCannotCreateUserPasswordWeak()
@@ -140,6 +153,42 @@ class PublicControllerTest extends WebTestCase
 
         $client->request(Constants::POST, '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['username' => 'super-admin@mail.com', 'plainPassword' => 'fd6fsadeaz62@+123']));
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testNoneExistingUserTokenCannotReset()
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request(Constants::POST, '/api/reset', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['resetToken' => 'test', 'plainPassword' => ['first' => 'fd6fsadeaz62@+123', 'second' => 'fd6fsadeaz62@+123']]));
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+    
+    public function testUserCannotResetWithExpiredToken()
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request(Constants::POST, '/api/reset/mail', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['username' => 'super-admin@mail.com']));
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'super-admin@mail.com']);
+        $user->setPasswordRequestedAt((new \DateTime())->createFromFormat('d/m/Y', '01/01/1970'));
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        
+        $client->request(Constants::POST, '/api/reset', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['resetToken' => $user->getConfirmationToken(), 'plainPassword' => ['first' => 'fd6fsadeaz62@+123', 'second' => 'fd6fsadeaz62@+123']]));
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+    
+    public function testUserCannotResetWithWrongData()
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request(Constants::POST, '/api/reset/mail', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['username' => 'super-admin@mail.com']));
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'super-admin@mail.com']);
+        $client->request(Constants::POST, '/api/reset', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['resetToken' => $user->getConfirmationToken(), 'plainPassword' => ['first' => 'test', 'second' => 'teste']]));
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
 
     /**

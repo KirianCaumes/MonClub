@@ -31,12 +31,7 @@ class UserControllerTest extends WebTestCase
     public function setUp()
     {
         parent::setup();
-        $this->loadFixtures([
-            'App\DataFixtures\UserFixture',
-            'App\DataFixtures\ParamGlobalFixture',
-            'App\DataFixtures\ParamSeasonFixture',
-            'App\DataFixtures\MemberFixture'
-        ]);
+        $this->loadMyFixtures();
     }
 
     /**
@@ -153,6 +148,15 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals($data['user']['id'], 1);
         $this->assertArrayNotHasKey('emailCanonical', $data['user']);
     }
+
+    public function testCannotGetOneUserByNoneExistingId()
+    {
+        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+
+        $client->request(Constants::GET, '/api/user/666');
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
+
 
     /**
      * Route [POST] /api/user

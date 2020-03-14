@@ -127,7 +127,7 @@ class FileController extends AbstractFOSRestController
         
         $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
-        //Check if user is payed
+        // Check if user is payed
         if (!$member->getIsPayed() || !$member->getIsInscriptionDone()) {
             return $this->handleView($this->view([
                 'error' => [
@@ -137,11 +137,11 @@ class FileController extends AbstractFOSRestController
             ], Response::HTTP_FORBIDDEN));
         }
 
-        $this->denyAccessUnlessGranted(Constants::READ, $member);
+        // $this->denyAccessUnlessGranted(Constants::READ, $member);
 
         $response = new StreamedResponse(
             function () use ($pdfService, $member) {
-                $pdfService->generateAttestation($member);
+                $pdfService->generateAttestation($member, $_ENV['APP_ENV'] !== 'test');
             }
         );
 
@@ -165,7 +165,7 @@ class FileController extends AbstractFOSRestController
 
         $response = new StreamedResponse(
             function () use ($pdfService, $member, $paramFetcher) {
-                $pdfService->generateNonObjection($member, $paramFetcher->get('address'), $paramFetcher->get('club'));
+                $pdfService->generateNonObjection($member, $paramFetcher->get('address'), $paramFetcher->get('club'), $_ENV['APP_ENV'] !== 'test');
             }
         );
 
@@ -187,7 +187,7 @@ class FileController extends AbstractFOSRestController
 
         $response = new StreamedResponse(
             function () use ($pdfService, $member) {
-                $pdfService->generateFacture([$member]);
+                $pdfService->generateFacture([$member], $_ENV['APP_ENV'] !== 'test');
             }
         );
 
@@ -207,12 +207,14 @@ class FileController extends AbstractFOSRestController
         
         $this->denyAccessUnlessGranted(Constants::READ_DOCUMENT, $member);
 
-        //Find document categoru by id
+        //Find document category by id
         $documentCategory = $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findOneBy(['id' => $documentCategoryId]);
         if (!$documentCategory) return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
 
         //Return document
         $document = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['member' => $member, 'category' => $documentCategory]);
+        if (!$document) return $this->handleView($this->view(["message" => $translator->trans('document_not_found')], Response::HTTP_NOT_FOUND));
+
         return $downloadHandler->downloadObject($document, 'documentFile', null, $document->getDocument()->getOriginalName(), false);
     }
 

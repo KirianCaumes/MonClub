@@ -81,7 +81,7 @@ class PdfService
                 'member' => $member,
                 'address' => $address,
                 'club' => $club,
-                'civility' => $member->getSex()->getCivility(),
+                'civility' => $member->getSex() ? $member->getSex()->getCivility() : '',
                 'president' => [
                     'firstname' => $this->paramService->getParam('president_firstname'),
                     'lastname' => $this->paramService->getParam('president_lastname')
