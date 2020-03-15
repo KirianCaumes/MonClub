@@ -63,7 +63,6 @@ class MemberController extends AbstractFOSRestController
      * @QueryParam(name="seasonId", nullable=true, description="Seasons ids to filter (ex: '1,2,3,')")
      * @QueryParam(name="userId", nullable=true, description="User ids to filter")
      * @SWG\Response(response=200, description="Returns members", @SWG\Schema(type="array", @Model(type=Member::class)))
-     * @IsGranted("ROLE_COACH")
      * @Rest\Get("")
      *
      * @return Response
@@ -88,6 +87,7 @@ class MemberController extends AbstractFOSRestController
                 ->setContext((new Context())->setGroups([Constants::BASIC])
                 ));
         }
+        return $this->handleView($this->view([], Response::HTTP_FORBIDDEN));
     }
 
     /**
@@ -142,7 +142,6 @@ class MemberController extends AbstractFOSRestController
                 'member' => $member,
                 'workflow' => $workflowService->getWorkflow($member)
             ])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
-            // return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC, Constants::ADMIN])));
         } else {
             return $this->handleView($this->view(['member' => $member])->setContext((new Context())->setGroups([Constants::BASIC])));
         }
@@ -311,41 +310,40 @@ class MemberController extends AbstractFOSRestController
                 foreach ($data['documents'] as $doc) {
                     if (array_key_exists('id', $doc)) {
                         $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
-                        if ($oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
+                        if (!$oldDocument || $oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
 
-                        if ($oldDocument) {
-                            $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
-                            $newDocument = clone $oldDocument;
+                        $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
+                        $newDocument = clone $oldDocument;
 
-                            //Do not clone doc if needed anymore
-                            if (
-                                $newDocument->getCategory()->getId() === 1 ||
-                                ($newDocument->getCategory()->getId() === 2 && $member->getIsReducedPrice())
-                            ) {
-                                //Create temp file
-                                if (copy(
-                                    $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . $baseFile->getFileName($oldDocument),
-                                    $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp'
-                                )) {
-                                    $form = $this->createForm(DocumentType::class, $newDocument);
-                                    $form->submit([
-                                        'documentFile' => new UploadedFile(
-                                            $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
-                                            $oldDocument->getDocument()->getOriginalName(),
-                                            null,
-                                            true
-                                        )
-                                    ]);
+                        //Do not clone doc if needed anymore
+                        if (
+                            $newDocument->getCategory()->getId() === 1 ||
+                            ($newDocument->getCategory()->getId() === 2 && $member->getIsReducedPrice())
+                        ) {
+                            //Create temp file
+                            if (copy(
+                                $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . $baseFile->getFileName($oldDocument),
+                                $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp'
+                            )) {
+                                $form = $this->createForm(DocumentType::class, $newDocument);
+                                $form->submit([
+                                    'documentFile' => new UploadedFile(
+                                        $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
+                                        $oldDocument->getDocument()->getOriginalName(),
+                                        null,
+                                        true
+                                    )
+                                ]);
 
-                                    if ($form->isSubmitted() && $form->isValid()) {
-                                        $newDocument->setMember($member);
-                                        $em->persist($newDocument);
-                                        $em->flush();
-                                        $files->add($newDocument);
-                                    } else {
-                                        //If error, remove temp file
-                                        unlink($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp');
-                                    }
+                                if ($form->isSubmitted() && $form->isValid()) {
+                                    $newDocument->setMember($member);
+                                    $em->persist($newDocument);
+                                    $em->flush();
+                                    $files->add($newDocument);
+                                } else {
+                                    // return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+                                    //If error, remove temp file
+                                    unlink($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp');
                                 }
                             }
                         }
@@ -392,9 +390,9 @@ class MemberController extends AbstractFOSRestController
         }
 
         //Check to know if have to send email for inscription done
-        $emailInscriptionDone = ($data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
+        $emailInscriptionDone = (array_key_exists('is_inscription_done', $data) && $data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
         //Check to know if have to send email for invalid document
-        $emailDocumentInvalid = ($data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
+        $emailDocumentInvalid = (array_key_exists('is_document_complete', $data) && $data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
 
         $form->submit($data, true);
 

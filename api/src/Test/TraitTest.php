@@ -41,6 +41,8 @@ trait TraitTest
             'App\DataFixtures\DocumentFixture',
             'App\DataFixtures\ParamPriceTransferFixture',
             'App\DataFixtures\ParamReductionFamilyFixture',
+            'App\DataFixtures\ParamPaymentSolutionFixture',
+            'App\DataFixtures\ParamSexFixture',
 
         ]);
     }

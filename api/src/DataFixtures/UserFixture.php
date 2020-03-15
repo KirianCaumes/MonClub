@@ -18,6 +18,7 @@ class UserFixture extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create('fr_FR');
+        $team = $this->getReference('team');
 
         $user = new User();
         $user
@@ -45,6 +46,7 @@ class UserFixture extends Fixture implements OrderedFixtureInterface
             ->setUsername('coach@mail.com')
             ->setPlainPassword('123456789azerty+*/')
             ->setEnabled(true)
+            ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([$team]))
             ->setRoles([Constants::ROLE_COACH]);
 
         $manager->persist($user);
@@ -69,6 +71,6 @@ class UserFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 }

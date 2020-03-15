@@ -19,6 +19,7 @@ class ParamPriceGlobalFixture extends Fixture implements OrderedFixtureInterface
     {
         $faker = Faker\Factory::create('fr_FR');
         $paramSeason = $this->getReference('param-season');
+        $oldParamSeason = $this->getReference('old-param-season');
 
         $paramGlobal = new ParamPriceGlobal();
         $paramGlobal
@@ -26,6 +27,15 @@ class ParamPriceGlobalFixture extends Fixture implements OrderedFixtureInterface
             ->setReducedPriceBeforeDeadline(140)
             ->setReducedPriceAfterDeadline(160)
             ->setDeadlineDate(new \DateTime('2019-07-12'))
+            ->setPaypalFee(5);
+        $manager->persist($paramGlobal);
+
+        $paramGlobal = new ParamPriceGlobal();
+        $paramGlobal
+            ->setSeason($oldParamSeason)
+            ->setReducedPriceBeforeDeadline(140)
+            ->setReducedPriceAfterDeadline(160)
+            ->setDeadlineDate(new \DateTime('2018-07-12'))
             ->setPaypalFee(5);
         $manager->persist($paramGlobal);
 

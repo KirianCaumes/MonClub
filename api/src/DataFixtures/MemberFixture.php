@@ -19,8 +19,10 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
         $faker = Faker\Factory::create('fr_FR');
         $user = $this->getReference('user');
         $paramSeason = $this->getReference('param-season');
+        $oldParamSeason = $this->getReference('old-param-season');
+        $team = $this->getReference('team');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 25; $i++) {
             $member = new Member();
             $member
                 ->setFirstname($faker->firstName())
@@ -49,7 +51,7 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
                 ->setIsNewsletterAllow($faker->boolean())
                 ->setIsAccepted(true)
                 ->setIsTransferNeeded(false)
-                ->setIsDocumentComplete(false)
+                ->setIsDocumentComplete($i === 0)
                 ->setIsPayed($i === 0)
                 ->setAmountPayed(null)
                 ->setAmountPayedOther(null)
@@ -66,8 +68,9 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
                 ->setGesthandQualificationDate(null)
                 ->setCreationDatetime(new \DateTime())
                 ->setNotes(null)
-                ->setSeason($paramSeason)
-                ->setUser($user);
+                ->setSeason($i < 5 ? $paramSeason : $oldParamSeason)
+                ->setUser($i < 2 || $i === 10 ? $user : null)
+                ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([$team]));
             if ($i === 0) $this->addReference('member', $member);
             $manager->persist($member);
         }
@@ -81,6 +84,6 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 4;
+        return 5;
     }
 }

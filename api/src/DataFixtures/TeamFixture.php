@@ -30,6 +30,7 @@ class TeamFixture extends Fixture implements OrderedFixtureInterface
                 ->setCoaches($faker->name())
                 ->setTrainers($faker->name());
                 // ->setMembers();
+            if ($i === 0) $this->addReference('team', $team);
             $manager->persist($team);
         }
 
@@ -42,6 +43,6 @@ class TeamFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 5;
+        return 1;
     }
 }

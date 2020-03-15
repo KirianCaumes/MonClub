@@ -31,6 +31,7 @@ class ParamSeasonFixture extends Fixture implements OrderedFixtureInterface
                 ->setLabel($el['label'])
                 ->setIsActive($el['is_active'])
                 ->setIsCurrent($el['is_current']);
+            if ($el['id'] === 1) $this->addReference('old-param-season', $paramSeason);
             if ($el['id'] === 2) $this->addReference('param-season', $paramSeason);
             $manager->persist($paramSeason);
         }
