@@ -21,11 +21,17 @@ class _PasswordForgotten extends React.PureComponent {
         this.props.signout()
     }
 
+    componentWillUnmount() {
+        if (this.fetchResetMail) this.fetchResetMail.cancel()
+    }
+
     handleSubmit(ev) {
         ev.preventDefault()
 
         this.setState({ isLoading: true }, () => {
-            request.resetMail({ username: this.state.username })
+            this.fetchResetMail = request.resetMail({ username: this.state.username })
+            this.fetchResetMail
+                .fetch()
                 .then(res => {
                     history.push('/login')
                     this.props.setMessageBar(true, MessageBarType.success, 'Un email vient de vous être envoyé.')

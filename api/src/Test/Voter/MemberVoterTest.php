@@ -27,8 +27,9 @@ class MemberVoterTest extends WebTestCase
     private $faker;
     private $entityManager;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
+        parent::__construct($name, $data, $dataName);
         parent::__construct();
         $this->faker = Faker\Factory::create('fr_FR');
         $this->entityManager = self::bootKernel()->getContainer()->get('doctrine')->getManager();
@@ -60,7 +61,7 @@ class MemberVoterTest extends WebTestCase
     {
         parent::tearDown();
         $this->clearResources();
-        if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
+        // if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
     }
 
     /**
@@ -480,7 +481,6 @@ class MemberVoterTest extends WebTestCase
         $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
 
         $client->request(Constants::DELETE, '/api/member/2');
-        var_dump($client->getResponse()->getContent());
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }

@@ -24,7 +24,7 @@ class _MembersMePayment extends React.PureComponent {
 
     componentDidMount() {
         this.props.setCommand([])
-        request.getMeMemberPrices()
+        request.getMeMemberPrices().fetch()
             .then(res => this.setState({ summary: res.price }))
             .catch(err => {
                 this.props.goBack()
@@ -55,7 +55,7 @@ class _MembersMePayment extends React.PureComponent {
                 payment_solution: this.state.paymentKey,
                 each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
                 paypalInfos: serializedPaypalInfos           //Use for paymentKey 1 "paypal"   
-            })
+            }).fetch()
                 .then(res => {
                     this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
                     this.props.setMembers(res)

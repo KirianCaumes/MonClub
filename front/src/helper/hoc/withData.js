@@ -16,13 +16,19 @@ export default function withData(WrappedComponent, dataFunc) {
 
         componentDidMount() {
             this.props.setCommand([])
-            dataFunc(this.props.match?.params)
+            this.req = dataFunc(this.props.match?.params)
+            this.req
+                .fetch()
                 .then(data => this.setState({ data }))
                 .catch(err => {
                     this.setState({ isError: true })
                     this.props.setMessageBar(true, MessageBarType.error, err)
                 })
                 .finally(() => this.setState({ isLoading: false }))
+        }
+
+        componentWillUnmount() {
+            if (this.req) this.req.cancel()
         }
 
         render() {

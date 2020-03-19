@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
-         backupGlobals="false"
-         colors="true"
-         bootstrap="tests/bootstrap.php"
+<phpunit 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
+    backupGlobals="false"
+    colors="true"
+    bootstrap="tests/bootstrap.php"
+    processIsolation = "true"
 >
     <php>
         <ini name="error_reporting" value="-1" />
@@ -26,6 +28,12 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
+            <exclude>
+                <file>src/Kernel.php</file>
+                <file>src/Constants.php</file>
+                <directory suffix=".php">src/Test</directory>
+                <directory suffix=".php">src/Migrations</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

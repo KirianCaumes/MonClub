@@ -67,7 +67,9 @@ class _MemberOne extends React.PureComponent {
                     this.setState({ isLoading: true, readOnly: true }, () => {
                         this.props.setCommand([])
                         if (!!this.props.match?.params?.id) {
-                            request.editMemberAdmin(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditMemberAdmin = request.editMemberAdmin(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditMemberAdmin
+                                .fetch()
                                 .then(res => this.setState({ data: res.member, initData: res.member, workflow: res.workflow, errorField: {} }, () => {
                                     this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été modifiée.')
@@ -84,7 +86,9 @@ class _MemberOne extends React.PureComponent {
                                 })
                                 .finally(() => this.setState({ isLoading: false }))
                         } else {
-                            request.createMemberAdmin({ ...this.state.data })
+                            this.fetchCreateMemberAdmin = request.createMemberAdmin({ ...this.state.data })
+                            this.fetchCreateMemberAdmin
+                                .fetch()
                                 .then(data => {
                                     this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été créée.')
                                     history.push(`/membre/${data.id}`)
@@ -109,7 +113,9 @@ class _MemberOne extends React.PureComponent {
                         'Êtes-vous certains de vouloir supprimer le membre ? Cette action est définitive.',
                         () => {
                             this.setState({ isLoading: true, readOnly: true }, () => {
-                                request.deleteMember(this.props.match?.params?.id)
+                                this.fetchDeleteMember = request.deleteMember(this.props.match?.params?.id)
+                                this.fetchDeleteMember
+                                    .fetch()
                                     .then(() => {
                                         this.props.setCommand(commandRead)
                                         this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé.')
@@ -136,6 +142,28 @@ class _MemberOne extends React.PureComponent {
         ]
 
         this.props.setCommand(!this.props.match?.params?.id ? commandEdit : commandRead)
+    }
+
+    componentWillUnmount() {
+        if (this.fetchEditMemberAdmin) this.fetchEditMemberAdmin.cancel()
+        if (this.fetchCreateMemberAdmin) this.fetchCreateMemberAdmin.cancel()
+        if (this.fetchDeleteMember) this.fetchDeleteMember.cancel()
+        if (this.getMemberPrice) this.getMemberPrice.cancel()
+        if (this.getMemberPrice1) this.getMemberPrice1.cancel()
+        if (this.fetchGetDocumentOne) this.fetchGetDocumentOne.cancel()
+        if (this.fetchGetDocumentOne1) this.fetchGetDocumentOne1.cancel()
+        if (this.fetchUploadDocumentOne) this.fetchUploadDocumentOne.cancel()
+        if (this.fetchDeleteDocumentOne) this.fetchDeleteDocumentOne.cancel()
+        if (this.fetchGetDocumentTwo) this.fetchGetDocumentTwo.cancel()
+        if (this.fetchGetDocumentTwo1) this.fetchGetDocumentTwo1.cancel()
+        if (this.fetchUploadDocumentTwo) this.fetchUploadDocumentTwo.cancel()
+        if (this.fetchDeleteDocumentTwo) this.fetchDeleteDocumentTwo.cancel()
+        if (this.fetchGetAttestation) this.fetchGetAttestation.cancel()
+        if (this.fetchGetAttestation1) this.fetchGetAttestation1.cancel()
+        if (this.fetchGetFacture) this.fetchGetFacture.cancel()
+        if (this.fetchGetFacture1) this.fetchGetFacture1.cancel()
+        if (this.fetchGetNonObjection) this.fetchGetNonObjection.cancel()
+        if (this.fetchGetNonObjection1) this.fetchGetNonObjection1.cancel()
     }
 
     render() {
@@ -479,13 +507,17 @@ class _MemberOne extends React.PureComponent {
                                     iconProps={{ iconName: 'RedEye' }}
                                     disabled={this.state.priceLoading || !this.props.match?.params?.id}
                                     onClick={() => this.setState({ priceLoading: true },
-                                        () => request.getMemberPrice(data?.id)
-                                            .then(res => this.showModalDetailPrice(res.position, res.price, res.paramPrice))
-                                            .catch(err => {
-                                                this.setState({ price: 'Erreur' })
-                                                this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
-                                            })
-                                            .finally(() => this.setState({ priceLoading: false }))
+                                        () => {
+                                            this.fetchGetMemberPrice = request.getMemberPrice(data?.id)
+                                            this.fetchGetMemberPrice
+                                                .fetch()
+                                                .then(res => this.showModalDetailPrice(res.position, res.price, res.paramPrice))
+                                                .catch(err => {
+                                                    this.setState({ price: 'Erreur' })
+                                                    this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
+                                                })
+                                                .finally(() => this.setState({ priceLoading: false }))
+                                        }
                                     )
                                     }
                                 />
@@ -600,10 +632,14 @@ class _MemberOne extends React.PureComponent {
                                             <IconButton
                                                 iconProps={{ iconName: 'Refresh' }}
                                                 disabled={this.state.newPriceLoading || !data?.id}
-                                                onClick={() => this.setState({ newPriceLoading: true }, () => request.getMemberPrice(this.props.match?.params?.id)
-                                                    .then(res => this.setState({ data: { ...this.state.data, amount_payed: res.price } }))
-                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.'))
-                                                    .finally(() => this.setState({ newPriceLoading: false }))
+                                                onClick={() => this.setState({ newPriceLoading: true }, () => {
+                                                    this.getMemberPrice1 = request.getMemberPrice(this.props.match?.params?.id)
+                                                    this.getMemberPrice1
+                                                        .fetch()
+                                                        .then(res => this.setState({ data: { ...this.state.data, amount_payed: res.price } }))
+                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.'))
+                                                        .finally(() => this.setState({ newPriceLoading: false }))
+                                                }
                                                 )}
                                             />
                                         </TooltipHost>
@@ -1124,17 +1160,23 @@ class _MemberOne extends React.PureComponent {
                                             isDisabled={!this.props.match?.params?.id}
                                             fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
                                             onDownload={() => {
-                                                return request.getDocument(this.props.match?.params?.id, 1)
+                                                this.fetchGetDocumentOne = request.getDocument(this.props.match?.params?.id, 1)
+                                                return this.fetchGetDocumentOne
+                                                    .fetch()
                                                     .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
                                             onOpen={() => {
-                                                return request.getDocument(this.props.match?.params?.id, 1)
+                                                this.fetchGetDocumentOne1 = request.getDocument(this.props.match?.params?.id, 1)
+                                                return this.fetchGetDocumentOne1
+                                                    .fetch()
                                                     .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
                                             onUpload={file => {
-                                                return request.uploadDocument(file, this.props.match?.params?.id, 1)
+                                                this.fetchUploadDocumentOne = request.uploadDocument(file, this.props.match?.params?.id, 1)
+                                                return this.fetchUploadDocumentOne
+                                                    .fetch()
                                                     .then(doc => {
                                                         let documents = [...data.documents]
                                                         documents.push(doc)
@@ -1146,7 +1188,9 @@ class _MemberOne extends React.PureComponent {
                                                     })
                                             }}
                                             onDelete={() => {
-                                                return request.deleteDocument(this.props.match?.params?.id, 1)
+                                                this.fetchDeleteDocumentOne = request.deleteDocument(this.props.match?.params?.id, 1)
+                                                return this.fetchDeleteDocumentOne
+                                                    .fetch()
                                                     .then(() => {
                                                         let documents = [...data.documents]
                                                         const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
@@ -1169,17 +1213,23 @@ class _MemberOne extends React.PureComponent {
                                                 isDisabled={!this.props.match?.params?.id}
                                                 fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
                                                 onDownload={() => {
-                                                    return request.getDocument(this.props.match?.params?.id, 2)
+                                                    this.fetchGetDocumentTwo = request.getDocument(this.props.match?.params?.id, 2)
+                                                    return this.fetchGetDocumentTwo
+                                                        .fetch()
                                                         .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                                 }}
                                                 onOpen={() => {
-                                                    return request.getDocument(this.props.match?.params?.id, 2)
+                                                    this.fetchGetDocumentTwo1 = request.getDocument(this.props.match?.params?.id, 2)
+                                                    return this.fetchGetDocumentTwo1
+                                                        .fetch()
                                                         .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
                                                         .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                                 }}
                                                 onUpload={file => {
-                                                    return request.uploadDocument(file, this.props.match?.params?.id, 2)
+                                                    this.fetchUploadDocumentTwo = request.uploadDocument(file, this.props.match?.params?.id, 2)
+                                                    return this.fetchUploadDocumentTwo
+                                                        .fetch()
                                                         .then(doc => {
                                                             let documents = [...data.documents]
                                                             documents.push(doc)
@@ -1191,7 +1241,9 @@ class _MemberOne extends React.PureComponent {
                                                         })
                                                 }}
                                                 onDelete={() => {
-                                                    return request.deleteDocument(this.props.match?.params?.id, 2)
+                                                    this.fetchDeleteDocumentTwo = request.deleteDocument(this.props.match?.params?.id, 2)
+                                                    return this.fetchDeleteDocumentTwo
+                                                        .fetch()
                                                         .then(() => {
                                                             let documents = [...data.documents]
                                                             const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
@@ -1216,12 +1268,16 @@ class _MemberOne extends React.PureComponent {
                                             isDisabled={!data.is_payed || !data.is_inscription_done}
                                             tooltipContent={!data.is_payed || !data.is_inscription_done ? "Document téléchargeable une fois l'inscription finalisée et validée par le club." : ''}
                                             onDownload={() => {
-                                                return request.getAttestation(this.props.match?.params?.id)
+                                                this.fetchGetAttestation = request.getAttestation(this.props.match?.params?.id)
+                                                return this.fetchGetAttestation
+                                                    .fetch()
                                                     .then(file => dlBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
                                             onOpen={() => {
-                                                return request.getAttestation(this.props.match?.params?.id)
+                                                this.fetchGetAttestation1 = request.getAttestation(this.props.match?.params?.id)
+                                                return this.fetchGetAttestation1
+                                                    .fetch()
                                                     .then(file => openBlob(file, `Attestation_paiement_cotisation_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
@@ -1235,12 +1291,16 @@ class _MemberOne extends React.PureComponent {
                                             isDisabled={!data.is_payed}
                                             tooltipContent={!data.is_payed ? "Document téléchargeable une fois que le membre a été payé." : ''}
                                             onDownload={() => {
-                                                return request.getFacture(this.props.match?.params?.id)
+                                                this.fetchGetFacture = request.getFacture(this.props.match?.params?.id)
+                                                return this.fetchGetFacture
+                                                    .fetch()
                                                     .then(file => dlBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
                                             onOpen={() => {
-                                                return request.getFacture(this.props.match?.params?.id)
+                                                this.fetchGetFacture1 = request.getFacture(this.props.match?.params?.id)
+                                                return this.fetchGetFacture1
+                                                    .fetch()
                                                     .then(file => openBlob(file, `Facture_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                                             }}
@@ -1325,12 +1385,16 @@ class _MemberOne extends React.PureComponent {
                             isFile={!!readOnly}
                             isDisabled={!nonObjection.address || !nonObjection.club}
                             onDownload={() => {
-                                return request.getNonObjection(this.props.match?.params?.id, nonObjection)
+                                this.fetchGetNonObjection = request.getNonObjection(this.props.match?.params?.id, nonObjection)
+                                return this.fetchGetNonObjection
+                                    .fetch()
                                     .then(file => this.setState({ isModalNonObjectionOpen: false }, () => dlBlob(file, `Lettre_non_opposition_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`)))
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                             }}
                             onOpen={() => {
-                                return request.getNonObjection(this.props.match?.params?.id, nonObjection)
+                                this.fetchGetNonObjection1 = request.getNonObjection(this.props.match?.params?.id, nonObjection)
+                                return this.fetchGetNonObjection1
+                                    .fetch()
                                     .then(file => openBlob(file, `Lettre_non_opposition_${data?.firstname?.charAt(0).toUpperCase()}${data?.firstname?.slice(1)}_${data?.lastname.toUpperCase()}_${param?.season?.find(x => x.is_current)?.label}.pdf`))
                                     .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
                             }}

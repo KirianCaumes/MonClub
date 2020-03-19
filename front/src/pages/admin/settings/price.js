@@ -26,6 +26,11 @@ class _SettingsPrice extends React.PureComponent {
         }
     }
 
+    componentWillUnmount(){
+        if(this.fetchPutParamPriceBySeason) this.fetchPutParamPriceBySeason.cancel()
+        if(this.fetchGetParamPriceBySeason) this.fetchGetParamPriceBySeason.cancel()
+    }
+
     componentDidMount() {
         this.props.setBreadcrumb([
             { text: 'Administration', key: 'administration' },
@@ -41,34 +46,35 @@ class _SettingsPrice extends React.PureComponent {
                 onClick: () => {
                     this.props.setCommand([])
                     this.setState({ isLoading: true },
-                        () => request.putParamPriceBySeason(this.state.seasonIdSelected, this.state.data)
-                            .then(data => {                                
-                                this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>)
-                                this.setState({
-                                    data,
-                                    initData: data,
-                                    errorField: { global: {}, license: {}, transfer: {}, discount: {} }
+                        () => {
+                            this.fetchPutParamPriceBySeason = request.putParamPriceBySeason(this.state.seasonIdSelected, this.state.data)
+                            this.fetchPutParamPriceBySeason
+                                .fetch()
+                                .then(data => {                                
+                                    this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>)
+                                    this.setState({
+                                        data,
+                                        initData: data,
+                                        errorField: { global: {}, license: {}, transfer: {}, discount: {} }
+                                    })
                                 })
-                            })
-                            .catch(err => {
-                                this.props.setMessageBar(true, MessageBarType.error, err)
-                                this.setState({
-                                    errorField: {
-                                        global: err?.global?.form?.children,
-                                        license: err?.license?.form?.children,
-                                        transfer: err?.transfer?.form?.children,
-                                        discount: err?.discount?.form?.children,
-                                    }
+                                .catch(err => {
+                                    this.props.setMessageBar(true, MessageBarType.error, err)
+                                    this.setState({
+                                        errorField: {
+                                            global: err?.global?.form?.children,
+                                            license: err?.license?.form?.children,
+                                            transfer: err?.transfer?.form?.children,
+                                            discount: err?.discount?.form?.children,
+                                        }
+                                    })
                                 })
-                            })
-                            .finally(() => {
-                                this.setState({ isLoading: false })
-                                this.props.setCommand(this.commandEdit)
-                            })
+                                .finally(() => {
+                                    this.setState({ isLoading: false })
+                                    this.props.setCommand(this.commandEdit)
+                                })
+                        }
                     )
-                    //dateToString
-                    // console.log(this.state.data)
-                    // console.log(this.state.seasonIdSelected)
                 },
                 disabled: this.state.isLoading
             },
@@ -131,16 +137,22 @@ class _SettingsPrice extends React.PureComponent {
                                 onChange={(ev, item) => {
                                     this.props.setCommand([])
                                     this.setState({ seasonIdSelected: item.key, isLoading: true },
-                                        () => request.getParamPriceBySeason(item.key)
-                                            .then(data => {
-                                                this.setState({ data, errorField: { global: {}, license: {}, transfer: {}, discount: {} } })
-                                            })
-                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                            .finally(() => {
-                                                this.setState({ isLoading: false })
-                                                this.commandEdit[1].disabled = (this.state.seasonIdSelected === this.props.param?.season?.find(x => x.is_current)?.id)
-                                                this.props.setCommand(this.commandEdit)
-                                            })
+                                        () => {                                            
+                                            this.fetchGetParamPriceBySeason = request.getParamPriceBySeason(this.state.seasonIdSelected)
+                                            this.fetchGetParamPriceBySeason
+                                                .fetch()
+                                                .then(data => {
+                                                    this.setState({ data, errorField: { global: {}, license: {}, transfer: {}, discount: {} } })
+                                                })
+                                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                                .finally(() => {
+                                                    this.setState({ isLoading: false })
+                                                    this.commandEdit[1].disabled = (this.state.seasonIdSelected === this.props.param?.season?.find(x => x.is_current)?.id)
+                                                    this.props.setCommand(this.commandEdit)
+                                                })
+                                        }
+                                        
+                                       
                                     )
                                 }}
                             />

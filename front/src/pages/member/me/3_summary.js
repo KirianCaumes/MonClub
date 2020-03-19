@@ -17,12 +17,18 @@ class _MembersMeSummary extends React.PureComponent {
     }
 
     componentDidMount() {
-        request.getMemberPrice(this.props?.members?.[this.props?.memberIndex]?.id)
+        this.fetchGetMemberPrice = request.getMemberPrice(this.props?.members?.[this.props?.memberIndex]?.id)
+        return this.fetchGetMemberPrice
+            .fetch()
             .then(res => this.setState({ price: res.price }))
             .catch(err => {
                 this.setState({ price: 'Erreur' })
                 this.props.setMessageBar(true, MessageBarType.error, err.message ?? err.error?.message ?? 'Une erreur est survenue lors du calcul du montant.')
             })
+    }
+
+    componentWillUnmount(){
+        if(this.fetchGetMemberPrice) this.fetchGetMemberPrice.cancel()
     }
 
     render() {

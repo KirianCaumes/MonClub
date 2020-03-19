@@ -71,10 +71,15 @@ class _UsersAll extends ParentPage {
         this.searchUsers()
     }
 
+    componentWillUnmount() {
+        if (this.fetchGetAllUsers) this.fetchGetAllUsers.cancel()
+    }
 
     searchUsers() {
         this.setState({ isLoading: true }, () => {
-            request.getAllUsers(this.state.searchParms)
+            this.fetchGetAllUsers = request.getAllUsers(this.state.searchParms)
+            this.fetchGetAllUsers
+                .fetch()
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
                     this.props.setMessageBar(true, MessageBarType.error, err)

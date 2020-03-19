@@ -21,9 +21,9 @@ class PublicControllerTest extends WebTestCase
     private $faker;
     private $entityManager;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
-        parent::__construct();
+        parent::__construct($name, $data, $dataName);
         $this->faker = Faker\Factory::create('fr_FR');
         $this->entityManager = self::bootKernel()->getContainer()->get('doctrine')->getManager();
     }
@@ -54,7 +54,7 @@ class PublicControllerTest extends WebTestCase
     {
         parent::tearDown();
         $this->clearResources();
-        if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
+        // if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
     }
 
     /**
@@ -184,7 +184,7 @@ class PublicControllerTest extends WebTestCase
         $client->request(Constants::POST, '/api/reset', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['resetToken' => 'test', 'plainPassword' => ['first' => 'fd6fsadeaz62@+123', 'second' => 'fd6fsadeaz62@+123']]));
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
-    
+
     public function testUserCannotResetWithExpiredToken()
     {
         self::ensureKernelShutdown();
@@ -196,11 +196,11 @@ class PublicControllerTest extends WebTestCase
         $user->setPasswordRequestedAt((new \DateTime())->createFromFormat('d/m/Y', '01/01/1970'));
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-        
+
         $client->request(Constants::POST, '/api/reset', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['resetToken' => $user->getConfirmationToken(), 'plainPassword' => ['first' => 'fd6fsadeaz62@+123', 'second' => 'fd6fsadeaz62@+123']]));
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
-    
+
     public function testUserCannotResetWithWrongData()
     {
         self::ensureKernelShutdown();
@@ -255,7 +255,7 @@ class PublicControllerTest extends WebTestCase
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->request(Constants::POST, '/api/log', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['env' => 'test', 'datetime' => date_format(date_timestamp_set(new \DateTime(), (new \DateTime)->getTimestamp() ), 'c'), 'error' => $this->faker->text(), 'info' => $this->faker->text()]));
+        $client->request(Constants::POST, '/api/log', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode(['env' => 'test', 'datetime' => date_format(date_timestamp_set(new \DateTime(), (new \DateTime)->getTimestamp()), 'c'), 'error' => $this->faker->text(), 'info' => $this->faker->text()]));
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }

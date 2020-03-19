@@ -55,7 +55,9 @@ class _UserOne extends React.PureComponent {
                     this.setState({ isLoading: true, readOnly: true }, () => {
                         if (!!this.props.match?.params?.id) {
                             this.props.setCommand([])
-                            request.editUser(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditUser = request.editUser(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditUser
+                                .fetch()
                                 .then(res => this.setState({ data: res, errorField: {} }, () => {
                                     this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été modifiée.')
@@ -68,7 +70,9 @@ class _UserOne extends React.PureComponent {
                                 .finally(() => this.setState({ isLoading: false }))
                         } else {
                             this.props.setCommand([])
-                            request.createUser({ ...this.state.data })
+                            this.fetchCreateUser = request.createUser({ ...this.state.data })
+                            this.fetchCreateUser
+                                .fetch()
                                 .then(res => {
                                     this.props.setMessageBar(true, MessageBarType.success, 'L\'utilisateur à bien été créé.')
                                     history.push(`/utilisateur/${res?.id}`)
@@ -103,6 +107,11 @@ class _UserOne extends React.PureComponent {
         ]
 
         this.props.setCommand(!this.props.match?.params?.id ? commandEdit : commandRead)
+    }
+
+    componentWillUnmount() {
+        if (this.fetchEditUser) this.fetchEditUser.cancel()
+        if (this.fetchCreateUser) this.fetchCreateUser.cancel()
     }
 
     render() {

@@ -22,11 +22,17 @@ class _PasswordNew extends React.PureComponent {
         this.props.signout()
     }
 
+    componentWillUnmount() {
+        if (this.fetchReset) this.fetchReset.cancel()
+    }
+
     handleSubmit(ev) {
         ev.preventDefault()
 
         this.setState({ isLoading: true }, () => {
-            request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken })
+            this.fetchReset = request.reset({ plainPassword: this.state.plainPassword, resetToken: this.props.match?.params?.resetToken })
+            this.fetchReset
+                .fetch()
                 .then(res => {
                     history.push('/login')
                     this.props.setMessageBar(true, MessageBarType.success, 'Votre mot de passe à bien été modifié.')

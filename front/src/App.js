@@ -76,7 +76,7 @@ class _App extends React.PureComponent {
     }
 
     componentDidCatch(error, info) {
-        request.postLog({
+        request.fetch().postLog({
             env: process.env.NODE_ENV,
             datetime: new Date(),
             error: error.message,
@@ -99,7 +99,7 @@ class _App extends React.PureComponent {
     init() {
         this.props.setMessageBar(false)
         this.setState({ isInit: false }, () => {
-            Promise.all([request.getMe(), request.getParam()])
+            Promise.all([request.getMe().fetch(), request.getParam().fetch()])
                 .then(([me, param]) => {
                     this.props.init(me, param)
                 })

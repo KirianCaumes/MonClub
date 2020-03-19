@@ -73,6 +73,14 @@ class _MembersAll extends ParentPage {
         }
     }
 
+    componentWillUnmount() {
+        if (this.fetchGetGoogleContact) this.fetchGetGoogleContact.cancel()
+        if (this.fetchGetExcelTracking) this.fetchGetExcelTracking.cancel()
+        if (this.fetchGetExcelGeneral) this.fetchGetExcelGeneral.cancel()
+        if (this.fetchGetExcelCalculhand) this.fetchGetExcelCalculhand.cancel()
+        if (this.fetchGetAllMembers) this.fetchGetAllMembers.cancel()
+    }
+
     componentDidMount() {
         this.props.setBreadcrumb([
             { text: 'Membres', key: 'members' },
@@ -96,33 +104,49 @@ class _MembersAll extends ParentPage {
                             key: 'getGoogleContact',
                             text: 'Contact Google',
                             iconProps: { iconName: 'TextDocumentShared' },
-                            onClick: () => request.getGoogleContact()
-                                .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
-                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            onClick: () => {
+                                this.fetchGetGoogleContact = request.getGoogleContact()
+                                this.fetchGetGoogleContact
+                                    .fetch()
+                                    .then(file => dlBlob(file, `export_google_contact-${stringToCleanString(new Date())}.csv`))
+                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            }
                         },
                         {
                             key: 'getExcelTracking',
                             text: 'Récapitulatif Gest\'Hand',
                             iconProps: { iconName: 'ExcelDocument' },
-                            onClick: () => request.getExcelTracking()
-                                .then(file => dlBlob(file, `export_excel_suivis-${stringToCleanString(new Date())}.xlsx`))
-                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            onClick: () => {
+                                this.fetchGetExcelTracking = request.getExcelTracking()
+                                this.fetchGetExcelTracking
+                                    .fetch()
+                                    .then(file => dlBlob(file, `export_excel_suivis-${stringToCleanString(new Date())}.xlsx`))
+                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            }
                         },
                         {
                             key: 'getExcelGeneral',
                             text: 'Récapitulatif des équipes',
                             iconProps: { iconName: 'ExcelDocument' },
-                            onClick: () => request.getExcelGeneral()
-                                .then(file => dlBlob(file, `export_excel_informations_generales-${stringToCleanString(new Date())}.xlsx`))
-                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            onClick: () => {
+                                this.fetchGetExcelGeneral = request.getExcelGeneral()
+                                this.fetchGetExcelGeneral
+                                    .fetch()
+                                    .then(file => dlBlob(file, `export_excel_informations_generales-${stringToCleanString(new Date())}.xlsx`))
+                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            }
                         },
                         {
                             key: 'getExcelCalculHand',
                             text: 'Récapitulatif des paiements',
                             iconProps: { iconName: 'ExcelDocument' },
-                            onClick: () => request.getExcelCalculhand()
-                                .then(file => dlBlob(file, `export_excel_calculhand-${stringToCleanString(new Date())}.xlsx`))
-                                .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            onClick: () => {
+                                this.fetchGetExcelCalculhand = request.getExcelCalculhand()
+                                this.fetchGetExcelCalculhand
+                                    .fetch()
+                                    .then(file => dlBlob(file, `export_excel_calculhand-${stringToCleanString(new Date())}.xlsx`))
+                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                            }
                         },
                     ]
                 }
@@ -134,7 +158,8 @@ class _MembersAll extends ParentPage {
 
     searchMembers() {
         this.setState({ isLoading: true }, () => {
-            request.getAllMembers(this.state.searchParms)
+            this.fetchGetAllMembers = request.getAllMembers(this.state.searchParms)
+            this.fetchGetAllMembers.fetch()
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
                     this.props.setMessageBar(true, MessageBarType.error, err)

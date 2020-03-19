@@ -43,7 +43,9 @@ class _MembersMe extends React.PureComponent {
                 onClick: () => {
                     this.setState({ isLoading: true }, () => {
                         this.props.setMessageBar(false)
-                        request.getNewMember()
+                        this.fetchGetNewMember = request.getNewMember()
+                        this.fetchGetNewMember
+                            .fetch()
                             .then(res => {
                                 let members = [...this.props.members]
                                 members.push(res?.member)
@@ -75,7 +77,9 @@ class _MembersMe extends React.PureComponent {
                             let id = this.props.members?.[this.state.currentPivot]?.id
                             if (id) { //If current pivot member has id
                                 this.setState({ isLoading: true }, () => {
-                                    request.deleteMember(id) //Delete on api
+                                    this.fetchDeleteMember = request.deleteMember(id) //Delete on api
+                                    this.fetchDeleteMember
+                                        .fetch()
                                         .then(() => {
                                             let members = [...this.props.members]
                                             const index = members.findIndex(x => x.id === id)
@@ -83,10 +87,14 @@ class _MembersMe extends React.PureComponent {
                                             this.props.setMembers(members)
                                             if (members.length === 0) { //If no more member, get one empty
                                                 this.setState({ isLoading: true },
-                                                    () => request.getNewMember()
-                                                        .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
-                                                        .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
-                                                        .finally(() => this.setState({ isLoading: false }))
+                                                    () => {
+                                                        this.fetchGetNewMember = request.getNewMember()
+                                                        this.fetchGetNewMember
+                                                            .fetch()
+                                                            .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
+                                                            .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
+                                                            .finally(() => this.setState({ isLoading: false }))
+                                                    }
                                                 )
                                             } else {
                                                 this.setState({ isLoading: false, page: 1, currentPivot: 0 })
@@ -106,10 +114,14 @@ class _MembersMe extends React.PureComponent {
                                 this.props.setMembers(members)
                                 if (members.length === 0) { //If no more member, get one empty
                                     this.setState({ isLoading: true },
-                                        () => request.getNewMember()
-                                            .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
-                                            .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
-                                            .finally(() => this.setState({ isLoading: false }))
+                                        () => {
+                                            this.fetchGetNewMember = request.getNewMember()
+                                            this.fetchGetNewMember
+                                                .fetch()
+                                                .then(res => this.setState({ currentPivot: 0, errorField: {}, page: 1 }, () => this.props.setMembers([res])))
+                                                .catch(err => this.setState({ errorField: err?.form?.children }, () => this.props.setMessageBar(true, MessageBarType.error, err)))
+                                                .finally(() => this.setState({ isLoading: false }))
+                                        }
                                     )
                                 }
                                 this.props.setMessageBar(true, MessageBarType.success, 'Le membre à bien été supprimé')
@@ -132,7 +144,9 @@ class _MembersMe extends React.PureComponent {
         this.props.setCommand(this.commandRead)
 
         //Check if none member to find member from previous year
-        request.getMePreviousMember()
+        this.fetchGetMePreviousMember = request.getMePreviousMember()
+        this.fetchGetMePreviousMember
+            .fetch()
             .then(res => {
                 // this.props.setMessageBar(false)
                 this.setState({ prevMembers: res, prevMembersSelected: res },
@@ -175,6 +189,14 @@ class _MembersMe extends React.PureComponent {
             if (this.state.isLoading) this.props.setCommand([])
             if (!this.state.isLoading) this.props.setCommand(this.commandRead)
         }
+    }
+
+    componentWillUnmount() {
+        if (this.fetchGetNewMember) this.fetchGetNewMember.cancel()
+        if (this.fetchDeleteMember) this.fetchDeleteMember.cancel()
+        if (this.fetchGetMePreviousMember) this.fetchGetMePreviousMember.cancel()
+        if (this.fetchEditOrCreateMember) this.fetchEditOrCreateMember.cancel()
+        if (this.fetchValidateMemberDocument) this.fetchValidateMemberDocument.cancel()
     }
 
     showModalPrevMembers() {
@@ -319,7 +341,9 @@ class _MembersMe extends React.PureComponent {
                                                                                 if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         this.props.setMessageBar(false)
-                                                                                        request.editOrCreateMember(member?.id, { ...member })
+                                                                                        this.fetchEditOrCreateMember = request.editOrCreateMember(member?.id, { ...member })
+                                                                                        this.fetchEditOrCreateMember
+                                                                                            .fetch()
                                                                                             .then(res => {
                                                                                                 this.props.editMember(res, i)
                                                                                                 this.setState({ errorField: {}, page: this.state.page + 1 })
@@ -366,7 +390,9 @@ class _MembersMe extends React.PureComponent {
                                                                                 if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         this.props.setMessageBar(false)
-                                                                                        request.validateMemberDocument(member?.id)
+                                                                                        this.fetchValidateMemberDocument = request.validateMemberDocument(member?.id, { ...member })
+                                                                                        this.fetchValidateMemberDocument
+                                                                                            .fetch()
                                                                                             .then(res => {
                                                                                                 this.props.editMember(res, i)
                                                                                                 this.setState({ errorField: {}, page: this.state.page + 1 })

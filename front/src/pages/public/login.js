@@ -22,10 +22,16 @@ class _Login extends React.PureComponent {
         this.props.signout()
     }
 
+    componentWillUnmount() {
+        if (this.fetchAuthenticate) this.fetchAuthenticate.cancel()
+    }
+
     handleSubmit(ev) {
         ev.preventDefault()
         this.setState({ isLoading: true }, () => {
-            request.authenticate({ username: this.state.username, plainPassword: this.state.plainPassword })
+            this.fetchAuthenticate = request.authenticate({ username: this.state.username, plainPassword: this.state.plainPassword })
+            this.fetchAuthenticate
+                .fetch()
                 .then(res => {
                     this.props.signin(res.token)
                     this.props.setMessageBar(false)

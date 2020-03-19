@@ -54,13 +54,19 @@ class _TeamsAll extends ParentPage {
         ])
 
         this.setState({ isLoading: true }, () => {
-            request.getAllTeams()
+            this.fetchGetAllTeams = request.getAllTeams()
+            this.fetchGetAllTeams
+                .fetch()
                 .then(data => this.setState({ items: data }))
                 .catch(err => {
                     this.props.setMessageBar(true, MessageBarType.error, err)
                 })
                 .finally(() => this.setState({ isLoading: false }))
         })
+    }
+
+    componentWillUnmount() {
+        if (this.fetchGetAllTeams) this.fetchGetAllTeams.cancel()
     }
 
     render() {

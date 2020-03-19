@@ -20,9 +20,9 @@ class TeamControllerTest extends WebTestCase
     private $faker;
     private $entityManager;
 
-    public function __construct()
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
-        parent::__construct();
+        parent::__construct($name, $data, $dataName);
         $this->faker = Faker\Factory::create('fr_FR');
         $this->entityManager = self::bootKernel()->getContainer()->get('doctrine')->getManager();
     }
@@ -53,7 +53,7 @@ class TeamControllerTest extends WebTestCase
     {
         parent::tearDown();
         $this->clearResources();
-        if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
+        // if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
     }
 
     /**
@@ -167,12 +167,12 @@ class TeamControllerTest extends WebTestCase
             'coaches' => $this->faker->name(),
             'trainers' => $this->faker->name()
         ]));
-        
+
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('label', $data);
     }
-    
+
     public function testCannotPutOneTeamByNoneExistingId()
     {
         $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
@@ -186,7 +186,7 @@ class TeamControllerTest extends WebTestCase
             'coaches' => $this->faker->name(),
             'trainers' => $this->faker->name()
         ]));
-        
+
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 
@@ -215,16 +215,16 @@ class TeamControllerTest extends WebTestCase
         $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
         $client->request(Constants::DELETE, '/api/team/1');
-        
+
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
-    
+
     public function testCannotDeleteOneTeamByNoneExistingId()
     {
         $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
         $client->request(Constants::DELETE, '/api/team/666');
-        
+
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 }

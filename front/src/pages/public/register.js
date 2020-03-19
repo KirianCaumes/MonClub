@@ -23,11 +23,17 @@ class _Register extends React.PureComponent {
         this.props.signout()
     }
 
+    componentWillUnmount() {
+        if (this.fetchRegister) this.fetchRegister.cancel()
+    }
+
     handleSubmit(ev) {
         ev.preventDefault()
 
         this.setState({ isLoading: true }, () => {
-            request.register({ username: this.state.username, plainPassword: this.state.plainPassword })
+            this.fetchRegister = request.register({ username: this.state.username, plainPassword: this.state.plainPassword })
+            this.fetchRegister
+                .fetch()
                 .then(res => {
                     this.props.signin(res.token)
                     this.props.setMessageBar(false)

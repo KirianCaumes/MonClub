@@ -35,6 +35,19 @@ class _SettingsGeneral extends React.PureComponent {
         this.props.setCommand([])
     }
 
+    componentWillUnmount() {
+        if (this.fetchPresidentFirstname) this.fetchPresidentFirstname.cancel()
+        if (this.fetchPresidentLastname) this.fetchPresidentLastname.cancel()
+        if (this.fetchSecretaryFirstname) this.fetchSecretaryFirstname.cancel()
+        if (this.fetchSecretaryLastname) this.fetchSecretaryLastname.cancel()
+        if (this.fetchCurrentSeason) this.fetchCurrentSeason.cancel()
+        if (this.fetchNewMemberDeadline) this.fetchNewMemberDeadline.cancel()
+        if (this.fetchIsCreateNewMemberAble) this.fetchIsCreateNewMemberAble.cancel()
+        if (this.fetchIsCreateNewUserAble) this.fetchIsCreateNewUserAble.cancel()
+        if (this.fetchTextInfosAdmin) this.fetchTextInfosAdmin.cancel()
+        if (this.fetchTextInfosUser) this.fetchTextInfosUser.cancel()
+    }
+
     render() {
         const { param } = this.props
 
@@ -55,10 +68,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('president_firstname', this.state.president_firstname)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchPresidentFirstname = request.editParam('president_firstname', this.state.president_firstname)
+                                        this.fetchPresidentFirstname
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -73,13 +89,17 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('president_lastname', this.state.president_lastname)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchPresidentLastname = request.editParam('president_lastname', this.state.president_lastname)
+                                        this.fetchPresidentLastname
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
-                        </Columns.Column><Columns.Column>
+                        </Columns.Column>
+                        <Columns.Column>
                             <Label required htmlFor="secretary_firstname">Prénom du secrétaire</Label>
                             <div className="flex-row">
                                 <TextField
@@ -90,10 +110,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('secretary_firstname', this.state.secretary_firstname)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchSecretaryFirstname = request.editParam('secretary_firstname', this.state.secretary_firstname)
+                                        this.fetchSecretaryFirstname
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -108,10 +131,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('secretary_lastname', this.state.secretary_lastname)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchSecretaryLastname = request.editParam('secretary_lastname', this.state.secretary_lastname)
+                                        this.fetchSecretaryLastname
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -128,10 +154,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editCurrentSeason(this.state.current_season)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchCurrentSeason = request.editParam('current_season', this.state.current_season)
+                                        this.fetchCurrentSeason
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -147,10 +176,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('new_member_deadline', dateToString(this.state.new_member_deadline))
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchNewMemberDeadline = request.editParam('new_member_deadline', dateToString(this.state.new_member_deadline))
+                                        this.fetchNewMemberDeadline
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -166,10 +198,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('is_create_new_member_able', this.state.is_create_new_member_able)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchIsCreateNewMemberAble = request.editParam('is_create_new_member_able', this.state.is_create_new_member_able)
+                                        this.fetchIsCreateNewMemberAble
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -185,10 +220,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('is_create_new_user_able', this.state.is_create_new_user_able)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchIsCreateNewUserAble = request.editParam('is_create_new_user_able', this.state.is_create_new_user_able)
+                                        this.fetchIsCreateNewUserAble
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -208,10 +246,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('text_infos_admin', this.state.text_infos_admin)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchTextInfosAdmin = request.editParam('text_infos_admin', this.state.text_infos_admin)
+                                        this.fetchTextInfosAdmin
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>
@@ -228,10 +269,13 @@ class _SettingsGeneral extends React.PureComponent {
                                 <IconButton
                                     iconProps={{ iconName: 'Save' }}
                                     title="Enregistrer"
-                                    onClick={() => request.editParam('text_infos_user', this.state.text_infos_user)
-                                        .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
-                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                    }
+                                    onClick={() => {
+                                        this.fetchTextInfosUser = request.editParam('text_infos_user', this.state.text_infos_user)
+                                        this.fetchTextInfosUser
+                                            .fetch()
+                                            .then(() => this.props.setMessageBar(true, MessageBarType.success, <>L'élément à bien été mise à jour. Veuillez actualiser l'application en cliquant sur le bouton " <Icon iconName='Refresh' /> " en haut à droite de l'interface.</>))
+                                            .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
+                                    }}
                                 />
                             </div>
                         </Columns.Column>

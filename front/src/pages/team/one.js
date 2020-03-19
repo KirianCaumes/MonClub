@@ -53,7 +53,9 @@ class _TeamOne extends React.PureComponent {
                     this.setState({ isLoading: true, readOnly: true }, () => {
                         this.props.setCommand([])
                         if (!!this.props.match?.params?.id) {
-                            request.editTeam(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditTeam = request.editTeam(this.props.match?.params?.id, { ...this.state.data })
+                            this.fetchEditTeam
+                                .fetch()
                                 .then(res => this.setState({ data: res }, () => {
                                     this.props.setCommand(commandRead)
                                     this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été modifiée.')
@@ -70,7 +72,9 @@ class _TeamOne extends React.PureComponent {
                                 })
                                 .finally(() => this.setState({ isLoading: false }))
                         } else {
-                            request.createTeam({ ...this.state.data })
+                            this.fetchCreateTeam = request.createTeam({ ...this.state.data })
+                            this.fetchCreateTeam
+                                .fetch()
                                 .then(data => {
                                     this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été créée.')
                                     history.push(`/equipe/${data.id}`)
@@ -95,7 +99,9 @@ class _TeamOne extends React.PureComponent {
                         "Êtes-vous certains de vouloir supprimer l'équipe ? Cette action est définitive.",
                         () => {
                             this.setState({ isLoading: true, readOnly: true }, () => {
-                                request.deleteTeam(this.props.match?.params?.id)
+                                this.fetchDeleteTeam = request.deleteTeam(this.props.match?.params?.id)
+                                this.fetchDeleteTeam
+                                    .fetch()
                                     .then(() => {
                                         this.props.setCommand(commandRead)
                                         this.props.setMessageBar(true, MessageBarType.success, 'L\'équipe à bien été supprimée.')
@@ -115,6 +121,12 @@ class _TeamOne extends React.PureComponent {
         ]
 
         this.props.setCommand(!this.props.match?.params?.id ? commandEdit : commandRead)
+    }
+
+    componentWillUnmount() {
+        if (this.fetchEditTeam) this.fetchEditTeam.cancel()
+        if (this.fetchCreateTeam) this.fetchCreateTeam.cancel()
+        if (this.fetchDeleteTeam) this.fetchDeleteTeam.cancel()
     }
 
     render() {
