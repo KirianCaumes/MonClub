@@ -667,7 +667,10 @@ class MemberController extends AbstractFOSRestController
 
         //Find member by id
         $members = $this->getDoctrine()->getRepository(Member::class)->findBy(['user' => $this->getUser(), 'is_payed' => false, 'season' => $paramService->getCurrentSeason()]);
-
+        if (!sizeof($members)) {
+            return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_NOT_FOUND));
+        }
+        
         //Check docs
         foreach ($members as $member) {
             if (!$member->getIsDocumentComplete()) {
@@ -699,7 +702,7 @@ class MemberController extends AbstractFOSRestController
                         );
                     }
                 } else {
-                    return $this->handleView($this->view(["message" => $translator->trans('not_found')], Response::HTTP_BAD_REQUEST));
+                    return $this->handleView($this->view(["message" => $form->getErrors()], Response::HTTP_BAD_REQUEST));
                 }
                 break;
             case 3: //Set amount other pay if solution 3 "cheque & coupons"

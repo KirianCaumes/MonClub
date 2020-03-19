@@ -32,10 +32,32 @@ class FileControllerTest extends WebTestCase
     }
 
     //Before all test
+    static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        TraitTest::saveResources();
+    }
+
+    //After all test
+    static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        TraitTest::restoreResources();
+    }
+
+    //Before each test
     public function setUp()
     {
         parent::setup();
         $this->loadMyFixtures();
+    }
+
+    //After each test
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->clearResources();
+        if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
     }
 
     /**
@@ -104,7 +126,7 @@ class FileControllerTest extends WebTestCase
 
         $client->request(Constants::GET, '/api/document/666/attestation');
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }    
+    }
 
     public function testCannotGetDocumentAttestationByNonePayedMemberId()
     {

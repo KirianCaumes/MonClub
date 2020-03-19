@@ -196,6 +196,7 @@ class Member
 
     /**
      * @Assert\LessThan(propertyPath="amount_payed")
+     * @Assert\GreaterThanOrEqual(0)
      * @ORM\Column(type="integer", precision=5, scale=2, nullable=true)
      */
     private $amount_payed_other;
@@ -918,7 +919,7 @@ class Member
         return $this->sex;
     }
 
-    public function setSex(ParamSex $sex): self
+    public function setSex(?ParamSex $sex): self
     {
         $this->sex = $sex;
 

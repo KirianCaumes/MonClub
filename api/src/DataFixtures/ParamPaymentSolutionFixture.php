@@ -44,6 +44,6 @@ class ParamPaymentSolutionFixture extends Fixture implements OrderedFixtureInter
      */
     public function getOrder()
     {
-        return 12;
+        return 13;
     }
 }

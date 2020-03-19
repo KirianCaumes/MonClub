@@ -70,6 +70,6 @@ class ParamPriceLicenseFixture extends Fixture implements OrderedFixtureInterfac
      */
     public function getOrder()
     {
-        return 7;
+        return 8;
     }
 }

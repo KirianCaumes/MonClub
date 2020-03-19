@@ -18,6 +18,7 @@
 
     <testsuites>
         <testsuite name="Project">
+            <directory>./src/Test/Voter</directory>
             <directory>./src/Test/Controller</directory>
         </testsuite>
     </testsuites>

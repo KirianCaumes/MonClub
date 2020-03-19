@@ -51,6 +51,6 @@ class DocumentFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 9;
+        return 10;
     }
 }

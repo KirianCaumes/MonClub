@@ -48,6 +48,7 @@ class UserFixture extends Fixture implements OrderedFixtureInterface
             ->setEnabled(true)
             ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([$team]))
             ->setRoles([Constants::ROLE_COACH]);
+        $this->addReference('coach', $user);
 
         $manager->persist($user);
 
@@ -61,6 +62,19 @@ class UserFixture extends Fixture implements OrderedFixtureInterface
 
         $manager->persist($user);
         $this->addReference('user', $user);
+
+        $manager->flush();
+
+        $user = new User();
+        $user
+            ->setEmail('user2@mail.com')
+            ->setUsername('user2@mail.com')
+            ->setPlainPassword('123456789azerty+*/')
+            ->setEnabled(true)
+            ->setRoles([]);
+
+        $manager->persist($user);
+        $this->addReference('user2', $user);
 
         $manager->flush();
     }

@@ -18,9 +18,11 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
     {
         $faker = Faker\Factory::create('fr_FR');
         $user = $this->getReference('user');
+        $user2 = $this->getReference('user2');
         $paramSeason = $this->getReference('param-season');
         $oldParamSeason = $this->getReference('old-param-season');
         $team = $this->getReference('team');
+        $sex = $this->getReference('param-sex');
 
         for ($i = 0; $i < 25; $i++) {
             $member = new Member();
@@ -29,19 +31,19 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
                 ->setLastname($faker->lastName())
                 ->setBirthdate($faker->dateTime('2014-01-01 00:00:00'))
                 ->setEmail($faker->email())
-                ->setPhoneNumber($faker->phoneNumber())
-                ->setPostalCode($faker->postcode())
+                ->setPhoneNumber('0123456789')
+                ->setPostalCode(44470)
                 ->setStreet($faker->country())
                 ->setCity($faker->city())
                 ->setProfession($faker->jobTitle())
                 ->setParentOneFirstname($faker->firstName())
                 ->setParentOneLastname($faker->lastName())
-                ->setParentOnePhoneNumber($faker->phoneNumber())
+                ->setParentOnePhoneNumber('0123456789')
                 ->setParentOneEmail($faker->email())
                 ->setParentOneProfession($faker->jobTitle())
                 ->setParentTwoFirstname($faker->firstName())
                 ->setParentTwoLastname($faker->lastName())
-                ->setParentTwoPhoneNumber($faker->phoneNumber())
+                ->setParentTwoPhoneNumber('0123456789')
                 ->setParentTwoEmail($faker->email())
                 ->setParentTwoProfession($faker->jobTitle())
                 ->setIsEvacuationAllow($faker->boolean())
@@ -67,10 +69,11 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
                 ->setGesthandIsFfhbAuthorization(false)
                 ->setGesthandQualificationDate(null)
                 ->setCreationDatetime(new \DateTime())
+                ->setSex($sex)
                 ->setNotes(null)
-                ->setSeason($i < 5 ? $paramSeason : $oldParamSeason)
-                ->setUser($i < 2 || $i === 10 ? $user : null)
-                ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([$team]));
+                ->setSeason($i < 5 || $i > 10 ? $paramSeason : $oldParamSeason)
+                ->setUser($i < 2 || $i === 10 ? $user : $user2)
+                ->setTeams($i < 15 ? new \Doctrine\Common\Collections\ArrayCollection([$team]) : new \Doctrine\Common\Collections\ArrayCollection([]));
             if ($i === 0) $this->addReference('member', $member);
             $manager->persist($member);
         }
@@ -84,6 +87,6 @@ class MemberFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 5;
+        return 6;
     }
 }

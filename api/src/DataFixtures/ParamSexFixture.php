@@ -28,12 +28,15 @@ class ParamSexFixture extends Fixture implements OrderedFixtureInterface
         ];
 
         foreach ($data as $el) {
-            $paramPaymentSolution = new ParamSex();
-            $paramPaymentSolution
+            $paramSex = new ParamSex();
+            $paramSex
                 ->setLabel($el['label'])
                 ->setIcon($el['icon'])
                 ->setCivility($el['civility']);
-            $manager->persist($paramPaymentSolution);
+            $manager->persist($paramSex);
+            if ($el['id'] === 1) {
+                $this->addReference('param-sex', $paramSex);
+            }
         }
 
         $manager->flush();
@@ -45,6 +48,6 @@ class ParamSexFixture extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 13;
+        return 5;
     }
 }

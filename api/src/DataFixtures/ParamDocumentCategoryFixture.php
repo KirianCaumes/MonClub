@@ -41,6 +41,6 @@ class ParamDocumentCategoryFixture extends Fixture implements OrderedFixtureInte
      */
     public function getOrder()
     {
-        return 8;
+        return 9;
     }
 }

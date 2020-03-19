@@ -5,11 +5,14 @@ namespace App\Test\Controller;
 use App\Constants;
 use App\Entity\Member;
 use App\Entity\Param\ParamGlobal;
+use App\Entity\Param\ParamSeason;
+use App\Entity\Param\ParamSex;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Faker;
 use App\Test\TraitTest;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Member controller test
@@ -30,10 +33,32 @@ class MemberControllerTest extends WebTestCase
     }
 
     //Before all test
+    static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        TraitTest::saveResources();
+    }
+
+    //After all test
+    static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        TraitTest::restoreResources();
+    }
+
+    //Before each test
     public function setUp()
     {
         parent::setup();
         $this->loadMyFixtures();
+    }
+
+    //After each test
+    public function tearDown()
+    {
+        parent::tearDown();
+        $this->clearResources();
+        if (!empty(self::bootKernel()->getContainer()->get('doctrine')->getManager())) self::bootKernel()->getContainer()->get('doctrine')->getManager()->getConnection()->close();
     }
 
     /**
@@ -349,8 +374,7 @@ class MemberControllerTest extends WebTestCase
     {
         $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::POST, '/api/member/admin', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
-        ]));
+        $client->request(Constants::POST, '/api/member/admin', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([]));
 
         $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
@@ -505,7 +529,7 @@ class MemberControllerTest extends WebTestCase
     }
 
     public function testCannotPostOneMemberWithDeadline()
-    {        
+    {
         $param = $this->entityManager->getRepository(ParamGlobal::class)->findOneBy(['label' => 'new_member_deadline']);
         $param->setValue($this->faker->dateTimeBetween('-99 years', '-1 years')->format('Y-m-d'));
         $this->entityManager->persist($param);
@@ -519,7 +543,7 @@ class MemberControllerTest extends WebTestCase
     }
 
     public function testCannotPostAdminOneMemberWithCreationDisable()
-    {        
+    {
         $param = $this->entityManager->getRepository(ParamGlobal::class)->findOneBy(['label' => 'is_create_new_member_able']);
         $param->setValue('false');
         $this->entityManager->persist($param);
@@ -943,7 +967,7 @@ class MemberControllerTest extends WebTestCase
     }
 
     public function testCannotPutOneMemberWithDeadline()
-    {        
+    {
         $param = $this->entityManager->getRepository(ParamGlobal::class)->findOneBy(['label' => 'new_member_deadline']);
         $param->setValue($this->faker->dateTimeBetween('-99 years', '-1 years')->format('Y-m-d'));
         $this->entityManager->persist($param);
@@ -957,7 +981,7 @@ class MemberControllerTest extends WebTestCase
     }
 
     public function testCannotPutOneMemberWithCreationDisable()
-    {        
+    {
         $param = $this->entityManager->getRepository(ParamGlobal::class)->findOneBy(['label' => 'is_create_new_member_able']);
         $param->setValue('false');
         $this->entityManager->persist($param);
@@ -1055,6 +1079,348 @@ class MemberControllerTest extends WebTestCase
         $client = $this->createAuthenticatedClient('coach@mail.com', '123456789azerty+*/');
         $client->request(Constants::GET, '/api/member/666/price');
 
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Route [POST] /api/member/{id}/validate-document
+     */
+    public function testPostValidateDocumentMemberById()
+    {
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+
+        $srcBase = __DIR__ . "/../../../public/img/logo.png";
+        $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
+        copy($srcBase, $srcNew);
+        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+        $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
+
+        copy($srcBase, $srcNew);
+        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+        $client->request(Constants::POST, '/api/document/2/2', [], ['documentFile' => $file]);
+
+        $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
+        $member
+            ->setIsReducedPrice(true)
+            ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+            ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+            ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+            ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+
+        $this->entityManager->persist($member);
+        $this->entityManager->flush();
+
+        $client->request(Constants::POST, '/api/member/2/validate-document');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostValidateDocumentMemberByIdWithoutReducedPrice()
+    {
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+
+        $srcBase = __DIR__ . "/../../../public/img/logo.png";
+        $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
+        copy($srcBase, $srcNew);
+        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+        $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
+
+        $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
+        $member
+            ->setIsReducedPrice(false)
+            ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+            ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+            ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+            ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+
+        $this->entityManager->persist($member);
+        $this->entityManager->flush();
+
+        $client->request(Constants::POST, '/api/member/2/validate-document');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostValidateDocumentMemberByIdWithoutDocs()
+    {
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+
+        $client->request(Constants::POST, '/api/member/2/validate-document');
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostValidateDocumentMemberByIdByNoneExistingId()
+    {
+        $client = $this->createAuthenticatedClient('coach@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/666/validate-document');
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Route [POST] /api/member/me/pay
+     */
+    public function testPostPayMeWithPaypal()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 1,
+            'paypalInfos' => [
+                'id_payment' => $this->faker->word(),
+                'creation_datetime' => $this->faker->dateTime()->format('Y-m-d h:m:s'),
+                'amount' => $this->faker->numberBetween(0, 200),
+                'currency' => $this->faker->currencyCode(),
+                'email' => $this->faker->email(),
+                'country' => $this->faker->country(),
+                'firstname' => $this->faker->firstName(),
+                'lastname' => $this->faker->lastName(),
+                'data' => $this->faker->text(),
+            ]
+        ]));
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostPayMeWithPaypalAndWrongData()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 1,
+            'paypalInfos' => [
+                'id_payment' => $this->faker->word(),
+                'creation_datetime' => $this->faker->dateTime()->format('Y-m-d h:m:s'),
+                'amount' => 'abcdef',
+                'currency' => $this->faker->currencyCode(),
+                'email' => $this->faker->email(),
+                'country' => $this->faker->country(),
+                'firstname' => $this->faker->firstName(),
+                'lastname' => $this->faker->lastName(),
+                'data' => $this->faker->text(),
+            ]
+        ]));
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostPayMeWithCheques()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 3,
+            'each' => [
+                [
+                    'id' => 1,
+                    'price_other' => $this->faker->numberBetween(0, 200)
+                ]
+            ]
+        ]));
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostPayMeWithChequesAndWrongData()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 3,
+            'each' => [
+                [
+                    'id' => 1,
+                    'price_other' => -666
+                ]
+            ]
+        ]));
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostPayMeWithOther()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 2
+        ]));
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostPayMeWitoutMembers()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            $entity = $this->entityManager->merge($member);
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay');
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostPayMeWitMembersNotDocumentCompleted()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $member
+                    ->setIsDocumentComplete(false)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($member);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay');
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCannotPostPayMeWithWrongPaymentId()
+    {
+        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+        //Keep only one member for easiest test
+        foreach ($members as $member) {
+            if ($member->getId() > 1) {
+                $entity = $this->entityManager->merge($member);
+                $this->entityManager->remove($entity);
+                $this->entityManager->flush();
+            } else {
+                $entity = $this->entityManager->merge($member);
+                $entity
+                    ->setIsDocumentComplete(true)
+                    ->setIsPayed(false)
+                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+            }
+        }
+
+        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+        $client->request(Constants::POST, '/api/member/me/pay', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'payment_solution' => 666,
+        ]));
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 }

@@ -45,6 +45,6 @@ class ParamReductionFamilyFixture extends Fixture implements OrderedFixtureInter
      */
     public function getOrder()
     {
-        return 11;
+        return 12;
     }
 }
