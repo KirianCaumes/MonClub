@@ -56,7 +56,7 @@ class _MemberOne extends React.PureComponent {
                 key: 'cancel',
                 text: 'Annuler',
                 iconProps: { iconName: 'Cancel' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: this.state.initData }, () => this.props.setCommand(commandRead)),
+                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: { ...this.state.initData }, errorField: {} }, () => this.props.setCommand(commandRead)),
                 disabled: !this.props.match?.params?.id
             },
             {
@@ -477,7 +477,7 @@ class _MemberOne extends React.PureComponent {
                             >
                                 <IconButton
                                     iconProps={{ iconName: 'RedEye' }}
-                                    disabled={this.state.priceLoading}
+                                    disabled={this.state.priceLoading || !this.props.match?.params?.id}
                                     onClick={() => this.setState({ priceLoading: true },
                                         () => request.getMemberPrice(data?.id)
                                             .then(res => this.showModalDetailPrice(res.position, res.price, res.paramPrice))

@@ -14,3 +14,7 @@ password_blacklisted: Ce mot de passe est blacklisté.
 
 #File:
 mimeTypesMessage: Le type du fichier est invalide ({{ type }}). Les types autorisés sont les images (PNG/JPG/JPEG) ou les documents (PDF).
+
+#Other
+invalid_birthdate_too_youg: "Vous semblez trop jeune pour rejoindre le club. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le club."
+invalid_birthdate_too_old: "Vous semblez trop âgé pour rejoindre le club. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le club."

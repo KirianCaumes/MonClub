@@ -6,6 +6,7 @@ use App\Entity\Param\ParamPaymentSolution;
 use App\Entity\Param\ParamSeason;
 use App\Entity\Param\ParamSex;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraints as MyAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 
@@ -37,8 +38,8 @@ class Member
     /**
      * @Assert\NotBlank(message = "not_blank")
      * @Assert\Date(message = "invalid_date")
-     * @Assert\GreaterThanOrEqual("-99 years")
-     * @Assert\LessThan("-4 years")
+     * @Assert\LessThan("now")
+     * @MyAssert\Birthdate
      * @ORM\Column(type="date")
      */
     private $birthdate;

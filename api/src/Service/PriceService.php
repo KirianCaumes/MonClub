@@ -96,15 +96,18 @@ class PriceService
             (int) $member->getBirthdate()->format('Y'),
             $this->currentSeason
         );
-        if (
-            ($useCreationDt ? $member->getCreationDatetime() : new \DateTime())
-            <=
-            $this->currentParamGlobalPrice->getDeadlineDate()
-        ) {
-            return $paramPriceLicense->getPriceBeforeDeadline();
-        } else {
-            return $paramPriceLicense->getPriceAfterDeadline();
+        if ($paramPriceLicense) {
+            if (
+                ($useCreationDt ? $member->getCreationDatetime() : new \DateTime())
+                <=
+                $this->currentParamGlobalPrice->getDeadlineDate()
+            ) {
+                return $paramPriceLicense->getPriceBeforeDeadline();
+            } else {
+                return $paramPriceLicense->getPriceAfterDeadline();
+            }
         }
+        return 0;
     }
 
     /**

@@ -42,7 +42,7 @@ class _TeamOne extends React.PureComponent {
                 key: 'cancel',
                 text: 'Annuler',
                 iconProps: { iconName: 'Cancel' },
-                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: { ...this.state.initData } }, () => this.props.setCommand(commandRead)),
+                onClick: () => this.setState({ readOnly: !this.state.readOnly, data: { ...this.state.initData }, errorField: {} }, () => this.props.setCommand(commandRead)),
                 disabled: !this.props.match?.params?.id
             },
             {
