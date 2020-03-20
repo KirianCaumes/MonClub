@@ -1,6 +1,6 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { Label, DetailsList, SelectionMode, Icon } from 'office-ui-fabric-react'
+import { Label, DetailsList, SelectionMode } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 
@@ -23,9 +23,6 @@ class _Constants extends React.PureComponent {
         return (
             <section>
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='OfflineStorage' /> Liste des contantes</h1>
-                    </div>
                     <Label>Équipe :</Label>
                     <DetailsList
                         items={param?.teams ?? []}
@@ -148,12 +145,28 @@ class _Constants extends React.PureComponent {
                         items={param?.roles ?? []}
                         columns={[
                             {
-                                key: 'name',
-                                name: 'Nom',
+                                key: 'key',
+                                name: 'Clé',
+                                fieldName: 'key',
                                 minWidth: 70,
                                 maxWidth: 200,
-                                isResizable: true,
-                                onRender: el => <>{el}</>
+                                isResizable: true
+                            },
+                            {
+                                key: 'text',
+                                name: 'Texte',
+                                fieldName: 'text',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
+                            },
+                            {
+                                key: 'icon',
+                                name: 'Icon',
+                                fieldName: 'icon',
+                                minWidth: 70,
+                                maxWidth: 200,
+                                isResizable: true
                             }
                         ]}
                         selectionMode={SelectionMode.none}

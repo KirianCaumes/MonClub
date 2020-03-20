@@ -24,7 +24,9 @@ class _MembersMePayment extends React.PureComponent {
 
     componentDidMount() {
         this.props.setCommand([])
-        request.getMeMemberPrices().fetch()
+        this.fetchGetMeMemberPrices = request.getMeMemberPrices()
+        this.fetchGetMeMemberPrices
+            .fetch()
             .then(res => this.setState({ summary: res.price }))
             .catch(err => {
                 this.props.goBack()
@@ -34,6 +36,11 @@ class _MembersMePayment extends React.PureComponent {
                 this.setState({ isLoading: false })
                 this.props.setCommand(this.props.command) //Re set commandbar
             })
+    }
+
+    componentWillUnmount() {
+        if (this.fetchGetMeMemberPrices) this.fetchGetMeMemberPrices.cancel()
+        if (this.fetchPay) this.fetchPay.cancel()
     }
 
     pay(paypalInfos = null) {
@@ -50,12 +57,14 @@ class _MembersMePayment extends React.PureComponent {
         }
 
         this.props.setCommand([])
-        this.setState({ isLoading: true }, () =>
-            request.pay({
+        this.setState({ isLoading: true }, () => {
+            this.fetchPay = request.pay({
                 payment_solution: this.state.paymentKey,
                 each: this.state.summary?.each,              //Use for paymentKey 3 "cheque et coupons"
                 paypalInfos: serializedPaypalInfos           //Use for paymentKey 1 "paypal"   
-            }).fetch()
+            })
+            this.fetchPay
+                .fetch()
                 .then(res => {
                     this.props.setMessageBar(true, MessageBarType.success, 'Votre paiement a bien été pris en compte.')
                     this.props.setMembers(res)
@@ -66,7 +75,7 @@ class _MembersMePayment extends React.PureComponent {
                     this.props.setMessageBar(true, MessageBarType.error, err)
                     this.props.setCommand(this.props.command) //Re set commandbar
                 })
-        )
+        })
     }
 
     render() {

@@ -137,7 +137,7 @@ class _Layout extends React.PureComponent {
     }
 
     render() {
-        const { selectedKeyURL, breadcrumb, command, messageBar, me } = this.props
+        const { selectedKeyURL, breadcrumb, command, messageBar, me, param } = this.props
         const { menu } = this.state
 
         if (!this.props.isDisplay) return this.props.children
@@ -147,6 +147,7 @@ class _Layout extends React.PureComponent {
                 <Header
                     menu={this.filterMenu(menu)}
                     me={me}
+                    param={param}
                     refresh={() => this.props.refresh()}
                 />
                 <div className="layout" >
@@ -199,6 +200,7 @@ const mapStateToProps = state => {
     return {
         selectedKeyURL: state.common.selectedKeyURL,
         me: state.user.me,
+        param: state.user.param,
         messageBar: state.common.messageBar,
         breadcrumb: state.common.breadcrumb,
         command: state.common.command

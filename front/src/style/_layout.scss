@@ -1,5 +1,13 @@
 $menuWith: 230px;
 
+div.panel-user {
+  .flex-row.flex-start {
+    i {
+      height: 32px;
+    }
+  }
+}
+
 div#root {
   .pageloader {
     background: linear-gradient(to right bottom, $blue 0%, $blue 75%, $dark-blue) !important;
@@ -193,8 +201,10 @@ div#root {
           }
           .ms-Breadcrumb-overflow {
             > button {
-              &:active, &:hover, &.is-expanded {
-                background: rgba(234, 234, 234, 0.2)!important;
+              &:active,
+              &:hover,
+              &.is-expanded {
+                background: rgba(234, 234, 234, 0.2) !important;
               }
             }
           }

@@ -108,10 +108,6 @@ class _SettingsPrice extends React.PureComponent {
         this.props.setCommand(this.commandEdit)
     }
 
-    getValues() {
-
-    }
-
     render() {
         const { data, seasonIdSelected, isLoading, errorField } = this.state
         const { param } = this.props

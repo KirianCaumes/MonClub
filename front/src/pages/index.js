@@ -54,7 +54,7 @@ class _Index extends React.PureComponent {
                 <Columns>
                     <Columns.Column size="two-thirds">
                         <div className="card">
-                            <Text variant="large" block><Icon iconName='WavingHand' /> Bonjour {this.props.me?.username}</Text>
+                            <Text variant="large" block><Icon iconName='WavingHand' /> Bonjour <span className="is-capitalized">{this.props.me?.username?.split('@')?.[0]?.replace('.', ' ')}</span></Text>
                             <Divider />
                             <Text as="p" block>
                                 <span dangerouslySetInnerHTML={{ __html: this.props.data?.text }} />

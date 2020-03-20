@@ -70,8 +70,15 @@ class ParamController extends AbstractFOSRestController
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
-            'roles' => [Constants::ROLE_COACH, Constants::ROLE_ADMIN, Constants::ROLE_SUPER_ADMIN],
-            'choices' => [['key' => 'true', 'text' => 'Oui', 'icon' => 'Accept'], ['key' => 'false', 'text' => 'Non', 'icon' => 'Cancel']],
+            'roles' => [
+                ['key' => Constants::ROLE_COACH, 'text' => 'Coach', 'icon' => 'AccountManagement'],
+                ['key' => Constants::ROLE_ADMIN, 'text' => 'Admin', 'icon' => 'CRMServices'],
+                ['key' => Constants::ROLE_SUPER_ADMIN, 'text' => 'Super Admin', 'icon' => 'PartyLeader']
+            ],
+            'choices' => [
+                ['key' => 'true', 'text' => 'Oui', 'icon' => 'Accept'],
+                ['key' => 'false', 'text' => 'Non', 'icon' => 'Cancel']
+            ],
             'sexes' => $this->getDoctrine()->getRepository(ParamSex::class)->findall(),
             'price' => [
                 'global' => $this->getDoctrine()->getRepository(ParamPriceGlobal::class)->findOneBy(['season' => $currentSeason]),

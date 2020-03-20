@@ -35,7 +35,6 @@
   justify-content: flex-end !important;
 }
 
-
 *.flex-space-between {
   justify-content: space-between !important;
 }
@@ -127,5 +126,13 @@ textarea {
 }
 
 .ms-Dialog-main {
-  overflow: hidden!important;
+  overflow: hidden !important;
+}
+
+@media screen and (min-width: 769px), print {
+  .column.is-one-sixth,
+  .column.is-one-sixth-tablet {
+    flex: none;
+    width: 16.66%;
+  }
 }

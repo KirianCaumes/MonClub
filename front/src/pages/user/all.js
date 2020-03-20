@@ -1,12 +1,13 @@
 import React from 'react'
 import { Columns } from 'react-bulma-components'
-import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text, Icon, Separator, Label, DefaultButton, Dropdown, TextField } from 'office-ui-fabric-react'
+import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text, Icon, Separator, Label, DefaultButton, Dropdown, TextField, getTheme } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { history } from 'helper/history'
 import request from 'helper/request'
 import ParentPage from 'pages/_parentPage'
 import DropdownIcon from 'component/dropdown'
+import getHighestRole from 'helper/getHighestRole'
 
 class _UsersAll extends ParentPage {
     constructor(props) {
@@ -46,7 +47,13 @@ class _UsersAll extends ParentPage {
                     minWidth: 70,
                     maxWidth: 200,
                     isResizable: true,
-                    onRender: user => <span className="is-capitalized">{user.roles?.join(', ')}</span>
+                    onRender: user => <span className="is-capitalized">
+                        <Icon
+                            iconName={this.props?.param?.roles?.find(y => y?.key === getHighestRole(user?.roles))?.icon}
+                            styles={{ root: { color: getTheme().palette.themePrimary, verticalAlign: 'bottom' } }}
+                        />&nbsp;
+                        {user?.roles?.length ? user?.roles?.map(x => this.props?.param?.roles?.find(y => y?.key === x)?.text)?.join(', ') : 'Utilisateur'}
+                    </span>
                 }
             ]
         }
@@ -95,9 +102,6 @@ class _UsersAll extends ParentPage {
         return (
             <section id="user-all">
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='Teamwork' /> Rechercher parmis l'ensemble des utilisateurs</h1>
-                    </div>
                     <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
                         <Columns className="search-inputs">
                             <Columns.Column >
@@ -127,7 +131,7 @@ class _UsersAll extends ParentPage {
                                     placeholder="Rôles"
                                     disabled={isLoading}
                                     multiSelect
-                                    options={[...this.props.param?.roles]?.map(x => { return { key: x, text: x } })}
+                                    options={this.props.param?.roles}
                                     selectedKeys={this.state.searchParms.roles}
                                     onChange={(ev, item) => {
                                         const newSelectedItems = [...this.state.searchParms.roles]
@@ -139,6 +143,21 @@ class _UsersAll extends ParentPage {
                                         }
                                         this.setState({ searchParms: { ...this.state.searchParms, roles: newSelectedItems } })
                                     }}
+                                    onRenderOption={option => (
+                                        <>
+                                        {option.icon && <>&nbsp;<Icon iconName={option.icon} styles={{ root: { color: getTheme().palette.themePrimary } }} />&nbsp;</>}
+                                            <span>{option.text}</span>
+                                        </>
+                                    )}
+                                    onRenderTitle={options => (
+                                        options?.map((option, i) => (
+                                            <React.Fragment key={i}>
+                                                {option.icon && <>&nbsp;<Icon iconName={option.icon} styles={{ root: { color: getTheme().palette.themePrimary } }} />&nbsp;</>}
+                                                <span>{option.text}</span>
+                                                {options?.length - 1 > i && <>, </>}
+                                            </React.Fragment>
+                                        ))
+                                    )}
                                 />
                             </Columns.Column>
                             <Columns.Column size="one-quarter">

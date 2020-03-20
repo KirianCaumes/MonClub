@@ -1,8 +1,9 @@
 import React from 'react'
 import { Navbar } from 'react-bulma-components'
-import { Icon, Panel, Label, TextField } from 'office-ui-fabric-react'
+import { Icon, Panel, Label, TextField, getTheme } from 'office-ui-fabric-react'
 import { history } from 'helper/history'
 import { dateToCleanDateTimeString } from 'helper/date'
+import getHighestRole from 'helper/getHighestRole'
 
 class Header extends React.PureComponent {
     constructor(props) {
@@ -14,7 +15,7 @@ class Header extends React.PureComponent {
     }
 
     render() {
-        const { menu, me } = this.props
+        const { menu, me, param } = this.props
 
         return (
             <>
@@ -109,6 +110,7 @@ class Header extends React.PureComponent {
                     </Navbar.Menu>
                 </Navbar>
                 <Panel
+                    className="panel-user"
                     headerText="Votre compte"
                     isLightDismiss={true}
                     isOpen={this.state.isOpenUser}
@@ -125,12 +127,19 @@ class Header extends React.PureComponent {
                     />
                     <br />
                     <Label htmlFor="roles">Roles</Label>
-                    <TextField
-                        id="roles"
-                        defaultValue={me?.roles?.length ? me?.roles?.join(', ') : 'Utilisateur'}
-                        borderless={true}
-                        readOnly={true}
-                    />
+                    <div className="flex-row flex-start">
+                        <Icon
+                            className="flex-col"
+                            iconName={this.props?.param?.roles?.find(y => y?.key === getHighestRole(me?.roles))?.icon}
+                            styles={{ root: { color: getTheme().palette.themePrimary, verticalAlign: 'bottom' } }}
+                        />
+                        <TextField
+                            id="roles"
+                            defaultValue={me?.roles?.length ? me?.roles.map(x => param?.roles?.find(y => y?.key === x)?.text)?.join(', ') : 'Utilisateur'}
+                            borderless={true}
+                            readOnly={true}
+                        />
+                    </div>
                     <br />
                     <Label htmlFor="parent_twcreation_datetimeo_profession">Date de création</Label>
                     <TextField

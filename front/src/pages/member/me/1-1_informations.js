@@ -154,7 +154,7 @@ class _MembersMeInformations extends React.PureComponent {
                                 id="phone_number"
                                 placeholder="Numéro de téléphone"
                                 value={member?.phone_number ?? ''}
-                                onBlur={ev => this.props.editMember({ phone_number: ev.target.value }, memberIndex)}
+                                onBlur={ev => this.props.editMember({ phone_number: !isNaN(ev.target.value) ? ev.target.value : null }, memberIndex)}
                                 mask={"9999999999"}
                                 borderless={readOnly}
                                 readOnly={readOnly}
@@ -285,7 +285,7 @@ class _MembersMeInformations extends React.PureComponent {
                                         id="parent_one_phone_number"
                                         placeholder="Numéro de téléphone"
                                         value={member?.parent_one_phone_number ?? ''}
-                                        onBlur={ev => this.props.editMember({ parent_one_phone_number: ev.target.value }, memberIndex)}
+                                        onBlur={ev => this.props.editMember({ parent_one_phone_number: !isNaN(ev.target.value) ? ev.target.value : null }, memberIndex)}
                                         mask={"9999999999"}
                                         borderless={readOnly}
                                         readOnly={readOnly}
@@ -345,7 +345,7 @@ class _MembersMeInformations extends React.PureComponent {
                                         id="parent_two_phone_number"
                                         placeholder="Numéro de téléphone"
                                         value={member?.parent_two_phone_number ?? ''}
-                                        onBlur={ev => this.props.editMember({ parent_two_phone_number: ev.target.value }, memberIndex)}
+                                        onBlur={ev => this.props.editMember({ parent_two_phone_number: !isNaN(ev.target.value) ? ev.target.value : null }, memberIndex)}
                                         mask={"9999999999"}
                                         borderless={readOnly}
                                         readOnly={readOnly}

@@ -148,8 +148,8 @@ class _MemberOne extends React.PureComponent {
         if (this.fetchEditMemberAdmin) this.fetchEditMemberAdmin.cancel()
         if (this.fetchCreateMemberAdmin) this.fetchCreateMemberAdmin.cancel()
         if (this.fetchDeleteMember) this.fetchDeleteMember.cancel()
-        if (this.getMemberPrice) this.getMemberPrice.cancel()
-        if (this.getMemberPrice1) this.getMemberPrice1.cancel()
+        if (this.fetchGetMemberPrice) this.fetchGetMemberPrice.cancel()
+        if (this.fetchGetMemberPrice) this.fetchGetMemberPrice.cancel()
         if (this.fetchGetDocumentOne) this.fetchGetDocumentOne.cancel()
         if (this.fetchGetDocumentOne1) this.fetchGetDocumentOne1.cancel()
         if (this.fetchUploadDocumentOne) this.fetchUploadDocumentOne.cancel()
@@ -176,10 +176,6 @@ class _MemberOne extends React.PureComponent {
             <>
                 <section id="member-one">
                     <div className="card" >
-                        <div className="head">
-                            <h1><Icon iconName='Contact' /> Toutes les informations sur le membre: <span className="is-capitalized">{this.props.match?.params?.id ? ((this.state.data?.firstname ?? '') + ' ' + (this.state.data?.lastname ?? '')) : 'Nouveau'}</span></h1>
-                        </div>
-
                         <Text variant="large" block><Icon iconName='WorkFlow' /> Workflow d'avancement de l'inscription</Text>
                         <Divider />
                         <Workflow data={workflow} />
@@ -338,7 +334,7 @@ class _MemberOne extends React.PureComponent {
                                     id="phone_number"
                                     placeholder="Numéro de téléphone"
                                     value={data?.phone_number ?? ''}
-                                    onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: ev.target.value } })}
+                                    onBlur={ev => this.setState({ data: { ...this.state.data, phone_number: !isNaN(ev.target.value) ? ev.target.value : null } })}
                                     mask={"9999999999"}
                                     borderless={readOnly}
                                     readOnly={readOnly}
@@ -419,6 +415,8 @@ class _MemberOne extends React.PureComponent {
                                             id="teams"
                                             placeholder="Équipe(s)"
                                             multiSelect
+                                            allowFreeform={false}
+                                            autoComplete={"on"}
                                             selectedKey={data?.teams?.map(x => x.id ?? x.key)}
                                             options={[...this.props.param?.teams]?.map(x => { return { ...x, key: x.id, text: x.label } })}
                                             errorMessage={this.state.errorField?.teams?.errors?.[0]}
@@ -433,7 +431,6 @@ class _MemberOne extends React.PureComponent {
                                                 }
                                                 this.setState({ data: { ...this.state.data, teams: newSelectedItems } })
                                             }}
-
                                         />
                                 }
                             </Columns.Column>
@@ -448,6 +445,8 @@ class _MemberOne extends React.PureComponent {
                                         <VirtualizedComboBox
                                             id="username"
                                             placeholder="Utilisateur associé"
+                                            allowFreeform={false}
+                                            autoComplete={"on"}
                                             selectedKey={data?.user?.id}
                                             options={param.users?.map(x => { return { ...x, key: x.id, text: x.username } })}
                                             errorMessage={this.state.errorField?.username?.errors?.[0]}
@@ -784,7 +783,7 @@ class _MemberOne extends React.PureComponent {
                                                     id="parent_one_phone_number"
                                                     placeholder="Numéro de téléphone"
                                                     value={data?.parent_one_phone_number ?? ''}
-                                                    onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_phone_number: ev.target.value } })}
+                                                    onBlur={ev => this.setState({ data: { ...this.state.data, parent_one_phone_number: !isNaN(ev.target.value) ? ev.target.value : null } })}
                                                     mask={"9999999999"}
                                                     borderless={readOnly}
                                                     readOnly={readOnly}
@@ -857,7 +856,7 @@ class _MemberOne extends React.PureComponent {
                                                     id="parent_two_phone_number"
                                                     placeholder="Numéro de téléphone"
                                                     value={data?.parent_two_phone_number ?? ''}
-                                                    onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_phone_number: ev.target.value } })}
+                                                    onBlur={ev => this.setState({ data: { ...this.state.data, parent_two_phone_number: !isNaN(ev.target.value) ? ev.target.value : null } })}
                                                     mask={"9999999999"}
                                                     borderless={readOnly}
                                                     readOnly={readOnly}

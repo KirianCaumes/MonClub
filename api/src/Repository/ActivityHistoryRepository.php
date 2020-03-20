@@ -25,8 +25,24 @@ class ActivityHistoryRepository extends ServiceEntityRepository
         return $this->createQueryBuilder("a")
             ->select("a.date, count(1) as sum")
             ->groupBy("a.date")
-            ->orderBy('a.date', 'asc')
+            ->orderBy('a.date', 'desc')
             ->setMaxResults(30)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Delete entity older than 30 days
+     */
+    public function deleteOld()
+    {
+        $date = date('Y-m-d', strtotime('today - 30 days'));
+        var_dump("cc");
+
+        return $this->createQueryBuilder("a")
+            ->delete(ActivityHistory::class, 'b')
+            ->where("b.date < :date")
+            ->setParameter('date', $date)
             ->getQuery()
             ->getResult();
     }

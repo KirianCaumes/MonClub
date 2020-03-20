@@ -30,26 +30,40 @@ var getFetch = (path, options = {}) => {
     const url = new URL(origin + baseUrl + "/" + path.join("/"))
     if (options.params) Object.keys(options.params).forEach(key => url.searchParams.append(key, options.params[key]))
 
-    return fetch(url, options)
-        .then(async (response) => {
-            if (!response.ok) {
-                // Handle status code error
-                switch (response.status) {
-                    case 401:
-                        store.dispatch(signout())
-                        break
-                    default:
-                        break
-                }
-                // Throw error for other behaviours after there default action
-                throw await response.text().then(x => {
-                    if (!!x.length) return JSON.parse(x)
-                    return x
-                })
-            } else {
-                return checkBodyOfResponse(response)
-            }
-        })
+    let controller = new AbortController()
+    options.signal = controller.signal
+
+    return {
+        fetch() { //Custom fetch function
+            return new Promise((resolve, reject) => {
+                fetch(url, options)
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            // Handle status code error
+                            switch (response.status) {
+                                case 401:
+                                    store.dispatch(signout())
+                                    break
+                                default:
+                                    break
+                            }
+                            // Throw error for other behaviours after there default action
+                            throw await response.text().then(x => {
+                                if (!!x.length) return JSON.parse(x)
+                                return x
+                            })
+                        } else {
+                            return checkBodyOfResponse(response)
+                        }
+                    })
+                    .then(resolve)
+                    .catch(error => error.name !== "AbortError" ? reject(error) : null) //Disable default catch when 'AbortError'
+            })
+        },
+        cancel() {
+            controller.abort()
+        },
+    }
 }
 
 var checkBodyOfResponse = (response) => {
@@ -84,23 +98,6 @@ var checkBodyOfResponse = (response) => {
     }
 }
 
-const cancelable = (promise) => {
-    let hasCanceled_ = false
-
-    return {
-        fetch() {
-            return new Promise((resolve, reject) => {
-                promise
-                    .then(data => hasCanceled_ ? null : resolve(data))
-                    .catch(error => hasCanceled_ ? null : reject(error))
-            })
-        },
-        cancel() {
-            hasCanceled_ = true;
-        },
-    }
-}
-
 export default {
     getMe: () => {
         const url = ["user", "me"]
@@ -108,7 +105,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getParam: () => {
         const url = ["param"]
@@ -116,7 +113,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     editParam: (label, value) => {
         const url = ["param", label]
@@ -126,7 +123,7 @@ export default {
             body: JSON.stringify({ value })
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     editCurrentSeason: (id) => {
         const url = ["param", "current-season", id]
@@ -135,7 +132,7 @@ export default {
             method: PUT
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     authenticate: (data) => {
         const url = ["login"]
@@ -144,7 +141,7 @@ export default {
             body: JSON.stringify(data)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     register: (data) => {
         const url = ["register"]
@@ -153,7 +150,7 @@ export default {
             body: JSON.stringify(data)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     resetMail: (data) => {
         const url = ["reset", "mail"]
@@ -162,7 +159,7 @@ export default {
             body: JSON.stringify(data)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     reset: (data) => {
         const url = ["reset"]
@@ -171,7 +168,7 @@ export default {
             body: JSON.stringify(data)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getInfos: () => {
         const url = ["user", "infos"]
@@ -180,7 +177,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getAllMembers: (params) => {
         const url = ["member"]
@@ -190,7 +187,7 @@ export default {
             params
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getOneMember: (id) => {
         const url = ["member", id]
@@ -199,7 +196,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getNewMember: () => {
         const url = ["member", "new"]
@@ -208,7 +205,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getMeMember: () => {
         const url = ["member", "me"]
@@ -217,7 +214,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getMePreviousMember: () => {
         const url = ["member", "me", "previous-season"]
@@ -226,7 +223,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     // createMember: (body) => { //Unused
     //     const url = ["member"]
@@ -240,7 +237,7 @@ export default {
     //         body: JSON.stringify(body)
     //     }
 
-    //     return cancelable(getFetch(url, options))
+    //     return getFetch(url, options)
     // },
     createMemberAdmin: (body) => {
         const url = ["member", "admin"]
@@ -261,7 +258,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     // editMember: (id, body) => { //Unused
     //     const url = ["member", id]
@@ -275,7 +272,7 @@ export default {
     //         body: JSON.stringify(body)
     //     }
 
-    //     return cancelable(getFetch(url, options))
+    //     return getFetch(url, options)
     // },
     editOrCreateMember: (id, body) => {
         body = {
@@ -296,7 +293,7 @@ export default {
             options.method = POST
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     editMemberAdmin: (id, body) => {
         const url = ["member", id, "admin"]
@@ -317,7 +314,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     deleteMember: (id) => {
         const url = ["member", id]
@@ -326,7 +323,7 @@ export default {
             method: DELETE
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     validateMemberDocument: (memberId) => {
         const url = ["member", memberId, "validate-document"]
@@ -335,7 +332,7 @@ export default {
             method: POST
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getMemberPrice: (memberId) => {
         const url = ["member", memberId, "price"]
@@ -344,7 +341,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getMeMemberPrices: (memberId) => {
         const url = ["member", "me", "price"]
@@ -353,7 +350,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     pay: (body) => {
         const url = ["member", "me", "pay"]
@@ -363,7 +360,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getAllTeams: () => {
         const url = ["team"]
@@ -372,7 +369,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getOneTeam: (id) => {
         const url = ["team", id]
@@ -381,7 +378,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getNewTeam: () => {
         const url = ["team", "new"]
@@ -390,7 +387,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     createTeam: (body) => {
         const url = ["team"]
@@ -400,7 +397,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     editTeam: (id, body) => {
         const url = ["team", id]
@@ -410,7 +407,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     deleteTeam: (id) => {
         const url = ["team", id]
@@ -419,7 +416,7 @@ export default {
             method: DELETE
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     uploadDocument: (file, memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
@@ -432,7 +429,7 @@ export default {
             body: formData
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getDocument: (memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
@@ -441,7 +438,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getAttestation: (memberId) => {
         const url = ["document", memberId, "attestation"]
@@ -450,7 +447,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getNonObjection: (memberId, params) => {
         const url = ["document", memberId, "non-objection"]
@@ -460,7 +457,7 @@ export default {
             params
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getFacture: (memberId, params) => {
         const url = ["document", memberId, "facture"]
@@ -470,7 +467,7 @@ export default {
             params
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getGoogleContact: () => {
         const url = ["document", "google", "contact"]
@@ -479,7 +476,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getExcelTracking: () => {
         const url = ["document", "excel", "tracking"]
@@ -488,7 +485,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getExcelGeneral: () => {
         const url = ["document", "excel", "general"]
@@ -497,7 +494,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getExcelCalculhand: () => {
         const url = ["document", "excel", "calculhand"]
@@ -506,7 +503,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     deleteDocument: (memberId, fileTypeId) => {
         const url = ["document", memberId, fileTypeId]
@@ -515,7 +512,7 @@ export default {
             method: DELETE
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getAllUsers: (params) => {
         const url = ["user"]
@@ -525,7 +522,7 @@ export default {
             params
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getNewUser: (id) => {
         const url = ["user", "new"]
@@ -534,7 +531,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getOneUser: (id) => {
         const url = ["user", id]
@@ -543,7 +540,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     createUser: (body) => {
         const url = ["user"]
@@ -553,7 +550,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     editUser: (id, body) => {
         const url = ["user", id]
@@ -567,7 +564,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     postLog: (body) => {
         const url = ["log"]
@@ -577,7 +574,7 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     getParamPriceBySeason: (id) => {
         const url = ["param", "price", id]
@@ -586,7 +583,7 @@ export default {
             method: GET
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
     putParamPriceBySeason: (id, body) => {
         const url = ["param", "price", id]
@@ -604,6 +601,6 @@ export default {
             body: JSON.stringify(body)
         }
 
-        return cancelable(getFetch(url, options))
+        return getFetch(url, options)
     },
 }

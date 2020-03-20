@@ -2,6 +2,11 @@
   .search-inputs {
     text-align: left;
     > div.column {
+      .ms-Dropdown-title {
+        > i {
+          vertical-align: bottom;
+        }
+      }
       @include until($tablet) {
         padding: 0 0.75rem;
       }
@@ -32,5 +37,11 @@
   }
   .ms-DetailsRow-fields {
     cursor: pointer;
+  }
+
+  .ms-DetailsRow-cell {
+    i {
+      vertical-align: bottom;
+    }
   }
 }

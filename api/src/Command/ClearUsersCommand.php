@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Generate mail to warn user enable account
  */
-class ClearUsersCommmand extends Command
+class ClearUsersCommand extends Command
 {
     private $em;
     private $paramService;

@@ -1,6 +1,6 @@
 import React from 'react'
 import { } from 'react-bulma-components'
-import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text, Icon } from 'office-ui-fabric-react'
+import { ShimmeredDetailsList, MessageBarType, SelectionMode, Text } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar } from 'redux/actions/common'
 import { history } from 'helper/history'
@@ -73,9 +73,6 @@ class _TeamsAll extends ParentPage {
         return (
             <section id="team-all">
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='Teamwork' /> Rechercher parmis l'ensemble des équipes</h1>
-                    </div>
                     <ShimmeredDetailsList
                         items={this.state.items}
                         onActiveItemChanged={item => history.push(`/equipe/${item.id}`)}

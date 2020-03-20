@@ -174,15 +174,12 @@ class _MembersAll extends ParentPage {
         return (
             <section id="member-all">
                 <div className="card" >
-                    <div className="head">
-                        <h1><Icon iconName='RecruitmentManagement' /> Rechercher parmis l'ensemble des membres</h1>
-                    </div>
                     {
                         (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) &&
                         <>
                             <form onSubmit={ev => { ev.preventDefault(); this.searchMembers() }} >
                                 <Columns className="search-inputs">
-                                    <Columns.Column >
+                                    <Columns.Column className="is-one-sixth">
                                         <TextField
                                             label="Nom/Prénom"
                                             placeholder="Nom/Prénom"
@@ -191,7 +188,7 @@ class _MembersAll extends ParentPage {
                                             onChange={ev => this.setState({ searchParms: { ...this.state.searchParms, name: ev.target.value } })}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column >
+                                    <Columns.Column className="is-one-sixth">
                                         <Dropdown
                                             label="Étape"
                                             placeholder="Étape"
@@ -211,8 +208,30 @@ class _MembersAll extends ParentPage {
                                             }}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column >
-                                        <Dropdown
+                                    <Columns.Column className="is-one-sixth">
+                                        <VirtualizedComboBox
+                                            label="Équipe(s)"
+                                            placeholder="Équipe(s)"
+                                            multiSelect
+                                            allowFreeform={false}
+                                            autoComplete={"on"}
+                                            disabled={isLoading}
+                                            options={[...this.props.param?.teams]?.map(x => { return { key: x.id, text: x.label } })}
+                                            selectedKey={this.state.searchParms.teamsId}
+                                            onChange={(ev, item) => {
+                                                const newSelectedItems = [...this.state.searchParms.teamsId]
+                                                if (item.selected) {
+                                                    newSelectedItems.push(item.key)
+                                                } else {
+                                                    const currIndex = newSelectedItems.indexOf(item.key)
+                                                    if (currIndex > -1) newSelectedItems.splice(currIndex, 1)
+                                                }
+                                                this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
+                                            }}
+                                            errorMessage={this.state.errorField?.teams?.errors?.[0]}
+                                            useComboBoxAsMenuWidth={true}
+                                        />
+                                        {/* <Dropdown
                                             label="Équipe"
                                             placeholder="Équipe"
                                             disabled={isLoading}
@@ -229,12 +248,14 @@ class _MembersAll extends ParentPage {
                                                 }
                                                 this.setState({ searchParms: { ...this.state.searchParms, teamsId: newSelectedItems } })
                                             }}
-                                        />
+                                        /> */}
                                     </Columns.Column>
-                                    <Columns.Column >
+                                    <Columns.Column className="is-one-sixth">
                                         <VirtualizedComboBox
                                             label="Utilisateur"
                                             placeholder="Utilisateur"
+                                            allowFreeform={false}
+                                            autoComplete={"on"}
                                             disabled={isLoading}
                                             options={[...this.props.param?.users]?.map(x => { return { key: x.id, text: x.username } })}
                                             selectedKey={this.state.searchParms.userId}
@@ -242,7 +263,7 @@ class _MembersAll extends ParentPage {
                                             useComboBoxAsMenuWidth={true}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column >
+                                    <Columns.Column className="is-one-sixth">
                                         <Dropdown
                                             label="Saison"
                                             placeholder="Saison"
@@ -252,7 +273,7 @@ class _MembersAll extends ParentPage {
                                             onChange={(ev, item) => this.setState({ searchParms: { ...this.state.searchParms, seasonId: item.key } })}
                                         />
                                     </Columns.Column>
-                                    <Columns.Column >
+                                    <Columns.Column className="is-one-sixth">
                                         <Label>&#8203;</Label>
                                         <DefaultButton
                                             text="Rechercher"

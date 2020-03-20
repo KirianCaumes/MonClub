@@ -18,7 +18,7 @@ class _MembersMeSummary extends React.PureComponent {
 
     componentDidMount() {
         this.fetchGetMemberPrice = request.getMemberPrice(this.props?.members?.[this.props?.memberIndex]?.id)
-        return this.fetchGetMemberPrice
+        this.fetchGetMemberPrice
             .fetch()
             .then(res => this.setState({ price: res.price }))
             .catch(err => {
