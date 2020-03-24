@@ -24,6 +24,7 @@ class UserAdminType extends AbstractType
                     'ROLE_COACH' => Constants::ROLE_COACH,
                     'ROLE_ADMIN' => Constants::ROLE_ADMIN,
                     'ROLE_SUPER_ADMIN' => Constants::ROLE_SUPER_ADMIN,
+                    'ROLE_SERVICE ' => Constants::ROLE_SERVICE
                 ],
                 'multiple' => true
             ])       

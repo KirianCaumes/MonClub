@@ -71,6 +71,7 @@ class ParamController extends AbstractFOSRestController
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
             'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
             'roles' => [
+                ['key' => Constants::ROLE_SERVICE, 'text' => 'Service', 'icon' => 'PlayerSettings'],
                 ['key' => Constants::ROLE_COACH, 'text' => 'Coach', 'icon' => 'AccountManagement'],
                 ['key' => Constants::ROLE_ADMIN, 'text' => 'Admin', 'icon' => 'CRMServices'],
                 ['key' => Constants::ROLE_SUPER_ADMIN, 'text' => 'Super Admin', 'icon' => 'PartyLeader']

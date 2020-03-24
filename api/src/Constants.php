@@ -21,6 +21,7 @@ class Constants
     public const ADMIN = "Admin";
 
     //ROLES
+    public const ROLE_SERVICE = "ROLE_SERVICE";
     public const ROLE_USER = "ROLE_USER";
     public const ROLE_COACH = "ROLE_COACH";
     public const ROLE_ADMIN = "ROLE_ADMIN";
