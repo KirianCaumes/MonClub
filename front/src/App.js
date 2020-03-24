@@ -13,6 +13,7 @@ import { init } from './redux/actions/user'
 import FullLoader from './component/fullLoader'
 import PasswordForgotten from './pages/public/passwordForgotten'
 import PasswordNew from './pages/public/passwordNew'
+import ResetNewsletter from './pages/public/resetNewsletter'
 import withData from './helper/hoc/withData'
 import request from './helper/request'
 import { setMessageBar } from './redux/actions/common'
@@ -151,6 +152,7 @@ class _App extends React.PureComponent {
                         <Route path="/inscrire" component={Register} />
                         <Route path="/motdepasse-oublie/:resetToken" component={PasswordNew} />
                         <Route path="/motdepasse-oublie" component={PasswordForgotten} />
+                        <Route path="/desinscrire-newsletter/:resetToken?" component={ResetNewsletter} />
                     </Switch>
                 </Router>
                 <Modal />

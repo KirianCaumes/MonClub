@@ -59,9 +59,9 @@ class ResourceController extends AbstractFOSRestController
         return $this->handleView($this->view(
             array_merge(...array_map(function ($member) {
                 $res = [];
-                if ($member->getEmail()) array_push($res, $member->getEmail());
-                if ($member->getParentOneEmail()) array_push($res, $member->getParentOneEmail());
-                if ($member->getParentTwoEmail()) array_push($res, $member->getParentTwoEmail());
+                if ($member->getEmail()) array_push($res, ['email' => $member->getEmail(), 'resetNewsletterToken' => $member->getResetNewsletterToken()]);
+                if ($member->getParentOneEmail()) array_push($res, ['email' => $member->getParentOneEmail(), 'resetNewsletterToken' => $member->getResetNewsletterToken()]);
+                if ($member->getParentTwoEmail()) array_push($res, ['email' => $member->getParentTwoEmail(), 'resetNewsletterToken' => $member->getResetNewsletterToken()]);
                 return $res;
             }, $members)),
             Response::HTTP_OK

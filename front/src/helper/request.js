@@ -170,6 +170,15 @@ export default {
 
         return getFetch(url, options)
     },
+    resetNewsLetter: (data) => {
+        const url = ["reset", "newsletter"]
+        var options = {
+            method: POST,
+            body: JSON.stringify(data)
+        }
+
+        return getFetch(url, options)
+    },
     getInfos: () => {
         const url = ["user", "infos"]
 

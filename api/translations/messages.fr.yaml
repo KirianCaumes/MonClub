@@ -21,3 +21,4 @@ deny_create_member: "Vous n'avez pas le droit d'ajouter un membre supplémentair
 register_is_disabled: "Les inscriptions sont désactivées."
 new_member_disabled: "Les inscriptions sont maintenant terminées (Date butoire : {{date}}). Contactez le club pour toutes aides."
 member_not_payed_or_done: Le membre n'a pas encore été payé ou validé par le club.
+already_no_newsletter: Vous avez déjà désactivé la newsletter pour ce membre.

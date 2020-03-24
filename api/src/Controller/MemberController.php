@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -204,6 +205,7 @@ class MemberController extends AbstractFOSRestController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            $member->setResetNewsletterToken((new TokenGenerator())->generateToken());
             if (!$dateService->isMajor($data['birthdate'])) {
                 $member->setIsReducedPrice(false);
                 $member->setIsNonCompetitive(false);
@@ -284,6 +286,7 @@ class MemberController extends AbstractFOSRestController
             $member->setUser($this->getUser());
             $member->setSeason($paramService->getCurrentSeason());
             $member->setCreationDatetime(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            $member->setResetNewsletterToken((new TokenGenerator())->generateToken());
             if (!$dateService->isMajor($data['birthdate'])) {
                 $member->setIsReducedPrice(false);
                 $member->setIsNonCompetitive(false);

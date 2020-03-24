@@ -284,6 +284,11 @@ class Member
     private $notes;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $resetNewsletterToken;
+
+    /**
      * @Assert\NotBlank(message = "not_blank")
      * @ORM\ManyToOne(targetEntity="App\Entity\Param\ParamSex")
      * @ORM\JoinColumn(name="id_sex", referencedColumnName="id")
@@ -362,6 +367,7 @@ class Member
             $this->setGesthandQualificationDate(null);
             $this->setCreationDatetime(new \DateTime());
             $this->setNotes(null);
+            $this->setResetNewsletterToken(null);
             $this->setPaymentSolution(new ParamPaymentSolution);
             $this->setTeams(new \Doctrine\Common\Collections\ArrayCollection([new Team]));
             $this->setSeason(new ParamSeason);
@@ -911,6 +917,18 @@ class Member
     public function setNotes(?string $notes): self
     {
         $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getResetNewsletterToken(): ?string
+    {
+        return $this->resetNewsletterToken;
+    }
+
+    public function setResetNewsletterToken(?string $resetNewsletterToken): self
+    {
+        $this->resetNewsletterToken = $resetNewsletterToken;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Constants;
+use App\Entity\Member;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -163,7 +164,7 @@ class PublicController extends AbstractFOSRestController
 
     /**
      * Reset password.
-     * @SWG\Parameter(name="member", in="body", description="Reset password by reset token", format="application/json", @SWG\Schema(
+     * @SWG\Parameter(name="user", in="body", description="Reset password by reset token", format="application/json", @SWG\Schema(
      *      type="object",
      *      @SWG\Property(property="resetToken", type="string")
      * )))
@@ -176,7 +177,7 @@ class PublicController extends AbstractFOSRestController
     public function reset(Request $request, UserManagerInterface $userManager, TranslatorInterface $translator)
     {
         $data = json_decode($request->getContent(), true);
-        $user = $userManager->findUserByConfirmationToken($data['resetToken']);
+        $user = $data && array_key_exists('resetToken', $data) ? $userManager->findUserByConfirmationToken($data['resetToken']) : null;
 
         if (!$user) {
             return $this->handleView($this->view(['message' => $translator->trans('reset_token_invalid')], Response::HTTP_BAD_REQUEST));
@@ -197,6 +198,39 @@ class PublicController extends AbstractFOSRestController
             return $this->handleView($this->view([], Response::HTTP_CREATED));
         }
         return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+    }
+
+    /**
+     * Reset allow newsleter.
+     * @SWG\Parameter(name="user", in="body", description="Reset password by reset token", format="application/json", @SWG\Schema(
+     *      type="object",
+     *      @SWG\Property(property="resetToken", type="string")
+     * )))
+     * @SWG\Response(response=200, description="Member is not anymoire registered to newsletter")
+     * @SWG\Response(response=400, description="Member not found")
+     * @Rest\Post("/reset/newsletter")
+     *
+     * @return Response
+     */
+    public function resetNewsletter(Request $request, TranslatorInterface $translator)
+    {
+        $data = json_decode($request->getContent(), true);
+        $member = $data && array_key_exists('resetToken', $data) ? $this->getDoctrine()->getRepository(Member::class)->findOneBy(['resetNewsletterToken' => $data['resetToken']]) : null;
+
+        if (!$member) {
+            return $this->handleView($this->view(['message' => $translator->trans('member_not_found')], Response::HTTP_BAD_REQUEST));
+        }
+        
+        if (!$member->getIsNewsletterAllow()) {
+            return $this->handleView($this->view(['message' => $translator->trans('already_no_newsletter')], Response::HTTP_BAD_REQUEST));
+        }
+        $member->setIsNewsletterAllow(false);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($member);
+        $em->flush();
+
+        return $this->handleView($this->view([], Response::HTTP_OK));
     }
 
     /**
