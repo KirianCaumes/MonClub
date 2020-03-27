@@ -181,6 +181,23 @@ class Member
     private $is_transfer_needed = false;
 
     /**
+     * @Groups({"Admin"})
+     * @ORM\Column(type="boolean")
+     */
+    private $is_certificate = false;
+
+    /**
+     * @Groups({"Admin"})
+     * @ORM\Column(type="boolean")
+     */
+    private $is_justificative = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_certificate_old = false;
+
+    /**
      * @ORM\Column(type="boolean", options={"default":"0"})
      */
     private $is_document_complete = false;
@@ -351,10 +368,14 @@ class Member
             $this->setIsAccepted(false);
             $this->setIsTransferNeeded(false);
             $this->setIsDocumentComplete(false);
+            $this->setIsCertificate(false);
+            $this->setIsJustificative(false);
+            $this->setIsCertificateOld(false);
+            $this->setIsDocumentComplete(false);
             $this->setIsPayed(false);
             $this->setAmountPayed(null);
             $this->setAmountPayedOther(null);
-            $this->setIsLicenseRenewal(true);
+            $this->setIsLicenseRenewal(true); //If it's clone from old member
             $this->setPaymentNotes(null);
             $this->setIsCheckGestHand(false);
             $this->setIsInscriptionDone(false);
@@ -713,6 +734,42 @@ class Member
     public function setIsTransferNeeded(bool $is_transfer_needed): self
     {
         $this->is_transfer_needed = $is_transfer_needed;
+
+        return $this;
+    }
+
+    public function getIsCertificate(): ?bool
+    {
+        return $this->is_certificate;
+    }
+
+    public function setIsCertificate(bool $is_certificate): self
+    {
+        $this->is_certificate = $is_certificate;
+
+        return $this;
+    }
+
+    public function getIsJustificative(): ?bool
+    {
+        return $this->is_justificative;
+    }
+
+    public function setIsJustificative(bool $is_justificative): self
+    {
+        $this->is_justificative = $is_justificative;
+
+        return $this;
+    }
+
+    public function getIsCertificateOld(): ?bool
+    {
+        return $this->is_certificate_old;
+    }
+
+    public function setIsCertificateOld(bool $is_certificate_old): self
+    {
+        $this->is_certificate_old = $is_certificate_old;
 
         return $this;
     }

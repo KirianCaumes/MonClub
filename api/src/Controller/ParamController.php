@@ -69,7 +69,7 @@ class ParamController extends AbstractFOSRestController
             'teams' => $this->getDoctrine()->getRepository(Team::class)->findall(),
             'workflowStep' => $this->getDoctrine()->getRepository(ParamWorkflow::class)->findall(),
             'global' => $this->getDoctrine()->getRepository(ParamGlobal::class)->findall(),
-            'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(),
+            // 'documentCategory' => $this->getDoctrine()->getRepository(ParamDocumentCategory::class)->findall(), No more document are uploaded
             'roles' => [
                 ['key' => Constants::ROLE_SERVICE, 'text' => 'Service', 'icon' => 'PlayerSettings'],
                 ['key' => Constants::ROLE_COACH, 'text' => 'Coach', 'icon' => 'AccountManagement'],

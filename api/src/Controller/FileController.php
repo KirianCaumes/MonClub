@@ -196,6 +196,7 @@ class FileController extends AbstractFOSRestController
 
     /**
      * Get document.
+     * @deprecated No longer used : no more document are uploaded.
      * @SWG\Response(response=200, description="Returns document", @SWG\Schema(type="file"))
      * @Route("/{memberId}/{documentCategoryId}", methods={"GET"})
      */
@@ -220,6 +221,7 @@ class FileController extends AbstractFOSRestController
 
     /**
      * Post Document.
+     * @deprecated No longer used : no more document are uploaded.
      * @SWG\Parameter(name="file", in="formData", description="file", type="file")))
      * @SWG\Response(response=201, description="Returns Document created", @SWG\Schema(@Model(type=Member::class)))
      * @SWG\Response(response=400, description="Error in data")
@@ -265,6 +267,7 @@ class FileController extends AbstractFOSRestController
 
     /**
      * Delete Document.
+     * @deprecated No longer used : no more document are uploaded.
      * @SWG\Response(response=200, description="Document deleted")
      * @SWG\Response(response=404, description="Member, DocumentCategory, or Member not found not found")
      * @Rest\Delete("/{memberId}/{documentCategoryId}")

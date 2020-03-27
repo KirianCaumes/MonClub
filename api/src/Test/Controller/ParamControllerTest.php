@@ -77,7 +77,7 @@ class ParamControllerTest extends WebTestCase
         $this->assertArrayHasKey('teams', $data);
         $this->assertArrayHasKey('workflowStep', $data);
         $this->assertArrayHasKey('global', $data);
-        $this->assertArrayHasKey('documentCategory', $data);
+        // $this->assertArrayHasKey('documentCategory', $data);
         $this->assertArrayHasKey('roles', $data);
         $this->assertArrayHasKey('choices', $data);
         $this->assertArrayHasKey('sexes', $data);

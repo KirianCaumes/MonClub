@@ -11,6 +11,9 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * @deprecated No longer used : no more document are uploaded.
+ */
 class DocumentFixture extends Fixture implements OrderedFixtureInterface
 {
     /**

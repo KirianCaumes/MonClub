@@ -47,7 +47,7 @@ class ResourceController extends AbstractFOSRestController
 
     /**
      * Get email from members whome have accepted newsletter.
-     * @SWG\Response(response=200, description="Mail list", @SWG\Schema(type="array"))
+     * @SWG\Response(response=200, description="Mail list", @SWG\Schema(type="array", @SWG\Items(type="object")))
      * @Rest\Get("/mail-newsletter")
      *
      * @return Response

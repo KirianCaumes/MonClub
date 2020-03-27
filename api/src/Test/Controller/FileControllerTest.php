@@ -178,108 +178,141 @@ class FileControllerTest extends WebTestCase
 
     /**
      * Route [GET] /api/{memberId}/{documentCategoryId}
+     */    
+    /**
+     * @deprecated No longer used : no more document are uploaded.
      */
-    public function testGetDocumentByMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
-        $client->request(Constants::GET, '/api/document/1/1');
+    // public function testGetDocumentByMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    //     $client->request(Constants::GET, '/api/document/1/1');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(true, $client->getResponse()->isOk());
-    }
+    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    //     $this->assertEquals(true, $client->getResponse()->isOk());
+    // }
 
-    public function testCannotGetDocumentByNoneExistingMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotGetDocumentByNoneExistingMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::GET, '/api/document/666/1');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::GET, '/api/document/666/1');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotGetDocumentByMemberIdAndNoneExistingDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotGetDocumentByMemberIdAndNoneExistingDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::GET, '/api/document/1/666');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::GET, '/api/document/1/666');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
     /**
      * Route [POST] /api/{memberId}/{documentCategoryId}
      */
-    public function testPostDocumentByMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testPostDocumentByMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $srcBase = __DIR__ . "/../../../public/img/logo.png";
-        $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
-        copy($srcBase, $srcNew);
+    //     $srcBase = __DIR__ . "/../../../public/img/logo.png";
+    //     $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
+    //     copy($srcBase, $srcNew);
 
-        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+    //     $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
 
-        $client->request(Constants::POST, '/api/document/1/1', [], ['documentFile' => $file]);
+    //     $client->request(Constants::POST, '/api/document/1/1', [], ['documentFile' => $file]);
 
-        $this->assertEquals(201, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(201, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotPostDocumentByNoneExistingMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotPostDocumentByNoneExistingMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::POST, '/api/document/666/1');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::POST, '/api/document/666/1');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotPostDocumentByMemberIdAndNoneExistingDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotPostDocumentByMemberIdAndNoneExistingDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::POST, '/api/document/1/666');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::POST, '/api/document/1/666');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotPostDocumentByMemberIdAndDocumentIdWithoutFile()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotPostDocumentByMemberIdAndDocumentIdWithoutFile()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::POST, '/api/document/1/1');
-        $this->assertEquals(400, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::POST, '/api/document/1/1');
+    //     $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    // }
 
     /**
      * Route [DELETE] /api/{memberId}/{documentCategoryId}
      */
-    public function testDeleteDocumentByMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testDeleteDocumentByMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::DELETE, '/api/document/1/1');
+    //     $client->request(Constants::DELETE, '/api/document/1/1');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotDeleteDocumentByNoneExistingMemberIdAndDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotDeleteDocumentByNoneExistingMemberIdAndDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::GET, '/api/document/666/1');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::GET, '/api/document/666/1');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotDeleteDocumentByMemberIdAndNoneExistingDocumentId()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotDeleteDocumentByMemberIdAndNoneExistingDocumentId()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::GET, '/api/document/1/666');
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $client->request(Constants::GET, '/api/document/1/666');
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testDeleteDocumentByMemberIdAndDocumentIdWithoutExistingFile()
-    {
-        $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testDeleteDocumentByMemberIdAndDocumentIdWithoutExistingFile()
+    // {
+    //     $client = $this->createAuthenticatedClient('super-admin@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::DELETE, '/api/document/1/2');
+    //     $client->request(Constants::DELETE, '/api/document/1/2');
 
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 }

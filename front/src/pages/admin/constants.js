@@ -115,7 +115,7 @@ class _Constants extends React.PureComponent {
                     />
                     <br />
 
-                    <Label>Catégories documents :</Label>
+                    {/* <Label>Catégories documents :</Label>
                     <DetailsList
                         items={param?.documentCategory ?? []}
                         columns={[
@@ -138,7 +138,7 @@ class _Constants extends React.PureComponent {
                         ]}
                         selectionMode={SelectionMode.none}
                     />
-                    <br />
+                    <br /> */}
 
                     <Label>Rôles :</Label>
                     <DetailsList

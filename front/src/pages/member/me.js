@@ -1,5 +1,5 @@
 import React from 'react'
-import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator, Text, Checkbox, TooltipHost, DirectionalHint, TooltipDelay } from 'office-ui-fabric-react'
+import { MessageBarType, Pivot, PivotItem, PrimaryButton, DefaultButton, Separator, Text, Checkbox } from 'office-ui-fabric-react'
 import { connect } from 'react-redux'
 import { setBreadcrumb, setCommand, setMessageBar, setModal } from 'redux/actions/common'
 import request from 'helper/request'
@@ -7,11 +7,12 @@ import Workflow from 'component/workflow'
 import Loader from 'component/loader'
 import MembersMeInformations from './me/1-1_informations'
 import MembersMeAutorizations from './me/1-2_autorizations'
-import MembersMeDocuments from './me/2_documents'
 import MembersMePayment from './me/4_payment'
 import { setMembers, editMember } from 'redux/actions/member'
 import MembersMeSummary from './me/3_summary'
 import MembersMeFinalisation from './me/5_finalisation'
+import MembersMeDocumentsToUpload from './me/2-1_documents'
+import MembersMeDocumentsToDownload from './me/2-2_documents'
 
 class _MembersMe extends React.PureComponent {
     constructor(props) {
@@ -318,14 +319,16 @@ class _MembersMe extends React.PureComponent {
                                                         return (
                                                             <>
                                                                 <MembersMeInformations
-                                                                    readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                    // readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                    readOnly={member.is_payed || readOnly}
                                                                     errorField={errorField}
                                                                     memberIndex={i}
                                                                 />
                                                                 <br />
                                                                 <div className="card">
                                                                     <MembersMeAutorizations
-                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        // readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         errorField={errorField}
                                                                         memberIndex={i}
                                                                     />
@@ -338,7 +341,8 @@ class _MembersMe extends React.PureComponent {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
+                                                                                // if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
+                                                                                if (!member.is_payed && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         this.props.setMessageBar(false)
                                                                                         this.fetchEditOrCreateMember = request.editOrCreateMember(member?.id, { ...member })
@@ -369,8 +373,18 @@ class _MembersMe extends React.PureComponent {
                                                         return (
                                                             <>
                                                                 <div className="card">
-                                                                    <MembersMeDocuments
-                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                    <MembersMeDocumentsToUpload
+                                                                        // readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
+                                                                        memberIndex={i}
+                                                                        errorField={errorField}
+                                                                    />
+                                                                </div>
+                                                                <br />
+                                                                <div className="card">
+                                                                    <MembersMeDocumentsToDownload
+                                                                        // readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         memberIndex={i}
                                                                         errorField={errorField}
                                                                     />
@@ -387,11 +401,11 @@ class _MembersMe extends React.PureComponent {
                                                                             iconProps={{ iconName: 'Next' }}
                                                                             styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
                                                                             onClick={() => {
-                                                                                if ((!member.is_payed || !member.is_document_complete) && !readOnly) {
+                                                                                if (!member.is_payed && !readOnly) {
                                                                                     this.setState({ isLoading: true }, () => {
                                                                                         this.props.setMessageBar(false)
-                                                                                        this.fetchValidateMemberDocument = request.validateMemberDocument(member?.id, { ...member })
-                                                                                        this.fetchValidateMemberDocument
+                                                                                        this.fetchEditOrCreateMember = request.editOrCreateMember(member?.id, { ...member })
+                                                                                        this.fetchEditOrCreateMember
                                                                                             .fetch()
                                                                                             .then(res => {
                                                                                                 this.props.editMember(res, i)
@@ -419,7 +433,8 @@ class _MembersMe extends React.PureComponent {
                                                             <>
                                                                 <div className="card">
                                                                     <MembersMeSummary
-                                                                        readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        // readOnly={(member.is_payed && member.is_document_complete) || readOnly}
+                                                                        readOnly={member.is_payed || readOnly}
                                                                         memberIndex={i}
                                                                     />
                                                                     <Separator />
@@ -430,19 +445,20 @@ class _MembersMe extends React.PureComponent {
                                                                             iconProps={{ iconName: 'Previous' }}
                                                                             onClick={() => this.setState({ page: this.state.page - 1 })}
                                                                         />
-                                                                        <TooltipHost
+                                                                        {/* <TooltipHost
                                                                             content={members?.map(x => x.is_document_complete)?.filter(x => !x)?.length ? "Veuillez tout d'abord compléter les documents des membres créés." : ''}
                                                                             directionalHint={DirectionalHint.leftTopEdge}
                                                                             delay={TooltipDelay.zero}
-                                                                        >
-                                                                            <PrimaryButton
-                                                                                text="Paiement"
-                                                                                iconProps={{ iconName: 'Next' }}
-                                                                                styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
-                                                                                onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
-                                                                                disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length || members?.map(x => x.is_document_complete)?.filter(x => !x)?.length}
-                                                                            />
-                                                                        </TooltipHost>
+                                                                        > */}
+                                                                        <PrimaryButton
+                                                                            text="Paiement"
+                                                                            iconProps={{ iconName: 'Next' }}
+                                                                            styles={{ flexContainer: { flexDirection: 'row-reverse' } }}
+                                                                            onClick={() => this.setState({ errorField: {}, page: this.state.page + 1 })}
+                                                                            disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length}
+                                                                        // disabled={!members?.map(x => x.is_payed)?.filter(x => !x)?.length || members?.map(x => x.is_document_complete)?.filter(x => !x)?.length}
+                                                                        />
+                                                                        {/* </TooltipHost> */}
                                                                     </div>
                                                                 </div>
                                                             </>

@@ -1085,78 +1085,91 @@ class MemberControllerTest extends WebTestCase
     /**
      * Route [POST] /api/member/{id}/validate-document
      */
-    public function testPostValidateDocumentMemberById()
-    {
-        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+    
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testPostValidateDocumentMemberById()
+    // {
+    //     $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
 
-        $srcBase = __DIR__ . "/../../../public/img/logo.png";
-        $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
-        copy($srcBase, $srcNew);
-        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
-        $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
+    //     $srcBase = __DIR__ . "/../../../public/img/logo.png";
+    //     $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
+    //     copy($srcBase, $srcNew);
+    //     $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+    //     $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
 
-        copy($srcBase, $srcNew);
-        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
-        $client->request(Constants::POST, '/api/document/2/2', [], ['documentFile' => $file]);
+    //     copy($srcBase, $srcNew);
+    //     $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+    //     $client->request(Constants::POST, '/api/document/2/2', [], ['documentFile' => $file]);
 
-        $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
-        $member
-            ->setIsReducedPrice(true)
-            ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
-            ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
-            ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
-            ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+    //     $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
+    //     $member
+    //         ->setIsReducedPrice(true)
+    //         ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+    //         ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+    //         ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+    //         ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
 
-        $this->entityManager->persist($member);
-        $this->entityManager->flush();
+    //     $this->entityManager->persist($member);
+    //     $this->entityManager->flush();
 
-        $client->request(Constants::POST, '/api/member/2/validate-document');
+    //     $client->request(Constants::POST, '/api/member/2/validate-document');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testPostValidateDocumentMemberByIdWithoutReducedPrice()
-    {
-        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testPostValidateDocumentMemberByIdWithoutReducedPrice()
+    // {
+    //     $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
 
-        $srcBase = __DIR__ . "/../../../public/img/logo.png";
-        $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
-        copy($srcBase, $srcNew);
-        $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
-        $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
+    //     $srcBase = __DIR__ . "/../../../public/img/logo.png";
+    //     $srcNew = __DIR__ . "/../../../public/img/logo_copy.png";
+    //     copy($srcBase, $srcNew);
+    //     $file = new UploadedFile($srcNew, 'mydocument.png', 'image/png', null, true);
+    //     $client->request(Constants::POST, '/api/document/2/1', [], ['documentFile' => $file]);
 
-        $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
-        $member
-            ->setIsReducedPrice(false)
-            ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
-            ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
-            ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
-            ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+    //     $member = $this->entityManager->getRepository(Member::class)->findOneBy(['id' => 2]);
+    //     $member
+    //         ->setIsReducedPrice(false)
+    //         ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+    //         ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+    //         ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+    //         ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
 
-        $this->entityManager->persist($member);
-        $this->entityManager->flush();
+    //     $this->entityManager->persist($member);
+    //     $this->entityManager->flush();
 
-        $client->request(Constants::POST, '/api/member/2/validate-document');
+    //     $client->request(Constants::POST, '/api/member/2/validate-document');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testCannotPostValidateDocumentMemberByIdWithoutDocs()
-    {
-        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotPostValidateDocumentMemberByIdWithoutDocs()
+    // {
+    //     $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
 
-        $client->request(Constants::POST, '/api/member/2/validate-document');
+    //     $client->request(Constants::POST, '/api/member/2/validate-document');
 
-        $this->assertEquals(400, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    // }
 
-    public function testPostValidateDocumentMemberByIdByNoneExistingId()
-    {
-        $client = $this->createAuthenticatedClient('coach@mail.com', '123456789azerty+*/');
-        $client->request(Constants::POST, '/api/member/666/validate-document');
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testPostValidateDocumentMemberByIdByNoneExistingId()
+    // {
+    //     $client = $this->createAuthenticatedClient('coach@mail.com', '123456789azerty+*/');
+    //     $client->request(Constants::POST, '/api/member/666/validate-document');
 
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    // }
 
     /**
      * Route [POST] /api/member/me/pay
@@ -1366,33 +1379,36 @@ class MemberControllerTest extends WebTestCase
         $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 
-    public function testCannotPostPayMeWitMembersNotDocumentCompleted()
-    {
-        $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
-        //Keep only one member for easiest test
-        foreach ($members as $member) {
-            if ($member->getId() > 1) {
-                $entity = $this->entityManager->merge($member);
-                $this->entityManager->remove($entity);
-                $this->entityManager->flush();
-            } else {
-                $member
-                    ->setIsDocumentComplete(false)
-                    ->setIsPayed(false)
-                    ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
-                    ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
-                    ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
-                    ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
-                $this->entityManager->persist($member);
-                $this->entityManager->flush();
-            }
-        }
+    /**
+     * @deprecated No longer used : no more document are uploaded.
+     */
+    // public function testCannotPostPayMeWitMembersNotDocumentCompleted()
+    // {
+    //     $members = $this->entityManager->getRepository(Member::class)->findBy(['user' => $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com'])]);
+    //     //Keep only one member for easiest test
+    //     foreach ($members as $member) {
+    //         if ($member->getId() > 1) {
+    //             $entity = $this->entityManager->merge($member);
+    //             $this->entityManager->remove($entity);
+    //             $this->entityManager->flush();
+    //         } else {
+    //             $member
+    //                 ->setIsDocumentComplete(false)
+    //                 ->setIsPayed(false)
+    //                 ->setSex($this->entityManager->getRepository(ParamSex::class)->findOneBy(['id' => 1]))
+    //                 ->setSeason($this->entityManager->getRepository(ParamSeason::class)->findOneBy(['is_current' => true]))
+    //                 ->setUser($this->entityManager->getRepository(User::class)->findOneBy(['username' => 'user@mail.com']))
+    //                 ->setTeams(new \Doctrine\Common\Collections\ArrayCollection([]));
+    //             $this->entityManager->persist($member);
+    //             $this->entityManager->flush();
+    //         }
+    //     }
 
-        $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
-        $client->request(Constants::POST, '/api/member/me/pay');
+    //     $client = $this->createAuthenticatedClient('user@mail.com', '123456789azerty+*/');
+    //     $client->request(Constants::POST, '/api/member/me/pay');
 
-        $this->assertEquals(400, $client->getResponse()->getStatusCode());
-    }
+    //     $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    // }
 
     public function testCannotPostPayMeWithWrongPaymentId()
     {

@@ -87,7 +87,14 @@ class MemberMajorType extends AbstractType
             ->add('is_accepted')
             ->add('is_reduced_price')
             ->add('is_non_competitive')
-            ->add('is_transfer_needed')
+            ->add('is_transfer_needed')            
+            ->add('is_certificate', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_justificative', CheckboxType::class, [
+                'disabled' => true,
+            ])
+            ->add('is_certificate_old')
             ->add('is_document_complete', CheckboxType::class, [
                 'disabled' => true,
             ])

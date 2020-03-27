@@ -1151,112 +1151,54 @@ class _MemberOne extends React.PureComponent {
                                 <Divider />
                                 <Columns>
                                     <Columns.Column>
-                                        <Label required>Certificat médical</Label>
-                                        <FileInput
-                                            isRead={readOnly}
-                                            errorMessage={this.state.errorField?.documentFile1?.errors?.[0]}
-                                            isFile={!!data?.documents?.find(doc => doc?.category?.id === 1)?.document}
-                                            isDisabled={!this.props.match?.params?.id}
-                                            fileName={data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name}
-                                            onDownload={() => {
-                                                this.fetchGetDocumentOne = request.getDocument(this.props.match?.params?.id, 1)
-                                                return this.fetchGetDocumentOne
-                                                    .fetch()
-                                                    .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
-                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                            }}
-                                            onOpen={() => {
-                                                this.fetchGetDocumentOne1 = request.getDocument(this.props.match?.params?.id, 1)
-                                                return this.fetchGetDocumentOne1
-                                                    .fetch()
-                                                    .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 1)?.document?.original_name))
-                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                            }}
-                                            onUpload={file => {
-                                                this.fetchUploadDocumentOne = request.uploadDocument(file, this.props.match?.params?.id, 1)
-                                                return this.fetchUploadDocumentOne
-                                                    .fetch()
-                                                    .then(doc => {
-                                                        let documents = [...data.documents]
-                                                        documents.push(doc)
-                                                        this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                    })
-                                                    .catch(err => {
-                                                        this.props.setMessageBar(true, MessageBarType.error, err)
-                                                        this.setState({ errorField: { ...this.state.errorField, documentFile1: err?.form?.children?.documentFile } })
-                                                    })
-                                            }}
-                                            onDelete={() => {
-                                                this.fetchDeleteDocumentOne = request.deleteDocument(this.props.match?.params?.id, 1)
-                                                return this.fetchDeleteDocumentOne
-                                                    .fetch()
-                                                    .then(() => {
-                                                        let documents = [...data.documents]
-                                                        const currIndex = documents?.findIndex(doc => doc?.category?.id === 1)
-                                                        if (currIndex > -1) documents.splice(currIndex, 1)
-                                                        this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                    })
-                                                    .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                            }}
+                                        <Label htmlFor="is_certificate" required>Certificat médical fournis</Label>
+                                        <DropdownIcon
+                                            id="is_certificate"
+                                            readOnly={readOnly}
+                                            icon={param?.choices.find(x => x.key === data?.is_certificate?.toString())?.icon ?? ''}
+                                            valueDisplay={param?.choices.find(x => x.key === data?.is_certificate?.toString())?.text ?? ''}
+                                            selectedKey={data?.is_certificate?.toString() ?? 'false'}
+                                            options={param?.choices}
+                                            error={this.state.errorField?.is_certificate?.errors?.[0]}
+                                            onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_certificate: JSON.parse(item.key) } })}
                                         />
                                     </Columns.Column>
-
                                     {
-                                        data?.is_reduced_price &&
+                                        data?.is_license_renewal &&
                                         <Columns.Column>
-                                            <Label required>Jusitificatif étudiant/chomage</Label>
-                                            <FileInput
-                                                isRead={readOnly}
-                                                errorMessage={this.state.errorField?.documentFile2?.errors?.[0]}
-                                                isFile={!!data?.documents?.find(doc => doc?.category?.id === 2)?.document}
-                                                isDisabled={!this.props.match?.params?.id}
-                                                fileName={data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name}
-                                                onDownload={() => {
-                                                    this.fetchGetDocumentTwo = request.getDocument(this.props.match?.params?.id, 2)
-                                                    return this.fetchGetDocumentTwo
-                                                        .fetch()
-                                                        .then(file => dlBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
-                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                                }}
-                                                onOpen={() => {
-                                                    this.fetchGetDocumentTwo1 = request.getDocument(this.props.match?.params?.id, 2)
-                                                    return this.fetchGetDocumentTwo1
-                                                        .fetch()
-                                                        .then(file => openBlob(file, data?.documents?.find(doc => doc?.category?.id === 2)?.document?.original_name))
-                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                                }}
-                                                onUpload={file => {
-                                                    this.fetchUploadDocumentTwo = request.uploadDocument(file, this.props.match?.params?.id, 2)
-                                                    return this.fetchUploadDocumentTwo
-                                                        .fetch()
-                                                        .then(doc => {
-                                                            let documents = [...data.documents]
-                                                            documents.push(doc)
-                                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                        })
-                                                        .catch(err => {
-                                                            this.props.setMessageBar(true, MessageBarType.error, err)
-                                                            this.setState({ errorField: { ...this.state.errorField, documentFile2: err?.form?.children?.documentFile } })
-                                                        })
-                                                }}
-                                                onDelete={() => {
-                                                    this.fetchDeleteDocumentTwo = request.deleteDocument(this.props.match?.params?.id, 2)
-                                                    return this.fetchDeleteDocumentTwo
-                                                        .fetch()
-                                                        .then(() => {
-                                                            let documents = [...data.documents]
-                                                            const currIndex = documents?.findIndex(doc => doc?.category?.id === 2)
-                                                            if (currIndex > -1) documents.splice(currIndex, 1)
-                                                            this.setState({ data: { ...this.state.data, documents: documents }, errorField: {} })
-                                                        })
-                                                        .catch(err => this.props.setMessageBar(true, MessageBarType.error, err))
-                                                }}
+                                            <Label htmlFor="is_certificate_old" required>Certif. précédement fournis valable</Label>
+                                            <DropdownIcon
+                                                id="is_certificate_old"
+                                                readOnly={readOnly}
+                                                icon={param?.choices.find(x => x.key === data?.is_certificate_old?.toString())?.icon ?? ''}
+                                                valueDisplay={param?.choices.find(x => x.key === data?.is_certificate_old?.toString())?.text ?? ''}
+                                                selectedKey={data?.is_certificate_old?.toString() ?? 'false'}
+                                                options={param?.choices}
+                                                error={this.state.errorField?.is_certificate_old?.errors?.[0]}
+                                                onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_certificate_old: JSON.parse(item.key) } })}
                                             />
                                         </Columns.Column>
                                     }
-                                    <Columns.Column />
-                                    <Columns.Column />
-                                    {!data?.is_reduced_price && <Columns.Column className="is-hidden-touch" />}
+                                    <Columns.Column>
+                                        {
+                                            data?.is_reduced_price &&
+                                            <>
+                                                <Label htmlFor="is_justificative" required>Jusitificatif étudiant/chomage fournis</Label>
+                                                <DropdownIcon
+                                                    id="is_justificative"
+                                                    readOnly={readOnly}
+                                                    icon={param?.choices.find(x => x.key === data?.is_justificative?.toString())?.icon ?? ''}
+                                                    valueDisplay={param?.choices.find(x => x.key === data?.is_justificative?.toString())?.text ?? ''}
+                                                    selectedKey={data?.is_justificative?.toString() ?? 'false'}
+                                                    options={param?.choices}
+                                                    error={this.state.errorField?.is_justificative?.errors?.[0]}
+                                                    onChange={(ev, item) => this.setState({ data: { ...this.state.data, is_justificative: JSON.parse(item.key) } })}
+                                                />
+                                            </>
+                                        }
+                                    </Columns.Column>
+                                    <Columns.Column className="is-hidden-touch" />
+                                    {!data?.is_license_renewal && <Columns.Column className="is-hidden-touch" />}
                                 </Columns>
                                 <Columns>
                                     <Columns.Column>

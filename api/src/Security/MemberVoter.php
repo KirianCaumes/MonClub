@@ -103,7 +103,9 @@ class MemberVoter extends Voter
 
     private function canUpdate(Member $member, User $user)
     {
-        if ($member->getUser() === $user && !$member->getIsPayed() && !$member->getIsDocumentComplete()) return true;
+        // if ($member->getUser() === $user && !$member->getIsPayed() && !$member->getIsDocumentComplete()) return true;
+
+        if ($member->getUser() === $user && !$member->getIsPayed()) return true;
 
         return false;
     }
@@ -116,7 +118,7 @@ class MemberVoter extends Voter
     private function canDelete(Member $member, User $user)
     {
         if ($member->getIsPayed()) return false; //Can't delete a member if he is payed
-        
+
         if ($this->security->isGranted(Constants::ROLE_ADMIN)) return true;
 
         if ($member->getUser() === $user) return true;

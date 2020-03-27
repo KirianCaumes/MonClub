@@ -5,6 +5,7 @@ namespace App\Entity\Param;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @deprecated No longer used : no more document are uploaded.
  * @ORM\Entity
  * @ORM\Table(name="param_document_category")
  */

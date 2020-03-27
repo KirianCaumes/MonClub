@@ -8,6 +8,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
 
+/**
+ * @deprecated No longer used : no more document are uploaded.
+ */
 class ParamDocumentCategoryFixture extends Fixture implements OrderedFixtureInterface
 {
     /**

@@ -307,55 +307,55 @@ class MemberController extends AbstractFOSRestController
             $em->persist($member);
 
             //Check to copy file from previous season member
-            if (array_key_exists('documents', $data)) {
-                $files = new \Doctrine\Common\Collections\ArrayCollection();
+            // if (array_key_exists('documents', $data)) {
+            //     $files = new \Doctrine\Common\Collections\ArrayCollection();
 
-                foreach ($data['documents'] as $doc) {
-                    if (array_key_exists('id', $doc)) {
-                        $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
-                        if (!$oldDocument || $oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
+            //     foreach ($data['documents'] as $doc) {
+            //         if (array_key_exists('id', $doc)) {
+            //             $oldDocument = $this->getDoctrine()->getRepository(Document::class)->findOneBy(['id' => $doc['id']]);
+            //             if (!$oldDocument || $oldDocument->getMember()->getUser() !== $this->getUser()) continue; //Ensure acces to user
 
-                        $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
-                        $newDocument = clone $oldDocument;
+            //             $baseFile = $propertyMappingFactory->fromField($oldDocument, 'documentFile');
+            //             $newDocument = clone $oldDocument;
 
-                        //Do not clone doc if needed anymore
-                        if (
-                            $newDocument->getCategory()->getId() === 1 ||
-                            ($newDocument->getCategory()->getId() === 2 && $member->getIsReducedPrice())
-                        ) {
-                            //Create temp file
-                            if (copy(
-                                $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . $baseFile->getFileName($oldDocument),
-                                $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp'
-                            )) {
-                                $form = $this->createForm(DocumentType::class, $newDocument);
-                                $form->submit([
-                                    'documentFile' => new UploadedFile(
-                                        $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
-                                        $oldDocument->getDocument()->getOriginalName(),
-                                        null,
-                                        true
-                                    )
-                                ]);
+            //             //Do not clone doc if needed anymore
+            //             if (
+            //                 $newDocument->getCategory()->getId() === 1 ||
+            //                 ($newDocument->getCategory()->getId() === 2 && $member->getIsReducedPrice())
+            //             ) {
+            //                 //Create temp file
+            //                 if (copy(
+            //                     $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . $baseFile->getFileName($oldDocument),
+            //                     $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp'
+            //                 )) {
+            //                     $form = $this->createForm(DocumentType::class, $newDocument);
+            //                     $form->submit([
+            //                         'documentFile' => new UploadedFile(
+            //                             $baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp',
+            //                             $oldDocument->getDocument()->getOriginalName(),
+            //                             null,
+            //                             true
+            //                         )
+            //                     ]);
 
-                                if ($form->isSubmitted() && $form->isValid()) {
-                                    $newDocument->setMember($member);
-                                    $em->persist($newDocument);
-                                    $em->flush();
-                                    $files->add($newDocument);
-                                } else {
-                                    // return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
-                                    //If error, remove temp file
-                                    unlink($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp');
-                                }
-                            }
-                        }
-                    }
-                }
-                $member->setDocuments($files);
-            }
+            //                     if ($form->isSubmitted() && $form->isValid()) {
+            //                         $newDocument->setMember($member);
+            //                         $em->persist($newDocument);
+            //                         $em->flush();
+            //                         $files->add($newDocument);
+            //                     } else {
+            //                         // return $this->handleView($this->view($form->getErrors(), Response::HTTP_BAD_REQUEST));
+            //                         //If error, remove temp file
+            //                         unlink($baseFile->getUploadDestination() . '/' . $baseFile->getUploadDir($oldDocument) . '/' . 'temp');
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            //     $member->setDocuments($files);
+            // }
 
-            $em->persist($member);
+            // $em->persist($member);
             $em->flush();
 
             return $this->handleView($this->view($member, Response::HTTP_CREATED)->setContext((new Context())->setGroups([Constants::BASIC])));
@@ -395,7 +395,7 @@ class MemberController extends AbstractFOSRestController
         //Check to know if have to send email for inscription done
         $emailInscriptionDone = (array_key_exists('is_inscription_done', $data) && $data['is_inscription_done'] === true &&  $member->getIsInscriptionDone() === false);
         //Check to know if have to send email for invalid document
-        $emailDocumentInvalid = (array_key_exists('is_document_complete', $data) && $data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
+        // $emailDocumentInvalid = (array_key_exists('is_document_complete', $data) && $data['is_document_complete'] === false &&  $member->getIsDocumentComplete() === true);
 
         $form->submit($data, true);
 
@@ -424,7 +424,7 @@ class MemberController extends AbstractFOSRestController
             $em->flush();
 
             if ($emailInscriptionDone && $member->getUser()) $mailService->sendInscriptionDone($member->getUser(), $member);
-            if ($emailDocumentInvalid && $member->getUser()) $mailService->sendDocumentInvalid($member->getUser(), $member);
+            // if ($emailDocumentInvalid && $member->getUser()) $mailService->sendDocumentInvalid($member->getUser(), $member);
 
             return $this->handleView($this->view([
                 'member' => $member,
@@ -594,6 +594,7 @@ class MemberController extends AbstractFOSRestController
 
     /**
      * Validate document for a given Member.
+     * @deprecated No longer used : no more document are uploaded, so no need for validation.
      * @SWG\Parameter(name="member",in="body", description="New member", format="application/json", @SWG\Schema(@Model(type=Member::class)))
      * @SWG\Response(response=200, description="Returns member", @SWG\Schema(@Model(type=Member::class)))
      * @SWG\Response(response=400, description="Files are missing")
@@ -675,11 +676,11 @@ class MemberController extends AbstractFOSRestController
         }
         
         //Check docs
-        foreach ($members as $member) {
-            if (!$member->getIsDocumentComplete()) {
-                return $this->handleView($this->view(["message" => $translator->trans('member_missing_document')], Response::HTTP_BAD_REQUEST));
-            }
-        }
+        // foreach ($members as $member) {
+        //     if (!$member->getIsDocumentComplete()) {
+        //         return $this->handleView($this->view(["message" => $translator->trans('member_missing_document')], Response::HTTP_BAD_REQUEST));
+        //     }
+        // }
 
         //Find payment solution
         $paymentSolution = $this->getDoctrine()->getRepository(ParamPaymentSolution::class)->findOneBy(['id' => $data['payment_solution']]);

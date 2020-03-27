@@ -334,15 +334,15 @@ export default {
 
         return getFetch(url, options)
     },
-    validateMemberDocument: (memberId) => {
-        const url = ["member", memberId, "validate-document"]
+    // validateMemberDocument: (memberId) => {
+    //     const url = ["member", memberId, "validate-document"]
 
-        var options = {
-            method: POST
-        }
+    //     var options = {
+    //         method: POST
+    //     }
 
-        return getFetch(url, options)
-    },
+    //     return getFetch(url, options)
+    // },
     getMemberPrice: (memberId) => {
         const url = ["member", memberId, "price"]
 
@@ -427,28 +427,28 @@ export default {
 
         return getFetch(url, options)
     },
-    uploadDocument: (file, memberId, fileTypeId) => {
-        const url = ["document", memberId, fileTypeId]
-        let formData = new FormData()
-        formData.append("documentFile", file)
+    // uploadDocument: (file, memberId, fileTypeId) => {
+    //     const url = ["document", memberId, fileTypeId]
+    //     let formData = new FormData()
+    //     formData.append("documentFile", file)
 
-        var options = {
-            method: POST,
-            headers: { 'Content-Type': 'multipart/form-data' },
-            body: formData
-        }
+    //     var options = {
+    //         method: POST,
+    //         headers: { 'Content-Type': 'multipart/form-data' },
+    //         body: formData
+    //     }
 
-        return getFetch(url, options)
-    },
-    getDocument: (memberId, fileTypeId) => {
-        const url = ["document", memberId, fileTypeId]
+    //     return getFetch(url, options)
+    // },
+    // getDocument: (memberId, fileTypeId) => {
+    //     const url = ["document", memberId, fileTypeId]
 
-        var options = {
-            method: GET
-        }
+    //     var options = {
+    //         method: GET
+    //     }
 
-        return getFetch(url, options)
-    },
+    //     return getFetch(url, options)
+    // },
     getAttestation: (memberId) => {
         const url = ["document", memberId, "attestation"]
 
@@ -514,15 +514,15 @@ export default {
 
         return getFetch(url, options)
     },
-    deleteDocument: (memberId, fileTypeId) => {
-        const url = ["document", memberId, fileTypeId]
+    // deleteDocument: (memberId, fileTypeId) => {
+    //     const url = ["document", memberId, fileTypeId]
 
-        var options = {
-            method: DELETE
-        }
+    //     var options = {
+    //         method: DELETE
+    //     }
 
-        return getFetch(url, options)
-    },
+    //     return getFetch(url, options)
+    // },
     getAllUsers: (params) => {
         const url = ["user"]
 

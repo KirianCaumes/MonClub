@@ -95,6 +95,9 @@ class MemberMajorAdminType extends AbstractType
             ->add('is_reduced_price')
             ->add('is_non_competitive')
             ->add('is_transfer_needed')
+            ->add('is_certificate')
+            ->add('is_justificative')
+            ->add('is_certificate_old')
             ->add('is_document_complete')
             ->add('is_payed')
             ->add('amount_payed', NumberType::class, [

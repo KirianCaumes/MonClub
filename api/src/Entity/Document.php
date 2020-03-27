@@ -10,6 +10,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @deprecated No longer used : no more document are uploaded.
  * @ORM\Entity
  * @ORM\Table(name="document")
  * @Vich\Uploadable
