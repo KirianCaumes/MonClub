@@ -28,7 +28,7 @@ class Header extends React.PureComponent {
                             renderAs="a"
                             onClick={() => history.push('/')}
                         >
-                            <img src={require('asset/img/logo.png')} alt="THBC" />
+                            <img src={require('asset/img/logo.png')} alt="club" />
                             <span> Mon Club</span>
                         </Navbar.Item>
                         <Navbar.Burger onClick={() => this.setState({ active: !this.state.active })} />

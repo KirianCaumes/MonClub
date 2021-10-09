@@ -14,10 +14,10 @@ class _PublicLayout extends React.PureComponent {
                     <Columns.Column size="one-third">
                         <div className="flex-col">
                             <div className="card has-text-centered">
-                                <img src={require('asset/img/logo.png')} alt="THBC" />
+                                <img src={require('asset/img/logo.png')} alt="club" />
                                 <br />
                                 <Text variant="xxLarge" block>
-                                    Mon Club - THBC
+                                    Mon Club - club
                                 </Text>
                                 <br />
 

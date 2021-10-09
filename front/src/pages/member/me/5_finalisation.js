@@ -17,7 +17,7 @@ class _MembersMeFinalisation extends React.PureComponent {
                 <Text>
                     Votre inscription et votre paiement ont bien été pris en compte.
                     <br />
-                    Vous recevrez, apres confirmation du club de vos informations, un mail vous confirmant votre inscription au THBC.
+                    Vous recevrez, apres confirmation du club de vos informations, un mail vous confirmant votre inscription au club.
                 </Text>
             </section >
         )

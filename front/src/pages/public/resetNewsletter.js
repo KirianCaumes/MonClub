@@ -46,7 +46,7 @@ class _ResetNewsletter extends React.PureComponent {
         return (
             <PublicLayout>
                 <form onSubmit={this.handleSubmit.bind(this)} >
-                    <Label>Êtes-vous certains de vouloir vous désinscrire de la Newsletter du THBC ?</Label>
+                    <Label>Êtes-vous certains de vouloir vous désinscrire de la Newsletter du club ?</Label>
                     <br />
                     <div className="flex-row" >
                         <PrimaryButton

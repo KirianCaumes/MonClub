@@ -18,7 +18,7 @@ class _MembersMeAutorizations extends React.PureComponent {
 
         return (
             <section id="members-me-autorizations">
-                <Text variant="large" block><Icon iconName='AccountManagement'/> Autorisations {!isMajor(member?.birthdate) ? 'parentales' : ''} THBC et règlement interieur</Text>
+                <Text variant="large" block><Icon iconName='AccountManagement'/> Autorisations {!isMajor(member?.birthdate) ? 'parentales' : ''} club et règlement interieur</Text>
                 <Divider />
                 {
                     isMajor(member?.birthdate)
@@ -68,12 +68,12 @@ class _MembersMeAutorizations extends React.PureComponent {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        text: "J'autorise le club à utiliser mon image dans le cadre défini ci-dessus",
                                         disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        text: "Je n'autorise pas le club à utiliser mon image dans le cadre défini ci-dessus",
                                         disabled: readOnly
                                     }
                                 ]}
@@ -87,12 +87,12 @@ class _MembersMeAutorizations extends React.PureComponent {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
+                                        text: <>J'autorise le club à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
                                         disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
+                                        text: <>Je n'autorise pas le club à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
                                         disabled: readOnly
                                     }
                                 ]}
@@ -103,7 +103,7 @@ class _MembersMeAutorizations extends React.PureComponent {
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
                             <Checkbox
-                                label="Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"                    
+                                label="Je reconnais avoir pris connaissance du règlement intérieur du club et je m'engage à en respecter les conditions"                    
                                 defaultChecked={member?.is_accepted}
                                 onChange={(ev, isChecked) => this.props.editMember({ is_accepted: isChecked }, memberIndex)}
                                 disabled={readOnly}
@@ -176,12 +176,12 @@ class _MembersMeAutorizations extends React.PureComponent {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: "J'autorise le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        text: "J'autorise le club à utiliser mon image dans le cadre défini ci-dessus",
                                         disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: "Je n'autorise pas le THBC à utiliser mon image dans le cadre défini ci-dessus",
+                                        text: "Je n'autorise pas le club à utiliser mon image dans le cadre défini ci-dessus",
                                         disabled: readOnly
                                     }
                                 ]}
@@ -195,12 +195,12 @@ class _MembersMeAutorizations extends React.PureComponent {
                                 options={[
                                     {
                                         key: 'true',
-                                        text: <>J'autorise le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
+                                        text: <>J'autorise le club à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link> (désinscription possible à tous moments)</>,
                                         disabled: readOnly
                                     },
                                     {
                                         key: 'false',
-                                        text: <>Je n'autorise pas le THBC à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
+                                        text: <>Je n'autorise pas le club à utiliser mes adresses mails afin de m'envoyer des newsletters via le site <Link target="_blank" href="https://thouarehbc.fr">thouarehbc.fr</Link></>,
                                         disabled: readOnly
                                     }
                                 ]}
@@ -211,7 +211,7 @@ class _MembersMeAutorizations extends React.PureComponent {
                             <br />
                             <Label required>Reglement interieur <span className="is-light">à consulter sur le site <Link target="_blank" href="https://thouarehbc.fr/le-club/reglement-interieur/">thouarehbc.fr/le-club/reglement-interieur/</Link></span></Label>
                             <Checkbox
-                                label="Je reconnais avoir pris connaissance du règlement intérieur du THBC et je m'engage à en respecter les conditions"                    
+                                label="Je reconnais avoir pris connaissance du règlement intérieur du club et je m'engage à en respecter les conditions"                    
                                 defaultChecked={member?.is_accepted}
                                 onChange={(ev, isChecked) => this.props.editMember({ is_accepted: isChecked }, memberIndex)}
                                 disabled={readOnly}

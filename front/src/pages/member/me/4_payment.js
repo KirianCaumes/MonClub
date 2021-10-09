@@ -202,7 +202,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le club se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />
@@ -236,7 +236,7 @@ class _MembersMePayment extends React.PureComponent {
                                             return (
                                                 <>
                                                     <Text>
-                                                        Veuillez déposer votre chèque à l'ordre du THBC d'un montant de <b>{summary.total} €</b> dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br />
+                                                        Veuillez déposer votre chèque à l'ordre du club d'un montant de <b>{summary.total} €</b> dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br />
                                                         <b>
                                                             Parc des Sports<br />
                                                             Route de la Barre<br />
@@ -253,7 +253,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le club se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />
@@ -269,7 +269,7 @@ class _MembersMePayment extends React.PureComponent {
                                             return (
                                                 <>
                                                     <Text>
-                                                        Veuillez déposer votre chèque à l'ordre du THBC d'un montant de <b>{(summary.total - (summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0))} €</b> et le(s) coupon(s) dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br />
+                                                        Veuillez déposer votre chèque à l'ordre du club d'un montant de <b>{(summary.total - (summary?.each?.map(x => x.price_other)?.reduce((a, b) => a + b) || 0))} €</b> et le(s) coupon(s) dans la boite aux lettres du club, près du parking de la salle de sport à l'adresse :<br />
                                                         <b>
                                                             Parc des Sports<br />
                                                             Route de la Barre<br />
@@ -286,7 +286,7 @@ class _MembersMePayment extends React.PureComponent {
                                                     <br />
                                                     <Text className="has-text-danger">
                                                         <Emoji symbol="⚠️" label="warning" />
-                                                        Le THBC se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
+                                                        Le club se réserve le droit de ne pas valider l'inscription d'un nouvel adhérent au club si aucune équipe n'est en mesure d'accueillir la personne. Dans ce cas exceptionnel, un remboursement total de la somme payée sera effectué.
                                                     </Text>
                                                     <br />
                                                     <br />

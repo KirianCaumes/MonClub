@@ -56,7 +56,7 @@ class MailService
                 $mail->isMail();
             }
 
-            $mail->setFrom('monclub@thouarehbc.fr', 'Mon Club - THBC');
+            $mail->setFrom('monclub@thouarehbc.fr', 'Mon Club - club');
             $mail->addAddress($to);
 
             if ($attachment['file']) $mail->addStringAttachment($attachment['file'], $attachment['name'], 'base64', $attachment['type']);
@@ -64,7 +64,7 @@ class MailService
             $mail->AddEmbeddedImage($this->parameterBag->get('kernel.project_dir') . "/public/img/logo_mail.png", "logo_mail", "thbc.png");
 
             $mail->isHTML(true);
-            $mail->Subject = $subject . ' - MonClub THBC';
+            $mail->Subject = $subject . ' - MonClub club';
             $mail->Body = $this->twig->render('/mail/' . $body['template'], array_merge($body['context'], ['baseUrl' => $_ENV['FRONT_URL']]));
 
             return $mail->send();

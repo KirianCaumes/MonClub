@@ -115,8 +115,8 @@ class _MembersMeInformations extends React.PureComponent {
                         <Columns.Column className="has-text-justified">
                             <Text>
                                 Pourquoi nous indiquer qui vos informations ? <Emoji symbol="🤔" label="thinking" /><br /><br />
-                                Vous êtes unique, et c’est pour cela que le  <b className="is-italic">THBC</b> souhaite savoir ces quelques informations de base pour vous identifier parmi les tous les membres du club. <Emoji symbol="🏅" label="medal" /><br /><br />
-                                Grâce à votre date de naissance et votre sexe, le  <b className="is-italic">THBC</b> sera en mesure de vous attribuer à une équipe où vous serez capable de vous épanouir, progresser et surtout, de vous amuser ! <Emoji symbol="🤾‍♀️" label="handball" /><br /><br />
+                                Vous êtes unique, et c’est pour cela que le  <b className="is-italic">club</b> souhaite savoir ces quelques informations de base pour vous identifier parmi les tous les membres du club. <Emoji symbol="🏅" label="medal" /><br /><br />
+                                Grâce à votre date de naissance et votre sexe, le  <b className="is-italic">club</b> sera en mesure de vous attribuer à une équipe où vous serez capable de vous épanouir, progresser et surtout, de vous amuser ! <Emoji symbol="🤾‍♀️" label="handball" /><br /><br />
                                 Vos données sont soumises aux lois du RGPD (protection et droit des données), ainsi toutes informations sont sécurisées, privées et vous pouvez faire une demande d’anonymisation à tout moment. <Emoji symbol="🛡️" label="shield" />
                             </Text>
                         </Columns.Column>
@@ -176,7 +176,7 @@ class _MembersMeInformations extends React.PureComponent {
                         <Separator className=" is-hidden-desktop " />
                         <Columns.Column className="has-text-justified">
                             <Text>
-                                Que ce soit pour vous communiquer des informations relatives au club, de vous joindre en cas d’urgence ou de simplement échanger, le  <b className="is-italic">THBC</b> souhaite connaître votre e-mail et votre numéro de téléphone. <Emoji symbol="📇" label="contact" /><br /><br />
+                                Que ce soit pour vous communiquer des informations relatives au club, de vous joindre en cas d’urgence ou de simplement échanger, le  <b className="is-italic">club</b> souhaite connaître votre e-mail et votre numéro de téléphone. <Emoji symbol="📇" label="contact" /><br /><br />
                                 Ces informations sont bien évidemment confidentielles et ne seront pas utilisées à d’autres fins que celles du club. <Emoji symbol="🔐" label="locker" /><br /><br />
                                 Renseigner votre profession (facultatif) permet au club de mieux vous connaître et de, pourquoi pas, vous solliciter sur des compétences que vous possédez, si vous désirez participer ponctuellement au bon fonctionnement du club. <Emoji symbol="🤾" label="handball" />
                             </Text>
@@ -229,7 +229,7 @@ class _MembersMeInformations extends React.PureComponent {
                         <Separator className=" is-hidden-desktop " />
                         <Columns.Column className="has-text-justified">
                             <Text>
-                                Dans certains cas exceptionnels, le <b className="is-italic">THBC</b> peut-être amené à vous envoyer un courrier. <Emoji symbol="✉️" label="envelope" /><br /><br />
+                                Dans certains cas exceptionnels, le <b className="is-italic">club</b> peut-être amené à vous envoyer un courrier. <Emoji symbol="✉️" label="envelope" /><br /><br />
                                 Veuillez donc renseigner une adresse postale valide à laquelle le membre peut être joint.<Emoji symbol="🤾‍♂️" label="handball" /><br /><br />
                                 Ces informations sont également confidentielles et ne seront pas utilisées à d’autres fins que celles du club. <Emoji symbol="🔐" label="locker" />
 

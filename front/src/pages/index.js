@@ -39,9 +39,9 @@ class _Index extends React.PureComponent {
                                 <Text as="p" block variant="mediumPlus">
                                     {
                                         (this.props?.me?.roles?.includes(ROLE_ADMIN) || this.props?.me?.roles?.includes(ROLE_SUPER_ADMIN)) ?
-                                            `Retrouvez le status de l'inscription des membres du THBC`
+                                            `Retrouvez le status de l'inscription des membres du club`
                                             :
-                                            `Retrouvez le status de l'inscription de vos membres au THBC`
+                                            `Retrouvez le status de l'inscription de vos membres au club`
                                     }
                                 </Text>
                             </Heading>
@@ -161,7 +161,7 @@ class _Index extends React.PureComponent {
                                 <Text>Contacter le thbc : <a href="mailto:thbc44@gmail.com">thbc44@gmail.com</a></Text>
                                 <br />
                                 <br />
-                                <img src={require('asset/img/logo.png')} alt="THBC" />
+                                <img src={require('asset/img/logo.png')} alt="club" />
                             </div>
                         </div>
                     </Columns.Column>
